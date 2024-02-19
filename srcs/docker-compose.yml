@@ -1,0 +1,70 @@
+version: '3'
+
+services:
+  database:
+    container_name: database
+    image: postgres
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  backend:
+    container_name: django
+    build: ./files/backend/
+    image: django:v1
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    restart: unless-stopped
+    volumes:
+      - back:/app/
+    depends_on:
+      - database
+
+  frontend:
+    container_name: react
+    image: node:14-alpine
+    #command: sh -c "mkdir -p /app/frontend && cd /app/frontend && npx create-react-app . && npm start"
+    command: sh -c "cd /app/frontend && npm start"
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    volumes:
+      - front:/app/frontend
+    depends_on:
+      - backend
+
+volumes:
+  back:
+      driver: local
+      driver_opts:
+         type: none
+         device: ./files/backend/core/
+         o: bind
+  front:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./files/frontend/
+      o: bind
+  db:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./files/database/
+      o: bind
+
+networks:
+      transcend-network:
+            name: transcend-network
+            driver: bridge
+  
