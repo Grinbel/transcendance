@@ -4,6 +4,8 @@ FROM python:3.11.4-slim-buster
 ENV PYTHONUNBUFFERED 1
 RUN echo "VIRTUAL ENVIRONMENT INITIALIZATION AND PIP UPGRADE =====>> "
 RUN sh -c "python3 -m venv /venv && . /venv/bin/activate"
+
+RUN apt-get update && apt-get install -y netcat
 RUN    pip install --upgrade pip
 
 # Copy and install the requirements.txt file into the working directory

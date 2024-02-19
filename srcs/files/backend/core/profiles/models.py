@@ -8,6 +8,7 @@ class Profile(models.Model):
 	pseudo = models.CharField(max_length=12, blank=True)
 	rank = models.DateField(null=True, blank=True)
 	friends = models.ManyToManyField('self', blank=True)
+	#avatar = models.ImageField(upload_to='avatars/', blank=True)
 	
 	def __str__(self):
 		return self.user.username

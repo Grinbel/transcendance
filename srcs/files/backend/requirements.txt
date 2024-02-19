@@ -4,3 +4,4 @@ termcolor
 psycopg2-binary==2.9.9
 djangorestframework
 django-cors-headers
+pillow
