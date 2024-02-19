@@ -21,6 +21,14 @@ YML_DIR		=  ./srcs
 		
 # help:
 # 		@make -pRrq  -f $(THIS_FILE) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$'
+
+push:
+		@echo "${GREEN}pushing to docker hub ...${NC}"
+		git add *
+		git commit -m "pushing to docker hub" -a 
+		git push 
+		@echo "${GREEN}pushing finished.${NC}"
+
 build:
 		docker-compose -f ${YML_DIR}/docker-compose.yml build $(c)
 		@echo "${GREEN}build finished.${NC}"

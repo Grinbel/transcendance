@@ -17,9 +17,9 @@ WORKDIR /app
 RUN django-admin startproject project .
 
 RUN echo "Apply database migrations"
-
-RUN chmod +x migrate.sh
-RUN ./migrate.sh
+COPY ./core/launcher.sh .
+RUN chmod 777 ./launcher.sh
+RUN ls -la
 
 # Run the django app on port 8000 on every interface
-ENTRYPOINT [ "python3", "manage.py", "runserver", "0.0.0.0:8000"]
+ENTRYPOINT [ "sh",  "./launcher.sh" ]
