@@ -15,10 +15,11 @@ WORKDIR /app
 
 #create a new django project called app
 RUN django-admin startproject project .
-RUN echo "Apply database migrations"
-RUN python3 manage.py migrate
 
-#COPY entrypoint.sh .
+RUN echo "Apply database migrations"
+
+RUN chmod +x migrate.sh
+RUN ./migrate.sh
+
 # Run the django app on port 8000 on every interface
-#RUN chmod +x entrypoint.sh
 ENTRYPOINT [ "python3", "manage.py", "runserver", "0.0.0.0:8000"]

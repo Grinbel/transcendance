@@ -34,7 +34,7 @@ ALLOWED_HOSTS = ['localhost', '0.0.0.0']
 # Application definition
 
 INSTALLED_APPS = [
-	'user',
+	'profiles',
     # 'tournament',
     # 'game',
     # 'chat',

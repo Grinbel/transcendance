@@ -20,7 +20,7 @@ from django.shortcuts import render
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-	path('', include('user.urls'), name='user'),
+	path('profiles/', include('profiles.urls'), name='profiles'),
 	# path('tournament/', include('tournament.urls')),
 	# path('game/', include('game.urls')),
 	# path('chat/', include('chat.urls')),

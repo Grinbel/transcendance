@@ -14,6 +14,8 @@ services:
       - "5432:5432"
     volumes:
       - db:/var/lib/postgresql/data
+    networks:
+      - transcend-network
 
   backend:
     container_name: django
@@ -28,6 +30,8 @@ services:
       - back:/app/
     depends_on:
       - database
+    networks:
+      - transcend-network
 
   frontend:
     container_name: react
@@ -42,6 +46,8 @@ services:
       - front:/app/frontend
     depends_on:
       - backend
+    networks:
+      - transcend-network
 
 volumes:
   back:
