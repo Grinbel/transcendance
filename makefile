@@ -30,46 +30,46 @@ push:
 		@echo "${GREEN}pushing finished.${NC}"
 
 build:
-		docker-compose -f ${YML_DIR}/docker-compose.yml build $(c)
+		docker-compose -f ./srcs/docker-compose.yml build 
 		@echo "${GREEN}build finished.${NC}"
 build_nocash:
-		docker-compose -f ${YML_DIR}/docker-compose.yml build --no-cache $(c)
+		docker-compose -f ./srcs/docker-compose.yml build --no-cache 
 		@echo "${GREEN}build finished.${NC}"
 up:		build
-		docker-compose -f ${YML_DIR}/docker-compose.yml up  $(c)
+		docker-compose -f ./srcs/docker-compose.yml up  
 		@echo "${GREEN}containers UP in -detach mode ...${NC}"
 # nocash up
 upnc:		build_nocash
-		docker-compose -f ${YML_DIR}/docker-compose.yml up $(c)
+		docker-compose -f ./srcs/docker-compose.yml up 
 		@echo "${GREEN}containers UP in -detach mode ...${NC}"
 
 start:
-		docker-compose -f ${YML_DIR}/docker-compose.yml start $(c)
+		docker-compose -f ./srcs/docker-compose.yml start 
 down:
-		docker-compose -f ${YML_DIR}/docker-compose.yml down $(c)
+		docker-compose -f ./srcs/docker-compose.yml down 
 		@echo "${RED}containers are down${NC}"
 destroy:
-		docker-compose -f ${YML_DIR}/docker-compose.yml down -v $(c)
+		docker-compose -f ./srcs/docker-compose.yml down -v 
 		@echo "${RED}destroying containers and volumes (not equivalent to delete- rules) ...${NC}"
 stop:
-		docker-compose -f ${YML_DIR}/docker-compose.yml stop $(c)
+		docker-compose -f ./srcs/docker-compose.yml stop 
 # restart:
-# 		docker-compose -f ${YML_DIR}/docker-compose.yml stop $(c)
-# 		docker-compose -f ${YML_DIR}/docker-compose.yml up -d $(c)
+# 		docker-compose -f ./srcs/docker-compose.yml stop 
+# 		docker-compose -f ./srcs/docker-compose.yml up -d 
 # logs:
-# 		docker-compose -f ${YML_DIR}/docker-compose.yml logs --tail=100 -f $(c)
+# 		docker-compose -f ./srcs/docker-compose.yml logs --tail=100 -f 
 # logs-app:
-# 		docker-compose -f ${YML_DIR}/docker-compose.yml logs --tail=100 -f ${APP}
+# 		docker-compose -f ./srcs/docker-compose.yml logs --tail=100 -f ${APP}
 # ps:
-# 		docker-compose -f ${YML_DIR}/docker-compose.yml ps
+# 		docker-compose -f ./srcs/docker-compose.yml ps
 # login-server:
-# 		docker-compose -f ${YML_DIR}/docker-compose.yml exec ${SERVER} /bin/bash
+# 		docker-compose -f ./srcs/docker-compose.yml exec ${SERVER} /bin/bash
 # login-app:
-# 		docker-compose -f ${YML_DIR}/docker-compose.yml exec ${APP} /bin/bash
+# 		docker-compose -f ./srcs/docker-compose.yml exec ${APP} /bin/bash
 # login-db:
-# 		docker-compose -f ${YML_DIR}/docker-compose.yml exec ${DATABASE} /bin/bash
+# 		docker-compose -f ./srcs/docker-compose.yml exec ${DATABASE} /bin/bash
 # mysql-db:
-# 		docker-compose -f ${YML_DIR}/docker-compose.yml exec ${DATABASE} mysql --host=localhost
+# 		docker-compose -f ./srcs/docker-compose.yml exec ${DATABASE} mysql --host=localhost
 
 del_frontfiles:
 		@rm -rf ./srcs/files/frontend/*
