@@ -1,1 +1,3 @@
-./srcs/files/database/*
+**/database/**
+**/database/*
+*.pyc

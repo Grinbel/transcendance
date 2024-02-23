@@ -2,6 +2,7 @@
 
 ../database
 /database
+*.pyc
 # dependencies
 /node_modules
 /.pnp

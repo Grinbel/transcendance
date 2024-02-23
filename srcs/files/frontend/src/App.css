@@ -1,4 +1,21 @@
-.App {
+
+.navbar {
+  background-color: #141415;
+  color: white;
+  padding: 10px;
+}
+
+.navbar a.navbar-brand {
+	font: italic small-caps bold 20px/2 cursive;
+	font-size: 30px;
+}
+
+a:hover {
+	text-shadow: #FC0 1px 0 20px;
+}
+
+
+/* .App {
   text-align: center;
 }
 
@@ -35,4 +52,4 @@
   to {
     transform: rotate(360deg);
   }
-}
+} */

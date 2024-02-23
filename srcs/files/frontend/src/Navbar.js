@@ -1,11 +1,12 @@
+import { Link } from 'react-router-dom';
 const Navbar = () => {
 	return ( 
 		<nav className="navbar">
 			<div className="container">
-				<a href="/" className="navbar-brand">Django React</a>
+				<Link to="/" className="navbar-brand">PONG</Link>
 				<div className="navbar-nav">
-					<a href="/login" className="nav-item nav-link">Login</a>
-					<a href="/register" className="nav-item nav-link">Register</a>
+					<Link to="/login" className="nav-item nav-link">Login</Link>
+					<Link to="/register" className="nav-item nav-link">Register</Link>
 				</div>
 			</div>
 		</nav>
