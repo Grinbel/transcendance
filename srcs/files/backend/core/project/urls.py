@@ -17,10 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.shortcuts import render 
+from django.conf.urls import url
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 	path('profiles/', include('profiles.urls'), name='profiles'),
+	url(r'^login/$'),
 	# path('tournament/', include('tournament.urls')),
 	# path('game/', include('game.urls')),
 	# path('chat/', include('chat.urls')),

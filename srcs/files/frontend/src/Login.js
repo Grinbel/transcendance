@@ -13,7 +13,7 @@ const Login = () => {
   const handleSubmit = async e => {
 	e.preventDefault();
 	try {
-	  const response = await axios.post('http://localhost:8000/api/login/', loginData);
+	  const response = await axios.post('http://localhost:8000/profiles/login/', loginData);
 	  if (response.data.status === 'success') {
 		// Login was successful
 		// You can now do whatever you want with the response

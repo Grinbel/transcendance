@@ -20,10 +20,10 @@ function Homepage() {
 				<Route path="/play" component={Play} />
 				{/* <Route path="/about" component={About} /> */}
 				{/* <Route path="/contact" component={Contact} /> */}
-				<Route path="/login" component={login} />
+				{/* <Route path="/login" component={login} /> */}
 				<Route path="/register" component={register} />
 				<Route exact path="/" component={Home} />
-				<Route component={Error404} />
+				{/* <Route component={Error404} /> */}
 			</Switch>
 		</header>
 		</div>
