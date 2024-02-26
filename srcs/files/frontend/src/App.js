@@ -4,11 +4,14 @@ import Navbar from './Navbar';
 import Home from './Home';
 import Play from './Play';
 import Error404 from './Error404';
-// import About from './About';
+import NavAbout from './NavAbout';
 // import Contact from './Contact';
+import one_v_one from './one_v_one';
 import login from './Login';
 import register from './Register';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import tournament from './tournament';
+import About from './About';
 
 function Homepage() {
   return (
@@ -20,11 +23,15 @@ function Homepage() {
 				<Route path="/play" component={Play} />
 				{/* <Route path="/about" component={About} /> */}
 				{/* <Route path="/contact" component={Contact} /> */}
-				{/* <Route path="/login" component={login} /> */}
+				<Route path="/login" component={login} />
 				<Route path="/register" component={register} />
+				<Route path="/1v1" component={one_v_one} />
+				<Route path="/tournament" component={tournament} />
+				<Route path="/about" component={About} />
 				<Route exact path="/" component={Home} />
-				{/* <Route component={Error404} /> */}
+				<Route component={Error404} />
 			</Switch>
+		<NavAbout />
 		</header>
 		</div>
 	</Router>
