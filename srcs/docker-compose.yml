@@ -54,19 +54,19 @@ volumes:
       driver: local
       driver_opts:
          type: none
-         device: ./files/backend/core/
+         device: ~/Desktop/transcendance/srcs/files/backend/core/
          o: bind
   front:
     driver: local
     driver_opts:
       type: none
-      device: ./files/frontend/
+      device: ~/Desktop/transcendance/srcs/files/frontend/
       o: bind
   db:
     driver: local
     driver_opts:
       type: none
-      device: ./files/database/
+      device: ~/Desktop/transcendance/srcs/files/database/
       o: bind
 
 networks:
