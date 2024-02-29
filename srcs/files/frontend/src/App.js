@@ -12,6 +12,7 @@ import register from './Register';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import tournament from './tournament';
 import About from './About';
+import Chat from './Chat';
 
 function Homepage() {
   return (
@@ -31,6 +32,7 @@ function Homepage() {
 				<Route exact path="/" component={Home} />
 				<Route component={Error404} />
 			</Switch>
+		<Chat />
 		<NavAbout />
 		</header>
 		</div>
