@@ -15,7 +15,8 @@ YML_DIR		=  ./srcs
 
 # Beginning of makefile rules.
 # init: 
-# 		@mkdir -p ${HOME}/abelhadi/data/wordpress_code/
+#  		@mkdir -p ./srcs/files/database
+		
 # 		@mkdir -p ${HOME}/abelhadi/data/wordpress_db/
 # 		@echo "${GREEN}directories created successfully for wordpress db/code ...${NC}"
 		
