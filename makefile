@@ -23,6 +23,9 @@ YML_DIR		=  ./srcs
 # help:
 # 		@make -pRrq  -f $(THIS_FILE) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$'
 
+all	: up
+
+
 dbchmod: 
 		docker exec -it database bash -c "chmod 777 -R /var/lib/postgresql/data && exit"
 
