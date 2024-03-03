@@ -29,6 +29,9 @@ all	: up
 dbchmod: 
 		docker exec -it database bash -c "chmod 777 -R /var/lib/postgresql/data && exit"
 
+dbrevenge :
+		docker run -v "./srcs/files/database:/datas" -it debian:buster-slim /bin/bash
+
 push: 
 		@echo "${GREEN}pushing to docker hub ...${NC}"
 		git add *
