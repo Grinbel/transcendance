@@ -25,17 +25,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-+f$6n=$1s3ol8jgaenlmo9cu=-byy2*x=5)!evng!+0iu-e9vj'
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = ['localhost', '0.0.0.0']
-
+AUTH_USER_MODEL = "users.User"
 
 # Application definition
 
 INSTALLED_APPS = [
-	'profiles',
+	'users',
     # 'tournament',
     # 'game',
     # 'chat',

@@ -81,8 +81,12 @@ stop:
 # mysql-db:
 # 		docker-compose -f ${YML_DIR}/docker-compose.yml exec ${DATABASE} mysql --host=localhost
 
+del_containers:
+		@docker rm $$(docker ps -aq) -f
+		@echo "${RED}containers deleted ...${NC}"
+
 del_frontfiles:
-		@rm -rf ./srcs/files/frontend/*
+		@rm -rf ./srcs/files/frontend/core/*
 		@echo "${GREEN}frontend volume content deleted successfully ...${NC}"
 del_backfiles:
 		@rm -rf ./srcs/files/backend/core/*
