@@ -7,8 +7,8 @@ while ! nc -z ${DB_HOST} ${DB_PORT}; do
 done
 echo "Database server is reachable. Starting Django..."
 
-python3 manage.py makemigrations
+#python3 manage.py makemigrations
 
 # Apply the migrations
-python3 manage.py migrate
+#python3 manage.py migrate
 python3 manage.py runserver 0.0.0.0:8000

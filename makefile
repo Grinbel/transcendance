@@ -25,12 +25,15 @@ YML_DIR		=  ./srcs
 
 all	: up
 
-
+# to reset database -- delete all data
+flush:
+		echo "yes" | docker exec -i django python manage.py flush
+		@echo "${RED}database flushed ...${NC}"
 dbchmod: 
 		docker exec -it database bash -c "chmod 777 -R /var/lib/postgresql/data && exit"
 
 dbrevenge :
-		docker run -v "./srcs/files/database:/datas" -it debian:buster-slim /bin/bash
+		docker run --rm -v "./srcs/files/database:/datas" -it debian:buster-slim /bin/bash
 
 push: 
 		@echo "${GREEN}pushing to docker hub ...${NC}"
@@ -45,13 +48,22 @@ build:
 build_nocash:
 		docker-compose -f ${YML_DIR}/docker-compose.yml build --no-cache $(c)
 		@echo "${GREEN}build finished.${NC}"
+
 up:		build
 		docker-compose -f ${YML_DIR}/docker-compose.yml up  $(c)
 		@echo "${GREEN}containers UP in -detach mode ...${NC}"
 # nocash up
-upnc:		build_nocash
+nc:		build_nocash
 		docker-compose -f ${YML_DIR}/docker-compose.yml up $(c)
 		@echo "${GREEN}containers UP in -detach mode ...${NC}"
+
+# for up only the backend and database
+db:	build
+		docker-compose -f ${YML_DIR}/docker-compose.yml up backend database
+		@echo "${GREEN}containers UP in -detach mode ...${NC}"
+# for starting only the backend and database		
+startdb:
+		docker-compose -f ${YML_DIR}/docker-compose.yml start backend database
 
 start:
 		docker-compose -f ${YML_DIR}/docker-compose.yml start $(c)

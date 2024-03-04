@@ -1,71 +1,80 @@
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework.views import APIView
-from .models import User
+# from rest_framework.response import Response
+# from rest_framework.decorators import api_view
+# from rest_framework.views import APIView
+# from .models import User
+# from .serializers import UserSerializer
+# from
+# from rest_framework import status
+from rest_framework.viewsets import ModelViewSet
 from .serializers import UserSerializer
-from rest_framework import status
+from .permissions import UserPermission
+from .models import User
+ 
+class UserViewSet(ModelViewSet):
+ 
+    serializer_class = UserSerializer
+    queryset = User.objects.all().order_by("-date_joined")
+    permission_classes = [UserPermission,]
 
+# class register(APIView):
+# 	def post(self, request):
+# 		serializer = UserSerializer(data=request.data)
+# 		if serializer.is_valid():
+# 			serializer.save()
+# 			return Response(serializer.data, status=status.HTTP_201_CREATED)
+# 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class register(APIView):
-	def post(self, request):
-		serializer = UserSerializer(data=request.data)
-		if serializer.is_valid():
-			serializer.save()
-			return Response(serializer.data, status=status.HTTP_201_CREATED)
-		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['GET'])
-def get_users(request):
-	if request.method == 'GET':
-		profiles = Profile.objects.all()
-		serializer = UserSerializer(profiles, many=True)
-		return Response(serializer.data)
+# @api_view(['GET'])
+# def get_users(request):
+# 	if request.method == 'GET':
+# 		profiles = Profile.objects.all()
+# 		serializer = UserSerializer(profiles, many=True)
+# 		return Response(serializer.data)
 	
-@api_view(['GET'])
-def get_user(request, pk):
-	try:
-		profile = Profile.objects.get(pk=pk)
-	except Profile.DoesNotExist:
-		return Response(status=status.HTTP_404_NOT_FOUND)
+# @api_view(['GET'])
+# def get_user(request, pk):
+# 	try:
+# 		profile = Profile.objects.get(pk=pk)
+# 	except Profile.DoesNotExist:
+# 		return Response(status=status.HTTP_404_NOT_FOUND)
 
-	if request.method == 'GET':
-		serializer = UserSerializer(profile)
-		return Response(serializer.data)
+# 	if request.method == 'GET':
+# 		serializer = UserSerializer(profile)
+# 		return Response(serializer.data)
 
-@api_view(['POST'])
-def create_profile(request):
-	if request.method == 'POST':
-		serializer = UserSerializer(data=request.data)
-		if serializer.is_valid():
-			serializer.save()
-			return Response(serializer.data, status=status.HTTP_201_CREATED)
-		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# @api_view(['POST'])
+# def create_profile(request):
+# 	if request.method == 'POST':
+# 		serializer = UserSerializer(data=request.data)
+# 		if serializer.is_valid():
+# 			serializer.save()
+# 			return Response(serializer.data, status=status.HTTP_201_CREATED)
+# 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 	
-@api_view(['PUT'])
-def update_profile(request, pk):
-	try:
-		profile = Profile.objects.get(pk=pk)
-	except Profile.DoesNotExist:
-		return Response(status=status.HTTP_404_NOT_FOUND)
+# @api_view(['PUT'])
+# def update_profile(request, pk):
+# 	try:
+# 		profile = Profile.objects.get(pk=pk)
+# 	except Profile.DoesNotExist:
+# 		return Response(status=status.HTTP_404_NOT_FOUND)
 
-	if request.method == 'PUT':
-		serializer = UserSerializer(profile, data=request.data)
-		if serializer.is_valid():
-			serializer.save()
-			return Response(serializer.data)
-		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# 	if request.method == 'PUT':
+# 		serializer = UserSerializer(profile, data=request.data)
+# 		if serializer.is_valid():
+# 			serializer.save()
+# 			return Response(serializer.data)
+# 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['DELETE'])
-def delete_profile(request, pk):
-	try:
-		profile = Profile.objects.get(pk=pk)
-	except Profile.DoesNotExist:
-		return Response(status=status.HTTP_404_NOT_FOUND)
+# @api_view(['DELETE'])
+# def delete_profile(request, pk):
+# 	try:
+# 		profile = Profile.objects.get(pk=pk)
+# 	except Profile.DoesNotExist:
+# 		return Response(status=status.HTTP_404_NOT_FOUND)
 
-	if request.method == 'DELETE':
-		profile.delete()
-		return Response(status=status.HTTP_204_NO_CONTENT)
+# 	if request.method == 'DELETE':
+# 		profile.delete()
+# 		return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
