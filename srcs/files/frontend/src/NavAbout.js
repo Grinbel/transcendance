@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const NavAbout = () => {
 	return (
 		<div>
-		  <header className="about">
+		  <header className="NavAbout">
 		    <Link to="/about" className="nav-item nav-link">about</Link>
 		  </header>
 		</div>

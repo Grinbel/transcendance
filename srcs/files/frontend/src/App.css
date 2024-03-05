@@ -1,8 +1,19 @@
+body {
+	background-image: url('backgroung.jpg');
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: cover;
+}
 
 .navbar {
-  background-color: #141415;
-  color: white;
-  padding: 10px;
+  background-color: #818187;
+  opacity: 0.4;
+  color: rgb(255, 0, 0);
+}
+
+.App{
+  /* background-color: #000000; */
+  color: #ffffff;
 }
 
 .navbar a.navbar-brand {
@@ -12,9 +23,17 @@
 
 a:hover {
 	text-shadow: #FC0 1px 0 20px;
+	
 	color: red
 }
 
+.NavAbout {
+  background-color: #000000;
+  opacity: 0.4;
+  color: #ffffff;
+  position: fixed;
+  bottom: 0px;
+}
 .chat-window {
     position: fixed;
     bottom: 30px;
@@ -23,23 +42,39 @@ a:hover {
     height: 400px;
     border: 1px solid #000;
 	background-color: lightgray;
+	opacity: 0.7;
+	color:#000;
     transition: width 0.3s ease-in-out;
+	border-radius: 10px;
 }
 
 .chat-window.retracted:not(.chat-header){
     width: 50px; 
 	border: 0px;
+	/* background-color: #ffffff; */
 	/* visibility: hidden; */
 }
+
+
 
 .message-time {
     float: right;
     color: blue;
 }
 
+button {
+	background-color: #dc46f3;
+	color: white;
+	padding: 4px 10px;
+	/* margin: 8px 0; */
+	border: none;
+	cursor: pointer;
+	/* width: 100%; */
+}
+
 .chat-header {
     height: 50px;
-    background-color: #f5f5f5;
+    /* background-color: #f5f5f5; */
     cursor: pointer;
 }
 
@@ -53,8 +88,9 @@ a:hover {
     bottom: 0px;
     right: 0px;
 
-	background-color: #f5f5f5;
+	/* background-color: #f5f5f5; */
 	transition: width 0.3s ease-in-out;
+	border-radius: 10px;
 }
 .chat-message {
     word-wrap: break-word;
@@ -74,16 +110,7 @@ a:hover {
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
+
 
 .App-link {
   color: #61dafb;

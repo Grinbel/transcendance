@@ -19,7 +19,7 @@ class Chat extends React.Component {
 
 	handleOpenClick = () => {
 		this.setState({ isChatOpen: true });
-	}
+	} 
 
 	handleInputChange = (event) => {
 		this.setState({ currentInput: event.target.value });
