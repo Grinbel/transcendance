@@ -15,14 +15,21 @@ YML_DIR		=  ./srcs
 
 # Beginning of makefile rules.
 # init: 
-# 		@mkdir -p ${HOME}/abelhadi/data/wordpress_code/
+#  		@mkdir -p ./srcs/files/database
+		
 # 		@mkdir -p ${HOME}/abelhadi/data/wordpress_db/
 # 		@echo "${GREEN}directories created successfully for wordpress db/code ...${NC}"
 		
 # help:
 # 		@make -pRrq  -f $(THIS_FILE) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$'
 
-push:
+all	: up
+
+
+dbchmod: 
+		docker exec -it database bash -c "chmod 777 -R /var/lib/postgresql/data && exit"
+
+push: 
 		@echo "${GREEN}pushing to docker hub ...${NC}"
 		git add *
 		git commit -m "pushing to docker hub" -a 

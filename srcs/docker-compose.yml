@@ -1,6 +1,14 @@
 version: '3'
 
 services:
+  # ddebian:
+    # image: debian:buster-slim
+    # volumes:
+    #   - ./files/database:/datass
+    # stdin_open: true
+    # tty: true
+    # # command: "/bin/bash && rm -rf datass"
+
   database:
     container_name: database
     image: postgres
@@ -13,7 +21,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db:/var/lib/postgresql/data
+      - ./files/database:/var/lib/postgresql/data
     networks:
       - transcend-network
 
@@ -36,7 +44,7 @@ services:
   frontend:
     container_name: react
     image: node:14-alpine
-    #command: sh -c "mkdir -p /app/frontend && cd /app/frontend && npx create-react-app . && npm start"
+    # command: sh -c "mkdir -p /app/frontend && cd /app/frontend && npx create-react-app . && npm start"
     command: sh -c "cd /app/frontend && npm start"
     ports:
       - "3000:3000"
@@ -68,7 +76,6 @@ volumes:
       type: none
       device: ./srcs/files/database/
       o: bind
-
 networks:
       transcend-network:
             name: transcend-network

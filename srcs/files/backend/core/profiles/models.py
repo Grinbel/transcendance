@@ -3,10 +3,10 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class Profile(models.Model):
-	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	user = models.OneToOneField(User, on_delete=models.CASCADE) 
 	bio = models.TextField(max_length=250, blank=True)
 	pseudo = models.CharField(max_length=12, blank=True)
-	rank = models.DateField(null=True, blank=True)
+	rank = models.CharField(max_length=12, blank=True)
 	friends = models.ManyToManyField('self', blank=True)
 	#avatar = models.ImageField(upload_to='avatars/', blank=True)
 	
