@@ -2,9 +2,16 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
-class User(AbstractUser):
-	pass
 
+class User(AbstractUser):
+	avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+	alias = models.CharField(max_length=255, null=True, blank=True)
+	tournament = models.ForeignKey('tournament.Tournament', on_delete=models.SET_NULL, null=True, blank=True)
+	STATUS_CHOICES = [
+		('busy', 'Busy'),
+		('away', 'Away'),
+		('available', 'Available'),
+	]
 #class Tournament(models.Model):
 #     name = models.CharField(max_length=100)
 #     start_date = models.DateTimeField()
