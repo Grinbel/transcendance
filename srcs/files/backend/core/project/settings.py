@@ -22,7 +22,8 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-
+ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1']
+AUTH_USER_MODEL = "users.User"
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -30,14 +31,13 @@ MEDIA_URL = '/media/'
 SECRET_KEY = 'django-insecure-+f$6n=$1s3ol8jgaenlmo9cu=-byy2*x=5)!evng!+0iu-e9vj'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ['localhost', '0.0.0.0']
-AUTH_USER_MODEL = "users.User"
+
 
 # Application definition
 
 INSTALLED_APPS = [
     'tournament',
-    # 'game',
+    'game',
     # 'chat',
 	'corsheaders',
     'django.contrib.admin',
@@ -175,7 +175,9 @@ CORS_ALLOW_METHODS = [
 ]
 
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost:5173/']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:5173/', 
+                        'http://0.0.0.0:8000/',
+]
 CSRF_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SECURE = 'True'
 
