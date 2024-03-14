@@ -5,10 +5,13 @@
 # from .serializers import UserSerializer
 # from
 # from rest_framework import status
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework_simplejwt.views import TokenObtainPairView
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
+from rest_framework.views import APIView
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.response import Response
+from rest_framework import status,  permissions
 from .serializers import MyTokenObtainPairSerializer
 from .serializers import UserSerializer
 from .permissions import UserPermission
@@ -18,15 +21,31 @@ from .models import User
 
 
 class MyObtainTokenPairView(TokenObtainPairView):
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
     serializer_class = MyTokenObtainPairSerializer
 
+class UserCreate(APIView):
+    permission_classes = [permissions.AllowAny]
 
-class UserViewSet(ModelViewSet):
- 
-    serializer_class = UserSerializer
-    queryset = User.objects.all().order_by("-date_joined")
-    permission_classes = [UserPermission, IsAuthenticated]
+    def post(self, request, format='json'):
+        serializer_context = {
+            'request': request,
+        }
+        serializer = UserSerializer(data=request.data, context=serializer_context)
+        if serializer.is_valid():
+            user = serializer.save()
+            if user:
+                json = serializer.data
+                return Response(json, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserList(APIView):
+    permission_classes = [UserPermission]
+
+    def get(self, request, format=None):
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
 
 
 # class register(APIView):
