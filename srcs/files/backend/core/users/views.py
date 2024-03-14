@@ -6,18 +6,28 @@
 # from
 # from rest_framework import status
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework_simplejwt.views import TokenObtainPairView
 
+from .serializers import MyTokenObtainPairSerializer
 from .serializers import UserSerializer
 from .permissions import UserPermission
 from .models import User
  
 ##remember to check USER_ID_FIELD and USER_ID_CLAIM in jwt settings in case picking the email adress as the user id
+
+
+class MyObtainTokenPairView(TokenObtainPairView):
+    permission_classes = [AllowAny]
+    serializer_class = MyTokenObtainPairSerializer
+
+
 class UserViewSet(ModelViewSet):
  
     serializer_class = UserSerializer
     queryset = User.objects.all().order_by("-date_joined")
     permission_classes = [UserPermission, IsAuthenticated]
+
 
 # class register(APIView):
 # 	def post(self, request):
