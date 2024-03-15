@@ -32,8 +32,8 @@ const Login = () => {
       <header className="Login">
         <h1>Login</h1>
         <form onSubmit={handleSubmit}>
-          <input type="text" name="username" value={loginData.username} onChange={handleChange} required />
-          <input type="password" name="password" value={loginData.password} onChange={handleChange} required />
+          <input type="text" name="username" placeholder="username" value={loginData.username} onChange={handleChange} required />
+          <input type="password" name="password" placeholder="password" value={loginData.password} onChange={handleChange} required />
           <button type="submit">Login</button>
         </form>
       </header>
