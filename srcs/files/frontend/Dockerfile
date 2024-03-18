@@ -10,7 +10,7 @@ RUN npx --yes create-vite . --template react
 RUN chmod -R 777 /app
 RUN npm install three @react-three/fiber
 RUN npm install @react-three/drei
-RUN npm install react-router-dom localforage match-sorter sort-by
+RUN npm install react-router-dom@6 localforage match-sorter sort-by
 RUN npm audit fix --force
 RUN npm install
 # Copy the current directory contents into the container at /app
