@@ -24,7 +24,7 @@ class MyObtainTokenPairView(TokenObtainPairView):
     permission_classes = [permissions.AllowAny]
     serializer_class = MyTokenObtainPairSerializer
 
-class UserCreate(APIView):
+class signup(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request, format='json'):
