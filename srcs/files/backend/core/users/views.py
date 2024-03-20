@@ -31,6 +31,7 @@ class signup(APIView):
         serializer_context = {
             'request': request,
         }
+        print('request.data', request.data)
         serializer = UserSerializer(data=request.data, context=serializer_context)
         if serializer.is_valid():
             user = serializer.save()

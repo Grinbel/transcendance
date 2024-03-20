@@ -9,8 +9,9 @@ function Login() {
     
     const handleChange = (event) => {
         setFormData({ ...formData, [event.target.name]: event.target.value });
+        console.log('Login: handleChange event.target.name', event.target.name);
     };
-    
+    console.log('Login: formData.username', formData.username);
     const handleSubmit =  async (event) => {
         // alert('A username and password was submitted: ' + formData.username + " " + formData.password);
         event.preventDefault();
@@ -22,7 +23,8 @@ function Login() {
             axiosInstance.defaults.headers['Authorization'] = "JWT " + response.data.access;
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
-            return response.data;
+            console.log('Login successful: i go to home page', response);
+    
         } catch (error) {
             // console.log('Main Error ', JSON.stringify(error));
             if (error.response) {
@@ -32,9 +34,6 @@ function Login() {
                 console.log(error.response.data);
                 console.log(error.response.status);
                 console.log(error.response.headers);
-                if (error.response.status == '401'){
-                   navigate('/signup/');
-                }
               } else if (error.request) {
                 // la requête a été faite mais aucune réponse n’a été reçue
                 // `error.request` est une instance de XMLHttpRequest dans le navigateur
@@ -45,29 +44,39 @@ function Login() {
                 // a provoqué une erreur
                 console.log('error OBSCURE', error.request);
               }
-            setError(error);
+            setError(error.message);
             throw (error);
         }
     };
-    console.log("before RETURN");
-    if (error) {
-        return <span>Caught an error.</span>;
-    }
     return (
-        <div>Login
+        <div>
+            <h2>Login</h2>
+            {error && <div style={{ color: 'red' }}>{error}</div>}
             <form onSubmit={handleSubmit}>
-                <label>
-                    Username:
-                    <input name="username" type="text" value={formData.username} onChange={handleChange} />
-                </label>
-                <label>
-                    Password:
-                    <input name="password" type="password" value={formData.password} onChange={handleChange} />
-                </label>
-                <input type="submit" value="Submit" />
+                <div>
+                <label htmlFor="username">Username:</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    value={formData.username}
+                    onChange={handleChange}
+                />
+                </div>
+                <div>
+                <label htmlFor="password">Password:</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                />
+                </div>
+                <button type="submit">Login</button>
             </form>
         </div>
-    );
-}
+  );
+};
 
 export default Login;
