@@ -16,7 +16,7 @@ function Login() {
         // alert('A username and password was submitted: ' + formData.username + " " + formData.password);
         event.preventDefault();
         try {
-                const response = await axiosInstance.post('/token/obtain/', {
+                const response = await axiosInstance.post('/login/', {
                 username: formData.username,
                 password: formData.password
             });

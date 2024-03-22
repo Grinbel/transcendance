@@ -43,10 +43,9 @@ class Signup(APIView):
     
 
 class Logout(APIView):
-    permission_classes = (permissions.AllowAny,)
-    authentication_classes = ()
+    permission_classes = [permissions.AllowAny]
 
-    def post(self, request):
+    def post(self, request, format='json'):
         try:
             refresh_token = request.data["refresh_token"]
             token = RefreshToken(refresh_token) # create a RefreshToken instance from the refresh token obtained to access the Class methods as blacklist()
@@ -64,103 +63,63 @@ class UserList(APIView):
         return Response(serializer.data)
 
 
-# class register(APIView):
-# 	def post(self, request):
-# 		serializer = UserSerializer(data=request.data)
-# 		if serializer.is_valid():
-# 			serializer.save()
-# 			return Response(serializer.data, status=status.HTTP_201_CREATED)
-# 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# @api_view(['GET'])
-# def get_users(request):
-# 	if request.method == 'GET':
-# 		profiles = Profile.objects.all()
-# 		serializer = UserSerializer(profiles, many=True)
-# 		return Response(serializer.data)
-	
-# @api_view(['GET'])
-# def get_user(request, pk):
-# 	try:
-# 		profile = Profile.objects.get(pk=pk)
-# 	except Profile.DoesNotExist:
-# 		return Response(status=status.HTTP_404_NOT_FOUND)
-
-# 	if request.method == 'GET':
-# 		serializer = UserSerializer(profile)
-# 		return Response(serializer.data)
-
-# @api_view(['POST'])
-# def create_profile(request):
-# 	if request.method == 'POST':
-# 		serializer = UserSerializer(data=request.data)
-# 		if serializer.is_valid():
-# 			serializer.save()
-# 			return Response(serializer.data, status=status.HTTP_201_CREATED)
-# 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-	
-# @api_view(['PUT'])
-# def update_profile(request, pk):
-# 	try:
-# 		profile = Profile.objects.get(pk=pk)
-# 	except Profile.DoesNotExist:
-# 		return Response(status=status.HTTP_404_NOT_FOUND)
-
-# 	if request.method == 'PUT':
-# 		serializer = UserSerializer(profile, data=request.data)
-# 		if serializer.is_valid():
-# 			serializer.save()
-# 			return Response(serializer.data)
-# 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# @api_view(['DELETE'])
-# def delete_profile(request, pk):
-# 	try:
-# 		profile = Profile.objects.get(pk=pk)
-# 	except Profile.DoesNotExist:
-# 		return Response(status=status.HTTP_404_NOT_FOUND)
-
-# 	if request.method == 'DELETE':
-# 		profile.delete()
-# 		return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-
-# from django.shortcuts import render
-# Create your views here.
-# import json
-# from django.http import JsonResponse
-# from django.contrib.auth import authenticate, login, logout
-# from django.views.decorators.csrf import ensure_csrf_cookie
-# from django.views.decorators.http import require_POST
-
+# import random
+# import string
+# from datetime import datetime, timedelta
+# from django.contrib.auth import authenticate
+# from django.utils.timezone import make_aware
+# from rest_framework import status
 # from rest_framework.response import Response
+# from rest_framework.views import APIView
+# from .serializers import MyTokenObtainPairSerializer
 
-# @require_POST
-# def login_view(request):
-# 	print('login_view')
-# 	data = json.loads(request.body)
-# 	username = data['username']
-# 	password = data['password']
-# 	user = authenticate(request, username=username, password=password)
-# 	if user is not None:
-# 		login(request, user)
-# 		return JsonResponse({'message': 'You are logged in.'})
-# 	return JsonResponse({'message': 'Invalid credentials.'}, status=401)
+# class Login(APIView):
+#     serializer_class = MyTokenObtainPairSerializer
 
-# def logout_view(request):
-# 	if not request.user.is_authenticated:
-# 		return JsonResponse({'you are not logged in.'}, status=401)
-# 	logout(request)
-# 	return JsonResponse({'message': 'You are logged out.'})
+#     def generate_verification_code(self):
+#         return ''.join(random.choices(string.digits, k=6))  # Generate a 6-digit random code
 
-# @ensure_csrf_cookie
-# def session_view(request):
-# 	if not request.user.is_authenticated:
-# 		return JsonResponse({'isauthenticated': False})
-# 	return JsonResponse({'isauthenticated': True})
+#     def send_verification_code(self, user, code):
+#         # Implement code to send verification code to the user (e.g., via email, SMS)
+#         pass
 
-# def whoami_view(request):
-# 	if not request.user.is_authenticated:
-# 		return JsonResponse({'username': None})
-# 	return JsonResponse({'username': request.user.username})
+#     def post(self, request, *args, **kwargs):
+#         username = request.data.get('username')
+#         password = request.data.get('password')
+
+#         user = authenticate(username=username, password=password)
+#         if user is not None:
+#             verification_code = self.generate_verification_code()
+#             self.send_verification_code(user, verification_code)
+
+#             # Store verification code and expiration time in session
+#             request.session['verification_code'] = verification_code
+#             request.session['verification_code_expiry'] = make_aware(datetime.now() + timedelta(minutes=5))
+
+#             return Response({"message": "Please enter the verification code"}, status=status.HTTP_200_OK)
+#         else:
+#             return Response({"message": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+
+#     def verify(self, request, *args, **kwargs):
+#         verification_code = request.data.get('verification_code')
+
+#         # Check if verification code matches the one stored in the session
+#         stored_code = request.session.get('verification_code')
+#         if verification_code == stored_code:
+#             # Check if verification code is still valid
+#             expiry_time = request.session.get('verification_code_expiry')
+#             if expiry_time and expiry_time > datetime.now():
+#                 # If valid, authenticate user and return token
+#                 username = request.data.get('username')
+#                 password = request.data.get('password')
+#                 user = authenticate(username=username, password=password)
+#                 if user is not None:
+#                     serializer = self.serializer_class(data={'username': username, 'password': password})
+#                     if serializer.is_valid():
+#                         token = serializer.validated_data['access']
+#                         return Response({"token": token}, status=status.HTTP_200_OK)
+#                 return Response({"message": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+#             else:
+#                 return Response({"message": "Verification code has expired"}, status=status.HTTP_400_BAD_REQUEST)
+#         else:
+#             return Response({"message": "Invalid verification code"}, status=status.HTTP_400_BAD_REQUEST)

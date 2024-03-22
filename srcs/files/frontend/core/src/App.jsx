@@ -31,9 +31,9 @@ function App(){
                   <h1>Ahhh after 10,000 years I'm free. Time to conquer the Earth!</h1>
 
                   <Routes>
-                      <Route exact path={"/login/"} component={Login}/>
-                      <Route exact path={"/signup/"} component={Signup}/>
-                      <Route path={"/"} render={() => <div>Home again</div>}/>
+                      <Route path="/login/" element={<Login />} /> 
+                      <Route path="/signup/" element={<Signup />} /> 
+                      <Route path="/" element={<div>Home againnnnnnnnnnn</div>} />
                   </Routes>
               </main>
           </div>

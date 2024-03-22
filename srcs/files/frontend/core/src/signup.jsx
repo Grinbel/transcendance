@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import  { axiosInstance } from "./axiosAPI.js";
 
 function Signup() {
     const [formData, setFormData] = useState({ username: "", email: "", password: "" });
@@ -12,34 +13,36 @@ function Signup() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await axios.post("http://your-api-url/signup/", formData);
+            const response = await axiosInstance.post("/signup/", formData);
             // Optionally handle successful signup, such as redirecting to another page
             console.log("Signup successful:", response.data);
         } catch (error) {
-            // Handle signup errors
-            setError(error.response.data.detail);
+            // Handle signup error
+            setError(error.response.data);
         }
     };
 
     return (
         <div>
-            <h2>Sign Up</h2>
+            Signup
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Username:</label>
-                    <input name="username" type="text" value={formData.username} onChange={handleChange} required />
-                </div>
-                <div>
-                    <label>Email:</label>
-                    <input name="email" type="email" value={formData.email} onChange={handleChange} required />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input name="password" type="password" value={formData.password} onChange={handleChange} required />
-                </div>
-                <button type="submit">Sign Up</button>
+                <label>
+                    Username:
+                    <input name="username" type="text" value={formData.username} onChange={handleChange}/>
+                    { error.username ? error.username : null}
+                </label>
+                <label>
+                    Email:
+                    <input name="email" type="email" value={formData.email} onChange={handleChange}/>
+                    { error.email ? error.email : null}
+                </label>
+                <label>
+                    Password:
+                    <input name="password" type="password" value={formData.password} onChange={handleChange}/>
+                    { error.password ? error.password : null}
+                </label>
+                <input type="submit" value="Submit"/>
             </form>
-            {error && <p>Error: {error}</p>}
         </div>
     );
 }
