@@ -1,22 +1,59 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Link, } from "react-router-dom";
 import './App.css'
 import Login from './login.jsx'
 import Signup from './signup.jsx'
+import  { axiosInstance } from "./axiosAPI.js";
 
-function App() {
-  // const [count, setCount] = useState(0)
-  return (
-    <div className="site">
-        <main>
-            <h1>Ahhh after 10,000 years I'm free. Time to conquer the Earth!</h1>
-            <Routes>
-                <Route exact path={"/login/"} element={<Login />}/>
-                <Route exact path={"/signup/"} element={<Signup />}/>
-                <Route path={"/"} render={() => <div>Home again</div>}/>
-           </Routes>
-       </main>
-    </div>
-  );
+function App(){
+  async function handleLogout() {
+    try {
+        const response = await axiosInstance.post('/logout/', {
+            "refresh_token": localStorage.getItem("refresh_token")
+        });
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        axiosInstance.defaults.headers['Authorization'] = null;
+        return response;
+    }
+    catch (e) {
+        console.log(e);
+    }
+};
+      return (
+          <div className="site">
+              <nav>
+                  <Link className={"nav-link"} to={"/"}>Home</Link>
+                  <Link className={"nav-link"} to={"/login/"}>Login</Link>
+                  <Link className={"nav-link"} to={"/signup/"}>Signup</Link>
+                  <button onClick={handleLogout}>Logout</button>
+              </nav>
+              <main>
+                  <h1>Ahhh after 10,000 years I'm free. Time to conquer the Earth!</h1>
+
+                  <Routes>
+                      <Route exact path={"/login/"} component={Login}/>
+                      <Route exact path={"/signup/"} component={Signup}/>
+                      <Route path={"/"} render={() => <div>Home again</div>}/>
+                  </Routes>
+              </main>
+          </div>
+      );
 }
 
 export default App
+
+
+// async handleLogout() {
+//   try {
+//       const response = await axiosInstance.post('/blacklist/', {
+//           "refresh_token": localStorage.getItem("refresh_token")
+//       });
+//       localStorage.removeItem('access_token');
+//       localStorage.removeItem('refresh_token');
+//       axiosInstance.defaults.headers['Authorization'] = null;
+//       return response;
+//   }
+//   catch (e) {
+//       console.log(e);
+//   }
+// };

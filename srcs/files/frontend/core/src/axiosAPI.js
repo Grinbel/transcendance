@@ -27,7 +27,6 @@ axiosInstance.interceptors.response.use(
 
                   axiosInstance.defaults.headers['Authorization'] = "JWT " + response.data.access;
                   originalRequest.headers['Authorization'] = "JWT " + response.data.access;
-
                   return axiosInstance(originalRequest);
               })
               .catch(err => {
