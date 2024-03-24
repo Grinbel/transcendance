@@ -6,10 +6,11 @@
 # from
 # from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
-
+from datetime import timedelta
+from django.utils import timezone
+from django.core.mail import send_mail
 from rest_framework.views import APIView
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status,  permissions
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -17,50 +18,141 @@ from .serializers import MyTokenObtainPairSerializer
 from .serializers import UserSerializer
 from .permissions import UserPermission
 from .models import User
+from .helper import authenticate
+import random
+import os
+
  
 ##remember to check USER_ID_FIELD and USER_ID_CLAIM in jwt settings in case picking the email adress as the user id
 
 
-class Login(TokenObtainPairView):
-    permission_classes = [permissions.AllowAny]
-    serializer_class = MyTokenObtainPairSerializer
+# class Login(TokenObtainPairView):
+#     permission_classes = [permissions.AllowAny]
+#     serializer_class = MyTokenObtainPairSerializer
+
+#     def post(self, request, *args, **kwargs):
+#         print('request.data', request.data)
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         return Response(serializer.validated_data, status=status.HTTP_200_OK)
+
+def generate_random_digits(n=6):
+	return "".join(map(str, random.sample(range(0, 10), n)))
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+def login(request):
+	print('login function')
+	email = request.data.get('email')
+	username = request.data.get('username')
+	password = request.data.get('password')
+
+	print('request.data', request.data)
+	user = authenticate(request, username=username, password=password)
+	print('user', user)
+
+	if user is not None:
+		# User credentials are valid, proceed with code generation and email sending
+		user_obj = User.objects.get(id=user.id)
+		print('user_obj', user_obj)
+		
+		# Generate a 6-digit code and set the expiry time to 1 hour from now
+		verification_code = generate_random_digits(6)
+		print('verification_code', verification_code)
+		user_obj.otp = verification_code
+		user_obj.otp_expiry_time = timezone.now() + timedelta(hours=1)
+		print('user_obj.otp_expiry_time', user_obj.otp_expiry_time)
+		user_obj.save()
+		# Send the code via email (use Django's send_mail function)
+		print('distant email', user_obj.email)
+		print('os.environ.get(MAIL_USER): ', os.environ.get('MAIL_USER'))
+		send_mail(
+			'Verification Code',
+			f'Your verification code is: {user_obj.otp}',
+			os.environ.get('MAIL_USER'),
+			[user_obj.email],
+			fail_silently=False,
+		)
+		print('email sent')
+		return Response({'detail': 'Verification code sent successfully.'}, status=status.HTTP_200_OK)
+
+	return Response({'detail': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+def verify(request):
+	print('verify function')
+	username = request.data.get('username')
+	password = request.data.get('password')
+	received_otp = request.data.get('otp')
+
+	user_profile = User.objects.get(username=username)
+	print('user_profile', user_profile)
+		# Check if the verification code is valid and not expired
+	if (
+		user_profile is not None and
+		user_profile.otp == received_otp and
+		user_profile.otp_expiry_time is not None and
+		user_profile.otp_expiry_time > timezone.now()
+	):
+		# Verification successful, generate access and refresh tokens
+		# django_login(request, user)
+		# Implement your token generation logic here
+		data = {'username': user_profile.username, 'password': password}
+		token_serializer = MyTokenObtainPairSerializer(data=data)
+		print('token_serializer', token_serializer)
+		try:
+			if (token_serializer.is_valid(raise_exception=True)):
+				print('token_serializer.validated_data', token_serializer.validated_data)
+				# Reset verification otp_code and expiry time
+				user_profile.otp = ''
+				user_profile.otp_expiry_time = None
+				user_profile.save()
+				return Response(token_serializer.validated_data, status=status.HTTP_200_OK)
+		except Exception as e:
+			print('Exception', e)
+		# Use djangorestframework_simplejwt to generate tokens
+		# refresh = RefreshToken.for_user(user)
+		# access_token = str(refresh.access_token)
+	return Response({'detail': 'Invalid verification code or credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
+			
 
 class Signup(APIView):
-    permission_classes = [permissions.AllowAny]
+	permission_classes = [permissions.AllowAny]
 
-    def post(self, request, format='json'):
-        serializer_context = {
-            'request': request,
-        }
-        print('request.data', request.data)
-        serializer = UserSerializer(data=request.data, context=serializer_context)
-        if serializer.is_valid():
-            user = serializer.save()
-            if user:
-                json = serializer.data
-                return Response(json, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+	def post(self, request, format='json'):
+		serializer_context = {
+			'request': request,
+		}
+		print('request.data', request.data)
+		serializer = UserSerializer(data=request.data, context=serializer_context)
+		if serializer.is_valid():
+			user = serializer.save()
+			if user:
+				json = serializer.data
+				return Response(json, status=status.HTTP_201_CREATED)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+	
 
 class Logout(APIView):
-    permission_classes = [permissions.AllowAny]
+	permission_classes = [permissions.AllowAny]
 
-    def post(self, request, format='json'):
-        try:
-            refresh_token = request.data["refresh_token"]
-            token = RefreshToken(refresh_token) # create a RefreshToken instance from the refresh token obtained to access the Class methods as blacklist()
-            token.blacklist()
-            return Response(status=status.HTTP_205_RESET_CONTENT)
-        except Exception as e:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-    
+	def post(self, request, format='json'):
+		try:
+			refresh_token = request.data["refresh_token"]
+			token = RefreshToken(refresh_token) # create a RefreshToken instance from the refresh token obtained to access the Class methods as blacklist()
+			token.blacklist()
+			return Response(status=status.HTTP_205_RESET_CONTENT)
+		except Exception as e:
+			return Response(status=status.HTTP_400_BAD_REQUEST)
+	
 class UserList(APIView):
-    permission_classes = [UserPermission]
+	permission_classes = [UserPermission]
 
-    def get(self, request, format=None):
-        users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)
+	def get(self, request, format=None):
+		users = User.objects.all()
+		serializer = UserSerializer(users, many=True)
+		return Response(serializer.data)
 
 
 # import random
