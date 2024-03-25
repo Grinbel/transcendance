@@ -48,11 +48,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
 	'users',
 ]
 
 MIDDLEWARE = [
 	'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -60,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 REST_FRAMEWORK = {
@@ -142,6 +145,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
+# https://pypi.org/project/drf-simple-jwt-2fa/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -164,9 +168,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #security settings
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
+    'http://0.0.0.0:5173',
     'http://0.0.0.0:8000',
+    'http://localhost:5173'
     # 'http://your-production-url.com',
 ]
 CORS_ALLOW_METHODS = [
@@ -195,8 +201,8 @@ CSRF_COOKIE_SECURE = 'True'
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "ROTATE_REFRESH_TOKENS": False,
-    "BLACKLIST_AFTER_ROTATION": False,
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": False,
 
     "ALGORITHM": "HS256",
@@ -231,3 +237,22 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+
+# Email backend
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# The hostname of your SMTP server
+EMAIL_HOST = 'smtp.gmail.com'  # for example, if you're using Gmail's SMTP server
+
+# The port your SMTP server is listening on
+EMAIL_PORT = 587  # for example, if you're using Gmail's SMTP server
+
+# Whether to use a secure TLS connection when connecting to the SMTP server
+EMAIL_USE_TLS = True
+
+# The username to use when authenticating with the SMTP server
+EMAIL_HOST_USER = os.environ.get('MAIL_USER') # replace with your actual email
+
+# The password to use when authenticating with the SMTP server
+EMAIL_HOST_PASSWORD = os.environ.get('MAIL_PASS')  # replace with your actual email password
