@@ -12,7 +12,7 @@ class User(AbstractUser):
 	status = models.CharField(max_length=255, choices=STATUS_CHOICES, default='available')
 	otp = models.CharField(max_length=6, blank=True)
 	otp_expiry_time = models.DateTimeField(blank=True, null=True)
-	#is_authenticated = models.BooleanField(default=False)
+	two_factor = models.BooleanField(default=False)
 	avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
 	alias = models.CharField(max_length=255, null=True, blank=True)
 	tournament = models.ForeignKey('tournament.Tournament', on_delete=models.SET_NULL, null=True, blank=True)
