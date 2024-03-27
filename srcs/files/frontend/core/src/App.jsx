@@ -2,42 +2,36 @@ import { Routes, Route, Link, } from "react-router-dom";
 import './App.css'
 import Login from './login.jsx'
 import Signup from './signup.jsx'
-import  { axiosInstance } from "./axiosAPI.js";
+import Navbar from './Navbar.jsx'
+
+import Home from './Home';
+import Play from './Play.jsx';
+import Error404 from './Error404.jsx';
+import NavAbout from './NavAbout.jsx';
+import Tournament from './tournament.jsx';
+import About from './About.jsx';
+import Chat from './Chat.jsx';
 
 function App(){
-  async function handleLogout() {
-    try {
-        const response = await axiosInstance.post('/logout/', {
-            "refresh_token": localStorage.getItem("refresh_token")
-        });
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        axiosInstance.defaults.headers['Authorization'] = null;
-        return response;
-    }
-    catch (e) {
-        console.log(e);
-    }
-};
-      return (
-          <div className="site">
-              <nav>
-                  <Link className={"nav-link"} to={"/"}>Home</Link>
-                  <Link className={"nav-link"} to={"/login/"}>Login</Link>
-                  <Link className={"nav-link"} to={"/signup/"}>Signup</Link>
-                  <button onClick={handleLogout}>Logout</button>
-              </nav>
-              <main>
-                  <h1>Ahhh after 10,000 years I'm free. Time to conquer the Earth!</h1>
-
-                  <Routes>
-                      <Route path="/login/" element={<Login />} /> 
-                      <Route path="/signup/" element={<Signup />} /> 
-                      <Route path="/" element={<div>Home againnnnnnnnnnn</div>} />
-                  </Routes>
-              </main>
-          </div>
-      );
+	return (
+		<div className="site">
+			<Navbar />
+			
+			<main>
+				<Routes>
+					<Route path="/play" element={<Play />} />
+					<Route path="/login" element={<Login />} /> 
+					<Route path="/signup" element={<Signup />} />
+					<Route path="/tournament" element={<Tournament />} />
+					<Route path="/about" element={<About />} />
+					<Route exact path="/" element={<Home />} />
+					<Route path="/*" element={<Error404 />} />
+				</Routes>
+			</main>
+			<Chat />
+			<NavAbout />
+		</div>
+	);
 }
 
 export default App
