@@ -5,10 +5,11 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from .views import Signup, login, verify, Logout, UserList
+from .views import Signup, login, verify, Logout, UserList, get_2fa_preference
 
  
 urlpatterns = [
+    path('get_2fa_preference/', get_2fa_preference, name='user_2fa_preference'),
     path('signup/', Signup.as_view(), name="signup"),
 	path('list/', UserList.as_view(), name="users_list"),
     path("login/", login, name="login"),

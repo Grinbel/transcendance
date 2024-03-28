@@ -17,8 +17,6 @@ function Login() {
     };
 
 
-
-
     const handleLogin = async (event) => {
         event.preventDefault();
             try 
@@ -32,24 +30,17 @@ function Login() {
                 // localStorage.setItem('refresh_token', response.data.refresh);
                 if (response.data.detail === 'Verification code sent successfully.') 
                 {
-                    // If the server responds that a verification code has been sent,
-                    // move to the next step of the 2FA process
-                    setStep(2);
+                    if (response.data.two_factor)
+                        setStep(2);
                 }
             } catch (error) 
             {
-            // console.log('Main Error ', JSON.stringify(error));
                 if (error.response) {
-                    // la requête a été faite et le code de réponse du serveur n’est pas dans
-                    // la plage 2xx
                     console.log('error RESPONSE')
                     console.log(error.response.data);
                     console.log(error.response.status);
                     console.log(error.response.headers);
                 } else if (error.request) {
-                    // la requête a été faite mais aucune réponse n’a été reçue
-                    // `error.request` est une instance de XMLHttpRequest dans le navigateur
-                    // et une instance de http.ClientRequest avec node.js
                     console.log('error REQUEST', error.request);
                 } else {
                     // quelque chose s’est passé lors de la construction de la requête et cela

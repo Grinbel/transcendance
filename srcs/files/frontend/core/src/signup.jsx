@@ -12,12 +12,14 @@ function Signup() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+		console.log("formData:", formData);
         try {
             const response = await axiosInstance.post("/signup/", formData);
             // Optionally handle successful signup, such as redirecting to another page
             console.log("Signup successful:", response.data);
         } catch (error) {
             // Handle signup error
+			console.log("Error sign-in:", error.response.data);
             setError(error.response.data);
         }
     };
