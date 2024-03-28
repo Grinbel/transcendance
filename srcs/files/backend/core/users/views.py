@@ -44,7 +44,7 @@ def generate_random_digits(n=6):
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
-def user_2fa_preference(request):
+def get_2fa_preference(request):
 	user = request.user
 	two_factor_enabled = user.two_factor_enabled
 	print('found 2FA status:', two_factor_enabled)
