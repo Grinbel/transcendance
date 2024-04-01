@@ -4,6 +4,7 @@ import Login from './login.jsx'
 import Signup from './signup.jsx'
 import Navbar from './Navbar.jsx'
 
+import User from './User.jsx'
 import Home from './Home';
 import Play from './Play.jsx';
 import Error404 from './Error404.jsx';
@@ -16,7 +17,6 @@ function App(){
 	return (
 		<div className="site">
 			<Navbar />
-			
 			<main>
 				<Routes>
 					<Route path="/play" element={<Play />} />
@@ -24,6 +24,7 @@ function App(){
 					<Route path="/signup" element={<Signup />} />
 					<Route path="/tournament" element={<Tournament />} />
 					<Route path="/about" element={<About />} />
+					<Route path="/user" element={<User />} />
 					<Route exact path="/" element={<Home />} />
 					<Route path="/*" element={<Error404 />} />
 				</Routes>
