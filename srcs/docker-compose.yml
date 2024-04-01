@@ -4,7 +4,7 @@ services:
   # ddebian:
     # image: debian:buster-slim
     # volumes:
-    #   - /root/Everything-42/transcendance/srcs/files/database:/datass
+    #   - ./files/database:/datass
     # stdin_open: true
     # tty: true
     # # command: "/bin/bash && rm -rf datass"
@@ -21,13 +21,13 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - /root/Everything-42/transcendance/srcs/files/database:/var/lib/postgresql/data
+      - ./files/database:/var/lib/postgresql/data
     networks:
       - transcend-network
 
   backend:
     container_name: django
-    build: /root/Everything-42/transcendance/srcs/files/backend/
+    build: ./files/backend/
     image: django
     ports:
       - "8000:8000"
@@ -43,7 +43,7 @@ services:
 
   frontend:
     container_name: react
-    build: /root/Everything-42/transcendance/srcs/files/frontend/
+    build: ./files/frontend/
     image: react
     ports:
       - "5173:5173"
@@ -61,13 +61,13 @@ volumes:
       driver: local
       driver_opts:
          type: none
-         device: /root/Everything-42/transcendance/srcs/files/backend/core/
+         device: ./files/backend/core/
          o: bind
   front:
     driver: local
     driver_opts:
       type: none
-      device: /root/Everything-42/transcendance/srcs/files/frontend/core/
+      device: ./files/frontend/core/
       o: bind
 networks:
       transcend-network:
