@@ -3,6 +3,7 @@ import  { axiosInstance } from "./axiosAPI.js";
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
+    console.log('Login:');
     const [step, setStep] = useState(1);
     const [code, setCode] = useState('');
     const navigate = useNavigate();

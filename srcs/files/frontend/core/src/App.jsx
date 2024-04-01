@@ -1,4 +1,5 @@
 import { Routes, Route, Link, } from "react-router-dom";
+import { useState } from 'react';
 import './App.css'
 import Login from './login.jsx'
 import Signup from './signup.jsx'
@@ -12,10 +13,17 @@ import Tournament from './tournament.jsx';
 import About from './About.jsx';
 import Chat from './Chat.jsx';
 
+
 function App(){
+
+    const [showLoginForm, setShowLoginForm] = useState(false);
+
+    const handleLoginClick = () => {
+      setShowLoginForm(true);
+    };
 	return (
 		<div className="site">
-			<Navbar />
+			<Navbar OnLoginClick={handleLoginClick}/>
 			
 			<main>
 				<Routes>
@@ -28,6 +36,8 @@ function App(){
 					<Route path="/*" element={<Error404 />} />
 				</Routes>
 			</main>
+
+            {showLoginForm && <Login />}
 			<Chat />
 			<NavAbout />
 		</div>
