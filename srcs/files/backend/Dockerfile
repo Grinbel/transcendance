@@ -7,6 +7,7 @@ RUN sh -c "python3 -m venv /venv && . /venv/bin/activate"
 
 RUN apt-get update && apt-get install -y netcat
 RUN    pip install --upgrade pip
+RUN pip install channels
 
 # Copy and install the requirements.txt file into the working directory
 COPY requirements.txt .

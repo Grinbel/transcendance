@@ -39,6 +39,7 @@ DEBUG = True
 INSTALLED_APPS = [
     'tournament',
     'game',
+    'channels',
     # 'chat',
 	'corsheaders',
     'django.contrib.admin',
@@ -57,6 +58,7 @@ MIDDLEWARE = [
 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'channels.middleware.AuthMiddlewareStack',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
