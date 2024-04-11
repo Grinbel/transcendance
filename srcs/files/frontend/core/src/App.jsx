@@ -1,17 +1,16 @@
 import { Routes, Route, Link, } from "react-router-dom";
 import { useState } from 'react';
 import './App.css'
-import Login from './login.jsx'
-import Signup from './signup.jsx'
-import Navbar from './Navbar.jsx'
+import Login from './login/login.jsx'
+import Signup from './login/signup.jsx'
+import MyNavbar from './navbar/myNavbar.jsx'
 
-import Home from './Home';
-import Play from './Play.jsx';
-import Error404 from './Error404.jsx';
-import NavAbout from './NavAbout.jsx';
-import Tournament from './tournament.jsx';
-import About from './About.jsx';
-import Chat from './Chat.jsx';
+import Home from './main/Home.jsx';
+import Play from './main/Play.jsx';
+import Error404 from './main/Error404.jsx';
+import Tournament from './main/tournament.jsx';
+import About from './main/About.jsx';
+import Chat from './main/Chat.jsx';
 
 
 function App(){
@@ -19,11 +18,12 @@ function App(){
     const [showLoginForm, setShowLoginForm] = useState(false);
 
     const handleLoginClick = () => {
+		console.log('App: login clicked in navbar');
       setShowLoginForm(true);
     };
 	return (
 		<div className="site">
-			<Navbar OnLoginClick={handleLoginClick}/>
+			<MyNavbar onLoginClick={handleLoginClick}/>
 			
 			<main>
 				<Routes>
@@ -39,7 +39,6 @@ function App(){
 
             {showLoginForm && <Login />}
 			<Chat />
-			<NavAbout />
 		</div>
 	);
 }

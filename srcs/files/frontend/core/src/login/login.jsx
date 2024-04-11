@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import  { axiosInstance } from "./axiosAPI.js";
+import  { axiosInstance } from "../axiosAPI.js";
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
