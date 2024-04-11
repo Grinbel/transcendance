@@ -213,9 +213,6 @@ function Game() {
                 scene.add(powerup_render1);
                 power_up_on_screen = 1;
                 
-                //TODO : ajouter un powerup
-                //TODO : le faire apparaitre 
-                // TODO :en verifiant le point de spawn et pour aider le joueur domine
             }
             ball_x += ball_x_speed;
             ball_y += ball_y_speed;
@@ -225,7 +222,7 @@ function Game() {
                     power_up_on_screen = 0;
                     ball_is_powerup = 1;
                     ball_render.material.color.setHex(0xffffff);
-                    //TODO : appliquer le powerup
+                    
                 }
             
             }
