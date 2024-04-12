@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,  useNavigate} from 'react-router-dom';
 
 import './myNavbar.css';
 
@@ -15,13 +15,68 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+
+
+
+
+// And if we want to pass the data along with navigation
+
+// Sending component->
+
+// import {useNavigate} from 'react-router-dom';
+
+// ...
+
+// const navigate = useNavigate();
+
+// const toComponentB=()=>{
+//    navigate('/componentB', {state: {id:1, name:'kunal'}});
+// }
+
+// Receiving component->
+
+// import {useLocation} from 'react-router-dom';
+
+// ...
+
+// const location = useLocation();
+
+// return (
+//           <div>{location.state.name}</div>
+//        )
+
+
   
 // Composant pour la barre de navigation lorsqu'un utilisateur est connecté
 const NavLoggedIn = ({ handleLogout }) => {
 	return (
-	  <nav>
-	  </nav>
-	);
+		<Navbar collapseOnSelect expand="lg" className="bg-body-tertiary">
+		  <Container>
+
+			<Navbar.Brand href="#home" className='logoName'>
+				<img
+					src="../src/assets/pong.png" // Replace with the path to your logo
+					width="50"
+					height="50"
+					className="d-inline-block align-top me-2"
+					alt="Pong"
+				/>
+				Pong
+			</Navbar.Brand>
+
+			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
+			<Navbar.Collapse id="responsive-navbar-nav">
+
+			  <Nav  className="ms-auto">
+				<Nav.Link as={Link} className="navCustom playButton me-3" to="/deets">play</Nav.Link>
+				<Nav.Link as={Link} className='navCustom me-3' to="/profile">Profile</Nav.Link>
+				<Button variant="secondary" onClick={handleLogout}>Logout</Button>
+			  </Nav>
+
+			</Navbar.Collapse>
+		  </Container>
+		</Navbar>
+	  );
   };
   
   // Composant pour la barre de navigation lorsqu'aucun utilisateur n'est connecté
@@ -61,8 +116,6 @@ const NavLoggedIn = ({ handleLogout }) => {
 	// Fonction pour gérer la connexion de l'utilisateur
 	const handleLogin = () => {
 		onLoginClick();
-	  // Logique de connexion (par exemple, appel d'une API, vérification des identifiants, etc.)
-	  // Ici, nous simulons juste la connexion en modifiant l'état
 	  setIsLoggedIn(true);
 	};
   
@@ -83,6 +136,8 @@ const NavLoggedIn = ({ handleLogout }) => {
 	  // Logique de déconnexion (par exemple, suppression des jetons d'authentification, etc.)
 	  // Ici, nous simulons juste la déconnexion en modifiant l'état
 		setIsLoggedIn(false);
+		const navigate = useNavigate();
+		navigate('/');
 	};
   
 	return (
