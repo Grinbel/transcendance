@@ -1,8 +1,8 @@
-.navbar {
+/* .navbar {
 	position: fixed;
 	top: 0;
 	width: 94%;
-	margin-top:3%;
+	margin-top:0%;
 	margin-left: 3%;
 
 }
@@ -25,6 +25,46 @@
 }
 
 .navbar a.navbar-brand {
-	font: italic small-caps bold 20px/2 cursive;
+	font: small-caps bold 20px/2;
 	font-size: 30px;
-}
+} */
+
+.navCustom {
+	transition-duration: 0.2s;
+	margin-left: 0px;
+	margin-top: 5px;
+	padding: 10px 5px;
+	font-size: 16px; /* Adjust as needed */
+	font-weight: regular;
+	min-width: 20px;
+	border-radius: 0;
+	color : #251e1e;
+  }
+  
+  .navCustom:hover {
+	background-color: #f2c821;
+	padding: 10px 40px;
+	font-weight: bold;
+	text-transform: uppercase;
+	color: white;
+  }
+
+  .playButton:hover {
+	/* Add your styles here */
+	background-color: rgb(255, 0, 102);
+
+	font-weight: bold;
+  }
+
+  .logoName {
+	font-size:20px;
+	font-weight: bold;
+
+	font-size: 30px;
+  }
+
+  .navbar:hover {
+	background-color: #f2c821; 
+	text-decoration-color: aqua;
+
+  }

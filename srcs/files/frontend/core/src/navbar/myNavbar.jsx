@@ -1,12 +1,20 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+
+import './myNavbar.css';
+
 import  { axiosInstance } from "../axiosAPI.js";
 import Login from '../login/login.jsx';
 
 import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
   
 // Composant pour la barre de navigation lorsqu'un utilisateur est connecté
 const NavLoggedIn = ({ handleLogout }) => {
@@ -18,26 +26,18 @@ const NavLoggedIn = ({ handleLogout }) => {
   
   // Composant pour la barre de navigation lorsqu'aucun utilisateur n'est connecté
   const NavLoggedOut = ({ handleLogin }) => {
-	return (
-		<Navbar expand="lg" className="bg-body-tertiary">
+	  return (
+		<Navbar collapseOnSelect expand="lg" className="bg-body-tertiary">
 		  <Container>
-			<Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
-			<Navbar.Toggle aria-controls="basic-navbar-nav" />
-			<Navbar.Collapse id="basic-navbar-nav">
-			  <Nav className="me-auto">
-				<Nav.Link href="#home">Home</Nav.Link>
-				<Nav.Link href="#link">Link</Nav.Link>
-				<NavDropdown title="Dropdown" id="basic-nav-dropdown">
-				  <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-				  <NavDropdown.Item href="#action/3.2">
-					Another action
-				  </NavDropdown.Item>
-				  <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-				  <NavDropdown.Divider />
-				  <NavDropdown.Item href="#action/3.4">
-					Separated link
-				  </NavDropdown.Item>
-				</NavDropdown>
+			<Navbar.Brand href="#home" className='logoName'>Pong</Navbar.Brand>
+			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
+			<Navbar.Collapse id="responsive-navbar-nav">
+			  <Nav  className="ms-auto">
+				<Nav.Link className='navCustom me-3' href="#features" >Features</Nav.Link>
+				<Nav.Link className="navCustom me-3" href="#deets">sign up</Nav.Link>
+				<Nav.Link className="navCustom me-3" href="#deets">login</Nav.Link>
+				<Nav.Link className="navCustom playButton me-3" href="#deets">play</Nav.Link>
+
 			  </Nav>
 			</Navbar.Collapse>
 		  </Container>
