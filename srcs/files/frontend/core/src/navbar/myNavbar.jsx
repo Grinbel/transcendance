@@ -29,7 +29,16 @@ const NavLoggedIn = ({ handleLogout }) => {
 	  return (
 		<Navbar collapseOnSelect expand="lg" className="bg-body-tertiary">
 		  <Container>
-			<Navbar.Brand href="#home" className='logoName'>Pong</Navbar.Brand>
+			<Navbar.Brand href="#home" className='logoName'>
+				<img
+					src="../src/assets/pong.png" // Replace with the path to your logo
+					width="50"
+					height="50"
+					className="d-inline-block align-top me-2"
+					alt="Pong"
+				/>
+				Pong
+			</Navbar.Brand>
 			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
 			<Navbar.Collapse id="responsive-navbar-nav">
 			  <Nav  className="ms-auto">

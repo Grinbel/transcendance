@@ -57,12 +57,16 @@
   }
 
   .logoName {
-	font-size:20px;
 	font-weight: bold;
-
+	outline: none;
 	font-size: 30px;
   }
 
+  .logoName:hover {
+	font-weight: bold;
+	text-shadow: none;
+	font-size: 30px;
+  }
   .navbar:hover {
 	background-color: #f2c821; 
 	text-decoration-color: aqua;
