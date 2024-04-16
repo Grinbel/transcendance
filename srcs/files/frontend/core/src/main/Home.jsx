@@ -7,9 +7,15 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card'; 
 
+import { useContext, useState } from "react";
+import { userContext } from "../contexts/userContext.jsx";
+
 import './Home.css';
 
 const Home = () => {
+
+	const userinfo = useContext(userContext);
+	console.log('Home: userinfo', userinfo);
 
 	return (
 		<Container fluid className="homeContainer">
@@ -23,6 +29,5 @@ const Home = () => {
 			</Row>
 		</Container>
 	);
-	
 }
 export default Home;

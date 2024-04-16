@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link,  useNavigate} from 'react-router-dom';
 
 import './myNavbar.css';
@@ -15,6 +15,8 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+
+import { userContext } from "../contexts/userContext.jsx";
 
 
 
@@ -48,7 +50,29 @@ import Button from 'react-bootstrap/Button';
 
   
 // Composant pour la barre de navigation lorsqu'un utilisateur est connecté
-const NavLoggedIn = ({ handleLogout }) => {
+const NavLoggedIn = () => {
+	const navigate = useNavigate();
+	const userinfo = useContext(userContext);
+	const handleLogout = async () => {
+		console.log('NavLoggedIn: logout');
+		try {
+			const response = await axiosInstance.post('/logout/', {
+				"refresh_token": localStorage.getItem("refresh_token")
+			});
+			localStorage.removeItem('access_token');
+			localStorage.removeItem('refresh_token');
+			axiosInstance.defaults.headers['Authorization'] = null;
+		}
+		catch (e) {
+			console.log(e);
+		}
+	  // Logique de déconnexion (par exemple, suppression des jetons d'authentification, etc.)
+	  // Ici, nous simulons juste la déconnexion en modifiant l'état
+		userinfo.setUser({username:"", isLogged:false});
+		console.log('NavLoggedIn: logout successful frontend');
+		navigate('/');
+	};
+
 	return (
 		<Navbar collapseOnSelect expand="lg" className="bg-body-tertiary">
 		  <Container>
@@ -68,8 +92,8 @@ const NavLoggedIn = ({ handleLogout }) => {
 			<Navbar.Collapse id="responsive-navbar-nav">
 
 			  <Nav  className="ms-auto">
-				<Nav.Link as={Link} className="navCustom playButton me-3" to="/deets">play</Nav.Link>
-				<Nav.Link as={Link} className='navCustom me-3' to="/profile">Profile</Nav.Link>
+				<Nav.Link as='Link' className="navCustom playButton me-3" to="/deets">play</Nav.Link>
+				<Nav.Link as='Link' className='navCustom me-3' to="/profile">Profile</Nav.Link>
 				<Button variant="secondary" onClick={handleLogout}>Logout</Button>
 			  </Nav>
 
@@ -79,12 +103,20 @@ const NavLoggedIn = ({ handleLogout }) => {
 	  );
   };
   
+
+
+
+
   // Composant pour la barre de navigation lorsqu'aucun utilisateur n'est connecté
-  const NavLoggedOut = ({ handleLogin }) => {
+  const NavLoggedOut = () => {
+
+	const navigate = useNavigate();
+	const userinfo = useContext(userContext);
+
 	  return (
 		<Navbar collapseOnSelect expand="lg" className="bg-body-tertiary">
 		  <Container>
-			<Navbar.Brand href="#home" className='logoName'>
+			<Navbar.Brand href="/" className='logoName'>
 				<img
 					src="../src/assets/pong.png" // Replace with the path to your logo
 					width="50"
@@ -97,11 +129,9 @@ const NavLoggedIn = ({ handleLogout }) => {
 			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
 			<Navbar.Collapse id="responsive-navbar-nav">
 			  <Nav  className="ms-auto">
-				<Nav.Link className='navCustom me-3' href="#features" >Features</Nav.Link>
-				<Nav.Link className="navCustom me-3" href="#deets">sign up</Nav.Link>
-				<Nav.Link className="navCustom me-3" href="#deets">login</Nav.Link>
-				<Nav.Link className="navCustom playButton me-3" href="#deets">play</Nav.Link>
-
+				<Nav.Link className="navCustom me-3" href="/signup">sign up</Nav.Link>
+				<Nav.Link className="navCustom me-3" href='/login' >login</Nav.Link>
+				<Nav.Link className="navCustom playButton me-3" href="/play">play</Nav.Link>
 			  </Nav>
 			</Navbar.Collapse>
 		  </Container>
@@ -110,42 +140,23 @@ const NavLoggedIn = ({ handleLogout }) => {
   };
   
   // Composant principal
-  const MyNavbar = ({onLoginClick}) => {
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
-  
+  const MyNavbar = () => {
+	const navigate = useNavigate();
+	const userinfo = useContext(userContext);
+
+	console.log('MyNavbar: userinfo', userinfo);
+	
 	// Fonction pour gérer la connexion de l'utilisateur
-	const handleLogin = () => {
-		onLoginClick();
-	  setIsLoggedIn(true);
-	};
   
 	// Fonction pour gérer la déconnexion de l'utilisateur
-	const handleLogout = async () => {
-		try {
-			const response = await axiosInstance.post('/logout/', {
-				"refresh_token": localStorage.getItem("refresh_token")
-			});
-			localStorage.removeItem('access_token');
-			localStorage.removeItem('refresh_token');
-			axiosInstance.defaults.headers['Authorization'] = null;
-			return response;
-		}
-		catch (e) {
-			console.log(e);
-		}
-	  // Logique de déconnexion (par exemple, suppression des jetons d'authentification, etc.)
-	  // Ici, nous simulons juste la déconnexion en modifiant l'état
-		setIsLoggedIn(false);
-		const navigate = useNavigate();
-		navigate('/');
-	};
+
   
 	return (
 	  <div>
-		{isLoggedIn ? (
-		  <NavLoggedIn handleLogout={handleLogout} />
+		{userinfo.user.isLogged ? (
+		  <NavLoggedIn/>
 		) : (
-		  <NavLoggedOut handleLogin={handleLogin} />
+		  <NavLoggedOut/>
 		)}
 	  </div>
 	);

@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import  { axiosInstance } from "../axiosAPI.js";
 import { useNavigate } from 'react-router-dom';
+import { userContext } from "../contexts/userContext.jsx";
+
+// import { userContext } from "../contexts/userContext.jsx";
 
 function Login() {
     console.log('Login:');
@@ -9,6 +12,9 @@ function Login() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ username: "", password: "" });
     const [error, setError] = useState(null);
+    const userInfo = useContext(userContext);
+
+	console.log('Login: user', userInfo.user.username);
     
 
 
@@ -19,7 +25,9 @@ function Login() {
 
 
     const handleLogin = async (event) => {
+
         event.preventDefault();
+        console.log('Login: handleLogin formData', formData);
             try 
             {
                 const response = await axiosInstance.post('/login/', {
@@ -29,10 +37,23 @@ function Login() {
                 // axiosInstance.defaults.headers['Authorization'] = "JWT " + response.data.access;
                 // localStorage.setItem('access_token', response.data.access);
                 // localStorage.setItem('refresh_token', response.data.refresh);
-                if (response.data.detail === 'Verification code sent successfully.') 
+                console.log('response.status', response.status);
+                if (response.status === 200) 
                 {
                     if (response.data.two_factor)
+                    {
+                        console.log('Login successful 2FA: i go to code page', response);  //SETUP REDIRECT TO HOME PAGE
                         setStep(2);
+                    }
+                    else
+                    {
+                        console.log('Login successful no 2FA: i go to home page', response);  //SETUP REDIRECT TO HOME PAGE
+                        axiosInstance.defaults.headers['Authorization'] = "JWT " + response.data.access;
+                        localStorage.setItem('access_token', response.data.access);
+                        localStorage.setItem('refresh_token', response.data.refresh);
+                        userInfo.setUser({username:formData.username, isLogged:true});  // passing  info to userContext
+                        navigate('/');
+                    }
                 }
             } catch (error) 
             {
@@ -66,6 +87,7 @@ function Login() {
             axiosInstance.defaults.headers['Authorization'] = "JWT " + response.data.access;
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
+            userInfo.setUser(formData);  // passing  info to userContext
             setStep(1);
             setFormData({ username: "", password: "" });
             setCode('');
@@ -100,6 +122,7 @@ function Login() {
 
     return (
         <div>
+
             {step === 1 ? (
                 <div>
                 <h2>Login</h2>

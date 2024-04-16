@@ -1,5 +1,7 @@
 import { Routes, Route, Link, } from "react-router-dom";
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useState , createContext, useContext} from 'react';
+
 import './App.css'
 import Login from './login/login.jsx'
 import Signup from './login/signup.jsx'
@@ -12,34 +14,39 @@ import Tournament from './main/tournament.jsx';
 import About from './main/About.jsx';
 import Chat from './main/Chat.jsx';
 
+import { UserProvider, userContext } from "./contexts/userContext.jsx";
+
+const  appContext = createContext(null);
 
 function App(){
 
-    const [showLoginForm, setShowLoginForm] = useState(false);
 
-    const handleLoginClick = () => {
-		console.log('App: login clicked in navbar');
-      setShowLoginForm(true);
-    };
+    // const handleLoginClick = () => {
+	// 	console.log('App: login clicked in navbar');
+
+    //   setShowLoginForm(true);
+    // };
+
 	return (
-		<div className="site">
-			<MyNavbar onLoginClick={handleLoginClick}/>
-			
-			<main>
-				<Routes>
-					<Route path="/play" element={<Play />} />
-					<Route path="/login" element={<Login />} /> 
-					<Route path="/signup" element={<Signup />} />
-					<Route path="/tournament" element={<Tournament />} />
-					<Route path="/about" element={<About />} />
-					<Route exact path="/" element={<Home />} />
-					<Route path="/*" element={<Error404 />} />
-				</Routes>
-			</main>
-
-            {showLoginForm && <Login />}
-			<Chat />
-		</div>
+		<UserProvider>
+			<div className="site">
+				<MyNavbar/>
+				
+				<main>
+					<Routes>
+						<Route path="/play" element={<Play />} />
+						<Route path="/login" element={<Login />} /> 
+						<Route path="/signup" element={<Signup />} />
+						<Route path="/tournament" element={<Tournament />} />
+						<Route path="/about" element={<About />} />
+						<Route exact path="/" element={<Home />} />
+						<Route path="/*" element={<Error404 />} />
+					</Routes>
+				</main>
+				{/* {showLoginForm && <Login />} */}
+				<Chat />
+			</div>
+		</UserProvider>
 	);
 }
 
