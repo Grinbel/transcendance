@@ -3,6 +3,8 @@ import  { axiosInstance } from "../axiosAPI.js";
 import { useNavigate } from 'react-router-dom';
 import { userContext } from "../contexts/userContext.jsx";
 
+import {LoginForm, VerifyForm} from '../forms/forms.jsx';
+
 // import { userContext } from "../contexts/userContext.jsx";
 
 function Login() {
@@ -122,35 +124,37 @@ function Login() {
 
     return (
         <div>
-
             {step === 1 ? (
                 <div>
-                <h2>Login</h2>
-                { error && <div style={{ color: 'red' }}>{error}</div>}
-                <form onSubmit={handleLogin}>
-                        <div>
-                        <label htmlFor="username">Username:</label>
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            value={formData.username}
-                            onChange={handleChange}
-                        />
-                        </div>
-                        <div>
-                        <label htmlFor="password">Password:</label>
-                        <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        />
-                        </div>
-                        <button type="submit">Login</button>
+                    <h2>Login</h2>
+                    { error && <div style={{ color: 'red' }}>{error}</div>}
+                        <form onSubmit={handleLogin}>
+                            <div>
+                                <label htmlFor="username">Username:</label>
+                                <input
+                                    type="text"
+                                    id="username"
+                                    name="username"
+                                    value={formData.username}
+                                    onChange={handleChange}
+                                />
+                                </div>
+                                <div>
+                                <label htmlFor="password">Password:</label>
+                                <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                />
+                            </div>
+                            <button type="submit">Login</button>
                         </form>
-                        </div>
+                        <br />
+                        <LoginForm />
+                </div>
+
                 ) : (
                     <div>
                         <h2>Enter the code</h2>
