@@ -1,5 +1,35 @@
 import React from 'react';
+import  { axiosInstance } from "./axiosAPI.js";
 
+/*const handleChat = async (event) => {
+	event.preventDefault();
+	try {
+		const response = await axiosInstance.post('/chat/', {
+			// username: formData.username,
+			message: formData.message,
+			// date: formData.date
+		});
+		
+		//send packet to server
+		
+
+	} catch (error) {
+		if (error.response) {
+			console.log('error RESPONSE')
+			console.log(error.response.data);
+			console.log(error.response.status);
+			console.log(error.response.headers);
+		} else if (error.request) {
+			console.log('error REQUEST', error.request);
+		} else {
+			// quelque chose s’est passé lors de la construction de la requête et cela
+			// a provoqué une erreur
+			console.log('error OBSCURE', error.request);
+		}
+		setError(error.message);
+		throw (error);
+	}
+}
 class Chat extends React.Component {
 	lastMessageRef = React.createRef();
 	state = {
@@ -34,7 +64,7 @@ class Chat extends React.Component {
 			currentInput: ''
 		}));
 	}
-	
+
 	handleKeyPress = (event) => {
 		if (event.key === 'Enter') {
 			this.handleSendClick();
@@ -85,6 +115,59 @@ class Chat extends React.Component {
 			
 		);
 	}
+}*/
+
+function Chat(){
+	const [formData, setFormData] = React.useState({
+		message: '',
+	});
+	const [error, setError] = React.useState(null);
+
+	const handleChat = async (event) => {
+		console.log('handleChat');
+		console.log('formData', formData);
+		event.preventDefault();
+		try {
+			const response = await axiosInstance.post('/chat/', {
+				message: formData.message,
+			});
+			console.log(response);
+		} catch (error) {
+			if (error.response) {
+				console.log('error RESPONSE')
+				console.log(error.response.data);
+				console.log(error.response.status);
+				console.log(error.response.headers);
+			} else if (error.request) {
+				console.log('error REQUEST', error.request);
+			} else {
+				console.log('error OBSCURE', error.request);
+			}
+			setError(error.message);
+			throw (error);
+		}
+	}
+	
+	return (
+		<div>
+			<h2>Chat</h2>
+			
+			<form onSubmit={handleChat}>
+				<div>
+					<label htmlFor="message">Message:</label>
+					<input
+						type="text"
+						id="message"
+						name="message"
+						value={formData.message}
+						onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+					/>
+				</div>
+			
+				<button type="submit">Send</button>
+			</form>
+		</div>
+	);
 }
 
 export default Chat;
