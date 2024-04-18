@@ -94,7 +94,7 @@ const NavLoggedIn = () => {
 			  <Nav  className="ms-auto">
 				<Nav.Link as='Link' className="navCustom playButton me-3" to="/deets">play</Nav.Link>
 				<Nav.Link as='Link' className='navCustom me-3' to="/profile">Profile</Nav.Link>
-				<Button variant="secondary" onClick={handleLogout}>Logout</Button>
+				<Button className="buttonCustom" onClick={handleLogout}>Logout</Button>
 			  </Nav>
 
 			</Navbar.Collapse>
@@ -117,18 +117,18 @@ const NavLoggedIn = () => {
 		<Navbar collapseOnSelect expand="lg" className="bg-body-tertiary">
 		  <Container>
 			<Navbar.Brand href="/" className='logoName'>
-				<img
-					src="../src/assets/pong.png" // Replace with the path to your logo
+				{/* <img
+					// src="../src/assets/pong.png" // Replace with the path to your logo
 					width="50"
 					height="50"
 					className="d-inline-block align-top me-2"
-					alt="Pong"
-				/>
+					// alt="Pong"
+				/> */}
 				Pong
 			</Navbar.Brand>
 			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
 			<Navbar.Collapse id="responsive-navbar-nav">
-			  <Nav  className="ms-auto">
+			  <Nav  className="ms-auto navbarCustom">
 				<Nav.Link className="navCustom me-3" href="/signup">sign up</Nav.Link>
 				<Nav.Link className="navCustom me-3" href='/login' >login</Nav.Link>
 				<Nav.Link className="navCustom playButton me-3" href="/play">play</Nav.Link>

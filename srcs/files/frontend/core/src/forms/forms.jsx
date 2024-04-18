@@ -36,7 +36,7 @@ function SignupForm() {
 							offset: 3,
 						}}
 					>
-						<Form noValidate validated={validated} onSubmit={submitFn}>
+						<Form className="formCustom" noValidate validated={validated} onSubmit={submitFn}>
 							<Form.Group controlId="username">
 								<Form.Label>Username</Form.Label>
 								<Form.Control
@@ -208,7 +208,8 @@ function SignupForm() {
 								</Form.Control.Feedback>
 							</Form.Group>
 						
-							<Button type="submit" className="btn mx-auto d-block btn-lg"> Gooo ! </Button>
+							<Button type='submit' role="button" className="buttonCustom"> Login </Button>
+							{/* <Button type="" className="buttonTest"> Gooo ! </Button> */}
 						</Form>
 					</Col>
 				</Row>
