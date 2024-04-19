@@ -1,4 +1,5 @@
-import { useState, useContext } from 'react';
+import React, { useState, useContext, forwardRef } from 'react';
+
 import { Link,  useNavigate} from 'react-router-dom';
 
 import './myNavbar.css';
@@ -15,6 +16,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Image from 'react-bootstrap/Image';
 
 import { userContext } from "../contexts/userContext.jsx";
 
@@ -46,13 +48,25 @@ import { userContext } from "../contexts/userContext.jsx";
 // return (
 //           <div>{location.state.name}</div>
 //        )
-
-
   
+
+
 // Composant pour la barre de navigation lorsqu'un utilisateur est connecté
 const NavLoggedIn = () => {
 	const navigate = useNavigate();
 	const userinfo = useContext(userContext);
+	const avatar = userinfo.user.avatar ? userinfo.user.avatar : '../../public/yoshi.jpg';
+	console.log('avatar', avatar);
+
+	const UserMenu = (
+		<Image
+		  src={avatar}
+		  alt="UserName profile image"
+		  roundedCircle
+		  style={{ width: '40px' }}
+		/>
+	)
+
 	const handleLogout = async () => {
 		console.log('NavLoggedIn: logout');
 		try {
@@ -74,28 +88,20 @@ const NavLoggedIn = () => {
 	};
 
 	return (
-		<Navbar collapseOnSelect expand="lg" className="bg-body-tertiary">
+		<Navbar collapseOnSelect expand="sm" className="bg-body-tertiary">
 		  <Container>
 
 			<Navbar.Brand href="#home" className='logoName'>
-				<img
-					src="../src/assets/pong.png" // Replace with the path to your logo
-					width="50"
-					height="50"
-					className="d-inline-block align-top me-2"
-					alt="Pong"
-				/>
 				Pong
 			</Navbar.Brand>
-
-			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
 			<Navbar.Collapse id="responsive-navbar-nav">
-
-			  <Nav  className="ms-auto">
-				<Nav.Link as='Link' className="navCustom playButton me-3" to="/deets">play</Nav.Link>
-				<Nav.Link as='Link' className='navCustom me-3' to="/profile">Profile</Nav.Link>
-				<Button className="buttonCustom" onClick={handleLogout}>Logout</Button>
-			  </Nav>
+			<Nav  className="ms-auto">
+				<NavDropdown className='dropCustom' id="nav-dropdown-dark-example" title={UserMenu}>
+					<NavDropdown.Item href="/profile">profile</NavDropdown.Item>
+					<NavDropdown.Divider />
+					<NavDropdown.Item onClick={handleLogout}>logout</NavDropdown.Item>
+            	</NavDropdown>
+			</Nav>
 
 			</Navbar.Collapse>
 		  </Container>

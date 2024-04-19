@@ -142,9 +142,6 @@ function SignupForm() {
 		const [form_Data, set_Form_Data] = useState({
 			user: "",
 			pass: "",
-			confimPass: "",
-			email: "",
-			phoneNo: "",
 		});
 		const submitFn = (event) => {
 			const form = event.currentTarget;
@@ -153,6 +150,7 @@ function SignupForm() {
 				event.stopPropagation();
 			}
 			set_Validated(true);
+			
 		};
 		const chngFn = (event) => {
 			const { name, value } = event.target;

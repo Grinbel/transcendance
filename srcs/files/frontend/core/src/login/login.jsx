@@ -3,7 +3,8 @@ import  { axiosInstance } from "../axiosAPI.js";
 import { useNavigate } from 'react-router-dom';
 import { userContext } from "../contexts/userContext.jsx";
 
-import {LoginForm, VerifyForm} from '../forms/forms.jsx';
+import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import '../forms/forms.css'
 
 // import { userContext } from "../contexts/userContext.jsx";
 
@@ -11,9 +12,16 @@ function Login() {
     console.log('Login:');
     const [step, setStep] = useState(1);
     const [code, setCode] = useState('');
-    const navigate = useNavigate();
-    const [formData, setFormData] = useState({ username: "", password: "" });
     const [error, setError] = useState(null);
+    const [validated, set_Validated] = useState(false);
+
+
+    const [formData, setFormData] = useState({ 
+        username: "", 
+        password: "" 
+    });
+    
+    const navigate = useNavigate();
     const userInfo = useContext(userContext);
 
 	console.log('Login: user', userInfo.user.username);
@@ -36,9 +44,6 @@ function Login() {
                 username: formData.username,
                 password: formData.password
                 });
-                // axiosInstance.defaults.headers['Authorization'] = "JWT " + response.data.access;
-                // localStorage.setItem('access_token', response.data.access);
-                // localStorage.setItem('refresh_token', response.data.refresh);
                 console.log('response.status', response.status);
                 if (response.status === 200) 
                 {
@@ -125,53 +130,89 @@ function Login() {
     return (
         <div>
             {step === 1 ? (
-                <div>
-                    <h2>Login</h2>
-                    { error && <div style={{ color: 'red' }}>{error}</div>}
-                        <form onSubmit={handleLogin}>
-                            <div>
-                                <label htmlFor="username">Username:</label>
-                                <input
-                                    type="text"
-                                    id="username"
-                                    name="username"
-                                    value={formData.username}
-                                    onChange={handleChange}
-                                />
-                                </div>
-                                <div>
-                                <label htmlFor="password">Password:</label>
-                                <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                />
-                            </div>
-                            <button type="submit">Login</button>
-                        </form>
-                        <br />
-                        <LoginForm />
-                </div>
+                        <Container className="mt-5">
+                            <Row>
+                                <Col
+                                    md={{
+                                        span: 6,
+                                        offset: 3,
+                                    }}
+                                >
+                                    <Form noValidate validated={validated} onSubmit={handleLogin}>
+                                        <Form.Group controlId="username">
+                                            <Form.Label>Username</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                name="username"
+                                                value={formData.username}
+                                                onChange={handleChange}
+                                                pattern="^[a-zA-Z0-9]+$"
+                                                required
+                                                isInvalid={
+                                                    validated &&
+                                                    !/^[a-zA-Z0-9]+$/.test(formData.user)
+                                                }
+                                            />
+                                            <Form.Control.Feedback type="invalid">
+                                                Please enter a valid username (alphanumeric
+                                                characters only).
+                                            </Form.Control.Feedback>
+                                        </Form.Group>
+                                        <Form.Group controlId="password">
+                                            <Form.Label>Password</Form.Label>
+                                            <Form.Control
+                                                type="password"
+                                                name="password"
+                                                value={formData.password}
+                                                onChange={handleChange}
+                                                minLength={6}
+                                                required
+                                                isInvalid={
+                                                    validated && formData.pass.length < 6
+                                                }
+                                            />
+                                            <Form.Control.Feedback type="invalid">
+                                                Password must be at least 6 characters long.
+                                            </Form.Control.Feedback>
+                                        </Form.Group>
+                                    
+                                        <Button type='submit' role="button" className="buttonCustom"> Login </Button>
+                                        {/* <Button type="" className="buttonTest"> Gooo ! </Button> */}
+                                    </Form>
+                                </Col>
+                            </Row>
+                        </Container>
 
                 ) : (
-                    <div>
-                        <h2>Enter the code</h2>
-                        <form onSubmit={handleVerify}>
-                            <div>
-                            <label htmlFor="code">Code:</label>
-                            <input
-                                type="text"
-                                id="code"
-                                name="code"
-                                value={code}
-                                onChange={(e) => setCode(e.target.value)}
-                            />
-                            </div>
-                            <button type="submit">Submit</button>
-                        </form>
-                    </div>
+                    <Container className="mt-5">
+                    <Row>
+                        <Col
+                            md={{
+                                span: 6,
+                                offset: 3,
+                            }}
+                        >
+                            <Form noValidate validated={validated} onSubmit={handleVerify}>
+                                <Form.Group controlId="verificationCode">
+                                    <Form.Label>Verification Code</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        name="verificationCode"
+                                        value={code}
+                                        // onChange={handleChange}
+                                        maxLength={6}
+                                        required
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        Please enter a valid verification code.
+                                    </Form.Control.Feedback>
+                                </Form.Group>
+                                <Button type='submit' role="button" className="buttonCustom"> Login </Button>
+                                    {/* <Button type="" className="buttonTest"> Gooo ! </Button> */}
+                            </Form>
+                        </Col>
+                    </Row>
+                </Container>
                     )
             }
         </div>
