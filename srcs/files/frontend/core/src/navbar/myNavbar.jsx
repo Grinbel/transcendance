@@ -22,35 +22,6 @@ import { userContext } from "../contexts/userContext.jsx";
 
 
 
-
-// And if we want to pass the data along with navigation
-
-// Sending component->
-
-// import {useNavigate} from 'react-router-dom';
-
-// ...
-
-// const navigate = useNavigate();
-
-// const toComponentB=()=>{
-//    navigate('/componentB', {state: {id:1, name:'kunal'}});
-// }
-
-// Receiving component->
-
-// import {useLocation} from 'react-router-dom';
-
-// ...
-
-// const location = useLocation();
-
-// return (
-//           <div>{location.state.name}</div>
-//        )
-  
-
-
 // Composant pour la barre de navigation lorsqu'un utilisateur est connecté
 const NavLoggedIn = () => {
 	const navigate = useNavigate();
@@ -88,13 +59,13 @@ const NavLoggedIn = () => {
 	};
 
 	return (
-		<Navbar collapseOnSelect expand="sm" className="bg-body-tertiary">
-		  <Container>
+		<Navbar  collapseOnSelect expand="sm" className="bg-body-tertiary">
+		  <Container >
 
 			<Navbar.Brand href="#home" className='logoName'>
 				Pong
 			</Navbar.Brand>
-			<Navbar.Collapse id="responsive-navbar-nav">
+			
 			<Nav  className="ms-auto">
 				<NavDropdown className='dropCustom' id="nav-dropdown-dark-example" title={UserMenu}>
 					<NavDropdown.Item href="/profile">profile</NavDropdown.Item>
@@ -102,8 +73,6 @@ const NavLoggedIn = () => {
 					<NavDropdown.Item onClick={handleLogout}>logout</NavDropdown.Item>
             	</NavDropdown>
 			</Nav>
-
-			</Navbar.Collapse>
 		  </Container>
 		</Navbar>
 	  );
@@ -120,7 +89,7 @@ const NavLoggedIn = () => {
 	const userinfo = useContext(userContext);
 
 	  return (
-		<Navbar collapseOnSelect expand="lg" className="bg-body-tertiary">
+		<Navbar collapseOnSelect expand="lg" className="bg-body-tertiary navbarCustom">
 		  <Container>
 			<Navbar.Brand href="/" className='logoName'>
 				{/* <img

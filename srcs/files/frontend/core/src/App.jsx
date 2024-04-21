@@ -6,6 +6,11 @@ import './App.css'
 import Login from './login/login.jsx'
 import Signup from './login/signup.jsx'
 import MyNavbar from './navbar/myNavbar.jsx'
+import Dashboard from './dashboard/pages/dashboard.jsx'
+
+import History from './dashboard/pages/history.jsx';
+import Friends from './dashboard/pages/friends.jsx';
+import Settings from './dashboard/pages/settings.jsx';
 
 import Home from './main/Home.jsx';
 import Play from './main/Play.jsx';
@@ -29,22 +34,27 @@ function App(){
 
 	return (
 		<UserProvider>
-			<div className="site">
+			<div >
 				<MyNavbar/>
 				
 				<main>
 					<Routes>
+						<Route path="/*" element={<Error404 />} />
+						<Route path="/dashboard" element={<Dashboard />}>
+							<Route path="history" element={<History />} />
+							<Route path="friends" element={<Friends />} />
+							<Route path="settings" element={<Settings />} />
+						</Route>
 						<Route path="/play" element={<Play />} />
 						<Route path="/login" element={<Login />} /> 
 						<Route path="/signup" element={<Signup />} />
 						<Route path="/tournament" element={<Tournament />} />
 						<Route path="/about" element={<About />} />
 						<Route exact path="/" element={<Home />} />
-						<Route path="/*" element={<Error404 />} />
 					</Routes>
 				</main>
 				{/* {showLoginForm && <Login />} */}
-				<Chat />
+				{/* <Chat /> */}
 			</div>
 		</UserProvider>
 	);

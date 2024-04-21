@@ -25,8 +25,6 @@ def authenticate(request=None, username=None, password=None, verify=None):
 def  listUsers():
 	 #return list of authenticated users only...
 	return User.objects.all()
-	
-
 
 # request.method: A string representing the HTTP method used in the request (e.g., 'GET', 'POST').
 # request.GET: A dictionary-like object containing all given HTTP GET parameters.
