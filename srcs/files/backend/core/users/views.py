@@ -177,15 +177,6 @@ class UserList(APIView):
 		serializer = UserSerializer(users, many=True)
 		return Response(serializer.data)
 
-class Chat(APIView):
-	#permission_classes = [permissions.IsAuthenticated]
-	print('Chat class')
-	#message = request.data.get('message')
-	#print('message', message)
-
-	def get(self, request, format=None):
-		return Response({'chat': 'Chatting...'})
-
 # import random
 # import string
 # from datetime import datetime, timedelta

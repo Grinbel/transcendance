@@ -6,3 +6,6 @@ djangorestframework
 django-cors-headers
 pillow
 djangorestframework-simplejwt
+channels
+daphne
+websockets

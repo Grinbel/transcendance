@@ -12,7 +12,7 @@ class bot
 	
 
 # Create your views here.
-def matchmaking(request):
+def launch_tournament(request):
 	users = User.objects.filter(id__in=request.GET.getlist('user_ids'))  # get the users who want to join a game (human)
 	num_players = int(request.GET['num_players'])  # get the number of players in total (for the bot)
 	# for i in range(num_players -len(users) ):
@@ -33,7 +33,7 @@ def matchmaking(request):
 			match_thread.start() #! //!
 		# wait for the games to be completed
 		while len(games) > 0:
-			if game.status == 'completed' || game.status == 'cancelled':
+			if game.status == 'completed' or game.status == 'cancelled':
 				games.remove(game)
 			time.sleep(1)
 		# get the winners and create the next round

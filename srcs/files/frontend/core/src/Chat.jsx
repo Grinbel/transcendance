@@ -1,7 +1,8 @@
 import React from 'react';
-import  { axiosInstance } from "./axiosAPI.js";
+// import  { axiosInstance } from "./axiosAPI.js";
+import  { useEffect, useState } from 'react';
 
-/*const handleChat = async (event) => {
+{/*const handleChat = async (event) => {
 	event.preventDefault();
 	try {
 		const response = await axiosInstance.post('/chat/', {
@@ -115,59 +116,97 @@ class Chat extends React.Component {
 			
 		);
 	}
-}*/
+}*/}
 
-function Chat(){
-	const [formData, setFormData] = React.useState({
-		message: '',
-	});
-	const [error, setError] = React.useState(null);
+
+function Chat() {
+	const [formData, setFormData] = useState({ message: '' });
+	const [error, setError] = useState(null);
+	const [messages, setMessages] = useState([]);
+	const [ws, setWs] = useState(null);
+
+	useEffect(() => {
+		const ws = new WebSocket('ws://localhost:8000/users/ws/chat/');
+		ws.onopen = () => console.log('ws opened');
+		ws.onclose = () => console.log('ws closed');
+		ws.onerror = e => console.log('ws error', e);
+		ws.onmessage = e => {
+			const message = JSON.parse(e.data);
+			if (message.type === 'connected') {
+				return;
+			}
+			if (message.type === 'disconnected') {
+				return;
+			}
+
+			if (message.type === 'chat') {
+				// message.date = new Date().toLocaleTimeString();
+				setMessages(prevMessages => [...prevMessages, message]);
+			}
+			console.info('received', message);
+		};
+
+		setWs(ws);
+		setFormData({ message: '' });
+
+		return () => {
+			console.error('ws closed');
+			ws.close();
+		};
+	}, []);
 
 	const handleChat = async (event) => {
-		console.log('handleChat');
-		console.log('formData', formData);
 		event.preventDefault();
 		try {
-			const response = await axiosInstance.post('/chat/', {
-				message: formData.message,
-			});
-			console.log(response);
+			ws.send(JSON.stringify(formData));
+			console.info('sent', formData);
 		} catch (error) {
-			if (error.response) {
-				console.log('error RESPONSE')
-				console.log(error.response.data);
-				console.log(error.response.status);
-				console.log(error.response.headers);
-			} else if (error.request) {
-				console.log('error REQUEST', error.request);
-			} else {
-				console.log('error OBSCURE', error.request);
-			}
 			setError(error.message);
 			throw (error);
 		}
 	}
-	
+
+	const handleInputChange = (event) => {
+		setFormData({ message: event.target.value });
+	}
+
+	const handleKeyPress = (event) => {
+		if (event.key === 'Enter') {
+			handleChat(event);
+			handleInputChange(event);
+			setFormData({ message: '' });
+			event.preventDefault(); // Prevents the default action of the 'Enter' key
+		}
+	}
+
+
+
 	return (
-		<div>
-			<h2>Chat</h2>
-			
-			<form onSubmit={handleChat}>
-				<div>
-					<label htmlFor="message">Message:</label>
+		<div id="chatWindow" className="chat-window">
+			<div id="chatHeader" className="chat-header">
+				<div id="chatTitle" className="chat-title">Chat</div>
+			</div>
+			<div id="chatBody" className="chat-body">
+				<div id="chatContent" className="chat-content">
+					{messages.map((message, index) => (
+						<div key={index} className="chat-message">
+							{message.message} <span className="message-time">{message.date}</span>
+						</div>
+					))}
+				</div>
+				<div id="chatInput" className="chat-input">
 					<input
 						type="text"
-						id="message"
-						name="message"
+						id="chatInputField"
+						className="chat-input-field"
 						value={formData.message}
-						onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+						onChange={handleInputChange}
+						onKeyDown={handleKeyPress}
 					/>
+					{/* <button id="chatSend" className="chat-send" onClick={handleChat}>Send</button> */}
 				</div>
-			
-				<button type="submit">Send</button>
-			</form>
+			</div>
 		</div>
-	);
+	  );
 }
-
 export default Chat;

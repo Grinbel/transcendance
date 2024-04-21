@@ -32,14 +32,31 @@ AUTH_USER_MODEL = "users.User"
 SECRET_KEY = 'django-insecure-+f$6n=$1s3ol8jgaenlmo9cu=-byy2*x=5)!evng!+0iu-e9vj'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+ASGI_APPLICATION = 'project.asgi.application'
 
+CHANNEL_LAYERS = {
+	'default': {
+		'BACKEND': 'channels.layers.InMemoryChannelLayer'
+	},
+}
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("localhost", 8000)],
+#         },
+#     },
+# }
 
 # Application definition
 
 INSTALLED_APPS = [
+	'channels',
+	'daphne',
     'tournament',
     'game',
-    # 'chat',
+    'chat',
 	'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
