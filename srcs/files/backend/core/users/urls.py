@@ -6,7 +6,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from .views import Signup, login, verify, Logout, UserList, get_2fa_preference
-
+from matchmaking.views import choice
  
 urlpatterns = [
     path('get_2fa_preference/', get_2fa_preference, name='get_2fa_preference'),
@@ -16,4 +16,6 @@ urlpatterns = [
 	path("verify/", verify, name="verify"),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 	path('logout/', Logout.as_view(), name='logout'),
+	path('choice/', choice, name='choice'),
+
 ]

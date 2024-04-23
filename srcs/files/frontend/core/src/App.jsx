@@ -12,6 +12,7 @@ import NavAbout from './NavAbout.jsx';
 import Tournament from './tournament.jsx';
 import About from './About.jsx';
 import Chat from './Chat.jsx';
+import Account from "./account.jsx";
 
 function App(){
 	return (
@@ -25,8 +26,10 @@ function App(){
 					<Route path="/tournament" element={<Tournament />} />
 					<Route path="/about" element={<About />} />
 					<Route path="/user" element={<User />} />
+					<Route path="/user/:username" element={<Account />} />
+					{/* <Route name="account" path="/@/*" handler={Account } /> */}
 					<Route exact path="/" element={<Home />} />
-					<Route path="/*" element={<Error404 />} />
+					{/* <Route path="/*" element={<Error404 />} /> */}
 				</Routes>
 			</main>
 			<Chat />

@@ -1,7 +1,7 @@
 import React from 'react';
 // import  { axiosInstance } from "./axiosAPI.js";
 import  { useEffect, useState } from 'react';
-
+import { Link } from 'react-router-dom';
 {/*const handleChat = async (event) => {
 	event.preventDefault();
 	try {
@@ -124,12 +124,13 @@ function Chat() {
 	const [error, setError] = useState(null);
 	const [messages, setMessages] = useState([]);
 	const [ws, setWs] = useState(null);
+	const [date, setDate] = useState(new Date().toLocaleTimeString());
 
 	useEffect(() => {
 		const ws = new WebSocket('ws://localhost:8000/users/ws/chat/');
-		ws.onopen = () => console.log('ws opened');
-		ws.onclose = () => console.log('ws closed');
-		ws.onerror = e => console.log('ws error', e);
+		ws.onopen = () => console.log('ws chat opened');
+		ws.onclose = () => console.log('ws chat closed');
+		ws.onerror = e => console.log('ws chat error', e);
 		ws.onmessage = e => {
 			const message = JSON.parse(e.data);
 			if (message.type === 'connected') {
@@ -138,7 +139,10 @@ function Chat() {
 			if (message.type === 'disconnected') {
 				return;
 			}
-
+			if (message.type === 'error') {
+				//print the message in red
+				setMessages(prevMessages => [...prevMessages, { message: message.message, date: message.date }]);
+			}
 			if (message.type === 'chat') {
 				// message.date = new Date().toLocaleTimeString();
 				setMessages(prevMessages => [...prevMessages, message]);
@@ -150,7 +154,7 @@ function Chat() {
 		setFormData({ message: '' });
 
 		return () => {
-			console.error('ws closed');
+			console.error('ws chat closed');
 			ws.close();
 		};
 	}, []);
@@ -158,8 +162,11 @@ function Chat() {
 	const handleChat = async (event) => {
 		event.preventDefault();
 		try {
-			ws.send(JSON.stringify(formData));
-			console.info('sent', formData);
+			// setDate(new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
+			setDate(new Date().toLocaleTimeString());
+			console.log(date);
+			ws.send(JSON.stringify({ message: formData.message, date: date }));
+			console.info('sent', formData , date);
 		} catch (error) {
 			setError(error.message);
 			throw (error);
@@ -172,6 +179,10 @@ function Chat() {
 
 	const handleKeyPress = (event) => {
 		if (event.key === 'Enter') {
+			//check if the message is empty
+			if (formData.message === '') {
+				return;
+			}
 			handleChat(event);
 			handleInputChange(event);
 			setFormData({ message: '' });
@@ -190,6 +201,12 @@ function Chat() {
 				<div id="chatContent" className="chat-content">
 					{messages.map((message, index) => (
 						<div key={index} className="chat-message">
+							<div className="chat-username">
+								<Link to={`/${message.username}`}>
+								{message.username}
+								</Link>
+							</div>
+							<div />
 							{message.message} <span className="message-time">{message.date}</span>
 						</div>
 					))}

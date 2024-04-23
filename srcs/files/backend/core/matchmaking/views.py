@@ -3,14 +3,50 @@ from django.db import models
 from django.http import JsonResponse
 from game.models import Game
 from users.models import User
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework import permissions
+from . import room
 import threading
 import random
 import time
 
-class bot
+class bot:
 	id = 0
-	
 
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+def choice(request):
+	print('value ' + str(request.data))
+	isLocal = request.data.get('isLocal', False)
+	tournamentId = request.data.get('tournamentId', None)
+	playerCount = request.data.get('playerCount', None)
+	# print('Player count:', playerCount)
+	# print('tournament_id:', tournamentId)
+	# print('is_local:', isLocal)
+	#search if a Room is name tournamentId
+	if tournamentId is not None:
+		room = Room.objects.filter(name=tournamentId)
+		if room.exists():
+			room = room.first()
+			if room.max_capacity == room.users.count():
+				return Response("Error:Room is full")
+			room.users.add(User.objects.get(id=request.data.get('userId')))
+			if room.max_capacity == room.users.count():
+				#launch tournament
+				launch_tournament(request)
+			return Response("Choice made")
+		return Response("Error:Invalid tournament ID")
+	elif tournament_id is None:
+		# create_room 
+		room = room.objects.create(name=room.create_room())
+		room.users.add(User.objects.get(id=request.data.get('userId')))
+		print (room.name + " created" + request.data.get('userId'))
+		# add user to room
+		return Response("Error:Choice made")
+	return Response({'message': 'Choice made'})
+	
 # Create your views here.
 def launch_tournament(request):
 	users = User.objects.filter(id__in=request.GET.getlist('user_ids'))  # get the users who want to join a game (human)

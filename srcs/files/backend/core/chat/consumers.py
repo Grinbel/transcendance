@@ -1,14 +1,15 @@
 import json
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
-
+from users.helper import listUsers
+from users.models import User
 
 class ChatConsummer(WebsocketConsumer):
 	def connect(self):
 		print('user : ',self.scope['user'])
 		print('ip : ',self.scope['client'][0])
 		print('port : ',self.scope['client'][1])
-
+		print('auth : ',self.scope['user'].is_authenticated)
 		self.room_name = 'test'
 
 		async_to_sync(self.channel_layer.group_add)(
@@ -30,22 +31,35 @@ class ChatConsummer(WebsocketConsumer):
 		}))
 
 	def receive(self, text_data):
+		
+		print('username:', self.scope['user'].username)
+		if (self.scope['user'].is_authenticated is False):
+			self.send(text_data=json.dumps({
+				'message': 'You are not logged in!',
+				'type': 'error'
+			}))
+			return
 		text_data_json = json.loads(text_data)
 		message = text_data_json['message']
-		print('In receive')
+		date = text_data_json['date']
+
 		async_to_sync(self.channel_layer.group_send)(
 			self.room_name,
 			{
 				'type':'chat_message',
-				'message':message
+				'message':message,
+				'username':self.scope['user'].username,
+				'date': date,
 			}
 		)
 
 	def chat_message(self, event):
 		message = event['message']
-		print('In chat_message')
-
+		print('auth : ',self.scope['user'].is_authenticated)
+		date = event['date']
 		self.send(text_data=json.dumps({
+			'username':self.scope['user'].username,
 			'type':'chat',
-			'message':message
+			'message':message,
+			'date': date,
 		}))
