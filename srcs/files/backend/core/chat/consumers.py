@@ -17,10 +17,10 @@ class ChatConsummer(WebsocketConsumer):
 			self.channel_name
 		)
 		self.accept()
-		self.send(text_data=json.dumps({
-			'message': 'Welcome ' + self.scope['user'].username + ' to the room ' + self.room_name + '!',
-			'type': 'chat'
-		}))
+		# self.send(text_data=json.dumps({
+		# 	'message': 'Welcome ' + self.scope['user'].username + ' to the room ' + self.room_name + '!',
+		# 	'type': 'chat'
+		# }))
 		print('Connected')
 	
 	def disconnect(self, close_code):
@@ -32,17 +32,17 @@ class ChatConsummer(WebsocketConsumer):
 
 	def receive(self, text_data):
 		
-		print('username:', self.scope['user'].username)
-		if (self.scope['user'].is_authenticated is False):
-			self.send(text_data=json.dumps({
-				'message': 'You are not logged in!',
-				'type': 'error'
-			}))
-			return
+		# if (self.scope['user'].is_authenticated is False):
+		# 	self.send(text_data=json.dumps({
+		# 		'message': 'You are not logged in!',
+		# 		'type': 'error'
+		# 	}))
+		# 	return
 		text_data_json = json.loads(text_data)
+		print(text_data_json)
 		message = text_data_json['message']
 		date = text_data_json['date']
-
+		username = text_data_json['username']
 		async_to_sync(self.channel_layer.group_send)(
 			self.room_name,
 			{
@@ -50,16 +50,18 @@ class ChatConsummer(WebsocketConsumer):
 				'message':message,
 				'username':self.scope['user'].username,
 				'date': date,
+				'username': username,
 			}
 		)
 
 	def chat_message(self, event):
 		message = event['message']
-		print('auth : ',self.scope['user'].is_authenticated)
+		username = event['username']
 		date = event['date']
 		self.send(text_data=json.dumps({
-			'username':self.scope['user'].username,
 			'type':'chat',
 			'message':message,
 			'date': date,
+			'username': username,
+
 		}))

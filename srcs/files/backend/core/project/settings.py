@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'game',
     'chat',
 	'corsheaders',
+	'matchmaking',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

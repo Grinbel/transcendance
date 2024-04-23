@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, redirect } from 'react-router-dom';
 import Loading from './loading';
-import  { axiosInstance } from "./axiosAPI.js";
-
+import  { axiosInstance } from "../axiosAPI.js";
+import { useContext } from "react";
+import { userContext } from "../contexts/userContext.jsx";
+import { useNavigate } from 'react-router-dom';
 
 function Play() {
-	const [playerCount, setPlayerCount] = useState(1);
-	const [isLocal, setIsLocal] = useState(false);
+	const navigateTo = useNavigate();
+	const userInfo = useContext(userContext);
 	const [showSelect, setShowSelect] = useState(false);
 	const [showTextArea, setShowTextArea] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const [join, setJoin] = useState(false);
-	const [formData, setFormData] = useState({ tournamentId: "", playerCount: 1, isLocal: false });
+	const [formData, setFormData] = useState({ tournamentId: "", playerCount: 2, isLocal: false });
 	const [displayer, setDisplayer] = useState("");
 
 	const handleChange = (event) => {
@@ -26,24 +28,32 @@ function Play() {
 	};
 
 	const handleSubmit = async (event) => {
+		
 		if (join  && formData.tournamentId === ""){
 			return;
 		}
-		setIsLoading(true);
+		// setIsLoading(true);
 		event.preventDefault();
 		try {
 			const response = await axiosInstance.post('/choice/', {
 				tournamentId: formData.tournamentId,
 				playerCount: formData.playerCount,
 				isLocal: formData.isLocal,
+				username: userInfo.user.username,
 			});
 			console.log('response', response.data);
+			console.log('Room name', response.data.room_name);
+			console.log('error', response.data.Error);
+
 			//check if response.data contains the word error
 
-			if (response.data.includes('Error:')){
-				response.data = response.data.replace('Error:', '');
-				setDisplayer(response.data);
+			if (response.data.Error != undefined){
+				setDisplayer(response.data.Error);
 				console.log('Invalid tournament');
+			}
+			else {
+				navigateTo('/tournament/');
+				// props.router.push('/');
 			}
 		} catch (error) {
 			if (error.response) {
@@ -102,7 +112,6 @@ function Play() {
 					id="playerCount"
 					name="playerCount"
 					onChange={handleChange}>
-				<option value="1">1</option>
 				<option value="2">2</option>
 				<option value="4">4</option>
 				<option value="8">8</option>

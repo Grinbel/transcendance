@@ -6,10 +6,13 @@ from users.models import User
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import permissions
-from . import room
+from .models import Room
 import threading
 import random
 import time
+from channels.generic.websocket import WebsocketConsumer
+from asgiref.sync import async_to_sync
+import json
 
 class bot:
 	id = 0
@@ -18,34 +21,33 @@ class bot:
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def choice(request):
+	# for room in Room.objects.all():
+	# 	room.delete()
 	print('value ' + str(request.data))
-	isLocal = request.data.get('isLocal', False)
-	tournamentId = request.data.get('tournamentId', None)
-	playerCount = request.data.get('playerCount', None)
-	# print('Player count:', playerCount)
-	# print('tournament_id:', tournamentId)
-	# print('is_local:', isLocal)
-	#search if a Room is name tournamentId
-	if tournamentId is not None:
-		room = Room.objects.filter(name=tournamentId)
-		if room.exists():
-			room = room.first()
-			if room.max_capacity == room.users.count():
-				return Response("Error:Room is full")
-			room.users.add(User.objects.get(id=request.data.get('userId')))
-			if room.max_capacity == room.users.count():
-				#launch tournament
-				launch_tournament(request)
-			return Response("Choice made")
-		return Response("Error:Invalid tournament ID")
-	elif tournament_id is None:
-		# create_room 
-		room = room.objects.create(name=room.create_room())
-		room.users.add(User.objects.get(id=request.data.get('userId')))
-		print (room.name + " created" + request.data.get('userId'))
-		# add user to room
-		return Response("Error:Choice made")
-	return Response({'message': 'Choice made'})
+	username = request.data.get('username')
+	playerCount = request.data.get('playerCount')
+	tournamentId = request.data.get('tournamentId')
+	print('All room names: ', [room.name for room in Room.objects.all()])
+	print('room name: ', Room.objects.all().first().name)
+	user = User.objects.get(username=username)
+	print('username ', username)
+	print('playerCount ', playerCount)
+	print('tournamentId ', tournamentId)
+	if (tournamentId == ''): #create a new room
+		user = User.objects.get(username=username)
+		room = Room.create(playerCount, user)
+		return Response({'Room created': room.name})
+	#check if tournamendid exist
+	room = Room.objects.filter(name=tournamentId)
+	room = room.first()
+	if (room is None):
+		return Response({'Error':'Invalid tournament ID'})
+	# print('room ' + str(room))
+	if room.addUser(user) is False:
+		return Response({'Error':'Room is full'})
+
+	return Response({'room_name': room.name})
+	# return Response({room.name})
 	
 # Create your views here.
 def launch_tournament(request):
@@ -82,4 +84,51 @@ def launch_tournament(request):
 		users = winners
 			
 		num_game /= 2
-		
+
+
+class Tournament(WebsocketConsumer):
+	def connect(self):
+		self.room_name = 'test'
+		async_to_sync(self.channel_layer.group_add)(
+			self.room_name,
+			self.channel_name
+		)
+		self.accept()
+
+		print('Connected')
+	
+	def disconnect(self, close_code):
+		print('Disconnected')
+		self.send(text_data=json.dumps({
+			'message': 'Disconnected',
+			'type': 'disconnection'
+		}))
+
+	def receive(self, text_data):
+		text_data_json = json.loads(text_data)
+		print(text_data_json)
+		message = text_data_json['message']
+		date = text_data_json['date']
+		username = text_data_json['username']
+		async_to_sync(self.channel_layer.group_send)(
+			self.room_name,
+			{
+				'type':'chat_message',
+				'message':message,
+				'username':self.scope['user'].username,
+				'date': date,
+				'username': username,
+			}
+		)
+
+	def chat_message(self, event):
+		message = event['message']
+		username = event['username']
+		date = event['date']
+		self.send(text_data=json.dumps({
+			'type':'chat',
+			'message':message,
+			'date': date,
+			'username': username,
+
+		}))

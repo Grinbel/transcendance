@@ -1,7 +1,11 @@
 import React from 'react';
 // import  { axiosInstance } from "./axiosAPI.js";
-import  { useEffect, useState } from 'react';
+import  { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import "./Chat.css";
+import { useContext } from "react";
+import { userContext } from "../contexts/userContext.jsx";
+
 {/*const handleChat = async (event) => {
 	event.preventDefault();
 	try {
@@ -120,11 +124,17 @@ class Chat extends React.Component {
 
 
 function Chat() {
-	const [formData, setFormData] = useState({ message: '' });
+	const userInfo = useContext(userContext);
+	const [formData, setFormData] = useState({ message: '', date: '', username: userInfo.user.username });
 	const [error, setError] = useState(null);
 	const [messages, setMessages] = useState([]);
 	const [ws, setWs] = useState(null);
-	const [date, setDate] = useState(new Date().toLocaleTimeString());
+	const messagesEndRef = useRef(null);
+	const [toView, setToView] = useState(null);
+	
+	useEffect(() => {
+		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+	}, [messages]);
 
 	useEffect(() => {
 		const ws = new WebSocket('ws://localhost:8000/users/ws/chat/');
@@ -158,15 +168,22 @@ function Chat() {
 			ws.close();
 		};
 	}, []);
-
 	const handleChat = async (event) => {
 		event.preventDefault();
+		// setuserInfo(useContext(userContext));
+		console.log('username =', userInfo.user.username);
+		if (userInfo.user.username === undefined){
+			setToView("Need to be logged in");
+			return;
+		}
 		try {
-			// setDate(new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
-			setDate(new Date().toLocaleTimeString());
-			console.log(date);
-			ws.send(JSON.stringify({ message: formData.message, date: date }));
-			console.info('sent', formData , date);
+			const currentTime = new Date();
+			const formattedTime = currentTime.getHours() + ':' + currentTime.getMinutes();
+
+			console.log(userInfo.user.username);
+			const sent = JSON.stringify({ message: formData.message, date: formattedTime, username: userInfo.user.username });
+			ws.send(sent);
+			console.info('sent', sent);
 		} catch (error) {
 			setError(error.message);
 			throw (error);
@@ -200,11 +217,14 @@ function Chat() {
 			<div id="chatBody" className="chat-body">
 				<div id="chatContent" className="chat-content">
 					{messages.map((message, index) => (
-						<div key={index} className="chat-message">
+						<div key={index} className="chat-message" ref={index === messages.length - 1 ? messagesEndRef : null}>
 							<div className="chat-username">
 								<Link to={`/${message.username}`}>
 								{message.username}
 								</Link>
+							</div>
+							<div className="chat-errors">
+								{toView}
 							</div>
 							<div />
 							{message.message} <span className="message-time">{message.date}</span>
