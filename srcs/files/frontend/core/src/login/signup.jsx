@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import  { axiosInstance } from "./axiosAPI.js";
+import  { axiosInstance } from "../axiosAPI.js";
 
 function Signup() {
     const [formData, setFormData] = useState({ username: "", email: "", password: "" });

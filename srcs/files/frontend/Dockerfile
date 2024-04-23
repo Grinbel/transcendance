@@ -12,6 +12,9 @@ RUN npm install three @react-three/fiber
 RUN npm install @react-three/drei
 RUN npm install react-router-dom@6 localforage match-sorter sort-by
 RUN npm install axios
+RUN npm install react-bootstrap bootstrap
+RUN npm install react-icons --save
+RUN npm install sass
 RUN npm audit fix --force
 RUN npm install
 # Copy the current directory contents into the container at /app

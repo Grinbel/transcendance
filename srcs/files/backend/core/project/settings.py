@@ -189,8 +189,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 ALLOWED_HOSTS = ['*']
 CORS_ALLOWED_ORIGINS = [
     'http://0.0.0.0:5173',
+    'http://localhost:5173',
     'http://0.0.0.0:8000',
-    'http://localhost:5173'
     # 'http://your-production-url.com',
 ]
 CORS_ALLOW_METHODS = [

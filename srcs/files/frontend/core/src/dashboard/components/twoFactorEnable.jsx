@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axiosInstance from "../axiosAPI.js";
+import axiosInstance from "../../axiosAPI.js";
 
 function TwoFactorEnable() {
     const [twoFaStatus, setTwoFaStatus] = useState(false);
