@@ -13,22 +13,32 @@ a {
 }
 
 .dashboard {
+	// display: flex;
 	font-family: Roobert,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
-	background-color: $main-bg;
+	background-color: $dark-bg;
 	color: $main-color;
-}
-
-.Container {
-	display: flex;
-}
-
-.sidebarContainer {
-	padding: 10px 0px;
-	// border-right: 2px solid $soft-bg;
-}
-
-.pageContainer {
-	padding: 0px 0px;
 	width: 100%;
+	height: 100%;
+	padding: 60px;
+
+	.container {
+		display: flex;
+		gap: 20px;
+		// align-items: center;
+		height: 100%;
+
+		.sidebarContainer {
+			// padding: 10px 10px;
+			width: 200px;
+			// border-right: 2px solid $soft-bg;
+		}
+		
+		.pageContainer {
+			// padding: 100px 10px;
+			flex-grow: 1;
+			background-color: $dark-bg;
+		}
+	}
 }
+
 

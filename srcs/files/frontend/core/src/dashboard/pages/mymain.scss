@@ -1,0 +1,29 @@
+@import "./variables.scss";
+
+
+.mymain {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr); 
+	grid-auto-rows: 200px;
+	gap: 20px;
+	// width: 100%;
+
+	.component {
+		border: 1px solid $soft-bg;
+		padding: 20px;
+		border-radius: 20px;
+		background-color: transparent;
+
+	}
+	
+	.component1 {
+		grid-column: span 1;
+		grid-row: span 2;
+	}
+	.component6,  .component7, .component8 {
+		// grid-column: 2;
+		grid-column: span 1;
+		grid-row: span 2;
+	}
+
+}

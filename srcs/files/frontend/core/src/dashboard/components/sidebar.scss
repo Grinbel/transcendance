@@ -2,18 +2,18 @@
 
 .sidebar {
 	width: 200px;
-	padding: 50px 0px;
+	// padding: 40px 0px;
 	// border-right: 2px solid $soft-bg;
 
 	.item {
 		display: flex;
 		flex-direction: column;
-		gap: 50px;
+		gap: 10px;
 		margin-bottom: 20px;
 
 		.itemTitle {
 			font-size: 25px;
-			font-weight: 600;
+			font-weight: 200;
 			display: flex;
 			justify-content: flex-start;
 			padding: 10px 0;
@@ -29,7 +29,7 @@
 				display: flex;
 				justify-content: flex-start;
 				align-items: center;
-				padding: 10px 10px 10px 10px;
+				padding: 10px;
 				border-radius: 3px;
 				// justify-content: space-evenly;
 				gap: 10px;
@@ -39,7 +39,7 @@
 					display: flex;
 					// align-items: center;
 					// justify-content: center;
-					border-radius: 5px;
+					// border-radius: 5px;
 					background-color: transparent;
 					color: $soft-color;
 				}
