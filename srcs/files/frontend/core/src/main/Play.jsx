@@ -5,6 +5,7 @@ import  { axiosInstance } from "../axiosAPI.js";
 import { useContext } from "react";
 import { userContext } from "../contexts/userContext.jsx";
 import { useNavigate } from 'react-router-dom';
+import "./Home.css";
 
 function Play() {
 	const navigateTo = useNavigate();
@@ -32,6 +33,11 @@ function Play() {
 		if (join  && formData.tournamentId === ""){
 			return;
 		}
+		if (userInfo.user.isLogged ===  false){
+			setDisplayer("Please login to play");
+			return;
+		}
+		setDisplayer("");
 		// setIsLoading(true);
 		event.preventDefault();
 		try {
@@ -52,6 +58,14 @@ function Play() {
 				console.log('Invalid tournament');
 			}
 			else {
+				console.log('Tournament name: ' + response.data.room_name);
+
+				userInfo.setUser({
+					...userInfo.user,
+					tournament: response.data.room_name
+				  });
+				// console.log('Tournament name: ' + userInfo.user.tournament);
+				// console.log('User info: ' + userInfo.user.username);
 				navigateTo('/tournament/');
 				// props.router.push('/');
 			}
@@ -79,13 +93,13 @@ function Play() {
 			<button onClick={() => { 
 				setShowTextArea(true); 
 				setShowSelect(false); 
-				setFormData({ tournamentId: "", isLocal: false, playerCount: 1 });
+				setFormData({ tournamentId: "", isLocal: false, playerCount: 2 });
 				setJoin(true);
 				}}>Join Tournament</button>
 			<button onClick={() => { 
 				setShowSelect(true);
 				setShowTextArea(false);
-				setFormData({ tournamentId: "", isLocal: false, playerCount: 1 });
+				setFormData({ tournamentId: "", isLocal: false, playerCount: 2 });
 				setJoin(false);
 				}}>Create Tournament</button>
 			
@@ -129,9 +143,9 @@ function Play() {
 				<button onClick={handleSubmit}>Submit</button>
 			</div>
 			)}
-					<div className='error'>
-						{displayer}
-					</div>
+			<div className="displayer-errors">
+				{displayer}
+			</div>
 		</>
 		)}
 	</div>

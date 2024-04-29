@@ -6,7 +6,7 @@ from users.models import User
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import permissions
-from .models import Room
+from tournament.models import Tournament
 import threading
 import random
 import time
@@ -23,31 +23,35 @@ class bot:
 def choice(request):
 	# for room in Room.objects.all():
 	# 	room.delete()
+
 	print('value ' + str(request.data))
 	username = request.data.get('username')
 	playerCount = request.data.get('playerCount')
 	tournamentId = request.data.get('tournamentId')
-	print('All room names: ', [room.name for room in Room.objects.all()])
-	print('room name: ', Room.objects.all().first().name)
+	# print('All room names: ', [tournament.name for tournament in Tournament.objects.all()])
+	# print('room name: ', Tournament.objects.all().first().name)
 	user = User.objects.get(username=username)
-	print('username ', username)
-	print('playerCount ', playerCount)
-	print('tournamentId ', tournamentId)
+	# print('username ', username)
+	# print('playerCount ', playerCount)
+	# print('tournamentId ', tournamentId)
+
 	if (tournamentId == ''): #create a new room
 		user = User.objects.get(username=username)
-		room = Room.create(playerCount, user)
-		return Response({'Room created': room.name})
+		tournament = Tournament.create(playerCount, user)
+		print('maximum tournament', tournament.max_capacity)
+		return Response({'room_name': tournament.name})
 	#check if tournamendid exist
-	room = Room.objects.filter(name=tournamentId)
-	room = room.first()
-	if (room is None):
+	tournament = Tournament.objects.filter(name=tournamentId)
+	tournament = tournament.first()
+	if (tournament is None):
 		return Response({'Error':'Invalid tournament ID'})
-	# print('room ' + str(room))
-	if room.addUser(user) is False:
+	# print('tournament ' + str(tournament))
+	if tournament.addUser(user) is False:
 		return Response({'Error':'Room is full'})
+	print('maximum tournament', tournament.max_capacity)
 
-	return Response({'room_name': room.name})
-	# return Response({room.name})
+	return Response({'room_name': tournament.name})
+	# return Response({tournament.name})
 	
 # Create your views here.
 def launch_tournament(request):
@@ -86,13 +90,9 @@ def launch_tournament(request):
 		num_game /= 2
 
 
-class Tournament(WebsocketConsumer):
+class Tournamen(WebsocketConsumer):
 	def connect(self):
-		self.room_name = 'test'
-		async_to_sync(self.channel_layer.group_add)(
-			self.room_name,
-			self.channel_name
-		)
+		
 		self.accept()
 
 		print('Connected')
@@ -105,30 +105,32 @@ class Tournament(WebsocketConsumer):
 		}))
 
 	def receive(self, text_data):
+		# Tournament.objects.all().delete()
 		text_data_json = json.loads(text_data)
+		name = text_data_json['tournament']
+		self.tournament_name = name
+
+		async_to_sync(self.channel_layer.group_add)(
+			self.tournament_name,
+			self.channel_name
+		)
 		print(text_data_json)
-		message = text_data_json['message']
-		date = text_data_json['date']
-		username = text_data_json['username']
+		tournament = Tournament.objects.get(name=name)
+		usernames = [player.username for player in tournament.players.all()]
+		print(usernames)
+		# username = text_data_json['username']
 		async_to_sync(self.channel_layer.group_send)(
-			self.room_name,
+			self.tournament_name,
 			{
-				'type':'chat_message',
-				'message':message,
-				'username':self.scope['user'].username,
-				'date': date,
-				'username': username,
+				'type':'tournament',
+				'username': usernames,
+				'name': name,
 			}
 		)
 
-	def chat_message(self, event):
-		message = event['message']
-		username = event['username']
-		date = event['date']
+	def tournament(self, event):
 		self.send(text_data=json.dumps({
-			'type':'chat',
-			'message':message,
-			'date': date,
-			'username': username,
-
+			'type':'username',
+			'username': event['username'],
+			'name': event['name'],
 		}))

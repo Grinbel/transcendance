@@ -16,6 +16,16 @@ class User(AbstractUser):
 	avatar = models.ImageField(upload_to='avatars/', default='yoshi.jpg')
 	alias = models.CharField(max_length=255, null=True, blank=True)
 	tournament = models.ForeignKey('tournament.Tournament', on_delete=models.SET_NULL, null=True, blank=True)
+	name = models.CharField(max_length=255, null=True, blank=True)
 
+	def log(self, name):
+		print("username ", name)
+		user = User.objects.get(username=name)
+		user.name = name
+		user.save()
+		print("user ", user.name)
+		self = user
+		self.save()
+		print("set username to", self.name)
 	def __str__(self):
 		return f"username = {self.username} \n alias = {self.alias} \n email = {self.email}"

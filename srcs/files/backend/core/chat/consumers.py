@@ -17,18 +17,13 @@ class ChatConsummer(WebsocketConsumer):
 			self.channel_name
 		)
 		self.accept()
-		# self.send(text_data=json.dumps({
-		# 	'message': 'Welcome ' + self.scope['user'].username + ' to the room ' + self.room_name + '!',
-		# 	'type': 'chat'
-		# }))
 		print('Connected')
 	
 	def disconnect(self, close_code):
 		print('Disconnected')
-		self.send(text_data=json.dumps({
-			'message': 'Disconnected',
-			'type': 'disconnection'
-		}))
+		async_to_sync(self.channel_layer.group_discard)(
+            self.room_group_name, self.channel_name
+        )
 
 	def receive(self, text_data):
 		
@@ -38,6 +33,7 @@ class ChatConsummer(WebsocketConsumer):
 		# 		'type': 'error'
 		# 	}))
 		# 	return
+		
 		text_data_json = json.loads(text_data)
 		print(text_data_json)
 		message = text_data_json['message']
@@ -48,7 +44,6 @@ class ChatConsummer(WebsocketConsumer):
 			{
 				'type':'chat_message',
 				'message':message,
-				'username':self.scope['user'].username,
 				'date': date,
 				'username': username,
 			}

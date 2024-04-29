@@ -3,6 +3,7 @@ import React from 'react';
 import  { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import "./Chat.css";
+import "./Home.css";
 import { useContext } from "react";
 import { userContext } from "../contexts/userContext.jsx";
 
@@ -44,7 +45,7 @@ class Chat extends React.Component {
 	}
 	componentDidUpdate() {
 		if (this.lastMessageRef.current) {
-			this.lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
+			this.lastMessageRef.current.scrollIndisplayer({ behavior: 'smooth' });
 		}
 	}
 
@@ -130,7 +131,7 @@ function Chat() {
 	const [messages, setMessages] = useState([]);
 	const [ws, setWs] = useState(null);
 	const messagesEndRef = useRef(null);
-	const [toView, setToView] = useState(null);
+	const [displayer, setdisplayer] = useState("");
 	
 	useEffect(() => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -149,10 +150,6 @@ function Chat() {
 			if (message.type === 'disconnected') {
 				return;
 			}
-			if (message.type === 'error') {
-				//print the message in red
-				setMessages(prevMessages => [...prevMessages, { message: message.message, date: message.date }]);
-			}
 			if (message.type === 'chat') {
 				// message.date = new Date().toLocaleTimeString();
 				setMessages(prevMessages => [...prevMessages, message]);
@@ -168,14 +165,17 @@ function Chat() {
 			ws.close();
 		};
 	}, []);
+
 	const handleChat = async (event) => {
 		event.preventDefault();
 		// setuserInfo(useContext(userContext));
-		console.log('username =', userInfo.user.username);
-		if (userInfo.user.username === undefined){
-			setToView("Need to be logged in");
+		console.log('username =', userInfo.user);
+		if (userInfo.user.isLogged ===  false) {
+			setdisplayer("Need to be logged in");
+			console.log("Need to be logged in   ", displayer);
 			return;
 		}
+		setdisplayer("");
 		try {
 			const currentTime = new Date();
 			const formattedTime = currentTime.getHours() + ':' + currentTime.getMinutes();
@@ -215,6 +215,9 @@ function Chat() {
 				<div id="chatTitle" className="chat-title">Chat</div>
 			</div>
 			<div id="chatBody" className="chat-body">
+				<div className="displayer-errors">
+					{displayer}
+				</div>
 				<div id="chatContent" className="chat-content">
 					{messages.map((message, index) => (
 						<div key={index} className="chat-message" ref={index === messages.length - 1 ? messagesEndRef : null}>
@@ -222,9 +225,6 @@ function Chat() {
 								<Link to={`/${message.username}`}>
 								{message.username}
 								</Link>
-							</div>
-							<div className="chat-errors">
-								{toView}
 							</div>
 							<div />
 							{message.message} <span className="message-time">{message.date}</span>
