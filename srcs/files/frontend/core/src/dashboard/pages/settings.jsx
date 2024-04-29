@@ -1,5 +1,6 @@
 import "./settings.scss";
 import * as React from "react";
+import TwoFactorEnable from "../components/twoFactorEnable.jsx";
 
 const Settings = () => {
 	const [isEditing, setIsEditing] = React.useState(false);
@@ -12,7 +13,7 @@ const Settings = () => {
 		<div className="settings">
 			<div className="settingsContainer">
 				<div className="settingsHeader">
-					<span className="settingsTitle">Settings</span>
+					<span className="settingsTitle">Edit personal data</span>
 				</div>
 				<div className="settingsBody">
 					<div className="settingsItem">
@@ -80,6 +81,12 @@ const Settings = () => {
 					</button>
 				</div>
 			</div>
+				<div className="settingsContainer">
+					<div className="settingsHeader">
+						<span className="settingsTitle">Options</span>
+					</div>
+					<TwoFactorEnable/>
+				</div>
 		</div>
 	);
 }

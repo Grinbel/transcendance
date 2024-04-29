@@ -4,7 +4,9 @@
 	display: flex;
 	flex-direction: column;
 	gap: 20px;
-	padding: 20px;
+	padding: 20px 20px;
+	border: 1px solid $soft-bg;
+	margin-bottom: 20px;
 	// width: 100%;
 
 	.settingsHeader {
@@ -39,6 +41,7 @@
 			}
 		
 			.settingsItemContent {
+				justify-self: center;
 				font-size: 25px;
 				color: #cdcaca;
 			}
