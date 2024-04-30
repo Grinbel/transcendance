@@ -1,35 +1,50 @@
 @import "../pages/variables.scss";
 
 .dataTable {
-	// display: grid;
-	// grid-template-columns: 1fr 2fr;
-	// grid-auto-rows: 50px;
-	// padding: 5px 10px;
-	// border-radius: 10px;
-	// background-color: transparent;
-	// // margin: 10px;
-	// transition: all 0.3s;
-	// cursor: pointer;
-	// .dataTableTitle {
-	// 	font-size: $font-size;
-	// 	font-weight: $font-weight;
-	// }
-	// .dataTableContent {
-	// 	justify-self: center;
-	// 	font-size: 25px;
-	// 	color: #cdcaca;
-	// }
+	.dataGrid {
+		background-color: whitesmoke;
+		padding: 20px;
 
-	// .dataTableInput {
-	// 	background-color: $main-bg;
-	// 	font-size: 25px;
-	// 	color: #cdcaca;
-	// 	border : 1px solid #ed722a;
-	// 	border-radius: 0.375rem;
-	// 	padding: 10px 10px;
-	// 	&:focus {
-	// 		outline: none; // Removes the default browser outline
-	// 		border-color: #8bed2a; // Changes the border color when the input is focused
-	// 	  }
-	// }
+		img {
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			object-fit: cover;
+		}
+	}
+}
+
+#deleteButton {
+	cursor: pointer;
+	background-color: transparent;
+	border: none;
+	
+}
+
+#deleteIcon {
+	color: rgb(203, 29, 29);
+	width: 30px;
+	height: 30px;
+	background-color: transparent;
+	padding: 5px;
+	//smooth transition: 
+	transition: width 0.3s, height 0.3s;
+}		
+
+#eyeIcon {
+	color: rgb(118, 185, 73);
+	width: 30px;
+	height: 30px;
+	background-color: transparent;	
+	padding: 5px;
+	transition: width 0.3s, height 0.3s;
+}
+//set hover
+#deleteIcon:hover {
+	width: 35px;
+	height: 35px;
+}
+#eyeIcon:hover {
+	width: 35px;
+	height: 35px;
 }

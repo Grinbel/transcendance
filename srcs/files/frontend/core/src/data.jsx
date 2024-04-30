@@ -7,7 +7,7 @@ const marioAvatar = '../../../public/players.jpg';
 const yoshiAvatar = '../../../public/yoshi.jpg';
 const princessAvatar = '../../../public/princess.jpg';
 const badAvatar = '../../../public/badboy.png';
-
+const pathImage = "../../../public/ponge.jpg"
 
 export const sidebar = [
 	{
@@ -144,3 +144,16 @@ export const sidebar = [
 			},
 	},
 	];
+
+
+	export const friendRows = [
+		{ id: 1, alias: 'Snow', firstName: 'Jon', age: 14 , avatar:pathImage, status:true},
+		{ id: 2, alias: 'Lannister', firstName: 'Cersei', age: 31 , avatar:null},
+		{ id: 3, alias: 'Lannister', firstName: 'Jaime', age: 31 , avatar:pathImage},
+		{ id: 4, alias: 'Stark', firstName: 'Arya', age: 11 , avatar:pathImage},
+		{ id: 5, alias: 'Targaryen', firstName: 'Daenerys', age: null , avatar:pathImage},
+		{ id: 6, alias: 'Melisandre', firstName: null, age: 150 , avatar:pathImage},
+		{ id: 7, alias: 'Clifford', firstName: 'Ferrara', age: 44 , avatar:pathImage},
+		{ id: 8, alias: 'Frances', firstName: 'Rossini', age: 36 , avatar:pathImage},
+		{ id: 9, alias: 'Roxie', firstName: 'Harvey', age: 65 , avatar:null},
+	  ];
