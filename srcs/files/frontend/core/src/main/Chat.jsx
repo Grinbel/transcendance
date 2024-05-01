@@ -132,13 +132,23 @@ function Chat() {
 	const [ws, setWs] = useState(null);
 	const messagesEndRef = useRef(null);
 	const [displayer, setdisplayer] = useState("");
+	const [roomName,setRoomName] = useState("general");
+	const websockets = {};
 	
 	useEffect(() => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 	}, [messages]);
 
+	function getWebSocket(roomName) {
+		if (!websockets[roomName]) {
+		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/chat/${roomName}/`);
+		}
+		setMessages(prevMessages => [""]);
+		return websockets[roomName];
+	  }
+
 	useEffect(() => {
-		const ws = new WebSocket('ws://localhost:8000/users/ws/chat/');
+		const ws = getWebSocket(roomName);
 		ws.onopen = () => console.log('ws chat opened');
 		ws.onclose = () => console.log('ws chat closed');
 		ws.onerror = e => console.log('ws chat error', e);
@@ -162,9 +172,12 @@ function Chat() {
 
 		return () => {
 			console.error('ws chat closed');
-			ws.close();
+			ws.onopen = null;
+			ws.onclose = null;
+			ws.onerror = null;
+			ws.onmessage = null;
 		};
-	}, []);
+	}, [roomName]);
 
 	const handleChat = async (event) => {
 		event.preventDefault();
@@ -242,6 +255,15 @@ function Chat() {
 					/>
 					{/* <button id="chatSend" className="chat-send" onClick={handleChat}>Send</button> */}
 				</div>
+				<div className="room_chat">
+					<input type="text"
+						id="roomName"
+						className="room-name"
+						value={roomName}
+						onChange={(e) => setRoomName(e.target.value)}
+					/>
+				</div>
+
 			</div>
 		</div>
 	  );
