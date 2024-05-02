@@ -1,16 +1,8 @@
-.app {
-	margin: 0;
-	padding: 0;
-	width: 100%;
-	height: 100%;
-	/* display: flex; */
-	/* flex-direction: column;
-	align-items: center;
-	justify-content: center; */
-	/* min-height: 100vh; */
-	background-color: transparent;
+@import "./dashboard/pages/variables.scss";
 
-	// .mainApp {
-	// 	@extend .app;
-	// }
-}
+.app {
+	font-family: "Inter", sans-serif;
+	background-color: $main-bg;
+	color: $main-color;
+  }
+  
