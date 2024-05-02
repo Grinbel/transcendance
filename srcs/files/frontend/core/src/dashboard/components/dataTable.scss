@@ -1,6 +1,7 @@
 @import "../pages/variables.scss";
 
 .dataTable {
+	width: 100%;
 	.dataGrid {
 		background-color: whitesmoke;
 		padding: 20px;
@@ -12,39 +13,43 @@
 			object-fit: cover;
 		}
 	}
+
+	.actions {
+		display: flex;
+		gap :20px;
+		justify-content: flex-start;
+		// align-items: center;
+		// padding: 20px;
+
+		.actionImage {
+			width: 30px;
+			height: 30px;
+			border-radius: 100%;
+			object-fit: cover;
+			transition: width 0.3s, height 0.3s;
+			background-color: transparent;
+		}
+		#deleteIcon {
+			color: rgb(203, 29, 29);
+		
+		}		
+		
+		#eyeIcon {
+			color: rgb(118, 185, 73);
+		
+		}
+
+		#actionButton {
+			cursor: pointer;
+			background-color: transparent;
+			border: none;
+		}
+
+		//set hover
+		.actionImage:hover {
+			width: 35px;
+			height: 35px;
+		}	
+	}
 }
 
-#deleteButton {
-	cursor: pointer;
-	background-color: transparent;
-	border: none;
-	
-}
-
-#deleteIcon {
-	color: rgb(203, 29, 29);
-	width: 30px;
-	height: 30px;
-	background-color: transparent;
-	padding: 5px;
-	//smooth transition: 
-	transition: width 0.3s, height 0.3s;
-}		
-
-#eyeIcon {
-	color: rgb(118, 185, 73);
-	width: 30px;
-	height: 30px;
-	background-color: transparent;	
-	padding: 5px;
-	transition: width 0.3s, height 0.3s;
-}
-//set hover
-#deleteIcon:hover {
-	width: 35px;
-	height: 35px;
-}
-#eyeIcon:hover {
-	width: 35px;
-	height: 35px;
-}

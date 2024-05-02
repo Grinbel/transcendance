@@ -8,11 +8,11 @@ import DataTable from '../components/dataTable';
 const Friends = () => {
 
 	const friendColumns = [
-		{ field: 'id', headerName: 'ID', width: 90 },
+		{ field: 'id', headerName: 'ID', flex: 0.1 },
 		{
 			field: 'avatar',
 			headerName: 'Avatar', 
-			width: 100,
+			flex: 0.1,
 			renderCell: (params) => {
 				return <img src={params.value || "/noavatar.jpg"} alt="avatar"/>
 			}
@@ -20,13 +20,13 @@ const Friends = () => {
 		{
 		  field: 'firstName',
 		  headerName: 'First name',
-		  width: 150,
+		  flex: 0.2,
 		  editable: true,
 		},
 		{
 		  field: 'alias',
 		  headerName: 'Alias',
-		  width: 150,
+		  flex: 0.2,
 		  editable: true,
 		},
 		// {
@@ -34,7 +34,7 @@ const Friends = () => {
 		//   headerName: 'Full name',
 		//   description: 'This column has a value getter and is not sortable.',
 		//   sortable: false,
-		//   width: 150,
+		//   flex: 150,
 		//   valueGetter: (value, row) => `${row.firstName || ''} ${row.alias || ''}`,
 		// },
 	  ];

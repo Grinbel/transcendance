@@ -110,17 +110,23 @@ export const sidebar = [
 	export const games = [
 		{
 			id:1,
+			date: "2021-08-01",
+			score: "10-0",
+			tournament: "deathmatch",
+			gameRank: "final",
+			winner: "Maario",
 			player1:{	
 				id: 1,
 				name: "Maario",
 				avatar: marioAvatar,
 				alias: "chokapik",
 				rank: 1,
+
 			},
 			player2:{
 				id: 2,
 				name: "Luigi",
-				avatar: badAvatar,
+				avatar: yoshiAvatar,
 				alias: "chokapik",
 				rank: 23,
 			},
@@ -128,6 +134,10 @@ export const sidebar = [
 
 		{
 			id: 2,
+			date: "2021-08-02",
+			score: "10-30",
+			tournament: "deathmatch",
+			gameRank: "final",
 			player1:{
 					id: 1,
 					name: "pomko",
@@ -138,11 +148,31 @@ export const sidebar = [
 			player2:{
 				id: 2,
 				name: "cacao",
-				avatar: yoshiAvatar,
+				avatar: badAvatar,
 				alias: "ananas",
 				rank: 9000
 			},
 	},
+	{
+		id: 3,
+		date: "2021-08-04",
+		score: "5-20",
+		gameRank: "final",
+		player1:{
+				id: 1,
+				name: "pomko",
+				avatar: badAvatar,
+			alias: "popo",
+			rank: 300
+		},
+		player2:{
+			id: 2,
+			name: "cacao",
+			avatar: yoshiAvatar,
+			alias: "ananas",
+			rank: 9000
+		},
+},
 	];
 
 
@@ -157,3 +187,136 @@ export const sidebar = [
 		{ id: 8, alias: 'Frances', firstName: 'Rossini', age: 36 , avatar:pathImage},
 		{ id: 9, alias: 'Roxie', firstName: 'Harvey', age: 65 , avatar:null},
 	  ];
+
+	  export const historygames = [
+		{
+			id:1,
+			date: "2021-08-01",
+			score: "10-0",
+			tournament: "deathmatch",
+			gameRank: "final",
+			winner: "Maario",
+			player1:{	
+				id: 1,
+				name: "Maario",
+				avatar: marioAvatar,
+				alias: "chokapik",
+				rank: 1,
+
+			},
+			player2:{
+				id: 2,
+				name: "Luigi",
+				avatar: yoshiAvatar,
+				alias: "chokapik",
+				rank: 23,
+			},
+		},
+
+		{
+			id: 2,
+			date: "2021-08-02",
+			score: "10-30",
+			tournament: "deathmatch",
+			gameRank: "final",
+			player1:{
+					id: 1,
+					name: "pomko",
+					avatar: princessAvatar,
+				alias: "popo",
+				rank: 300
+			},
+			player2:{
+				id: 2,
+				name: "cacao",
+				avatar: badAvatar,
+				alias: "ananas",
+				rank: 9000
+			},
+	},
+	{
+		id: 3,
+		date: "2021-08-04",
+		score: "5-20",
+		gameRank: "final",
+		player1:{
+				id: 1,
+				name: "pomko",
+				avatar: badAvatar,
+			alias: "popo",
+			rank: 300
+		},
+		player2:{
+			id: 2,
+			name: "cacao",
+			avatar: yoshiAvatar,
+			alias: "ananas",
+			rank: 9000
+		},
+},
+{
+	id:4,
+	date: "2021-08-01",
+	score: "10-0",
+	tournament: "deathmatch",
+	gameRank: "final",
+	winner: "Maario",
+	player1:{	
+		id: 1,
+		name: "Maario",
+		avatar: marioAvatar,
+		alias: "chokapik",
+		rank: 1,
+
+	},
+	player2:{
+		id: 2,
+		name: "Luigi",
+		avatar: yoshiAvatar,
+		alias: "chokapik",
+		rank: 23,
+	},
+},
+
+{
+	id: 5,
+	date: "2021-08-02",
+	score: "10-30",
+	tournament: "deathmatch",
+	gameRank: "final",
+	player1:{
+			id: 1,
+			name: "pomko",
+			avatar: princessAvatar,
+		alias: "popo",
+		rank: 300
+	},
+	player2:{
+		id: 2,
+		name: "cacao",
+		avatar: badAvatar,
+		alias: "ananas",
+		rank: 9000
+	},
+},
+{
+id: 6,
+date: "2021-08-04",
+score: "5-20",
+gameRank: "final",
+player1:{
+		id: 1,
+		name: "pomko",
+		avatar: badAvatar,
+	alias: "popo",
+	rank: 300
+},
+player2:{
+	id: 2,
+	name: "cacao",
+	avatar: yoshiAvatar,
+	alias: "ananas",
+	rank: 9000
+},
+},
+	];

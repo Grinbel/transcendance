@@ -1,6 +1,6 @@
 import "./dataTable.scss"
 import * as React from 'react';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar, gridClasses } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
 
 
@@ -11,20 +11,26 @@ import { FaRegEye } from "react-icons/fa";
 
 const DataTable = ({data}) => {
 
+	const handleDelete = (id) => {
+		// send delete request to API
+
+		console.log('delete', id);
+	}
+
 	
 	const actionColumn = {
 		field:'action',
 		headerName:'Action',
-		width: 150,
+		flex: 0.2,
 		renderCell: (params) => {
 			console.log('path', `/${data.linkPath}/${params.row.id}`);
 			return (
 				<div className="actions">
-					<Link to={`/${data.linkPath}/${params.row.id}`} id="eyeButton">
-						< FaRegEye id="eyeIcon" />
+					<Link to={`/${data.linkPath}/${params.row.id}`} id="actionButton">
+						< FaRegEye className="actionImage" id="eyeIcon" />
 					</Link>
-					<button onClick={() => console.log('Icon clicked to delete user!')} id="deleteButton">
-						<TbLockOpenOff id="deleteIcon" />
+					<button onClick={() => handleDelete(params.rows.id)} id="actionButton">
+						<TbLockOpenOff className="actionImage" id="deleteIcon" />
 					</button>
 					<link rel="stylesheet" href="" />
 				</div>
@@ -35,6 +41,15 @@ const DataTable = ({data}) => {
 	return (
 		<div className="dataTable">
 			<DataGrid
+				sx={{
+		  			[`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
+						outline: 'none',
+					},
+		  			[`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
+		  			  {
+			 			outline: 'none',
+					},
+		}}
 				className="dataGrid"
 				rows={data.rows}
 				columns={[...data.columns, actionColumn]}
@@ -60,8 +75,18 @@ const DataTable = ({data}) => {
 				disableRowSelectionOnClick
 				disableColumnFilter
 				disableColumnSelector
+				disableColumnResize={true}
 				disableDensitySelector
 				disableExport
+
+				autoHeight
+				// getRowSpacing={ (params) => {
+				// 	if (params.row.id % 2 === 0) {
+				// 		return '5px';
+				// 	}
+				// 	return '0px';
+				// }}
+				
 			/>
 		</div>
 	);

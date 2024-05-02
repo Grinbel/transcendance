@@ -119,7 +119,7 @@ export const RecentGames = () => {
 						<div className='player'>
 							<img className='playerimage' src={game.player2.avatar} alt="player Avatar" />
 							<div className='playertext'>
-								<span className='playeralias'>{game.player2.alias}</span>
+								<span className={`playeralias ${game.player2.status ? 'online' : 'offline'}`}  >{game.player2.alias}</span>
 							</div>
 						</div>
 						
