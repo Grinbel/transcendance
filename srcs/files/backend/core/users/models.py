@@ -16,6 +16,7 @@ class User(AbstractUser):
 	avatar = models.ImageField(upload_to='avatars/', default='yoshi.jpg')
 	alias = models.CharField(max_length=255, null=True, blank=True)
 	tournament = models.ForeignKey('tournament.Tournament', on_delete=models.SET_NULL, null=True, blank=True)
+	friends = models.ManyToManyField('self', blank=True)
 
 	def __str__(self):
-		return f"username = {self.username} \n alias = {self.alias} \n email = {self.email}"
+		return f"username = {self.username} \n email = {self.email}"

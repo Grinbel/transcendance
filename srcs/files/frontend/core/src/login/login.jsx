@@ -24,7 +24,7 @@ function Login() {
     const navigate = useNavigate();
     const userInfo = useContext(userContext);
 
-	console.log('Login: user', userInfo.user.username);
+	console.log('Login: user ', userInfo.user.username);
     
 
 
@@ -33,11 +33,15 @@ function Login() {
         console.log('Login: handleChange event.target.name', event.target.name);
     };
 
+    //print local storage info
+    console.log('Login: localStorage accessTok', localStorage.getItem('access_token'));
+    console.log('Login: localStorage refreshTok', localStorage.getItem('refresh_token'));
 
     const handleLogin = async (event) => {
 
         event.preventDefault();
         console.log('Login: handleLogin formData', formData);
+
             try 
             {
                 const response = await axiosInstance.post('/login/', {
@@ -55,6 +59,7 @@ function Login() {
                     else
                     {
                         console.log('Login successful no 2FA: i go to home page', response);  //SETUP REDIRECT TO HOME PAGE
+                        axiosInstance.defaults.headers.common['Authorization'] = "JWT " + response.data.access;
                         axiosInstance.defaults.headers['Authorization'] = "JWT " + response.data.access;
                         localStorage.setItem('access_token', response.data.access);
                         localStorage.setItem('refresh_token', response.data.refresh);
@@ -177,10 +182,11 @@ function Login() {
                                         </Form.Group>
                                     
                                         <Button type='submit' role="button" className="buttonCustom"> Login </Button>
-                                        {/* <Button type="" className="buttonTest"> Gooo ! </Button> */}
+                                   
                                     </Form>
                                 </Col>
                             </Row>
+                            
                         </Container>
 
                 ) : (

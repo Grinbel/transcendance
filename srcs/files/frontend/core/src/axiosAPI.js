@@ -4,7 +4,12 @@ export const axiosInstance = axios.create({
     baseURL: 'http://0.0.0.0:8000/users/',
     timeout: 5000,
     headers: {
-        'Authorization': "JWT  " + localStorage.getItem('access_token'),
+        'Authorization': "JWT " + localStorage.getItem('access_token'),
+        'Content-Type': 'application/json',
+        'accept': 'application/json'
+    },
+    common: {
+        'Authorization': "JWT " + localStorage.getItem('access_token'),
         'Content-Type': 'application/json',
         'accept': 'application/json'
     }
@@ -13,12 +18,12 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
     response => response,
     error => {
-        console.log('AXIOS INTERCEPTOR error RESPONSE')
+        console.log('AXIOS INTERCEPTOR error RESPPPONSE', error.response.status)
       const originalRequest = error.config;
       
-      if (error.status === 401) {
+      if (error.response.status === 401) {
+            // console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.status)
           const refresh_token = localStorage.getItem('refresh_token');
-
           return axiosInstance
               .post('/token/refresh/', {refresh: refresh_token})
               .then((response) => {
@@ -27,6 +32,7 @@ axiosInstance.interceptors.response.use(
                   localStorage.setItem('refresh_token', response.data.refresh);
 
                   axiosInstance.defaults.headers['Authorization'] = "JWT " + response.data.access;
+                  axiosInstance.defaults.headers.common['Authorization'] = "JWT " + response.data.access;
                   originalRequest.headers['Authorization'] = "JWT " + response.data.access;
                   return axiosInstance(originalRequest);
               })

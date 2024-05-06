@@ -2,6 +2,9 @@ import { Routes, Route, Link, } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useState , createContext, useContext} from 'react';
 
+import  { axiosInstance } from "./axiosAPI.js";
+
+
 import './App.scss'
 import Login from './login/login.jsx'
 import Signup from './login/signup.jsx'
@@ -28,6 +31,12 @@ const  appContext = createContext(null);
 function App(){
 
 
+	//print axios defaults
+	console.log(("axios headers: token :"), axiosInstance.defaults.headers[
+		'Authorization'
+	]);
+
+		
     // const handleLoginClick = () => {
 	// 	console.log('App: login clicked in navbar');
 
