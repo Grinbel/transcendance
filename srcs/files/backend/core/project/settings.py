@@ -32,33 +32,17 @@ AUTH_USER_MODEL = "users.User"
 SECRET_KEY = 'django-insecure-+f$6n=$1s3ol8jgaenlmo9cu=-byy2*x=5)!evng!+0iu-e9vj'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ASGI_APPLICATION = 'project.asgi.application'
 
-CHANNEL_LAYERS = {
-	'default': {
-		'BACKEND': 'channels.layers.InMemoryChannelLayer'
-	},
-}
-
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": [("localhost", 8000)],
-#         },
-#     },
-# }
 
 # Application definition
 
 INSTALLED_APPS = [
-	'channels',
-	'daphne',
+    'channels',
+
     'tournament',
     'game',
-    'chat',
+    # 'chat',
 	'corsheaders',
-	'matchmaking',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -75,6 +59,7 @@ MIDDLEWARE = [
 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'channels.middleware.AuthMiddlewareStack',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -82,6 +67,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
 ]
+
+ASGI_APPLICATION = 'project.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -100,7 +93,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -113,7 +106,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'project.wsgi.application'
+# WSGI_APPLICATION = 'project.wsgi.application'
 APPEND_SLASH = False
 
 # Database
@@ -167,7 +160,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Europe/Paris'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -186,12 +179,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #security settings
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = True
-ALLOWED_HOSTS = ['*']
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     'http://0.0.0.0:5173',
-    'http://localhost:5173',
     'http://0.0.0.0:8000',
+    'http://localhost:5173'
     # 'http://your-production-url.com',
 ]
 CORS_ALLOW_METHODS = [
@@ -275,3 +267,7 @@ EMAIL_HOST_USER = os.environ.get('MAIL_USER') # replace with your actual email
 
 # The password to use when authenticating with the SMTP server
 EMAIL_HOST_PASSWORD = os.environ.get('MAIL_PASS')  # replace with your actual email password
+
+
+ALLOWED_HOSTS = ['0.0.0.0']
+

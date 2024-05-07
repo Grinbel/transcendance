@@ -9,12 +9,9 @@ from django.views.decorators.csrf import csrf_exempt
 from datetime import timedelta
 from django.utils import timezone
 from django.core.mail import send_mail
-
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework.exceptions import APIException
-
 from rest_framework import status,  permissions
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import MyTokenObtainPairSerializer
@@ -42,14 +39,6 @@ import os
 def generate_random_digits(n=6):
 	return "".join(map(str, random.sample(range(0, 10), n)))
 
-@api_view(['GET'])
-@permission_classes([permissions.IsAuthenticated])
-def get_2fa_preference(request):
-	user = request.user
-	two_factor_enabled = user.two_factor_enabled
-	print('found 2FA status:', two_factor_enabled)
-	return Response({'twoFactorEnabled': two_factor_enabled})
-
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def login(request):
@@ -62,23 +51,10 @@ def login(request):
 	user = authenticate(request, username=username, password=password)
 	print('user', user)
 
-
-	#####
 	if user is not None:
-	# User credentials are valid, proceed with code generation and email sending
+		# User credentials are valid, proceed with code generation and email sending
 		user_obj = User.objects.get(id=user.id)
-		data = {'username': user_obj.username, 'password': password}
-		if user_obj.two_factor == False:
-			token_serializer = MyTokenObtainPairSerializer(data=data)
-			print('token_serializer without 2FA', token_serializer)
-			try:
-				if (token_serializer.is_valid(raise_exception=True)):
-					print('validated_data ok without 2FA', token_serializer.validated_data)
-					return Response(token_serializer.validated_data, status=status.HTTP_200_OK)
-			except Exception as e:
-				raise APIException("Internal server error. Please try again later.")
-
-	###### 2FA implementation ######
+		print('user_obj', user_obj)
 		
 		# Generate a 6-digit code and set the expiry time to 1 hour from now
 		verification_code = generate_random_digits(6)
@@ -149,7 +125,6 @@ class Signup(APIView):
 			'request': request,
 		}
 		print('request.data', request.data)
-		
 		serializer = UserSerializer(data=request.data, context=serializer_context)
 		if serializer.is_valid():
 			user = serializer.save()
@@ -178,6 +153,7 @@ class UserList(APIView):
 		users = User.objects.all()
 		serializer = UserSerializer(users, many=True)
 		return Response(serializer.data)
+
 
 # import random
 # import string

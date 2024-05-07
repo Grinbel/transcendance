@@ -12,26 +12,10 @@ class User(AbstractUser):
 	status = models.CharField(max_length=255, choices=STATUS_CHOICES, default='available')
 	otp = models.CharField(max_length=6, blank=True)
 	otp_expiry_time = models.DateTimeField(blank=True, null=True)
-	two_factor = models.BooleanField(default=False)
-	avatar = models.ImageField(upload_to='avatars/', default='yoshi.jpg')
+	#is_authenticated = models.BooleanField(default=False)
+	avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
 	alias = models.CharField(max_length=255, null=True, blank=True)
 	tournament = models.ForeignKey('tournament.Tournament', on_delete=models.SET_NULL, null=True, blank=True)
-	name = models.CharField(max_length=255, null=True, blank=True)
-	blacklist = models.ManyToManyField('self', blank=True)
-
-	def log(self, name):
-		print("username ", name)
-		user = User.objects.get(username=name)
-		user.name = name
-		user.save()
-		print("user ", user.name)
-		self = user
-		self.save()
-		print("set username to", self.name)
-
-	def addBlacklist(self, name):
-		user = User.objects.get(username=name)
-		self.blacklist.add(user)
 
 	def __str__(self):
-		return f"username = {self.username} \n username = {self.username} \n email = {self.email}"
+		return f"username = {self.username} \n alias = {self.alias} \n email = {self.email}"
