@@ -149,7 +149,11 @@ function Chat() {
 
 	useEffect(() => {
 		const ws = getWebSocket(roomName);
-		ws.onopen = () => console.log('ws chat opened');
+		// const ws = new WebSocket('ws://localhost:8000/users/ws/chat/general/');
+		ws.onopen = () => {
+			ws.send(JSON.stringify({type:"connected",username: userInfo.user.username}));
+			console.log('ws chat opened')
+		};
 		ws.onclose = () => console.log('ws chat closed');
 		ws.onerror = e => console.log('ws chat error', e);
 		ws.onmessage = e => {
@@ -194,7 +198,7 @@ function Chat() {
 			const formattedTime = currentTime.getHours() + ':' + currentTime.getMinutes();
 
 			console.log(userInfo.user.username);
-			const sent = JSON.stringify({ message: formData.message, date: formattedTime, username: userInfo.user.username });
+			const sent = JSON.stringify({ type:"chat",message: formData.message, date: formattedTime, username: userInfo.user.username });
 			ws.send(sent);
 			console.info('sent', sent);
 		} catch (error) {

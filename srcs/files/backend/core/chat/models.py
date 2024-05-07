@@ -11,16 +11,17 @@ class Group(models.Model):
 	groupName = models.CharField(max_length=255)
 	# creater = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_groups")
 	members = models.ManyToManyField(User, related_name="all_groups")
-
+	current_member = models.IntegerField(default=0)
 
 	def last_10_messages(name):
 		try:
 			group = Group.objects.get(groupName=name)
-			return list(group.messages.order_by("date"))[-8:]
+			return list(group.messages.order_by("date"))[-5:]
 		except Group.DoesNotExist:
 			return None
 		# group = Group.objects.get(groupName=name)
 		# return list(group.messages.order_by("date"))[-30:]
+
 
 	def __str__(self):
 		return self.groupName
@@ -28,7 +29,7 @@ class Group(models.Model):
 class Messages(models.Model):
 	
 	message = models.CharField(max_length=255)
-	date = models.DateTimeField(default=timezone.now)
+	date = models.DateTimeField(default=datetime.now())
 	username = models.CharField(max_length=255)
 	# date_posted = models.DateTimeField(default=datetime.now)
 	parent_group = models.ForeignKey(

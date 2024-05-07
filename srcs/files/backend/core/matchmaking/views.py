@@ -17,7 +17,7 @@ import json
 class bot:
 	id = 0
 
-
+#//! put permisiion in login
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def choice(request):
@@ -26,6 +26,10 @@ def choice(request):
 
 	print('value ' + str(request.data))
 	username = request.data.get('username')
+	join = request.data.get('join')
+	if (join):
+		name = Tournament.getNextTournament()
+		return Response({'room_name': name})
 	playerCount = request.data.get('playerCount')
 	tournamentId = request.data.get('tournamentId')
 	# print('All room names: ', [tournament.name for tournament in Tournament.objects.all()])
@@ -36,17 +40,19 @@ def choice(request):
 	# print('tournamentId ', tournamentId)
 
 	if (tournamentId == ''): #create a new room
-		user = User.objects.get(username=username)
-		tournament = Tournament.create(playerCount, user)
+		# user = User.objects.get(username=username)
+		name = Tournament.createRoomName()
+		print('name', name)
+		tournament = Tournament.create(name=name,max_capacity=playerCount)
 		print('maximum tournament', tournament.max_capacity)
-		return Response({'room_name': tournament.name})
+		return Response({'room_name': name})
 	#check if tournamendid exist
 	tournament = Tournament.objects.filter(name=tournamentId)
 	tournament = tournament.first()
 	if (tournament is None):
 		return Response({'Error':'Invalid tournament ID'})
 	# print('tournament ' + str(tournament))
-	if tournament.addUser(user) is False:
+	if tournament.checkAddUser(user) is False:
 		return Response({'Error':'Room is full'})
 	print('maximum tournament', tournament.max_capacity)
 
@@ -54,9 +60,9 @@ def choice(request):
 	# return Response({tournament.name})
 	
 # Create your views here.
-def launch_tournament(request):
-	users = User.objects.filter(id__in=request.GET.getlist('user_ids'))  # get the users who want to join a game (human)
-	num_players = int(request.GET['num_players'])  # get the number of players in total (for the bot)
+def launch_tournament(tournament):
+	users = tournament.player.all()# get the users who want to join a game (human)
+	num_players =  tournament.player.count() # get the number of players in total (for the bot)
 	# for i in range(num_players -len(users) ):
 		#! //! need to add bot ?
 		#users.add(bot)
@@ -90,47 +96,112 @@ def launch_tournament(request):
 		num_game /= 2
 
 
+
 class Tournamen(WebsocketConsumer):
 	def connect(self):
-		
-		self.accept()
+		room_name = self.scope['url_route']['kwargs']['room_name']
+		print('Connecting to room: ', room_name)
+		self.room_name = room_name
+		self.tournament_name = room_name
+		tournament, created = Tournament.objects.get_or_create(name=room_name)
+		# self.tournament = tournament
+		print('connect maximum tournament', tournament.max_capacity)
 
-		print('Connected')
+		async_to_sync(self.channel_layer.group_add)(
+			self.room_name,
+			self.channel_name
+		)
+		self.accept()
+		usernames = tournament.getAllUsername()
+		for username in usernames:
+			print("username: ", username)
+			self.send(text_data=json.dumps({
+				'type': 'username',
+				'username': username,
+				'name': room_name,
+			}))
 	
 	def disconnect(self, close_code):
+		async_to_sync(self.channel_layer.group_discard)(
+			self.room_name,
+			self.channel_name
+		)
+		tournament = Tournament.objects.get(name=self.room_name)
+		usernames = tournament.getAllUsername()
+		print("player count: " + str(tournament.players.count()))
+		if (tournament.players.count() <= 1):
+			tournament.delete()
+			print('tournament deleted')
+		else:
+			tournament.removeUser(self.scope['user'])
+			print('user removed')
+			for username in usernames:
+				tournament.removeUser(User.objects.get(username=username))
+
+			async_to_sync(self.channel_layer.group_send)(
+				self.tournament_name,
+				{
+					'type':'disconnected',
+					'username': 'all',
+				}
+			)
 		print('Disconnected')
-		self.send(text_data=json.dumps({
-			'message': 'Disconnected',
-			'type': 'disconnection'
-		}))
 
 	def receive(self, text_data):
 		# Tournament.objects.all().delete()
 		text_data_json = json.loads(text_data)
-		name = text_data_json['tournament']
-		self.tournament_name = name
-
-		async_to_sync(self.channel_layer.group_add)(
-			self.tournament_name,
-			self.channel_name
-		)
 		print(text_data_json)
+		tipe = text_data_json['type']
+		name = text_data_json['tournament']
+		username = text_data_json['username']
+		user = User.objects.get(username=username)
 		tournament = Tournament.objects.get(name=name)
-		usernames = [player.username for player in tournament.players.all()]
-		print(usernames)
-		# username = text_data_json['username']
+		tournaments= Tournament.objects.all()
+		for pop in tournaments:
+			print("Tournament name: ", pop.name)
+			print("Tournament player count: ", pop.players.count())
+		print('tournament name: ', self.room_name)
+		tournament.addUser(user)
+		print('receive maximum tournament', tournament.max_capacity)
+
 		async_to_sync(self.channel_layer.group_send)(
 			self.tournament_name,
 			{
 				'type':'tournament',
-				'username': usernames,
+				'username': username,
 				'name': name,
+				'max_capacity': tournament.max_capacity,
 			}
 		)
+		if (tournament.max_capacity == tournament.players.count()):
+			timer = 3
+			# return
+			async_to_sync(self.channel_layer.group_send)(
+				self.tournament_name,
+				{
+					'type':'launch_tournament',
+					'timer': timer,
+				}
+			)
+			# time.sleep(timer)
+			# launch_tournament(tournament)
 
 	def tournament(self, event):
 		self.send(text_data=json.dumps({
 			'type':'username',
 			'username': event['username'],
 			'name': event['name'],
+			'max_capacity': event['max_capacity'],
+		}))
+	
+	def disconnected(self, event):
+		self.send(text_data=json.dumps({
+			'type': 'disconnected',
+			'username': event['username'],
+		}))
+	
+	def launch_tournament(self, event):
+		self.send(text_data=json.dumps({
+			'type': 'launch_tournament',
+			'timer': event['timer'],
 		}))

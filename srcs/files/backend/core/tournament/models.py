@@ -20,11 +20,6 @@ class Tournament(models.Model):
 	max_capacity = models.IntegerField(default=2)
 	# admin = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='admin', blank=True, null=True)
 	
-	def save(self, *args, **kwargs):
-		if not self.name:
-			self.name = self.create_room()
-		super().save(*args, **kwargs)
-
 	@staticmethod
 	def createRoomName():
 		name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
@@ -33,14 +28,14 @@ class Tournament(models.Model):
 		return name
 
 	@classmethod
-	def create(cls, max_capacity=8, user=None):
-		tournament = cls.objects.create(name=Tournament.createRoomName())
-		tournament.max_capacity = max_capacity
+	def create(self, max_capacity=8, user=None, name=None):
+		self = Tournament.objects.create(name=name)
+		self.max_capacity = max_capacity
 		if user:
 			# tournament.admin = user
-			tournament.addUser (user)
-
-		return tournament
+			self.addUser (user)
+		self.save()
+		return self
 	
 	def addUser(self,user):
 		if (user.tournament is not None):
@@ -53,6 +48,13 @@ class Tournament(models.Model):
 			self.players.add(user)
 			return True
 
+	def checkAddUser(self,user):
+		if (user.tournament is not None):
+			return False
+		if self.players.count() == self.max_capacity:
+			return False
+		else:
+			return True
 
 	def removeUser(self,user):
 		if (user in self.players.all()):
@@ -65,6 +67,24 @@ class Tournament(models.Model):
 
 	def getAllUsername(self):
 		return [user.username for user in self.players.all()]
+
+	@classmethod
+	def getNextTournament(self):
+		tournaments = Tournament.objects.filter(status='pending')
+		buff = 8
+		name = ''
+		print("Tournament")
+		if tournaments.count() == 0:
+			return Tournament.createRoomName()
+		for tournament in tournaments:
+			j = tournament.max_capacity - tournament.players.count()
+			print ("Tournament name:%s ",tournament.name)
+			print ("Tournament player count:",j)
+			print("buff:",buff)
+			if  j < buff:
+				buff = j
+				name = tournament.name
+		return name
 
 	def __str__(self):
 		return self.name

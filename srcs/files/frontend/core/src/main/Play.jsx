@@ -30,9 +30,9 @@ function Play() {
 
 	const handleSubmit = async (event) => {
 		
-		if (join  && formData.tournamentId === ""){
-			return;
-		}
+		// if (join  && formData.tournamentId === ""){
+		// 	return;
+		// }
 		if (userInfo.user.isLogged ===  false){
 			setDisplayer("Please login to play");
 			return;
@@ -46,6 +46,7 @@ function Play() {
 				playerCount: formData.playerCount,
 				isLocal: formData.isLocal,
 				username: userInfo.user.username,
+				join:join  && formData.tournamentId === "",
 			});
 			console.log('response', response.data);
 			console.log('Room name', response.data.room_name);
