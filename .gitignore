@@ -1,0 +1,7 @@
+srcs/files/database
+srcs/files/backend/core/profiles/__pycache__/*
+srcs/files/backend/core/profiles/migrations/__pycache__/*
+srcs/files/backend/core/project/__pycache__/*
+*.pyc
+srcs/docker-compose.yml__pycache__/
+__pycache__/

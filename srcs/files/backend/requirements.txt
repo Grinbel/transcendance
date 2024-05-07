@@ -1,0 +1,11 @@
+Django==5.0.2
+python-dotenv
+termcolor
+psycopg2-binary==2.9.9
+djangorestframework
+django-cors-headers
+pillow
+djangorestframework-simplejwt
+channels
+daphne
+websockets

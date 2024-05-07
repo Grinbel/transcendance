@@ -1,0 +1,76 @@
+version: '3'
+
+services:
+  # ddebian:
+    # image: debian:buster-slim
+    # volumes:
+    #   - ./files/database:/datass
+    # stdin_open: true
+    # tty: true
+    # # command: "/bin/bash && rm -rf datass"
+
+  database:
+    container_name: database
+    image: postgres
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./files/database:/var/lib/postgresql/data
+    networks:
+      - transcend-network
+
+  backend:
+    container_name: django
+    build: ./files/backend/
+    image: django
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    restart: unless-stopped
+    volumes:
+      - back:/app/
+    depends_on:
+      - database
+    networks:
+      - transcend-network
+
+  frontend:
+    container_name: react
+    build: ./files/frontend/
+    image: react
+    ports:
+      - "5173:5173"
+    env_file:
+      - .env
+    volumes:
+      - front:/app/
+    depends_on:
+      - backend
+    networks:
+      - transcend-network
+
+volumes:
+  back:
+      driver: local
+      driver_opts:
+         type: none
+         device: ./files/backend/core/
+         o: bind
+  front:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./files/frontend/core/
+      o: bind
+networks:
+      transcend-network:
+            name: transcend-network
+            driver: bridge
+  
