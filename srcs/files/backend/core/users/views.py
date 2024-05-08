@@ -21,6 +21,8 @@ from .serializers import MyTokenObtainPairSerializer
 from .serializers import UserSerializer
 from .permissions import UserPermission
 from .models import User
+from rest_framework_simplejwt.tokens import UntypedToken
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from .helper import authenticate
 import random
 import os
@@ -42,13 +44,24 @@ import os
 def generate_random_digits(n=6):
 	return "".join(map(str, random.sample(range(0, 10), n)))
 
+# give me a function that gets me user informations when receiving the correspondent token
+
+
+
 @api_view(['GET'])
-@permission_classes([permissions.IsAuthenticated])
+# @permission_classes([permissions.IsAuthenticated])
 def get_2fa_preference(request):
-	user = request.user
-	two_factor_enabled = user.two_factor_enabled
-	print('found 2FA status:', two_factor_enabled)
-	return Response({'twoFactorEnabled': two_factor_enabled})
+	token = request.headers.get('Authorization').split(' ')[1]
+	try:
+		untyped_token = UntypedToken(token)
+	except (InvalidToken, TokenError) as e:
+		raise InvalidToken('Invalid token')
+
+	id = untyped_token['user_id']
+	user = User.objects.get(id=id)
+
+	# Now you have the user instance and can return the necessary information
+	return Response({'username': user.username, 'email': user.email})
 
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])

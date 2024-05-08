@@ -36,7 +36,7 @@ function SignupForm() {
 							offset: 3,
 						}}
 					>
-						<Form className="formCustom" noValidate validated={validated} onSubmit={submitFn}>
+						<Form className="" noValidate validated={validated} onSubmit={submitFn}>
 							<Form.Group controlId="username">
 								<Form.Label>Username</Form.Label>
 								<Form.Control
@@ -245,4 +245,4 @@ function VerifyForm() {
 		);
 	}
 
-	export { LoginForm, VerifyForm };
+	export { LoginForm, VerifyForm, SignupForm };

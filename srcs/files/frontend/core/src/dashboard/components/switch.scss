@@ -1,0 +1,57 @@
+@import "../pages/variables.scss";
+
+.switchContainer {
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+	grid-auto-rows: 50px;
+	padding: 5px 10px;
+	border-radius: 10px;
+	background-color: transparent;
+	// margin: 10px;
+	transition: all 0.3s;
+	cursor: pointer;
+	.switchName {
+		font-size: $font-size;
+		font-weight: $font-weight;
+	}
+	.switchLabel {
+		grid-column: 2;
+		grid-row: 1;
+		justify-self: center;
+		cursor: pointer;
+		width: 100px;
+		height: 50px;
+		background: grey;
+		border-radius: 100px;
+		position: relative;
+		transition: background-color .2s;
+
+		.switchButton {
+			content: '';
+			position: absolute;
+			top: 2px;
+			left: 2px;
+			width: 45px;
+			height: 45px;
+			border-radius: 45px;
+			transition: 0.2s;
+			background: #fff;
+			box-shadow: 0 0 2px 0 rgba(10, 10, 10, 0.29);
+		}
+	}
+	.switchCheckbox {
+		grid-column: 3;
+		height: 0px;
+		width: 0px;
+		visibility: hidden;
+	}
+	
+	.switchCheckbox:checked + .switchLabel .switchButton {
+		left: calc(100% - 2px);
+		transform: translateX(-100%);
+	}
+
+	.switchLabel:active .switchButton {
+		width: 60px;
+	  }
+}

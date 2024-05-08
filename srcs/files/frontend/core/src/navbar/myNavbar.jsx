@@ -1,4 +1,4 @@
-import React, { useState, useContext, forwardRef } from 'react';
+import React, { useState, useContext, forwardRef, useEffect } from 'react';
 
 import { Link,  useNavigate} from 'react-router-dom';
 
@@ -67,8 +67,10 @@ const NavLoggedIn = () => {
 			</Navbar.Brand>
 			
 			<Nav  className="ms-auto">
-				<NavDropdown className='dropCustom' id="nav-dropdown-dark-example" title={UserMenu}>
+				<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={UserMenu}>
+
 					<NavDropdown.Item href="/profile">profile</NavDropdown.Item>
+					<Nav.Link className="navCustom playButton me-3" href="/play">play</Nav.Link>
 					<NavDropdown.Divider />
 					<NavDropdown.Item onClick={handleLogout}>logout</NavDropdown.Item>
             	</NavDropdown>
@@ -88,6 +90,9 @@ const NavLoggedIn = () => {
 	const navigate = useNavigate();
 	const userinfo = useContext(userContext);
 
+
+
+
 	  return (
 		<Navbar collapseOnSelect expand="lg" className="bg-body-tertiary navbarCustom">
 		  <Container>
@@ -106,7 +111,6 @@ const NavLoggedIn = () => {
 			  <Nav  className="ms-auto navbarCustom">
 				<Nav.Link className="navCustom me-3" href="/signup">sign up</Nav.Link>
 				<Nav.Link className="navCustom me-3" href='/login' >login</Nav.Link>
-				<Nav.Link className="navCustom playButton me-3" href="/play">play</Nav.Link>
 			  </Nav>
 			</Navbar.Collapse>
 		  </Container>
@@ -120,6 +124,23 @@ const NavLoggedIn = () => {
 	const userinfo = useContext(userContext);
 
 	console.log('MyNavbar: userinfo', userinfo);
+
+	function get_user(){
+		axiosInstance.get('get_2fa_preference/')
+		.then((response) => {
+			console.log('MyNavbar: get_user response', response);
+			// userinfo.setUser({username:response.data.username, isLogged:true});
+		})
+		.catch((error) => {
+			console.error('There was an error!', error);
+		});
+	}
+	
+	useEffect(() => {
+		console.log('MyNavbar: useEffect');
+		get_user();
+	}
+	, []);
 	
 	// Fonction pour gérer la connexion de l'utilisateur
   
