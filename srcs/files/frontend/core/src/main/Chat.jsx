@@ -141,7 +141,7 @@ function Chat() {
 
 	function getWebSocket(roomName) {
 		if (!websockets[roomName]) {
-		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/chat/${roomName}/`);
+		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/chat/${roomName}/?uuid=${userInfo.user.username}`);
 		}
 		setMessages(prevMessages => [""]);
 		return websockets[roomName];

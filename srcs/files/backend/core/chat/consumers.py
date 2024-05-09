@@ -33,13 +33,17 @@ class ChatConsummer(WebsocketConsumer):
 	
 	def disconnect(self, close_code):
 		print('Disconnected')
+		user= self.scope['user']
+		print('user:',user)
 		async_to_sync(self.channel_layer.group_discard)(
 			self.room_group_name, self.channel_name
 		)
 
 	def receive(self, text_data):
 		text_data_json = json.loads(text_data)
-		print('username:',self.scope['user'])
+		user= self.scope['user']
+		print('user:',user)
+		print('username:',user.username)
 
 		print(text_data_json)
 		username = text_data_json['username']
