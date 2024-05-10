@@ -2,6 +2,10 @@ import { Routes, Route, Link, } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useState , createContext, useContext, useEffect} from 'react';
 
+import './App.css'
+import Login from './login.jsx'
+import Signup from './signup.jsx'
+import Game from './game.jsx'
 import  { axiosInstance } from "./axiosAPI.js";
 
 
@@ -93,6 +97,7 @@ function getProfile(user, setUser){
 						<Route path="/signup" element={<Signup />} />
 						<Route path="/tournament" element={<Tournament />} />
 						<Route path="/about" element={<About />} />
+						<Route path="/Game/" element={<Game />} />
 						<Route exact path="/" element={<Home />} />
 						{/* <Route path="/*" element={<Error404 />} /> */}
 					</Routes>

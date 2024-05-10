@@ -75,6 +75,7 @@ MIDDLEWARE = [
 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'channels.middleware.AuthMiddlewareStack',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -82,6 +83,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
 ]
+
+ASGI_APPLICATION = 'project.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -113,7 +122,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'project.wsgi.application'
+# WSGI_APPLICATION = 'project.wsgi.application'
 APPEND_SLASH = False
 
 # Database
@@ -275,3 +284,7 @@ EMAIL_HOST_USER = os.environ.get('MAIL_USER') # replace with your actual email
 
 # The password to use when authenticating with the SMTP server
 EMAIL_HOST_PASSWORD = os.environ.get('MAIL_PASS')  # replace with your actual email password
+
+
+ALLOWED_HOSTS = ['0.0.0.0']
+
