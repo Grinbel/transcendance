@@ -8,7 +8,7 @@ function TwoFactorEnable() {
     const custom_fetch = async () => {
         try 
         {
-            const response = await axiosInstance.get('/get_2fa_preference/');
+            const response = await axiosInstance.get('/getprofile/');
             setTwoFaStatus(response.data.two_factor);
         } catch (error){
             console.log('Error fetching 2FA status: ', error.message);

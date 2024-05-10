@@ -124,24 +124,6 @@ const NavLoggedIn = () => {
 	const userinfo = useContext(userContext);
 
 	console.log('MyNavbar: userinfo', userinfo);
-
-	function get_user(){
-		axiosInstance.get('get_2fa_preference/')
-		.then((response) => {
-			console.log('MyNavbar: get_user response', response);
-			// userinfo.setUser({username:response.data.username, isLogged:true});
-		})
-		.catch((error) => {
-			console.error('There was an error!', error);
-		});
-	}
-	
-	useEffect(() => {
-		console.log('MyNavbar: useEffect');
-		get_user();
-	}
-	, []);
-	
 	// Fonction pour gérer la connexion de l'utilisateur
   
 	// Fonction pour gérer la déconnexion de l'utilisateur
