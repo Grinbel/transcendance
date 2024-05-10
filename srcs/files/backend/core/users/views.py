@@ -26,9 +26,6 @@ from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from .helper import authenticate
 import random
 import os
-from uuid import uuid4
-from django.core.cache import cache
-from rest_framework.permissions import IsAuthenticated
  
 ##remember to check USER_ID_FIELD and USER_ID_CLAIM in jwt settings in case picking the email adress as the user id
 
@@ -82,10 +79,6 @@ def login(request):
 	if user is not None:
 	# User credentials are valid, proceed with code generation and email sending
 		user_obj = User.objects.get(id=user.id)
-		ticket_uuid = uuid4()
-		user_id = request.user.id
-		cache.set(ticket_uuid, user_id, 600)
-		print("ticket_uuid:", ticket_uuid)
 		data = {'username': user_obj.username, 'password': password}
 		if user_obj.two_factor == False:
 			token_serializer = MyTokenObtainPairSerializer(data=data)

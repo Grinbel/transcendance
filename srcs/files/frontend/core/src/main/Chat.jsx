@@ -6,6 +6,8 @@ import "./Chat.css";
 import "./Home.css";
 import { useContext } from "react";
 import { userContext } from "../contexts/userContext.jsx";
+import  { axiosInstance } from "../axiosAPI.js";
+
 
 {/*const handleChat = async (event) => {
 	event.preventDefault();
@@ -123,6 +125,12 @@ class Chat extends React.Component {
 	}
 }*/}
 
+// function websockets() {
+// 	const response = await axiosInstance.post('/login/', {
+// 		username: formData.username,
+// 		password: formData.password
+// 		});
+// }
 
 function Chat() {
 	const userInfo = useContext(userContext);
@@ -140,8 +148,9 @@ function Chat() {
 	}, [messages]);
 
 	function getWebSocket(roomName) {
+		
 		if (!websockets[roomName]) {
-		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/chat/${roomName}/?uuid=${userInfo.user.username}`);
+		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/chat/${roomName}/?uuid=${userInfo.user.id}`);
 		}
 		setMessages(prevMessages => [""]);
 		return websockets[roomName];
