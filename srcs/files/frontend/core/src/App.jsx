@@ -80,7 +80,6 @@ function getProfile(user, setUser){
 		<userContext.Provider value={{user, setUser}}>
 			<div className="app">
 				<MyNavbar/>
-				
 					<Routes>
 						<Route path="/dashboard" element={<Dashboard />}>
 							<Route index element={<MyMain />} />

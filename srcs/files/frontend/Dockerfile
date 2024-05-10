@@ -16,6 +16,7 @@ RUN npm install react-bootstrap bootstrap
 RUN npm install react-icons --save
 RUN npm install sass
 RUN npm install @mui/x-data-grid
+RUN npm i @emotion/react @emotion/styled
 RUN npm audit fix --force
 RUN npm install
 # Copy the current directory contents into the container at /app
