@@ -175,11 +175,6 @@ class Logout(APIView):
 	permission_classes = [permissions.AllowAny]
 
 	def post(self, request, format='json'):
-		ticket_uuid = uuid4()
-		user_id = request.user.id
-		print("user_id: ", user_id)
-		cache.set(ticket_uuid, user_id, 600)
-		print("ticket_uuid:", ticket_uuid)
 		try:
 			refresh_token = request.data["refresh_token"]
 			token = RefreshToken(refresh_token) # create a RefreshToken instance from the refresh token obtained to access the Class methods as blacklist()
