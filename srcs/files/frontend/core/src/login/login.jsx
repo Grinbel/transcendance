@@ -63,7 +63,7 @@ function Login() {
                         axiosInstance.defaults.headers['Authorization'] = "JWT " + response.data.access;
                         localStorage.setItem('access_token', response.data.access);
                         localStorage.setItem('refresh_token', response.data.refresh);
-                        userInfo.setUser({username:formData.username, isLogged:true});  // passing  info to userContext
+                        userInfo.setUser({username:formData.username, isLogged:true, userId:response.data.id});  // passing  info to userContext
                         navigate('/');
                     }
                 }

@@ -8,7 +8,7 @@ class UserSerializer(ModelSerializer):
 	 
 	class Meta:
 		model = User
-		fields = ['otp', 'otp_expiry_time','username', 'password', 'email', 'is_staff', 'two_factor']
+		fields = ['id', 'otp', 'otp_expiry_time','username', 'password', 'email', 'is_staff', 'two_factor']
 		extra_kwargs = {"password": {"write_only": True}}
 
 	def create(self, validated_data):
