@@ -286,5 +286,4 @@ EMAIL_HOST_USER = os.environ.get('MAIL_USER') # replace with your actual email
 EMAIL_HOST_PASSWORD = os.environ.get('MAIL_PASS')  # replace with your actual email password
 
 
-ALLOWED_HOSTS = ['0.0.0.0']
 

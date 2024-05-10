@@ -22,7 +22,7 @@ function Game() {
       
       useEffect(() => {
         // const ws = getWebSocket(roomName);
-        const ws = new WebSocket(`ws://0.0.0.0:8000/users/ws/game/`);
+        const ws = new WebSocket(`ws://localhost:8000/users/ws/game/`);
         ws.onopen = () => {
             console.log('ws game opened');
             ws.send(JSON.stringify({

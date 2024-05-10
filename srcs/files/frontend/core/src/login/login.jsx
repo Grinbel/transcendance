@@ -75,7 +75,7 @@ function Login() {
                         localStorage.setItem('access_token', response.data.access);
                         localStorage.setItem('refresh_token', response.data.refresh);
                         userInfo.setUser({username:formData.username, isLogged:true});  // passing  info to userContext
-                        getUuid(userInfo);
+                        // getUuid(userInfo);
 						navigate('/');
                     }
                 }
