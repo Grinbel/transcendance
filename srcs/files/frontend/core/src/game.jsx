@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import  { useEffect, useState } from 'react'; 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
@@ -6,13 +7,42 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 
 function Game() {
+    const [ws, setWs] = useState(null);
+	// const [roomName,setRoomName] = useState("general");
+	const websockets = {};
+
     //TODO : get all options from main page
-    useEffect(() => {
+    function getWebSocket(roomName) {
+		
+		if (!websockets[roomName]) {
+		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/game/`);
+		}
+		return websockets[roomName];
+	  }
+      
+      useEffect(() => {
+        // const ws = getWebSocket(roomName);
+        const ws = new WebSocket(`ws://0.0.0.0:8000/users/ws/game/`);
+        ws.onopen = () => {
+            console.log('ws game opened');
+            ws.send(JSON.stringify({
+                type: "join",
+                message: "Welcome to pop", 
+            }));
+        };
+        ws.onclose = () => console.log('ws chat closed');
+		ws.onerror = e => console.log('ws chat error', e);
+        ws.onmessage = e => {
+            const data = JSON.parse(e.data);
+            console.log(data);
+        };
+        return;
         let loader = new THREE.TextureLoader();
         //let texture = loader.load('https://threejsfundamentals.org/threejs/resources/images/wall.jpg');
         //let texture = loader.load('./opacity.png')
         let texture = loader.load('https://thumbs.dreamstime.com/b/bille-de-football-de-texture-13533294.jpg')
         let texturep1 = loader.load('https://cdn.intra.42.fr/users/ed6e227d33ac3fe0670ab0765747b72e/fmessina.jpg')
+        //let texturep1 = loader.load('https://cdn.intra.42.fr/users/ed6e227d33ac3fe0670ab0765747b72e/fmessina.jpg')
         let texture_floor = loader.load('https://t2.uc.ltmcdn.com/fr/posts/8/4/8/quelle_est_la_taille_d_un_terrain_de_football_12848_600.webp');
         let texturep2 = loader.load('https://media.4-paws.org/b/3/7/9/b3791e0f2858422701916ca7274fd9b65b584c93/VIER%20PFOTEN_2015-04-27_010-1927x1333-1920x1328.webp');
         let eye_texture = loader.load('https://media.ouest-france.fr/v1/pictures/MjAyMTA3NTYyMzgxMTg4YWZlMzI2YjY3N2VjZGExZTUxOTkxNmY?width=1260&focuspoint=50%2C24&cropresize=1&client_id=bpeditorial&sign=95034bcb2a35dc8397c6791fde91c71f9a73e28d620a686b1027cc99439a0bb4');
@@ -464,12 +494,16 @@ function Game() {
                 server_estimate_ball_speeds()
             server_player_move(received_direction);
         }
+
+
+
+
         function animate() {
             requestAnimationFrame(animate);
-            ball_render.rotation.z += (Math.abs(ball_y_speed) + Math.abs(ball_x_speed))* ball_rotation_z ;
+            ball_render.rotation.z += (Math.abs(ball_y_speed) + Math.abs(ball_x_speed))* ball_rotation_z;
     //		ball_render.rotation.y += ball_x_speed * 2;
     //		ball_render.rotation.x += ball_y_speed * 2;
-            server_side_work(player1_direction);;
+            server_side_work(player1_direction);
             renderer.render(scene, camera);
         }
         animate();

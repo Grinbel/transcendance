@@ -33,7 +33,11 @@ SECRET_KEY = 'django-insecure-+f$6n=$1s3ol8jgaenlmo9cu=-byy2*x=5)!evng!+0iu-e9vj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
+CHANNEL_LAYERS = {
+	'default': {
+		'BACKEND': 'channels.layers.InMemoryChannelLayer'
+	},
+}
 # Application definition
 
 INSTALLED_APPS = [
