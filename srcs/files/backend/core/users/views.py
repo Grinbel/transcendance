@@ -48,14 +48,14 @@ def generate_random_digits(n=6):
 
 
 @api_view(['GET'])
-# @permission_classes([permissions.IsAuthenticated])
-def get_2fa_preference(request):
+#@permission_classes([permissions.IsAuthenticated])
+def getProfile(request):
 	token = request.headers.get('Authorization').split(' ')[1]
 	try:
 		untyped_token = UntypedToken(token)
 	except (InvalidToken, TokenError) as e:
 		raise InvalidToken('Invalid token')
-
+	print('untyped_token', untyped_token)
 	id = untyped_token['user_id']
 	user = User.objects.get(id=id)
 

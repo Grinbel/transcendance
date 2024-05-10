@@ -5,13 +5,13 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from .views import Signup, login, verify, Logout, UserList, get_2fa_preference
+from .views import Signup, login, verify, Logout, UserList, getProfile
 from matchmaking.views import choice
 from middle.views import AsgiValidateTokenView
 # from django_channels_jwt.views import AsgiValidateTokenView
 
 urlpatterns = [
-    path('get_2fa_preference/', get_2fa_preference, name='get_2fa_preference'),
+    path('getprofile/', getProfile, name='getProfile'),
     path('signup/', Signup.as_view(), name="signup"),
 	path('list/', UserList.as_view(), name="users_list"),
     path("login/", login, name="login"),

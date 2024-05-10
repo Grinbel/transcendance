@@ -1,6 +1,6 @@
 import { Routes, Route, Link, } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import { useState , createContext, useContext} from 'react';
+import { useState , createContext, useContext, useEffect} from 'react';
 
 import  { axiosInstance } from "./axiosAPI.js";
 
@@ -26,15 +26,48 @@ import Chat from './main/Chat.jsx';
 
 import { UserProvider, userContext } from "./contexts/userContext.jsx";
 
-const  appContext = createContext(null);
 
-function App(){
+function getProfile(user, setUser){
 
+	// decoder le token stocké dans le local.storage
 
-	//print axios defaults
+	console.log('getProfile: user', user);
 	console.log(("axios headers: token :"), axiosInstance.defaults.headers[
 		'Authorization'
 	]);
+	// ask server to send userinfo
+	axiosInstance.get('getprofile/')
+	.then((response) => {
+		console.log('app: get_profile response', response);
+		// userinfo.setUser({username:response.data.username, isLogged:true});
+		setUser(response.data);
+		setUser({...user, isLogged:true});
+	})
+	.catch((error) => {
+		console.error('There was an error!', error);
+	});
+}
+
+	// const  appContext = createContext(null);
+
+	function App(){
+		
+		
+		const [user, setUser] = useState(
+			{username:"default", 
+			token:"" , 
+			isLogged:false, 
+			two_factor:false, 
+			avatar:null}
+		);
+	
+		
+		useEffect(() => {
+			console.log('MyNavbar: useEffect');
+			getProfile(user, setUser);
+		}
+		, []);
+
 
 		
     // const handleLoginClick = () => {
@@ -44,7 +77,7 @@ function App(){
     // };
 
 	return (
-		<UserProvider>
+		<userContext.Provider value={{user, setUser}}>
 			<div className="app">
 				<MyNavbar/>
 				
@@ -66,7 +99,7 @@ function App(){
 				{/* {showLoginForm && <Login />} */}
 				<Chat />
 			</div>
-		</UserProvider>
+		</userContext.Provider>
 	);
 }
 

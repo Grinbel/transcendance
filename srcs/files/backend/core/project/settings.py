@@ -204,7 +204,7 @@ CORS_ALLOW_METHODS = [
 ]
 
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost:5173/', 
+CSRF_TRUSTED_ORIGINS = ['http://localhost:5173/',
                         'http://0.0.0.0:8000/',
 ]
 CSRF_COOKIE_SAMESITE = 'None'
