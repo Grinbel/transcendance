@@ -1,10 +1,6 @@
 import React, { useEffect } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-
-//! ICI j'adapte le code pour jouer en distant avec le bot .
-
-
 function Game() {
     //TODO : get all options from main page
     useEffect(() => {
@@ -181,7 +177,7 @@ function Game() {
                 });
             }
 
-        function server_ball_reset() {
+        function ball_reset() {
             time_before_powerup = Math.random() * (max_time_before_powerup - min_time_before_powerup) + min_time_before_powerup;
             ball_x = 0;
             p2_weapon_mesh.material.color.setHex(0xffffff);
@@ -215,7 +211,7 @@ function Game() {
             }
         }
                 
-        function server_ball_move() {
+        function ball_move() {
             ball_render.position.x = ball_x;
             ball_render.position.y = ball_y;
             if (ball_pause) {
@@ -248,7 +244,7 @@ function Game() {
             if (ball_x > stage_width /2 -distance_from_wall - player_width ) {
                 if (ball_y > p2_weapon_mesh.position.y + player_size / 2 || ball_y < p2_weapon_mesh.position.y - player_size / 2) {
                     score_p1++;
-                    server_ball_reset();
+                    ball_reset();
                 }
                 if (ball_is_powerup)
                 {
@@ -269,7 +265,7 @@ function Game() {
             if (ball_x < -stage_width /2 +distance_from_wall + player_width) {
                 if (ball_y > p1_weapon_mesh.position.y + player_size / 2 || ball_y < p1_weapon_mesh.position.y - player_size / 2) {
                     score_p2++;
-                    server_ball_reset();
+                    ball_reset();
                 }
                 if (ball_is_powerup)
                 {
@@ -293,7 +289,7 @@ function Game() {
             }
         
         }
-        function server_ia_follow_target(pos){
+        function ia_follow_target(pos){
             if (ball_x_speed > 0){	
                 if (pos > ia_ball_estimated_impact_y +.1){
                     ia_direction = 1;
@@ -319,7 +315,7 @@ function Game() {
             console.log(ia_ball_estimated_impact_y);
         }
 
-        function server_estimate_ball_speeds(){
+        function estimate_ball_speeds(){
             if (!ia_this_point_time){
             //! on lui donne les valeurs de debut si c'est l engagement
                 ia_ball_estimated_x_speed = ball_x_speed;
@@ -365,7 +361,7 @@ function Game() {
                     
         }
 
-        function server_ia_move(){
+        function ia_move(){
             let ia_position = p2_weapon_mesh.position.y;
             ia_direction = 1;
                 
@@ -381,7 +377,7 @@ function Game() {
                 ia_new_ball_x_position = ball_x;
                 ia_new_ball_y_position = ball_y;
                 ia_player_know_position = p1_weapon_mesh.position.y;
-                server_estimate_ball_speeds();
+                estimate_ball_speeds();
             }
             if (ia_time_since_last_check >6){
                 scene.remove(ia_eye);
@@ -391,12 +387,12 @@ function Game() {
             ia_this_point_time++;
             switch (which_ia){
                 default :
-                    server_ia_follow_target(ia_position);
+                    ia_follow_target(ia_position);
                     break;
             }
         }
         
-        function local_handleKeyDown(event) {
+        function handleKeyDown(event) {
             if (event.keyCode === 87) { 
                 player1_direction = 1;
             }
@@ -413,7 +409,7 @@ function Game() {
             }
         }
         
-        function local_handleKeyUp(event) {
+        function handleKeyUp(event) {
             if (event.keyCode === 87 || event.keyCode === 83) {
                 player1_direction = 0;
             }
@@ -422,11 +418,10 @@ function Game() {
             }
         }
         
-        window.addEventListener('keydown', local_handleKeyDown, false);
-        window.addEventListener('keyup', local_handleKeyUp, false);
+        window.addEventListener('keydown', handleKeyDown, false);
+        window.addEventListener('keyup', handleKeyUp, false);
 
-        function server_player_move(received_direction) {
-            player1_direction = received_direction;
+        function player_move() {
             if (p1_is_frozen)
                 player1_direction = player1_direction/3*2;
             if (p2_is_frozen)
@@ -455,21 +450,18 @@ function Game() {
         //camera.rotateZ(Math.PI / 2);
     //	camera.rotation.set(Math.PI / -2, 0, 0);
         ground.position.z = 0.0;
-        function server_side_work(received_direction){
-            server_ball_move();
-            server_ia_move();
-            if (player_is_ia)
-                player2_direction = ia_direction;
-            else
-                server_estimate_ball_speeds()
-            server_player_move(received_direction);
-        }
         function animate() {
             requestAnimationFrame(animate);
             ball_render.rotation.z += (Math.abs(ball_y_speed) + Math.abs(ball_x_speed))* ball_rotation_z ;
     //		ball_render.rotation.y += ball_x_speed * 2;
     //		ball_render.rotation.x += ball_y_speed * 2;
-            server_side_work(player1_direction);;
+            ball_move();
+            ia_move();
+            if (player_is_ia)
+                player2_direction = ia_direction;
+            else
+                estimate_ball_speeds();
+            player_move();
             renderer.render(scene, camera);
         }
         animate();
