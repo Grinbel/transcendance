@@ -2,11 +2,22 @@ import React, { useState, useContext } from "react";
 import  { axiosInstance } from "../axiosAPI.js";
 import { useNavigate } from 'react-router-dom';
 import { userContext } from "../contexts/userContext.jsx";
-
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import '../forms/forms.css'
 
 // import { userContext } from "../contexts/userContext.jsx";
+async function getUuid(userInfo){
+	const response = await axiosInstance.get('/api/', {
+		// id:userInfo.user.id,
+		id:"34",
+		});
+	const Uuid = response.uuid;
+	userInfo.setUser({
+		...userInfo.user,
+		id:Uuid,
+	  });
+	  console.log(userInfo.user.id);
+}
 
 function Login() {
     console.log('Login:');

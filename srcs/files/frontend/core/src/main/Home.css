@@ -48,3 +48,7 @@
 	text-transform: uppercase;
 	color: white;
 }
+
+.displayer-errors{
+	color: red;
+}

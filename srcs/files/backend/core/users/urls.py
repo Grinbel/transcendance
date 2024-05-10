@@ -6,8 +6,10 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from .views import Signup, login, verify, Logout, UserList, getProfile
+from matchmaking.views import choice
+from middle.views import AsgiValidateTokenView
+# from django_channels_jwt.views import AsgiValidateTokenView
 
- 
 urlpatterns = [
     path('getprofile/', getProfile, name='getProfile'),
     path('signup/', Signup.as_view(), name="signup"),
@@ -16,4 +18,7 @@ urlpatterns = [
 	path("verify/", verify, name="verify"),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 	path('logout/', Logout.as_view(), name='logout'),
+	path('choice/', choice, name='choice'),
+	path("api/", AsgiValidateTokenView.as_view()),
+
 ]

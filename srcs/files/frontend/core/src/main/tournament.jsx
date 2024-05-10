@@ -1,50 +1,103 @@
 import React from "react";
+import { useContext } from "react";
+import { userContext } from "../contexts/userContext.jsx";
+import  { useEffect, useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const tournament = () => {
+	const userInfo = useContext(userContext);
+	const [ws, setWs] = useState(null);
+	const [messages, setMessages] = useState([]);
+	const messagesEndRef = useRef(null);
+	const [name, setName] = useState('');
+	const [maxCapacity, setMaxCapacity] = useState(2);
+	const [displayer, setDisplayer] = useState("pop");
+	const navigate = useNavigate();
+	const websockets = {};
+
+	function getWebSocket(roomName) {
+		if (!websockets[roomName]) {
+		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/tournament/${roomName}/`);
+		}
+		setMessages(prevMessages => [""]);
+		return websockets[roomName];
+	  }
+
+	useEffect(() => {
+		if (userInfo.user.username === "default")
+		{
+			navigate('/login');
+			return;
+		}
+		if (userInfo.user.tournament === "default")
+		{
+			navigate('/play');
+			return;
+		}
+		const ws = getWebSocket(userInfo.user.tournament);
+		ws.onopen = () => {
+			console.log('ws tournament opened');
+			const user = {type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament }
+			// user = JSON.parse(JSON.stringify(user));
+			console.log('user =', JSON.stringify(user));
+			ws.send(JSON.stringify({ type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament }));
+		}
+		ws.onclose = () => {
+			console.log('ws tournament closed');
+		}
+		ws.onerror = e => console.log('ws tournament error', e);
+		ws.onmessage = e => {
+			const message = JSON.parse(e.data);
+			if (message.type === 'connected') {
+				return;
+			}
+			else if (message.type === 'disconnected') {
+				setMessages(prevMessages => []);
+				ws.send(JSON.stringify({ type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament }));
+				setName(message.name);
+				return;
+			}
+			else if (message.type === 'username') {
+				setMessages(prevMessages => [...prevMessages, message]);
+				setName(message.name);
+				setMaxCapacity(message.max_capacity)
+				// message.date = new Date().toLocaleTimeString();
+			}
+			else if (message.type === 'launch_tournament'){
+				setDisplayer("Launching in " + message.timer + " seconds");
+			}
+			console.info('received', message);
+		};
+
+		setWs(ws);
+
+		return () => {
+			console.error('ws chat closed');
+			ws.close();
+		};
+	}, []);
 	return (
 		<div>
-		  <header className="tournament">
-			<h1>tournament</h1>
-		  </header>
+		<header className="tournament">
+			<h1>tournament {name}</h1>
+			<h3>Max player: {maxCapacity}</h3>
+			<div id="chatContent" className="chat-content">
+				{messages.map((message, index) => (
+					<div key={index} className="chat-message" ref={index === messages.length - 1 ? messagesEndRef : null}>
+						<div className="chat-username">
+							<Link to={`/${message.username}`}>
+							{message.username}
+							</Link>
+						</div>
+						<div />
+					</div>
+				))}
+			<h3>{displayer}</h3>
+			</div>
+		</header>
 		</div>
 	  );
 }
 
 export default tournament;
-
-/*return (
-		<div>
-			<input type="checkbox" checked={isLocal} onChange={(e) => setIsLocal(e.target.checked)} /> Local
-			<input type="radio" value="1v1" checked={selection === '1v1'} onChange={handleSelectionChange} /> 1v1
-			<input type="radio" value="tournament" checked={selection === 'tournament'} onChange={handleSelectionChange} /> Tournament
-
-			{selection === '1v1' && (
-				<div>
-					<input type="radio" value="vsPlayer" checked={subSelection === 'vsPlayer'} onChange={handleSubSelectionChange} /> Vs Player
-					<input type="radio" value="vsBot" checked={subSelection === 'vsBot'} onChange={handleSubSelectionChange} /> Vs Bot
-				</div>
-			)}
-
-			{selection === 'tournament' && (
-				<div>
-					<input type="radio" value="join" checked={subSelection === 'join'} onChange={handleSubSelectionChange} /> Join Tournament
-					{subSelection === 'join' && <input type="text" placeholder="Enter Tournament ID" value={tournamentId} onChange={(e) => setTournamentId(e.target.value)} />}
-					<input type="radio" value="create" checked={subSelection === 'create'} onChange={handleSubSelectionChange} /> Create One
-					{subSelection === 'create' && (
-						<div>
-							<input type="radio" value="4" checked={playerCount === '4'} onChange={(e) => setPlayerCount(e.target.value)} /> 4 Players
-							<input type="radio" value="8" checked={playerCount === '8'} onChange={(e) => setPlayerCount(e.target.value)} /> 8 Players
-							<input type="checkbox" checked={fillWithBot} onChange={(e) => setFillWithBot(e.target.checked)} /> Fill with bot after 1 minute?
-						</div>
-					)}
-				</div>
-			)}
-
-			{subSelection === 'vsPlayer' && <Link to="/vsPlayer">Go to Vs Player</Link>}
-			{subSelection === 'vsBot' && <Link to="/vsBot">Go to Vs Bot</Link>}
-			{subSelection === 'join' && <Link to="/joinTournament">Join Tournament</Link>}
-			{subSelection === 'create' && playerCount && <Link to="/createTournament">Create Tournament</Link>}
-			{(subSelection != null ) && <button onClick={handleSubmit}>Submit</button>}
-			{( subSelection === 'vsPlayer' || subSelection === 'vsBot') && <button onClick={handleSubmit}>Submit</button>}
-		</div>
-	);*/

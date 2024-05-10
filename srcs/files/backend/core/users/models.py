@@ -17,6 +17,22 @@ class User(AbstractUser):
 	alias = models.CharField(max_length=255, null=True, blank=True)
 	tournament = models.ForeignKey('tournament.Tournament', on_delete=models.SET_NULL, null=True, blank=True)
 	friends = models.ManyToManyField('self', blank=True)
+	name = models.CharField(max_length=255, null=True, blank=True)
+	blacklist = models.ManyToManyField('self', blank=True)
+
+	def log(self, name):
+		print("username ", name)
+		user = User.objects.get(username=name)
+		user.name = name
+		user.save()
+		print("user ", user.name)
+		self = user
+		self.save()
+		print("set username to", self.name)
+
+	def addBlacklist(self, name):
+		user = User.objects.get(username=name)
+		self.blacklist.add(user)
 
 	def __str__(self):
 		return f"username = {self.username} \n email = {self.email}"

@@ -96,7 +96,7 @@ function getProfile(user, setUser){
 						{/* <Route path="/*" element={<Error404 />} /> */}
 					</Routes>
 				{/* {showLoginForm && <Login />} */}
-				{/* <Chat /> */}
+				<Chat />
 			</div>
 		</userContext.Provider>
 	);

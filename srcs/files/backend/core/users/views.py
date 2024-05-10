@@ -26,7 +26,6 @@ from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from .helper import authenticate
 import random
 import os
-
  
 ##remember to check USER_ID_FIELD and USER_ID_CLAIM in jwt settings in case picking the email adress as the user id
 
@@ -191,7 +190,6 @@ class UserList(APIView):
 		users = User.objects.all()
 		serializer = UserSerializer(users, many=True)
 		return Response(serializer.data)
-
 
 # import random
 # import string
