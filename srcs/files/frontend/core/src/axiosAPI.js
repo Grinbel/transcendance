@@ -21,7 +21,7 @@ axiosInstance.interceptors.response.use(
         console.log('AXIOS INTERCEPTOR error RESPPPONSE', error.response.status)
       const originalRequest = error.config;
       
-      if (error.response.status === 401) {
+      if (error.response.status === 401 ||error.response.status === 403) {
             // console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.status)
           const refresh_token = localStorage.getItem('refresh_token');
           return axiosInstance

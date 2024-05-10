@@ -7,16 +7,16 @@ import '../forms/forms.css'
 
 // import { userContext } from "../contexts/userContext.jsx";
 async function getUuid(userInfo){
-	// const response = await axiosInstance.get('/api/', {
-	// 	// id:userInfo.user.id,
-	// 	id:"34",
-	// 	});
-	// const Uuid = response.uuid;
-	// userInfo.setUser({
-	// 	...userInfo.user,
-	// 	id:Uuid,
-	//   });
-	//   console.log(userInfo.user.id);
+	const response = await axiosInstance.get('/api/', {
+		// id:userInfo.user.id,
+		id:"34",
+		});
+	const Uuid = response.uuid;
+	userInfo.setUser({
+		...userInfo.user,
+		id:Uuid,
+	  });
+	  console.log(userInfo.user.id);
 }
 
 function Login() {
@@ -75,7 +75,7 @@ function Login() {
                         localStorage.setItem('access_token', response.data.access);
                         localStorage.setItem('refresh_token', response.data.refresh);
                         userInfo.setUser({username:formData.username, isLogged:true});  // passing  info to userContext
-                        // getUuid(userInfo);
+                        getUuid(userInfo);
 						navigate('/');
                     }
                 }
