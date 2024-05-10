@@ -2,9 +2,6 @@ import { Routes, Route, Link, } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useState , createContext, useContext, useEffect} from 'react';
 
-import './App.css'
-import Login from './login.jsx'
-import Signup from './signup.jsx'
 import Game from './game.jsx'
 import  { axiosInstance } from "./axiosAPI.js";
 
