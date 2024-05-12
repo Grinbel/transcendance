@@ -2,7 +2,7 @@ import { Routes, Route, Link, } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useState , createContext, useContext, useEffect} from 'react';
 
-import  { axiosInstance } from "./axiosAPI.js";
+import  { axiosInstance, interceptor_response } from "./axiosAPI.js";
 
 
 import './App.scss'
@@ -31,6 +31,9 @@ function getProfile(user, setUser){
 
 	// decoder le token stocké dans le local.storage
 
+	// axiosInstance.interceptors.response.eject(interceptor_request);
+	axiosInstance.interceptors.response.eject(interceptor_response);
+
 	console.log('getProfile: user', user);
 	console.log(("axios headers: token :"), axiosInstance.defaults.headers[
 		'Authorization'
@@ -38,13 +41,15 @@ function getProfile(user, setUser){
 	// ask server to send userinfo
 	axiosInstance.get('getprofile/')
 	.then((response) => {
-		console.log('app: get_profile response', response);
+		console.log('app: GETPROFILE response', response);
 		// userinfo.setUser({username:response.data.username, isLogged:true});
 		setUser(response.data);
 		setUser({...user, isLogged:true});
 	})
 	.catch((error) => {
-		console.error('There was an error!', error);
+		setUser({});
+		console.error('There was an error! got empty user,  user set in global context: ', user);
+		
 	});
 }
 
@@ -54,11 +59,7 @@ function getProfile(user, setUser){
 		
 		
 		const [user, setUser] = useState(
-			{username:"default", 
-			token:"" , 
-			isLogged:false, 
-			two_factor:false, 
-			avatar:null}
+			{}
 		);
 	
 		
@@ -96,7 +97,7 @@ function getProfile(user, setUser){
 						{/* <Route path="/*" element={<Error404 />} /> */}
 					</Routes>
 				{/* {showLoginForm && <Login />} */}
-				<Chat />
+				{/* <Chat /> */}
 			</div>
 		</userContext.Provider>
 	);

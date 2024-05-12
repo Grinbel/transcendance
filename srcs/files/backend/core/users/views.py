@@ -48,19 +48,18 @@ def generate_random_digits(n=6):
 
 
 @api_view(['GET'])
-#@permission_classes([permissions.IsAuthenticated])
+@permission_classes([permissions.IsAuthenticated])
 def getProfile(request):
 	token = request.headers.get('Authorization').split(' ')[1]
 	try:
 		untyped_token = UntypedToken(token)
 	except (InvalidToken, TokenError) as e:
-		raise InvalidToken('Invalid token')
+		return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
 	print('untyped_token', untyped_token)
 	id = untyped_token['user_id']
 	user = User.objects.get(id=id)
-
 	# Now you have the user instance and can return the necessary information
-	return Response({'username': user.username, 'email': user.email})
+	return Response(user)
 
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])

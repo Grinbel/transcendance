@@ -187,7 +187,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #security settings
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
-ALLOWED_HOSTS = ['*']
 CORS_ALLOWED_ORIGINS = [
     'http://0.0.0.0:5173',
     'http://localhost:5173',

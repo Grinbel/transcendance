@@ -33,5 +33,10 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 		print('User in get_token', user)
 
 		# Add custom claims
-		token['fav_fruit'] = 'banana'
+		token['username'] = user.username
+		token['email'] = user.email
+		token['is_staff'] = user.is_staff
+		token['two_factor'] = user.two_factor
+		token['avatar'] = user.avatar.url if user.avatar else None
+		
 		return token
