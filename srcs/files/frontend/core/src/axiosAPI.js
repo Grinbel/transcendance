@@ -4,25 +4,35 @@ export const axiosInstance = axios.create({
     baseURL: 'http://localhost:8000/users/',
     timeout: 0,
     headers: {
-        'Authorization': "JWT " + localStorage.getItem('access_token'),
+        'Authorization': "Baerer " + localStorage.getItem('access_token'),
         'Content-Type': 'application/json',
         'accept': 'application/json'
     },
-    common: {
-        'Authorization': "JWT " + localStorage.getItem('access_token'),
-        'Content-Type': 'application/json',
-        'accept': 'application/json'
-    }
+
 });
 
-axiosInstance.interceptors.response.use(
+// export const interceptor_request = axiosInstance.interceptors.request.use(config => {
+//     const authToken = localStorage.getItem('authToken');
+//     if (authToken) {
+//       config.headers.Authorization = `Bearer ${authToken}`;
+//       config.headers['Content-Type'] = 'application/json';
+//       config.headers['accept'] = 'application/json';
+//     }
+//     else
+//     {
+//         console.log('AXIOS INTERCEPTOR REQUEST: NO AUTH TOKEN')
+//     }
+//     return config;
+//   });
+
+export const interceptor_response = axiosInstance.interceptors.response.use(
     response => response,
     error => {
-        console.log('AXIOS INTERCEPTOR error RESPPPONSE', error.response.status)
+        console.log('AXIOS INTERCEPTOR RESPONSE ', error.response.status)
       const originalRequest = error.config;
       
-      if (error.response.status === 401 || error.response.status === 403) {
-            // console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.status)
+      if (error.response.status === 401) {
+            console.log("Unauthorized access, token died")
           const refresh_token = localStorage.getItem('refresh_token');
           return axiosInstance
               .post('/token/refresh/', {refresh: refresh_token})
@@ -40,6 +50,46 @@ axiosInstance.interceptors.response.use(
                   console.log(err)
               });
       }
+      else if (error.response.status === 403) {
+        console.log("No credentials");
+        console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.status)
+        console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.data)
+        console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.data.detail)
+        return 
+        // return Promise.reject(error);
+      }
+      else if (error.response.status === 404) {
+        console.log("Post not found");
+        console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.status)
+        console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.data)
+        console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.data.detail)
+      }
+      else if (error.response.status === 500) {
+        console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.status)
+        console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.data)
+        console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.data.detail)
+      }
+      else if (error.response.status === 502) {
+        console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.status)
+        console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.data)
+        console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.data.detail)
+      }
+      else if (error.response.status === 503) {
+        console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.status)
+        console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.data)
+        console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.data.detail)
+      }
+      else if (error.response.status === 504) {
+        console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.status)
+        console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.data)
+        console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.data.detail)
+      }
+      else
+        {
+            console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.status)
+            console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.data)
+            console.log('AXIOS INTERCEPTOR ERROR RESPONSE : ', error.response.data.detail)
+        }
       return Promise.reject(error);
   }
 );

@@ -123,7 +123,13 @@ const NavLoggedIn = () => {
 	const navigate = useNavigate();
 	const userinfo = useContext(userContext);
 
-	console.log('MyNavbar: userinfo', userinfo);
+	if (userinfo.user) {
+		console.log('MyNavbar: user logged in');
+		console.log('MyNavbar: user', userinfo.user);
+	}
+	else {
+		console.log('MyNavbar: user not logged in');
+	}
 	// Fonction pour gérer la connexion de l'utilisateur
   
 	// Fonction pour gérer la déconnexion de l'utilisateur
@@ -131,7 +137,7 @@ const NavLoggedIn = () => {
   
 	return (
 	  <div>
-		{userinfo.user.isLogged ? (
+		{userinfo.user ? (
 		  <NavLoggedIn/>
 		) : (
 		  <NavLoggedOut/>

@@ -15,7 +15,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
 
-from rest_framework import status,  permissions
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import MyTokenObtainPairSerializer
 from .serializers import UserSerializer
@@ -48,22 +49,28 @@ def generate_random_digits(n=6):
 
 
 @api_view(['GET'])
-#@permission_classes([permissions.IsAuthenticated])
 def getProfile(request):
-	token = request.headers.get('Authorization').split(' ')[1]
-	try:
-		untyped_token = UntypedToken(token)
-	except (InvalidToken, TokenError) as e:
-		raise InvalidToken('Invalid token')
-	print('untyped_token', untyped_token)
-	id = untyped_token['user_id']
-	user = User.objects.get(id=id)
-
-	# Now you have the user instance and can return the necessary information
-	return Response({'username': user.username, 'email': user.email})
+	print('getProfile function request ')
+	if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
+		token = request.headers.get('Authorization').split(' ')[1]
+		print('token', token)
+		try:
+			untyped_token = UntypedToken(token)
+			print('untyped_token', untyped_token)
+		except (InvalidToken, TokenError) as e:
+			print('Invalid token')
+			return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+		print('untyped_token', untyped_token)
+		id = untyped_token['user_id']
+		user = User.objects.get(id=id)
+		# Now you have the user instance and can return the necessary information
+		user_data = UserSerializer(user).data
+		print('user_data', user_data)
+		return Response(user_data)
+	return Response({'detail': 'Invalid token format'}, status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['POST'])
-@permission_classes([permissions.AllowAny])
+# @permission_classes([IsAuthenticated])
 def login(request):
 	print('login function')
 	email = request.data.get('email')
@@ -115,7 +122,7 @@ def login(request):
 	return Response({'detail': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['POST'])
-@permission_classes([permissions.AllowAny])
+@permission_classes([AllowAny])
 def verify(request):
 	print('verify function')
 	username = request.data.get('username')
@@ -154,7 +161,7 @@ def verify(request):
 			
 
 class Signup(APIView):
-	permission_classes = [permissions.AllowAny]
+	permission_classes = [AllowAny]
 
 	def post(self, request, format='json'):
 		serializer_context = {
@@ -172,7 +179,7 @@ class Signup(APIView):
 	
 
 class Logout(APIView):
-	permission_classes = [permissions.AllowAny]
+	permission_classes = [AllowAny]
 
 	def post(self, request, format='json'):
 		try:
