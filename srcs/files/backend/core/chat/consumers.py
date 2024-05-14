@@ -84,6 +84,16 @@ class ChatConsummer(WebsocketConsumer):
 					'username': message.username,
 				}))
 			return
+		user.addBlacklist('pop')
+		# user.save()
+		# user.removeBlacklist('bob')
+		print('self black list : ',user.blacklist.all())
+		print('user pop:',self.scope)
+		
+		user = self.scope['user']
+		print('user pap:',user)
+		print('self black list : ',user.blacklist.all())
+
 		message = text_data_json['message']
 		date = text_data_json['date']
 

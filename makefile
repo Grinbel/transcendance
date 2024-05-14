@@ -54,7 +54,7 @@ up:		build
 		@echo "${GREEN}containers UP in -detach mode ...${NC}"
 # nocash up
 nc:		build_nocash
-		docker-compose -f ${YML_DIR}/docker-compose.yml up $(c)
+		docker-compose -f ${YML_DIR}/docker-compose.yml up --renew-anon-volumes $(c)
 		@echo "${GREEN}containers UP in -detach mode ...${NC}"
 
 # for up only the backend and database

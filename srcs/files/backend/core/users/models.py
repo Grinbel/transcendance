@@ -32,7 +32,23 @@ class User(AbstractUser):
 
 	def addBlacklist(self, name):
 		user = User.objects.get(username=name)
-		self.blacklist.add(user)
+		if (user):
+			self.blacklist.add(user)
+	
+	def removeBlacklist(self, name):
+		user = User.objects.get(username=name)
+		if (user and user in self.blacklist.all()):
+			self.blacklist.remove(user)
+		
+	def addFriend(self, name):
+		user = User.objects.get(username=name)
+		if (user):
+			self.friends.add(user)
+	
+	def removeFriend(self, name):
+		user = User.objects.get(username=name)
+		if (user and user in self.friends.all()):
+			self.friends.remove(user)
 
 	def __str__(self):
 		return f"username = {self.username} \n email = {self.email}"
