@@ -26,31 +26,32 @@ import Chat from './main/Chat.jsx';
 
 import { UserProvider, userContext } from "./contexts/userContext.jsx";
 
-
 function getProfile(user, setUser){
+	// localStorage.clear();
+	localStorage.removeItem('user');
+	// get user from local storage
+	const userStringified = localStorage.getItem('user');
+	if (userStringified) {
+		const user = JSON.parse(userStringified);
+		setUser(user);
 
-	// decoder le token stocké dans le local.storage
+	} else
+	{
+		console.log('getProfile: no user in local storage');
+		console.log(("axios headers: token :"), axiosInstance.defaults.headers['Authorization']);
+		axiosInstance.get('getprofile/')
+		.then((response) => {
+			console.log('app: GETPROFILE response', response);
+			// userinfo.setUser({username:response.data.username, isLogged:true});
+			setUser(response.data);
+			localStorage.setItem('user', JSON.stringify(response.data));
+		})
+		.catch((error) => {
+			console.error('There was an error! got empty user,  user set in global context: ', user);
+			
+		});
+	}
 
-	// axiosInstance.interceptors.response.eject(interceptor_request);
-	axiosInstance.interceptors.response.eject(interceptor_response);
-
-	console.log('getProfile: user', user);
-	console.log(("axios headers: token :"), axiosInstance.defaults.headers[
-		'Authorization'
-	]);
-	// ask server to send userinfo
-	axiosInstance.get('getprofile/')
-	.then((response) => {
-		console.log('app: GETPROFILE response', response);
-		// userinfo.setUser({username:response.data.username, isLogged:true});
-		setUser(response.data);
-		setUser({...user, isLogged:true});
-	})
-	.catch((error) => {
-		setUser({});
-		console.error('There was an error! got empty user,  user set in global context: ', user);
-		
-	});
 }
 
 	// const  appContext = createContext(null);
@@ -58,13 +59,12 @@ function getProfile(user, setUser){
 	function App(){
 		
 		
-		const [user, setUser] = useState(
-			{}
-		);
-	
+		const [user, setUser] = useState();
+
 		
 		useEffect(() => {
-			console.log('MyNavbar: useEffect');
+			console.log('app: useEffect');
+
 			getProfile(user, setUser);
 		}
 		, []);

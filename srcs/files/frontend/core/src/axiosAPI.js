@@ -4,15 +4,11 @@ export const axiosInstance = axios.create({
     baseURL: 'http://localhost:8000/users/',
     timeout: 0,
     headers: {
-        'Authorization': "JWT " + localStorage.getItem('access_token'),
+        'Authorization': "Baerer " + localStorage.getItem('access_token'),
         'Content-Type': 'application/json',
         'accept': 'application/json'
     },
-    common: {
-        'Authorization': "JWT " + localStorage.getItem('access_token'),
-        'Content-Type': 'application/json',
-        'accept': 'application/json'
-    }
+
 });
 
 // export const interceptor_request = axiosInstance.interceptors.request.use(config => {
