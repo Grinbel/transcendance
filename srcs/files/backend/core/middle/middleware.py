@@ -18,7 +18,7 @@ User = get_user_model()
 @database_sync_to_async
 def get_user(user_id):
 	try:
-		return User.objects.get(id=user_id)
+		return User.objects.get(username=user_id)
 	except:
 		raise Exception(
 			'user not found, you may forgot to request a uuid from the server, try auth_for_ws_connection ')

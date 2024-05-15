@@ -2,6 +2,8 @@ import React from 'react';
 import  { useEffect, useState } from 'react'; 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 
 //! ICI j'adapte le code pour jouer en distant avec le bot .
 
@@ -12,15 +14,15 @@ function Game() {
 	const websockets = {};
 
     //TODO : get all options from main page
-    function getWebSocket(roomName) {
+    /*function getWebSocket(roomName) {
 		
 		if (!websockets[roomName]) {
 		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/game/`);
 		}
 		return websockets[roomName];
-	  }
+	  }*/
       
-      useEffect(() => {
+      useEffect(() => {/*
         // const ws = getWebSocket(roomName);
         const ws = new WebSocket(`ws://localhost:8000/users/ws/game/`);
         ws.onopen = () => {
@@ -36,7 +38,8 @@ function Game() {
             const data = JSON.parse(e.data);
             console.log(data);
         };
-        return;
+        return;*/
+        
         let loader = new THREE.TextureLoader();
         //let texture = loader.load('https://threejsfundamentals.org/threejs/resources/images/wall.jpg');
         //let texture = loader.load('./opacity.png')
@@ -61,6 +64,8 @@ function Game() {
         let ball_y_speed = ball_speed;
         let ball_pause = 0;
         let score_p1 = 0;
+        let name_p1 = "Tac";
+        let name_p2 = "La Vache";
         let score_p2 = 0;
         let ball_acc = 1.3;
         let player_size = 2;
@@ -192,6 +197,30 @@ function Game() {
         //    controls.target = pos;
         };
 
+        function createText(text) {    
+    // Charger la police
+    var fontLoader = new FontLoader();
+    fontLoader.load('fonts/helvetiker_regular.typeface.json', function (font) {
+        // Créer la géométrie du texte avec la police chargée
+        var geometry = new THREE.TextGeometry(text, {
+            font: font,
+            size: 10,
+            height: 1,
+            curveSegments: 12
+        });
+        // Créer le mesh avec la géométrie du texte et le matériau
+        var textMesh = new THREE.Mesh(geometry, material);
+        // Positionner le texte dans la scène
+        textMesh.position.set(2, 2, 2); // Ajuster les coordonnées selon votre besoin
+        scene.add(textMesh); // Ajouter le texte à la scène
+    });
+        }
+        function updateText(newText) {
+            scene.remove(textMesh); // Supprime l'ancien texte de la scène
+            textMesh = createText(newText); // Crée le nouveau texte
+            scene.add(textMesh); // Ajoute le nouveau texte à la scène
+        }
+        
         window.addEventListener('mousemove', handleMouseMove);
         function send_back(data){
             fetch('http://0.0.0.0:8000/api/pong', {
@@ -214,6 +243,8 @@ function Game() {
         function server_ball_reset() {
             time_before_powerup = Math.random() * (max_time_before_powerup - min_time_before_powerup) + min_time_before_powerup;
             ball_x = 0;
+            console.log(name_p1 + " : " + score_p1);
+            console.log(name_p2 + " : " + score_p2);
             p2_weapon_mesh.material.color.setHex(0xffffff);
             p1_weapon_mesh.material.color.setHex(0xffffff);
             ball_is_powerup = 0;
@@ -346,7 +377,7 @@ function Game() {
                     ia_direction = 0;
                 }
             }
-            console.log(ia_ball_estimated_impact_y);
+            //console.log(ia_ball_estimated_impact_y);
         }
 
         function server_estimate_ball_speeds(){
@@ -497,7 +528,10 @@ function Game() {
 
 
 
-
+        let text_p1 = createText(name_p1 + " : " + score_p1);
+        //text_p1.position.set(0, 0, 0); 
+        let text_p2 = createText(name_p2 + " : " + score_p2);
+        scene.add(text_p1);
         function animate() {
             requestAnimationFrame(animate);
             ball_render.rotation.z += (Math.abs(ball_y_speed) + Math.abs(ball_x_speed))* ball_rotation_z;
