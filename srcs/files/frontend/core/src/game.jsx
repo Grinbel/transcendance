@@ -2,8 +2,8 @@ import React from 'react';
 import  { useEffect, useState } from 'react'; 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
+import { Text } from 'troika-three-text';
+
 
 //! ICI j'adapte le code pour jouer en distant avec le bot .
 
@@ -117,12 +117,14 @@ function Game() {
         const ground_material = new THREE.MeshBasicMaterial({ map : texture_floor });
         //const ground_material = new THREE.MeshBasicMaterial({ color : 0x00ff00});
         const ground = new THREE.Mesh(ground_geometry, ground_material);
+        //! AJOUT SOL
         scene.add(ground);
         const wall_form = new THREE.BoxGeometry(stage_width,ball_radius +0.2, .0)
         const wall_material = new THREE.MeshBasicMaterial({ map : wall_texture });
         //! marche pas wall_material.transparent=true
         const first_wall = new THREE.Mesh(wall_form, wall_material)
         const second_wall= new THREE.Mesh(wall_form, wall_material)
+        //!AJOUT MURS
         scene.add(first_wall)
         scene.add(second_wall)
         first_wall.rotateX(Math.PI/2)
@@ -160,6 +162,7 @@ function Game() {
         const ball_render = new THREE.Mesh(ball_form, ball_material);
         const p1_weapon_mesh = new THREE.Mesh(p1_weapon, p1_material);
         const p2_weapon_mesh = new THREE.Mesh(p2_weapon, p2_material);
+        //! ajout Balle et joueurs
         scene.add(p1_weapon_mesh);
         scene.add(p2_weapon_mesh);
         scene.add(ball_render);
@@ -197,30 +200,6 @@ function Game() {
         //    controls.target = pos;
         };
 
-        function createText(text) {    
-    // Charger la police
-    var fontLoader = new FontLoader();
-    fontLoader.load('fonts/helvetiker_regular.typeface.json', function (font) {
-        // Créer la géométrie du texte avec la police chargée
-        var geometry = new THREE.TextGeometry(text, {
-            font: font,
-            size: 10,
-            height: 1,
-            curveSegments: 12
-        });
-        // Créer le mesh avec la géométrie du texte et le matériau
-        var textMesh = new THREE.Mesh(geometry, material);
-        // Positionner le texte dans la scène
-        textMesh.position.set(2, 2, 2); // Ajuster les coordonnées selon votre besoin
-        scene.add(textMesh); // Ajouter le texte à la scène
-    });
-        }
-        function updateText(newText) {
-            scene.remove(textMesh); // Supprime l'ancien texte de la scène
-            textMesh = createText(newText); // Crée le nouveau texte
-            scene.add(textMesh); // Ajoute le nouveau texte à la scène
-        }
-        
         window.addEventListener('mousemove', handleMouseMove);
         function send_back(data){
             fetch('http://0.0.0.0:8000/api/pong', {
@@ -243,15 +222,31 @@ function Game() {
         function server_ball_reset() {
             time_before_powerup = Math.random() * (max_time_before_powerup - min_time_before_powerup) + min_time_before_powerup;
             ball_x = 0;
-            console.log(name_p1 + " : " + score_p1);
-            console.log(name_p2 + " : " + score_p2);
+            text_p1.text = name_p1 + " : " + score_p1;
+            text_p2.text = name_p2 + " : " + score_p2;
+            if (score_p1 > score_p2)
+                {
+                    text_p1.color = 0x00FF00;
+                    text_p2.color = 0xFF0000;
+                }
+            else if(score_p1 < score_p2)
+                {
+                    text_p2.color = 0x00FF00;
+                    text_p1.color = 0xFF0000;
+                }
+            else{
+                    text_p2.color = 0x0000FF;
+                    text_p1.color = 0x0000FF;
+            }
+            text_p1.sync();
+            text_p2.sync();
             p2_weapon_mesh.material.color.setHex(0xffffff);
             p1_weapon_mesh.material.color.setHex(0xffffff);
             ball_is_powerup = 0;
             power_up_on_screen = 0;
             p1_is_frozen = 0;
             p2_is_frozen = 0;
-            ball_render.material.color.setHex(0xFF5020);
+            ball_render.material.color.setHex(0xFFFFFF);
             ball_y = Math.random() * (stage_height - ball_radius*2) - stage_height / 2 + ball_radius;
             ball_speed = ball_starting_speed;
             scene.remove(powerup_render1);
@@ -300,7 +295,7 @@ function Game() {
                     scene.remove(powerup_render1);
                     power_up_on_screen = 0;
                     ball_is_powerup = 1;
-                    ball_render.material.color.setHex(0xffffff);
+                    ball_render.material.color.setHex(0x2050ff);
                     
                 }
             
@@ -314,7 +309,7 @@ function Game() {
                 if (ball_is_powerup)
                 {
                     ball_is_powerup = 0;
-                    ball_render.material.color.setHex(0xFF5020);
+                    ball_render.material.color.setHex(0xFFFFFF);
                     p2_is_frozen = frost_time;
                     p2_weapon_mesh.material.color.setHex(0x0000ff);
                     time_before_powerup = Math.random() * (max_time_before_powerup - min_time_before_powerup) + min_time_before_powerup;
@@ -335,7 +330,7 @@ function Game() {
                 if (ball_is_powerup)
                 {
                     ball_is_powerup = 0;
-                    ball_render.material.color.setHex(0xFF5020);
+                    ball_render.material.color.setHex(0xFFFFFF);
                     p1_is_frozen = frost_time;
                     p1_weapon_mesh.material.color.setHex(0x0000ff);
                     time_before_powerup = Math.random() * (max_time_before_powerup - min_time_before_powerup) + min_time_before_powerup;
@@ -516,6 +511,8 @@ function Game() {
         //camera.rotateZ(Math.PI / 2);
     //	camera.rotation.set(Math.PI / -2, 0, 0);
         ground.position.z = 0.0;
+        
+        
         function server_side_work(received_direction){
             server_ball_move();
             server_ia_move();
@@ -527,11 +524,38 @@ function Game() {
         }
 
 
+        console.log("appel de create_text");
 
-        let text_p1 = createText(name_p1 + " : " + score_p1);
-        //text_p1.position.set(0, 0, 0); 
-        let text_p2 = createText(name_p2 + " : " + score_p2);
-        scene.add(text_p1);
+// Créer un objet Text
+function create_text(to_show)
+{
+    const text = new Text();
+    text.text = to_show;
+    text.font = 'https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxP.ttf';
+    let size = Math.max(name_p1.length,name_p2.length);
+    console.log(size)
+    text.fontSize = 1*5/size;
+    text.color = 0x0000FF;
+
+    text.rotation.x = Math.PI/2;
+    text.position.y = stage_height /2
+    // Après avoir changé des propriétés, vous devez toujours appeler sync()
+    text.sync();
+
+    // Ajouter le texte à la scène
+
+    scene.add(text);
+    return text;
+}
+
+
+// Pour déplacer le texte, vous pouvez modifier la position de l'objet Text
+
+        let text_p1 = create_text(name_p1 + " : " + score_p1);
+        text_p1.position.z += ball_radius *2 +2
+        text_p1.position.x = -stage_width/2
+        let text_p2 = create_text(name_p2 + " : " + score_p2);
+        text_p2.position.z+=  ball_radius*2 +2
         function animate() {
             requestAnimationFrame(animate);
             ball_render.rotation.z += (Math.abs(ball_y_speed) + Math.abs(ball_x_speed))* ball_rotation_z;

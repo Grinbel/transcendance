@@ -18,7 +18,9 @@ RUN npm install sass
 RUN npm i @emotion/react @emotion/styled
 RUN npm install @mui/x-data-grid
 RUN npm audit fix --force
+RUN npm install troika-three-text
 RUN npm install
+
 
 
 # Copy the current directory contents into the container at /app
