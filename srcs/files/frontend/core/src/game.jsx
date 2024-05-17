@@ -20,14 +20,18 @@ function Game() {
     function getWebSocket(roomName) {
 		
 		if (!websockets[roomName]) {
-		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/game/?uuid=${userInfo.user.username}`);
+		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/game/?uuid=${userInfo.user.userId}`);
 		}
 		return websockets[roomName];
 	  }
       console.log(" NOTRE MESSAGE " );
       useEffect(() => {
         //const ws = getWebSocket(roomName);
-        const ws = new WebSocket(`ws://localhost:8000/users/ws/game/?uuid=${userInfo.user.username}`);
+        const ws =new WebSocket(`ws://localhost:8000/users/ws/game/pop/?uuid=1`);;
+        // if (userInfo.user === undefined)
+        //     ws = new WebSocket(`ws://localhost:8000/users/ws/game/?uuid=1`);
+        // else    
+        //     ws = new WebSocket(`ws://localhost:8000/users/ws/game/?uuid=${userInfo.user.userId}`);
         ws.onopen = () => {
             console.log('ws game opened');
             ws.send(JSON.stringify({

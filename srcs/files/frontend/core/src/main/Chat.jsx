@@ -151,6 +151,8 @@ function Chat() {
 	function getWebSocket(roomName) {
 		
 		if (!websockets[roomName]) {
+
+			console.log(" TEST " + userInfo.user.userId)
 		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/chat/${roomName}/?uuid=${userInfo.user.userId}`);
 		}
 		setMessages(prevMessages => [""]);
