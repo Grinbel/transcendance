@@ -63,10 +63,10 @@ function Game() {
         let ball_x_speed = ball_speed;
         let ball_y_speed = ball_speed;
         let ball_pause = 0;
-        let score_p1 = 0;
+        let score_p1 = 10;
         let name_p1 = "Tac";
         let name_p2 = "La Vache";
-        let score_p2 = 0;
+        let score_p2 = 10;
         let ball_acc = 1.3;
         let player_size = 2;
         let player_width = 1;
@@ -80,6 +80,10 @@ function Game() {
         let player_is_ia = 1;
         let distance_from_wall = 0;
         let ball_rotation_z =1;
+        let score_to_get = 11; //Score a obtenir pour gagner
+        let score_diff = 2; //ecart minimal pour gagner
+        let score_max = 15; // score a atteindre pour gagner sans ecart
+        let winner; //placeholder pour gagnant
         
         //* IA VARIABLES
         let ia_time_between_checks = 60;
@@ -185,19 +189,13 @@ function Game() {
         const controls = new OrbitControls(camera, renderer.domElement);
 
         const handleMouseMove = (event) => {
-            controls.maxAzimuthAngle = Math.PI;
-            controls.minAzimuthAngle  = -Math.PI;
+            controls.maxAzimuthAngle = Math.PI /2;
+            controls.minAzimuthAngle  = -Math.PI /2;
             if (camera.position.z < ball_radius +0.5)
                 camera.position.z = ball_radius + 0.5;
+            controls.minPolarAngle = Math.PI/2;
+            controls.maxPolarAngle = Math.PI;
             controls.update();
-       //     const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-//            const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-        //    const vector = new THREE.Vector3(mouseX, 0.5, 0.5);
-//            vector.unproject(camera);
-  //          const dir = vector.sub(camera.position).normalize();
-    //        const distance = -camera.position.z / dir.z;
-      //      const pos = camera.position.clone().add(dir.multiplyScalar(distance));
-        //    controls.target = pos;
         };
 
         window.addEventListener('mousemove', handleMouseMove);
@@ -504,12 +502,8 @@ function Game() {
         
                     
         }
-    //	camera.position.x = 10;
-    //	camera.position.y = 0;
         camera.position.z = 10;
         camera.lookAt(new THREE.Vector3(0, 0, 0));
-        //camera.rotateZ(Math.PI / 2);
-    //	camera.rotation.set(Math.PI / -2, 0, 0);
         ground.position.z = 0.0;
         
         
@@ -523,33 +517,27 @@ function Game() {
             server_player_move(received_direction);
         }
 
+    function create_text(to_show)
+    {
+        const text = new Text();
+        text.text = to_show;
+        text.font = 'https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxP.ttf';
+        let size = Math.max(name_p1.length,name_p2.length);
+        console.log(size)
+        text.fontSize = 1*5/size;
+        text.color = 0x0000FF;
 
-        console.log("appel de create_text");
+        text.rotation.x = Math.PI/2;
+        text.position.y = stage_height /2
+        // Après avoir changé des propriétés, vous devez toujours appeler sync()
+        text.sync();
 
-// Créer un objet Text
-function create_text(to_show)
-{
-    const text = new Text();
-    text.text = to_show;
-    text.font = 'https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxP.ttf';
-    let size = Math.max(name_p1.length,name_p2.length);
-    console.log(size)
-    text.fontSize = 1*5/size;
-    text.color = 0x0000FF;
+        // Ajouter le texte à la scène
 
-    text.rotation.x = Math.PI/2;
-    text.position.y = stage_height /2
-    // Après avoir changé des propriétés, vous devez toujours appeler sync()
-    text.sync();
+        scene.add(text);
+        return text;
+    }
 
-    // Ajouter le texte à la scène
-
-    scene.add(text);
-    return text;
-}
-
-
-// Pour déplacer le texte, vous pouvez modifier la position de l'objet Text
 
         let text_p1 = create_text(name_p1 + " : " + score_p1);
         text_p1.position.z += ball_radius *2 +2
@@ -557,6 +545,15 @@ function create_text(to_show)
         let text_p2 = create_text(name_p2 + " : " + score_p2);
         text_p2.position.z+=  ball_radius*2 +2
         function animate() {
+            if(((score_p1 >= score_to_get || score_p2 >= score_to_get) && Math.abs(score_p1-score_p2) >= score_diff) || score_p1>score_max || score_p2>score_max)
+                {
+                    scene.clear();
+                    winner = score_p1>score_p2?name_p1:name_p2;
+                    console.log(winner);
+                    winner = create_text("WINNER : " + winner );
+                    winner.position.x = -3
+                    return(end_of_game(-1));
+                }
             requestAnimationFrame(animate);
             ball_render.rotation.z += (Math.abs(ball_y_speed) + Math.abs(ball_x_speed))* ball_rotation_z;
     //		ball_render.rotation.y += ball_x_speed * 2;
@@ -565,6 +562,14 @@ function create_text(to_show)
             renderer.render(scene, camera);
         }
         animate();
+        function end_of_game(counter){
+            renderer.render(scene, camera);
+            if (counter !=0)
+                {
+                    winner.rotation.y +=0.1;
+                    requestAnimationFrame(() => end_of_game(counter - 1));}
+            
+        }
         return () => {
             // Nettoyez les ressources Three.js et arrêtez les écoutes d'événements si nécessaire
         };
