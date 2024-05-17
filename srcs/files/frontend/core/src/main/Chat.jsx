@@ -134,7 +134,8 @@ class Chat extends React.Component {
 
 function Chat() {
 	const userInfo = useContext(userContext);
-	const [formData, setFormData] = useState({ message: '', date: '', username: userInfo.user.username });
+	
+	const [formData, setFormData] = useState({ message: '', date: '', username: '' });
 	const [error, setError] = useState(null);
 	const [messages, setMessages] = useState([]);
 	const [ws, setWs] = useState(null);
@@ -150,18 +151,21 @@ function Chat() {
 	function getWebSocket(roomName) {
 		
 		if (!websockets[roomName]) {
-		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/chat/${roomName}/?uuid=${userInfo.user.id}`);
+		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/chat/${roomName}/?uuid=${userInfo.user.userId}`);
 		}
 		setMessages(prevMessages => [""]);
 		return websockets[roomName];
 	  }
 
 	useEffect(() => {
+		if (userInfo.user === undefined )
+			return ;
+		setFormData(prevState => ({...prevState, username: userInfo.user.username}));
 		const ws = getWebSocket(roomName);
 		// const ws = new WebSocket('ws://localhost:8000/users/ws/chat/general/');
 		ws.onopen = () => {
 			ws.send(JSON.stringify({type:"connected",username: userInfo.user.username}));
-			console.log('ws chat opened')
+			console.log('ws chat opened', userInfo.user)
 		};
 		ws.onclose = () => console.log('ws chat closed');
 		ws.onerror = e => console.log('ws chat error', e);
@@ -190,7 +194,7 @@ function Chat() {
 			ws.onerror = null;
 			ws.onmessage = null;
 		};
-	}, [roomName]);
+	}, [roomName,userInfo]);
 
 	const handleChat = async (event) => {
 		event.preventDefault();
@@ -234,7 +238,8 @@ function Chat() {
 	}
 
 
-
+	if (userInfo.user === undefined)
+		return (<div></div>);
 	return (
 		<div id="chatWindow" className="chat-window">
 			<div id="chatHeader" className="chat-header">

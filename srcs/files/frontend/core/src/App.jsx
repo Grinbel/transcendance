@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState , createContext, useContext, useEffect} from 'react';
 
 import Game from './game.jsx'
-import  { axiosInstance } from "./axiosAPI.js";
+import  { axiosInstance, interceptor_response } from "./axiosAPI.js";
 
 
 import './App.scss'
@@ -99,7 +99,7 @@ function getProfile(user, setUser){
 						{/* <Route path="/*" element={<Error404 />} /> */}
 					</Routes>
 				{/* {showLoginForm && <Login />} */}
-				{/* <Chat /> */}
+				<Chat />
 			</div>
 		</userContext.Provider>
 	);

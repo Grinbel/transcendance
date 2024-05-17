@@ -46,13 +46,7 @@ class ChatConsummer(WebsocketConsumer):
 		print('username:',user.username)
 
 		print(text_data_json)
-		username = text_data_json['username']
-		if (username != 'default'):
-			user = User.objects.get(username=username)
-
-		# user.addBlacklist('bob')
-		#remove every user in blacklist
-		# user.blacklist.clear()
+		username = user.username
 
 		tipe= text_data_json['type']
 		if (tipe == 'connected'):
@@ -62,21 +56,9 @@ class ChatConsummer(WebsocketConsumer):
 				return
 			for message in messages:
 				# print('message : ',message.username)
-				blacklist = None
-				# if (username != 'default'):
-				# 	blacklist = user.blacklist.all()
-				# if (blacklist is None or username == 'default'):
-				# 	self.send(text_data=json.dumps({
-				# 		'type':'chat',
-				# 		'message':message.message,
-				# 		'date': message.date.strftime('%H:%M'),
-				# 		'username': message.username,
-				# 	}))
-				# else :
-				# 	for name in blacklist:
-				# 		print('name : ',name.username)
-						# if (message.username == name.username):
-						# 	continue
+				if (user.blacklist.all().filter(username=message.username).exists()):
+					print('blocked')
+					continue				
 				self.send(text_data=json.dumps({
 					'type':'chat',
 					'message':message.message,
@@ -84,14 +66,13 @@ class ChatConsummer(WebsocketConsumer):
 					'username': message.username,
 				}))
 			return
-		user.addBlacklist('pop')
+		
+		
+		# user.addBlacklist('pop')
 		# user.save()
 		# user.removeBlacklist('bob')
-		print('self black list : ',user.blacklist.all())
-		print('user pop:',self.scope)
-		
-		user = self.scope['user']
-		print('user pap:',user)
+		if (self.checkCommand(text_data_json['message'], user)):
+			return
 		print('self black list : ',user.blacklist.all())
 
 		message = text_data_json['message']
@@ -116,11 +97,36 @@ class ChatConsummer(WebsocketConsumer):
 			}
 		)
 
+	def checkCommand(self, message, user):
+		if (message[0] == '/'):
+			print('commande :',message)
+			split = message.split(' ')
+			if (split[0] == '/addfriend'):
+				user.addFriend(split[1])
+				return True
+			elif (split[0] == '/removefriend'):
+				user.removeFriend(split[1])
+				return True
+			elif (split[0] == '/block'):
+				print('block')
+				user.addBlacklist(split[1])
+				return True
+			elif (split[0] == '/unblock'):
+				print('unblock',split[1])
+				user.removeBlacklist(split[1])
+				return True
+				
+		return False
+
 	def chat_message(self, event):
 		message = event['message']
 		username = event['username']
 		date = event['date']
 		print('in chat message')
+		user= self.scope['user']
+		if (user.blacklist.all().filter(username=username).exists()):
+			print('blocked')
+			return
 		self.send(text_data=json.dumps({
 			'type':'chat',
 			'message':message,
