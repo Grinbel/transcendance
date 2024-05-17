@@ -17,6 +17,8 @@ RUN npm install react-icons --save
 RUN npm install sass
 RUN npm i @emotion/react @emotion/styled
 RUN npm install @mui/x-data-grid
+RUN npm i @emotion/react @emotion/styled
+RUN npm install jwt-decode
 RUN npm audit fix --force
 RUN npm install troika-three-text
 RUN npm install

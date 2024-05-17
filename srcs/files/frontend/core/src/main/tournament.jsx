@@ -18,7 +18,7 @@ const tournament = () => {
 
 	function getWebSocket(roomName) {
 		if (!websockets[roomName]) {
-		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/tournament/${roomName}/`);
+		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/tournament/${roomName}/?uuid=${userInfo.user.userId}`);
 		}
 		setMessages(prevMessages => [""]);
 		return websockets[roomName];

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState , createContext, useContext, useEffect} from 'react';
 
 import Game from './game.jsx'
-import  { axiosInstance } from "./axiosAPI.js";
+import  { axiosInstance, interceptor_response } from "./axiosAPI.js";
 
 
 import './App.scss'
@@ -27,26 +27,32 @@ import Chat from './main/Chat.jsx';
 
 import { UserProvider, userContext } from "./contexts/userContext.jsx";
 
-
 function getProfile(user, setUser){
+	// localStorage.clear();
+	localStorage.removeItem('user');
+	// get user from local storage
+	const userStringified = localStorage.getItem('user');
+	if (userStringified) {
+		const user = JSON.parse(userStringified);
+		setUser(user);
 
-	// decoder le token stocké dans le local.storage
+	} else
+	{
+		console.log('getProfile: no user in local storage');
+		console.log(("axios headers: token :"), axiosInstance.defaults.headers['Authorization']);
+		axiosInstance.get('getprofile/')
+		.then((response) => {
+			console.log('app: GETPROFILE response', response);
+			// userinfo.setUser({username:response.data.username, isLogged:true});
+			setUser(response.data);
+			localStorage.setItem('user', JSON.stringify(response.data));
+		})
+		.catch((error) => {
+			console.error('There was an error! got empty user,  user set in global context: ', user);
+			
+		});
+	}
 
-	console.log('getProfile: user', user);
-	console.log(("axios headers: token :"), axiosInstance.defaults.headers[
-		'Authorization'
-	]);
-	// ask server to send userinfo
-	axiosInstance.get('getprofile/')
-	.then((response) => {
-		console.log('app: get_profile response', response);
-		// userinfo.setUser({username:response.data.username, isLogged:true});
-		setUser(response.data);
-		setUser({...user, isLogged:true});
-	})
-	.catch((error) => {
-		console.error('There was an error!', error);
-	});
 }
 
 	// const  appContext = createContext(null);
@@ -54,17 +60,12 @@ function getProfile(user, setUser){
 	function App(){
 		
 		
-		const [user, setUser] = useState(
-			{username:"default", 
-			token:"" , 
-			isLogged:false, 
-			two_factor:false, 
-			avatar:null}
-		);
-	
+		const [user, setUser] = useState();
+
 		
 		useEffect(() => {
-			console.log('MyNavbar: useEffect');
+			console.log('app: useEffect');
+
 			getProfile(user, setUser);
 		}
 		, []);
@@ -81,7 +82,6 @@ function getProfile(user, setUser){
 		<userContext.Provider value={{user, setUser}}>
 			<div className="app">
 				<MyNavbar/>
-				
 					<Routes>
 						<Route path="/dashboard" element={<Dashboard />}>
 							<Route index element={<MyMain />} />

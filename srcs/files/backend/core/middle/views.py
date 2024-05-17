@@ -16,6 +16,6 @@ class AsgiValidateTokenView(APIView):
 	def get(self, request, *args, **kwargs):
 		ticket_uuid = uuid4()
 		user_id = request.user.id
-		cache.set(ticket_uuid, user_id, 600)
+		cache.set(ticket_uuid, user_id, timeout=60*60*24*7)
 		print("ticket_uuid:", ticket_uuid)
 		return Response({'uuid': ticket_uuid})

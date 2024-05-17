@@ -5,6 +5,9 @@ import { userContext } from "../contexts/userContext.jsx";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import '../forms/forms.css'
 
+import { jwtDecode } from "jwt-decode";
+
+
 // import { userContext } from "../contexts/userContext.jsx";
 async function getUuid(userInfo){
 	const response = await axiosInstance.get('/api/', {
@@ -26,7 +29,6 @@ function Login() {
     const [error, setError] = useState(null);
     const [validated, set_Validated] = useState(false);
 
-
     const [formData, setFormData] = useState({ 
         username: "", 
         password: "" 
@@ -34,33 +36,35 @@ function Login() {
     
     const navigate = useNavigate();
     const userInfo = useContext(userContext);
-
-	console.log('Login: user ', userInfo.user.username);
+    if (userInfo.user) {
+	    console.log('Login: user ', userInfo.user.username);
+    }
     
 
 
     const handleChange = (event) => {
         setFormData({ ...formData, [event.target.name]: event.target.value });
-        console.log('Login: handleChange event.target.name', event.target.name);
+        // console.log('Login: handleChange event.target.name', event.target.name);
     };
 
     //print local storage info
     console.log('Login: localStorage accessTok', localStorage.getItem('access_token'));
-    console.log('Login: localStorage refreshTok', localStorage.getItem('refresh_token'));
+    // console.log('Login: localStorage refreshTok', localStorage.getItem('refresh_token'));
 
     const handleLogin = async (event) => {
 
         event.preventDefault();
-        console.log('Login: handleLogin formData', formData);
-
+        // console.log('Login: handleLogin formData', formData);
             try 
             {
                 const response = await axiosInstance.post('/login/', {
                 username: formData.username,
                 password: formData.password
                 });
-                console.log('response.status', response.status);
-                if (response.status === 200) 
+                if (response) {
+                    console.log('response.status', response.status);
+                }
+                if (response && response.status === 200) 
                 {
                     if (response.data.two_factor)
                     {
@@ -69,18 +73,27 @@ function Login() {
                     }
                     else
                     {
-                        console.log('Login successful no 2FA: i go to home page', response);  //SETUP REDIRECT TO HOME PAGE
-                        axiosInstance.defaults.headers.common['Authorization'] = "JWT " + response.data.access;
-                        axiosInstance.defaults.headers['Authorization'] = "JWT " + response.data.access;
-                        localStorage.setItem('access_token', response.data.access);
-                        localStorage.setItem('refresh_token', response.data.refresh);
-                        userInfo.setUser({username:formData.username, isLogged:true});  // passing  info to userContext
-                        // getUuid(userInfo);
-						navigate('/');
+                        const token = response.data.access;
+                        const refresh = response.data.refresh;
+                        axiosInstance.defaults.headers.common['Authorization'] = "JWT " + token;
+                        axiosInstance.defaults.headers['Authorization'] = "JWT " + refresh;
+                        localStorage.setItem('access_token', token);
+                        localStorage.setItem('refresh_token', refresh);
+
+                        // passing  info to userContext
+                        console.log('Login successful no 2FA: navigate to "/"');
+                        const decodedToken = jwtDecode(token);
+                        console.log('decoded token', decodedToken);
+                        const user = {username: decodedToken.username, userId: decodedToken.user_id, userAvatar: decodedToken.avatar, email:decodedToken.email, isActive:decodedToken.is_active,exp:decodedToken.exp,iat:decodedToken.iat,isStaff:decodedToken.is_staff,twoFactor:decodedToken.two_factor,uuid:decodedToken.uuid};  //SETUP REDIRECT TO HOME PAGE
+                        localStorage.setItem('user', JSON.stringify(user));
+                        userInfo.setUser(user);
+						console.log("POOOOOOOOOOOOOOOOOOOOOOOOOOP",user,userInfo);
+                        navigate('/');
                     }
                 }
             } catch (error) 
             {
+                console.log('Error catched in login.jsx ', JSON.stringify(error));
                 if (error.response) {
                     console.log('error RESPONSE')
                     console.log(error.response.data);
