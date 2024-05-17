@@ -3,6 +3,8 @@ import  { useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Text } from 'troika-three-text';
+import { userContext } from "./contexts/userContext.jsx";
+import { useContext } from "react";
 
 
 //! ICI j'adapte le code pour jouer en distant avec le bot .
@@ -12,19 +14,20 @@ function Game() {
     const [ws, setWs] = useState(null);
 	// const [roomName,setRoomName] = useState("general");
 	const websockets = {};
+    const userInfo = useContext(userContext);
 
     //TODO : get all options from main page
-    /*function getWebSocket(roomName) {
+    function getWebSocket(roomName) {
 		
 		if (!websockets[roomName]) {
-		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/game/`);
+		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/game/?uuid=${userInfo.user.username}`);
 		}
 		return websockets[roomName];
-	  }*/
-      
-      useEffect(() => {/*
-        // const ws = getWebSocket(roomName);
-        const ws = new WebSocket(`ws://localhost:8000/users/ws/game/`);
+	  }
+      console.log(" NOTRE MESSAGE " );
+      useEffect(() => {
+        //const ws = getWebSocket(roomName);
+        const ws = new WebSocket(`ws://localhost:8000/users/ws/game/?uuid=${userInfo.user.username}`);
         ws.onopen = () => {
             console.log('ws game opened');
             ws.send(JSON.stringify({
@@ -38,7 +41,7 @@ function Game() {
             const data = JSON.parse(e.data);
             console.log(data);
         };
-        return;*/
+    //    return;
         
         let loader = new THREE.TextureLoader();
         //let texture = loader.load('https://threejsfundamentals.org/threejs/resources/images/wall.jpg');
@@ -53,7 +56,7 @@ function Game() {
 //        let powerup_texture2 = loader.load('https://www.pngkey.com/png/full/1-11652_power-up-png-power-up-icon-png.png');
         let wall_texture = loader.load('https://png.pngtree.com/element_origin_min_pic/17/09/10/92d43f628122927e219612df377cc4a0.jpg')
         
-                
+        
         //* ball and players settings 
         let ball_starting_speed = 0.03;
         let ball_speed = ball_starting_speed;
