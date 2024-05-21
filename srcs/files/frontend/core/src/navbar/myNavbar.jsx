@@ -53,7 +53,7 @@ const NavLoggedIn = () => {
 		}
 	  // Logique de déconnexion (par exemple, suppression des jetons d'authentification, etc.)
 	  // Ici, nous simulons juste la déconnexion en modifiant l'état
-		userinfo.setUser({username:"", isLogged:false});
+		userinfo.setUser({});
 		console.log('NavLoggedIn: logout successful frontend');
 		navigate('/');
 	};
@@ -90,9 +90,6 @@ const NavLoggedIn = () => {
 	const navigate = useNavigate();
 	const userinfo = useContext(userContext);
 
-
-
-
 	  return (
 		<Navbar collapseOnSelect expand="lg" className="bg-body-tertiary navbarCustom">
 		  <Container>
@@ -123,7 +120,13 @@ const NavLoggedIn = () => {
 	const navigate = useNavigate();
 	const userinfo = useContext(userContext);
 
-	console.log('MyNavbar: userinfo', userinfo);
+	if (userinfo.user) {
+		console.log('MyNavbar: user logged in');
+		console.log('MyNavbar: user', userinfo.user);
+	}
+	else {
+		console.log('MyNavbar: user not logged in');
+	}
 	// Fonction pour gérer la connexion de l'utilisateur
   
 	// Fonction pour gérer la déconnexion de l'utilisateur
@@ -131,7 +134,7 @@ const NavLoggedIn = () => {
   
 	return (
 	  <div>
-		{userinfo.user.isLogged ? (
+		{userinfo.user ? (
 		  <NavLoggedIn/>
 		) : (
 		  <NavLoggedOut/>

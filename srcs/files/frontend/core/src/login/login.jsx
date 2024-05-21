@@ -29,7 +29,6 @@ function Login() {
     const [error, setError] = useState(null);
     const [validated, set_Validated] = useState(false);
 
-
     const [formData, setFormData] = useState({ 
         username: "", 
         password: "" 
@@ -37,8 +36,9 @@ function Login() {
     
     const navigate = useNavigate();
     const userInfo = useContext(userContext);
-
-	console.log('Login: user ', userInfo.user.username);
+    if (userInfo.user) {
+	    console.log('Login: user ', userInfo.user.username);
+    }
     
 
 
@@ -55,15 +55,16 @@ function Login() {
 
         event.preventDefault();
         // console.log('Login: handleLogin formData', formData);
-
             try 
             {
                 const response = await axiosInstance.post('/login/', {
                 username: formData.username,
                 password: formData.password
                 });
-                console.log('response.status', response.status);
-                if (response.status === 200) 
+                if (response) {
+                    console.log('response.status', response.status);
+                }
+                if (response && response.status === 200) 
                 {
                     if (response.data.two_factor)
                     {
@@ -79,14 +80,13 @@ function Login() {
                         localStorage.setItem('access_token', token);
                         localStorage.setItem('refresh_token', refresh);
 
-                        // userInfo.setUser({username:formData.username, isLogged:true, userId:response.data.id});
                         // passing  info to userContext
                         console.log('Login successful no 2FA: navigate to "/"');
                         const decodedToken = jwtDecode(token);
                         console.log('decoded token', decodedToken);
                         const user = {username: decodedToken.username, userId: decodedToken.user_id, userAvatar: decodedToken.avatar};  //SETUP REDIRECT TO HOME PAGE
-                        // localStorage.setItem('user', JSON.stringify(user));
-                        // const user = JSON.parse(localStorage.getItem('user'));
+                        localStorage.setItem('user', JSON.stringify(user));
+                        userInfo.setUser(user);
                         navigate('/');
                     }
                 }
