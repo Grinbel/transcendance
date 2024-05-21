@@ -14,11 +14,12 @@ export const axiosInstance = axios.create({
 
 });
 
-const refreshing = false;
+let refreshing = false;
 
 let refreshSubscribers = [];
 
 const onRrefreshed = (token) => {
+    // loop through all waiting requests and use the new token
     refreshSubscribers.forEach((callback) => callback(token));
 };
 
@@ -54,6 +55,7 @@ export const interceptor_response = axiosInstance.interceptors.response.use(
                     localStorage.setItem('refresh_token', response.data.refresh);
                     axiosInstance.defaults.headers['Authorization'] = "JWT " + response.data.access;
                     originalRequest.headers['Authorization'] = "JWT " + response.data.access;
+                    onRrefreshed(response.data.access);
                     return axiosInstance(originalRequest);
                   }
                 })
@@ -67,16 +69,17 @@ export const interceptor_response = axiosInstance.interceptors.response.use(
                   refreshing = false;
                 });
             }
-          }
-          
-          const retryOrigReq = new Promise((resolve, reject) => {
-            addRefreshSubscriber((token) => {
-                originalRequest.headers['Authorization'] = 'Bearer ' + token;
-                resolve(apiInstance(originalRequest));
+
+            const retryOriginalRequest = new Promise((resolve, reject) => {
+              addRefreshSubscriber((token) => {
+                  originalRequest.headers['Authorization'] = 'Bearer ' + token;
+                  resolve(apiInstance(originalRequest));
+              });
             });
-        });
-          
-          
+
+            return retryOriginalRequest;
+          }
+
           if (status === 401 && originalRequest._retry === true) {
             // if the refresh token is expired we will redirect the user to the login page
             console.log('REFRESH TOKEN EXPIRED: ')

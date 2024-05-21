@@ -48,7 +48,10 @@ function getProfile(user, setUser){
 		})
 		.catch((error) => {
 			console.error('There was an error! got empty user,  user set in global context: ', user);
-			
+			console.log('REFRESH TOKEN EXPIRED: ')
+            localStorage.removeItem('token');
+            localStorage.removeItem('refreshToken');
+            return Promise.reject(err);
 		});
 	}
 
@@ -65,7 +68,11 @@ function getProfile(user, setUser){
 		useEffect(() => {
 			console.log('app: useEffect');
 
-			getProfile(user, setUser);
+			getProfile(user, setUser)
+			.catch((error) => {
+				console.error('There was an error! got empty user,  user set in global context: ', user);
+				console.log('REFRESH TOKEN EXPIRED: ')
+			});
 		}
 		, []);
 
