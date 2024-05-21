@@ -45,7 +45,7 @@ function Game() {
             const data = JSON.parse(e.data);
             console.log(data);
         };
-    //    return;
+        //return;
         
         let loader = new THREE.TextureLoader();
         //let texture = loader.load('https://threejsfundamentals.org/threejs/resources/images/wall.jpg');
@@ -351,19 +351,16 @@ function Game() {
             if (ball_y > stage_height/2 - ball_radius || ball_y < -stage_height/2 + ball_radius) {
                 ball_y_speed = -ball_y_speed;
                 ball_rotation_z *=-1;
-            }
-        
+            }   
         }
         function server_ia_follow_target(pos){
+            ia_direction = 0;
             if (ball_x_speed > 0){	
                 if (pos > ia_ball_estimated_impact_y +.1){
                     ia_direction = 1;
                 }
                 else if (pos < ia_ball_estimated_impact_y - .1){
                     ia_direction = -1;
-                }
-                else {
-                    ia_direction = 0;
                 }
             }
             else
@@ -372,9 +369,6 @@ function Game() {
                     ia_direction = 1;
                 else	if (pos < -0.1){
                     ia_direction = -1;
-                }
-                else {
-                    ia_direction = 0;
                 }
             }
             //console.log(ia_ball_estimated_impact_y);
@@ -522,6 +516,9 @@ function Game() {
             else
                 server_estimate_ball_speeds()
             server_player_move(received_direction);
+            return (p1_weapon_mesh.position.y, p2_weapon_mesh.position.y, ball_x , ball_y, 
+                power_up_on_screen, ball_is_powerup, score_p1, score_p2, 
+                p1_is_frozen, p2_is_frozen , powerup_render1.position.x , powerup_render1.position.y);
         }
 
     function create_text(to_show)
