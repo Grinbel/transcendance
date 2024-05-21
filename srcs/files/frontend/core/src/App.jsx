@@ -26,7 +26,6 @@ import Chat from './main/Chat.jsx';
 
 import { UserProvider, userContext } from "./contexts/userContext.jsx";
 
-
 function getProfile(user, setUser){
 
 	// decoder le token stocké dans le local.storage
