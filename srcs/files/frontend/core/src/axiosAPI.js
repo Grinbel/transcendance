@@ -33,7 +33,8 @@ export const interceptor_response = axiosInstance.interceptors.response.use(
       
       if (error.response.status === 401) {
             console.log("Unauthorized access, token died")
-          const refresh_token = localStorage.getItem('refresh_token');
+			//! This is the place where we can refresh the token, now it's comment while ahcene is working on it
+          /*const refresh_token = localStorage.getItem('refresh_token');
           return axiosInstance
               .post('/token/refresh/', {refresh: refresh_token})
               .then((response) => {
@@ -48,7 +49,7 @@ export const interceptor_response = axiosInstance.interceptors.response.use(
               })
               .catch(err => {
                   console.log(err)
-              });
+              });*/
       }
       else if (error.response.status === 403) {
         console.log("No credentials");

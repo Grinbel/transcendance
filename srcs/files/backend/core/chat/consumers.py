@@ -58,7 +58,9 @@ class ChatConsummer(WebsocketConsumer):
 				# print('message : ',message.username)
 				if (user.blacklist.all().filter(username=message.username).exists()):
 					print('blocked')
-					continue				
+					continue
+				date = message.date.strftime('%H:%M')
+				#want to add
 				self.send(text_data=json.dumps({
 					'type':'chat',
 					'message':message.message,

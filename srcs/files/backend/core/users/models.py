@@ -15,7 +15,7 @@ class User(AbstractUser):
 	two_factor = models.BooleanField(default=False)
 	avatar = models.ImageField(upload_to='avatars/', default='yoshi.jpg')
 	alias = models.CharField(max_length=255, null=True, blank=True)
-	tournament = models.ForeignKey('tournament.Tournament', on_delete=models.SET_NULL, null=True, blank=True)
+	# tournament = models.ForeignKey('tournament.Tournament', on_delete=models.SET_NULL, null=True, blank=True)
 	friends = models.ManyToManyField('self', blank=True)
 	name = models.CharField(max_length=255, null=True, blank=True)
 	blacklist = models.ManyToManyField('self', blank=True)

@@ -51,6 +51,8 @@ def generate_random_digits(n=6):
 @api_view(['GET'])
 def getProfile(request):
 	print('getProfile function request ')
+	return Response({'detail': 'Invalid token format'}, status=status.HTTP_401_UNAUTHORIZED)
+
 	if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
 		token = request.headers.get('Authorization').split(' ')[1]
 		print('token', token)
