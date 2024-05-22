@@ -5,41 +5,38 @@ from asgiref.sync import async_to_sync
 from users.helper import listUsers
 from users.models import User
 class GameConsumer(WebsocketConsumer):
-	def connect(self):
+	async def connect(self):
 		print('connected to game consumer')
-		room_name = self.scope['url_route']['kwargs']['room_name']
+		self.room_name = self.scope['url_route']['kwargs']['room_name']
 		print('user POOOPA',self.scope['user'], room_name)
-		self.room_name = room_name
-		self.room_group_name = 'chat_%s' % room_name
-		async_to_sync(self.channel_layer.group_add)(
-			self.room_name,
+		self.room_group_name = f"pong_{self.room_name}"
+
+		await self.channel_layer.group_add(
+			self.room_group_name,
 			self.channel_name
 		)
-		self.accept()
+		await self.accept()
 
-	def disconnect(self, close_code):
-		pass
+	async def disconnect(self, close_code):
+		await self.channel_layer.group_discard(
+			self.room_group_name,
+			self.channel_name
+		)
 
-	def receive(self, text_data):
-		text_data_json = json.loads(text_data)
-		# message = text_data_json['message']
-		print('received message',text_data_json)
-		# self.send(text_data=json.dumps({
-		#     'message': message
-		# }))
-		async_to_sync(self.channel_layer.group_send)(
-			self.room_name,
+	async def receive(self, text_data):
+		data = json.loads(text_data)
+		message = data['message']
+		print('received message',data)
+		print(' real message :',message)
+		await self.channel_layer.group_send(
+			self.room_group_name,
 			{
-				'type':'game_message',
-				'message':'pop',
-				
+				'type': 'game_message',
+				'message': data,
 			}
 		)
 	
-	def game_message(self, event):
+	async def game_message(self, event):
 		message = event['message']
-        self.send(text_data=json.dumps({
-			'type': 'game_message',
-            'message': message
-        }))
+		await self.send(text_data=json.dumps(message))
 

@@ -15,13 +15,23 @@ import './Home.css';
 const Home = () => {
 
 	const userinfo = useContext(userContext);
-	console.log('Home: userinfo', userinfo);
+	// console.log('Home: userinfo', userinfo.user.userId);
+	//print('Home: userinfo', userinfo)
+	let pop;
+	if (userinfo.user === undefined)
+		pop="";
+	else
+		pop = userinfo.user.userId;
 
 	return (
 		<Container fluid className="homeContainer">
 			<Row className="mb-3">
 				<Col className="columnStyle">
 					<Button variant="primary" as={Link} to="/play" className="homeButtons">1V1</Button>
+				</Col>
+				<Col className="columnStyle ">
+					
+					<Button variant="primary" as={Link} to={`/game?value=${pop + '+' + 0}`} className="homeButtons"> Vs Vache </Button>
 				</Col>
 				<Col className="columnStyle ">
 					<Button variant="primary" as={Link} to="/play" className="homeButtons">TOURNAMENT </Button>
