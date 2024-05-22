@@ -61,6 +61,7 @@ function Chat() {
 		}
 		setFormData(prevState => ({...prevState, username: userInfo.user.username}));
 		const ws = getWebSocket(roomName);
+		// const ws = new WebSocket('ws://localhost:8000/users/ws/chat/general/');
 		ws.onopen = () => {
 			ws.send(JSON.stringify({type:"connected",username: userInfo.user.username}));
 			console.log('ws chat opened', userInfo.user)
