@@ -29,7 +29,6 @@ class Group(models.Model):
 class Messages(models.Model):
 	
 	message = models.CharField(max_length=255)
-	#date = models.DateTimeField(default=datetime.now())
 	date = models.DateTimeField(blank=True, null=True)
 	username = models.CharField(max_length=255)
 	# date_posted = models.DateTimeField(default=datetime.now)
