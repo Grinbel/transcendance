@@ -1,6 +1,6 @@
 import { Routes, Route, Link, } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import { useState , createContext, useContext, useEffect} from 'react';
+import { useState , createContext, useContext, useEffect, useMemo} from 'react';
 
 import  { axiosInstance, interceptor_response } from "./axiosAPI.js";
 
@@ -26,33 +26,32 @@ import Chat from './main/Chat.jsx';
 
 import { UserProvider, userContext } from "./contexts/userContext.jsx";
 
-function getProfile(user, setUser){
+//make getProfile async function, show me syntax in comment
+
+async function getProfile(user, setUser, error, setError){
 	// localStorage.clear();
 	localStorage.removeItem('user');
 	// get user from local storage
 	const userStringified = localStorage.getItem('user');
 	if (userStringified) {
-		const user = JSON.parse(userStringified);
-		setUser(user);
+		const userData = JSON.parse(userStringified);
+		return (userData);
 
 	} else
 	{
 		console.log('getProfile: no user in local storage');
-		console.log(("axios headers: token :"), axiosInstance.defaults.headers['Authorization']);
-		axiosInstance.get('getprofile/')
-		.then((response) => {
-			console.log('app: GETPROFILE response', response);
-			// userinfo.setUser({username:response.data.username, isLogged:true});
-			setUser(response.data);
-			localStorage.setItem('user', JSON.stringify(response.data));
-		})
-		.catch((error) => {
-			console.error('There was an error! got empty user,  user set in global context: ', user);
-			console.log('REFRESH TOKEN EXPIRED: ')
-            localStorage.removeItem('token');
-            localStorage.removeItem('refreshToken');
-            return Promise.reject(err);
-		});
+		console.log(("axios headers token :"), axiosInstance.defaults.headers['Authorization']);
+
+		await axiosInstance.get('getprofile/')
+			.then((response) => {
+				console.log('app: GETPROFILE response', response);
+				// userinfo.setUser({username:response.data.username, isLogged:true});
+				return (response.data);
+			})
+			.catch((error) => {
+				console.log('axios getprofile failure, catched here in getProfile: ', error.response.status)
+				throw error;
+			});
 	}
 
 }
@@ -63,24 +62,37 @@ function getProfile(user, setUser){
 		
 		
 		const [user, setUser] = useState();
+		const [error, setError] = useState();
+
+		const navigate = useNavigate();
+		const userMemo = useMemo(() => {
+			return age;
+		  }, [user]);
 
 		
 		useEffect(() => {
-			console.log('app: useEffect');
 
-			getProfile(user, setUser)
-			.catch((error) => {
-				console.error('There was an error! got empty user,  user set in global context: ', user);
-				console.log('REFRESH TOKEN EXPIRED: ')
-			});
-		}
-		, []);
+			const fetchUserProfile = async () => {
+				try {
+					const userData = await getProfile();
+					localStorage.setItem('user', JSON.stringify(response.data));
+					setUser(userData);
+					console.log('app: no error in getProfile got a user successfully');
+				} catch (error) {
+					console.error('getUserProfile: Error occurred:', error);
+					setError(error);
+					localStorage.removeItem('token');
+					localStorage.removeItem('refreshToken');
+					navigate('/login');
+				}
+			};
+	
+			fetchUserProfile();
 
-
+		}, [userMemo]);
 		
     // const handleLoginClick = () => {
 	// 	console.log('App: login clicked in navbar');
-
     //   setShowLoginForm(true);
     // };
 
