@@ -7,7 +7,9 @@ import "./Home.css";
 import { useContext } from "react";
 import { userContext } from "../contexts/userContext.jsx";
 import  { axiosInstance } from "../axiosAPI.js";
-
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
 {/*const handleChat = async (event) => {
 	event.preventDefault();
@@ -162,7 +164,6 @@ function Chat() {
 			return ;
 		setFormData(prevState => ({...prevState, username: userInfo.user.username}));
 		const ws = getWebSocket(roomName);
-		// const ws = new WebSocket('ws://localhost:8000/users/ws/chat/general/');
 		ws.onopen = () => {
 			ws.send(JSON.stringify({type:"connected",username: userInfo.user.username}));
 			console.log('ws chat opened', userInfo.user)
@@ -178,7 +179,6 @@ function Chat() {
 				return;
 			}
 			if (message.type === 'chat') {
-				// message.date = new Date().toLocaleTimeString();
 				setMessages(prevMessages => [...prevMessages, message]);
 			}
 			console.info('received', message);
@@ -210,10 +210,25 @@ function Chat() {
 			const currentTime = new Date();
 			const formattedTime = currentTime.getHours() + ':' + currentTime.getMinutes();
 
-			console.log(userInfo.user.username);
+			console.log("test user",userInfo.user);
 			const sent = JSON.stringify({ type:"chat",message: formData.message, date: formattedTime, username: userInfo.user.username });
 			ws.send(sent);
 			console.info('sent', sent);
+		} catch (error) {
+			setError(error.message);
+			throw (error);
+		}
+	}
+
+
+
+	const action = async (username,action) => {
+		try {
+			const response = await axiosInstance.post('/userlist/', {
+				username: username,
+				action: action,
+				self: userInfo.user.username,
+			});
 		} catch (error) {
 			setError(error.message);
 			throw (error);
@@ -252,15 +267,21 @@ function Chat() {
 				<div id="chatContent" className="chat-content">
 					{messages.map((message, index) => (
 						<div key={index} className="chat-message" ref={index === messages.length - 1 ? messagesEndRef : null}>
-							<div className="chat-username">
-								<Link to={`/${message.username}`}>
-								{message.username}
-								</Link>
+							<Nav className="ms-auto">
+								<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={message.username}>
+									<NavDropdown.Item href={`/${message.username}`}>profile</NavDropdown.Item>
+									<NavDropdown.Divider />
+									<NavDropdown.Item onClick={() => action(message.username,"addfriend")}>AddFriend</NavDropdown.Item>
+									<NavDropdown.Item onClick={() => action(message.username,"unfriend")}>Unfriend</NavDropdown.Item>
+									<NavDropdown.Item onClick={() => action(message.username,"block")}>Block</NavDropdown.Item>
+									<NavDropdown.Item onClick={() => action(message.username,"unblock")}>Unblock</NavDropdown.Item>
+								</NavDropdown>
+							</Nav>
+							<div className="message">
+								{message.message} <span className="message-time">{message.date}</span>
 							</div>
-							<div />
-							{message.message} <span className="message-time">{message.date}</span>
 						</div>
-					))}
+					)).filter((_, index) => index > 0)}
 				</div>
 				<div id="chatInput" className="chat-input">
 					<input
@@ -281,7 +302,8 @@ function Chat() {
 						onChange={(e) => setRoomName(e.target.value)}
 					/>
 				</div>
-
+				<div className="button">
+				</div>
 			</div>
 		</div>
 	  );

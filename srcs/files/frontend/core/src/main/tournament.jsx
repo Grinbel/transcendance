@@ -12,7 +12,7 @@ const tournament = () => {
 	const messagesEndRef = useRef(null);
 	const [name, setName] = useState('');
 	const [maxCapacity, setMaxCapacity] = useState(2);
-	const [displayer, setDisplayer] = useState("pop");
+	const [displayer, setDisplayer] = useState("");
 	const navigate = useNavigate();
 	const websockets = {};
 

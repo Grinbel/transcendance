@@ -51,7 +51,7 @@ def generate_random_digits(n=6):
 @api_view(['GET'])
 def getProfile(request):
 	print('getProfile function request ')
-	return Response({'detail': 'Invalid token format'}, status=status.HTTP_401_UNAUTHORIZED)
+	# return Response({'detail': 'Invalid token format'}, status=status.HTTP_401_UNAUTHORIZED)
 
 	if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
 		token = request.headers.get('Authorization').split(' ')[1]
@@ -70,6 +70,29 @@ def getProfile(request):
 		print('user_data', user_data)
 		return Response(user_data)
 	return Response({'detail': 'Invalid token format'}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['POST'])
+def userlist(request):
+	print('userlist function')
+	username = request.data.get('username')
+	self = request.data.get('self')
+	action = request.data.get('action')
+	user = User.objects.get(username=self)
+	other = User.objects.get(username=username)
+	if (other is None):
+		return Response({'detail': 'Invalid user'})
+	if (action == 'addfriend'):
+		user.addFriend(username)
+	elif (action == 'unfriend'):
+		user.removeFriend(username)
+	elif (action == 'block'):
+		user.addBlacklist(username)
+	elif (action == 'unblock'):
+		user.removeBlacklist(username)
+	print('user friend : ',user.friends.all())
+	print('user black list : ',user.blacklist.all())
+
+	return Response({'detail': 'Done'})
 
 @api_view(['POST'])
 # @permission_classes([IsAuthenticated])

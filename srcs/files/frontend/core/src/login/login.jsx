@@ -87,7 +87,6 @@ function Login() {
                         const user = {username: decodedToken.username, userId: decodedToken.user_id, userAvatar: decodedToken.avatar, email:decodedToken.email, isActive:decodedToken.is_active,exp:decodedToken.exp,iat:decodedToken.iat,isStaff:decodedToken.is_staff,twoFactor:decodedToken.two_factor,uuid:decodedToken.uuid};  //SETUP REDIRECT TO HOME PAGE
                         localStorage.setItem('user', JSON.stringify(user));
                         userInfo.setUser(user);
-						console.log("POOOOOOOOOOOOOOOOOOOOOOOOOOP",user,userInfo);
                         navigate('/');
                     }
                 }

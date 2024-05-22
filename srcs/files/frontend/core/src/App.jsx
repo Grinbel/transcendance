@@ -29,7 +29,7 @@ import { UserProvider, userContext } from "./contexts/userContext.jsx";
 
 function getProfile(user, setUser){
 	// localStorage.clear();
-	localStorage.removeItem('user');
+	// localStorage.removeItem('user');
 	// get user from local storage
 	const userStringified = localStorage.getItem('user');
 	if (userStringified) {
