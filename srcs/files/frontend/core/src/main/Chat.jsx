@@ -226,24 +226,25 @@ function Chat() {
 
 	const action = async (username,action) => {
 		
-		// try {
-		// 	console.log("username!!!!!!!!!!!!!!!!!! = ",username)
-		// 	const response = await axiosInstance.post('/userlist/', {
-		// 		username: username,
-		// 		action: action,
-		// 		self: userInfo.user.username,
-		// 	});
-		// } catch (error) {
-		// 	setError(error.message);
-		// 	throw (error);
-		// }
+		try {
+			console.log("username!!!!!!!!!!!!!!!!!! = ",username, userInfo.user.username)
+			const response = await axiosInstance.post('/userlist/', {
+				other: username,
+				action: action,
+				self: userInfo.user.username,
+			});
+		} catch (error) {
+			setError(error.message);
+			throw (error);
+		}
 	}
 
 	const info = async (username) => {
+		// return ;
 		try {
-			console.log("username!!!!!!!!!!!!!!!!!! = ",username)
+			console.log("username!!!!!!!!!!!!!!!!!! = ",username, userInfo.user.username)
 			const response = await axiosInstance.post('/userfriendblock/', {
-				username: username,
+				friend: username,
 				self: userInfo.user.username,
 			});
 			if (response.data.detail === "User not found")
@@ -283,7 +284,7 @@ function Chat() {
 
 	if (userInfo.user === undefined)
 		return (<div></div>);
-	return (<div></div>);
+
 
 	return (
 		<div id="chatWindow" className="chat-window">

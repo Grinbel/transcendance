@@ -74,37 +74,44 @@ def getProfile(request):
 @api_view(['POST'])
 def userlist(request):
 	print('userlist function')
-	username = request.data.get('username')
+	other = request.data.get('other')
 	self = request.data.get('self')
 	action = request.data.get('action')
 	user = User.objects.get(username=self)
-	other = User.objects.get(username=username)
+	other = User.objects.get(username=other)
 	if (other is None):
 		return Response({'detail': 'Invalid user'})
 	if (action == 'addfriend'):
-		user.addFriend(username)
+		user.addFriend(other)
 	elif (action == 'unfriend'):
-		user.removeFriend(username)
+		user.removeFriend(other)
 	elif (action == 'block'):
-		user.addBlacklist(username)
+		user.addBlacklist(other)
 	elif (action == 'unblock'):
-		user.removeBlacklist(username)
+		user.removeBlacklist(other)
 	print('user friend : ',user.friends.all())
 	print('user black list : ',user.blacklist.all())
 
 	return Response({'detail': 'Done'})
 
-@api_view(['GET'])
+@api_view(['POST'])
 def userFriendBlock(request):
-	print('userFriendBlock function')
-	username = request.data.get('username')
+	print('userFriendBlock function', request)
+	friend = request.data.get('friend')
 	self = request.data.get('self')
+	print("username =",friend)
+	print("self =",self)
+
+	return Response({'detail': 'Invalid user'})
 	user = User.objects.get(username=self)
-	other = User.objects.get(username=username)
+	other = User.objects.get(username=friend)
+	print("user =", self.username)
+	print("friend =", friend.username)
+
 	if (other is None):
 		return Response({'detail': 'Invalid user'})
-	isFriend = user.friends.filter(username=username).exists()
-	isBlacklisted = user.blacklist.filter(username=username).exists()
+	isFriend = user.friends.filter(username=friend).exists()
+	isBlacklisted = user.blacklist.filter(username=friend).exists()
 	return Response({'friend': isFriend, 'block': isBlacklisted})
 
 @api_view(['POST'])
