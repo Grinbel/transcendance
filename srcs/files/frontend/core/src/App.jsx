@@ -66,7 +66,7 @@ async function getProfile(user, setUser, error, setError){
 
 		const navigate = useNavigate();
 		const userMemo = useMemo(() => {
-			return age;
+			return user;
 		  }, [user]);
 
 		

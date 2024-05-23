@@ -93,7 +93,7 @@ const NavLoggedIn = () => {
 	  return (
 		<Navbar collapseOnSelect expand="lg" className="bg-body-tertiary navbarCustom">
 		  <Container>
-			<Navbar.Brand href="/" className='logoName'>
+			<Navbar.Brand as={Link} to="/" className='logoName'>
 				{/* <img
 					// src="../src/assets/pong.png" // Replace with the path to your logo
 					width="50"
@@ -106,8 +106,8 @@ const NavLoggedIn = () => {
 			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
 			<Navbar.Collapse id="responsive-navbar-nav">
 			  <Nav  className="ms-auto navbarCustom">
-				<Nav.Link className="navCustom me-3" href="/signup">sign up</Nav.Link>
-				<Nav.Link className="navCustom me-3" href='/login' >login</Nav.Link>
+				<Nav.Link className="navCustom me-3" as={Link} to="/signup">sign up</Nav.Link>
+				<Nav.Link className="navCustom me-3" as={Link} to="/login" >login</Nav.Link>
 			  </Nav>
 			</Navbar.Collapse>
 		  </Container>
