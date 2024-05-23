@@ -144,6 +144,8 @@ function Chat() {
 	const messagesEndRef = useRef(null);
 	const [displayer, setdisplayer] = useState("");
 	const [roomName,setRoomName] = useState("general");
+	const [friend,setFriend] = useState("");
+	const [block,setBlock] = useState("");
 	const websockets = {};
 	
 	useEffect(() => {
@@ -172,10 +174,10 @@ function Chat() {
 		ws.onerror = e => console.log('ws chat error', e);
 		ws.onmessage = e => {
 			const message = JSON.parse(e.data);
-			if (message.type === 'connected') {
+			if (message.type === 'mp') {
 				return;
 			}
-			if (message.type === 'disconnected') {
+			if (message.type === 'invite') {
 				return;
 			}
 			if (message.type === 'chat') {
@@ -223,17 +225,42 @@ function Chat() {
 
 
 	const action = async (username,action) => {
+		
+		// try {
+		// 	console.log("username!!!!!!!!!!!!!!!!!! = ",username)
+		// 	const response = await axiosInstance.post('/userlist/', {
+		// 		username: username,
+		// 		action: action,
+		// 		self: userInfo.user.username,
+		// 	});
+		// } catch (error) {
+		// 	setError(error.message);
+		// 	throw (error);
+		// }
+	}
+
+	const info = async (username) => {
 		try {
-			const response = await axiosInstance.post('/userlist/', {
+			console.log("username!!!!!!!!!!!!!!!!!! = ",username)
+			const response = await axiosInstance.post('/userfriendblock/', {
 				username: username,
-				action: action,
 				self: userInfo.user.username,
 			});
+			if (response.data.detail === "User not found")
+			{
+				setFriend("");
+				setBlock("");
+			}
+			setFriend(response.data.friend);
+			setBlock(response.data.block);
+			console.log("friend = ",friend);
+			console.log("block = ",block);
 		} catch (error) {
 			setError(error.message);
 			throw (error);
 		}
 	}
+
 
 	const handleInputChange = (event) => {
 		setFormData({ message: event.target.value });
@@ -253,8 +280,11 @@ function Chat() {
 	}
 
 
+
 	if (userInfo.user === undefined)
 		return (<div></div>);
+	return (<div></div>);
+
 	return (
 		<div id="chatWindow" className="chat-window">
 			<div id="chatHeader" className="chat-header">
@@ -268,10 +298,16 @@ function Chat() {
 					{messages.map((message, index) => (
 						<div key={index} className="chat-message" ref={index === messages.length - 1 ? messagesEndRef : null}>
 							<Nav className="ms-auto">
-								<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={message.username}>
+								<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={message.username} onClick={() => info(message.username)}>
+									
 									<NavDropdown.Item href={`/${message.username}`}>profile</NavDropdown.Item>
 									<NavDropdown.Divider />
-									<NavDropdown.Item onClick={() => action(message.username,"addfriend")}>AddFriend</NavDropdown.Item>
+									{/* put Addfriend if friend is false */}
+									{/* put Unfriend if friend is true */}
+									{/* put Block if block is false */}
+									{/* put Unblock if block is true */}
+									{friend === false && <NavDropdown.Item onClick={() => action(message.username,"addfriend")}>AddFriend</NavDropdown.Item>}
+									{/* <NavDropdown.Item onClick={() => action(message.username,"addfriend")}>AddFriend</NavDropdown.Item> */}
 									<NavDropdown.Item onClick={() => action(message.username,"unfriend")}>Unfriend</NavDropdown.Item>
 									<NavDropdown.Item onClick={() => action(message.username,"block")}>Block</NavDropdown.Item>
 									<NavDropdown.Item onClick={() => action(message.username,"unblock")}>Unblock</NavDropdown.Item>

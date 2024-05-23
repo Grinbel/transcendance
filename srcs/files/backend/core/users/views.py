@@ -94,6 +94,19 @@ def userlist(request):
 
 	return Response({'detail': 'Done'})
 
+@api_view(['GET'])
+def userFriendBlock(request):
+	print('userFriendBlock function')
+	username = request.data.get('username')
+	self = request.data.get('self')
+	user = User.objects.get(username=self)
+	other = User.objects.get(username=username)
+	if (other is None):
+		return Response({'detail': 'Invalid user'})
+	isFriend = user.friends.filter(username=username).exists()
+	isBlacklisted = user.blacklist.filter(username=username).exists()
+	return Response({'friend': isFriend, 'block': isBlacklisted})
+
 @api_view(['POST'])
 # @permission_classes([IsAuthenticated])
 def login(request):
