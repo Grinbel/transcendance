@@ -29,6 +29,12 @@ const Home = () => {
 				<Col className="columnStyle">
 					<Button variant="primary" as={Link} to="/play" className="homeButtons">1V1</Button>
 				</Col>
+				<Col className="columnStyle">
+					<Button variant="primary" as={Link} to="/local" className="homeButtons">Local 2 Players</Button>
+				</Col>
+				<Col className="columnStyle">
+					<Button variant="primary" as={Link} to="/localIA" className="homeButtons">Local Vs Ia</Button>
+				</Col>
 				<Col className="columnStyle ">
 					
 					<Button variant="primary" as={Link} to={`/game?value=${pop + '+' + 0}`} className="homeButtons"> Vs Vache </Button>
