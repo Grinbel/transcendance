@@ -36,6 +36,24 @@ const Home = () => {
 			}));
 			navigate('/game');
 		};
+		const handleVsIa = () => {
+			setOptions(prevOptions => ({
+				...prevOptions, // Gardez les options précédentes
+				name_p1: "PAPA", // Mettez à jour seulement name_p1
+				nombre: 1, 
+				couleur: 'rouge' 
+			}));
+			navigate('/game');
+		};
+		const handle2P= () => {
+			setOptions(prevOptions => ({
+				...prevOptions, // Gardez les options précédentes
+				name_p1: userinfo.user.username, // Mettez à jour seulement name_p1
+				player_is_ia : 0, 
+				couleur: 'rouge' 
+			}));
+			navigate('/game');
+		};
 	return (
 		<Container fluid className="homeContainer">
 			<Row className="mb-3">
@@ -43,10 +61,10 @@ const Home = () => {
 					<Button variant="primary" as={Link} to="/play" className="homeButtons">1V1</Button>
 				</Col>
 				<Col className="columnStyle">
-					<Button variant="primary" as={Link} to="/local" className="homeButtons">Local 2 Players</Button>
+					<Button variant="primary" onClick={handle2P} className="homeButtons">Local 2 Players</Button>
 				</Col>
 				<Col className="columnStyle">
-					<Button variant="primary" as={Link} to="/localIA" className="homeButtons">Local Vs Ia</Button>
+					<Button variant="primary" onClick={handleVsIa} className="homeButtons">Local Vs Ia</Button>
 				</Col>
 				<Col className="columnStyle ">
 					
