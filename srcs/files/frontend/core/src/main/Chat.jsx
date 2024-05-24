@@ -137,7 +137,7 @@ class Chat extends React.Component {
 function Chat() {
 	const userInfo = useContext(userContext);
 	
-	const [formData, setFormData] = useState({ message: '', date: '', username: '' });
+	const [formData, setFormData] = useState({ message: '', date: '', username: '', isPrivate: false});
 	const [error, setError] = useState(null);
 	const [messages, setMessages] = useState([]);
 	const [ws, setWs] = useState(null);
@@ -174,14 +174,20 @@ function Chat() {
 		ws.onerror = e => console.log('ws chat error', e);
 		ws.onmessage = e => {
 			const message = JSON.parse(e.data);
-			if (message.type === 'mp') {
-				return;
-			}
-			if (message.type === 'invite') {
-				return;
-			}
 			if (message.type === 'chat') {
+				message.isPrivate = false;
 				setMessages(prevMessages => [...prevMessages, message]);
+				console.log("private message",message.isPrivate);
+
+			}
+			else if (message.type === 'private_message') {
+				// return;
+				message.isPrivate = true;
+				setMessages(prevMessages => [...prevMessages, message]);
+				console.log("private message",message.isPrivate);
+			}
+			else if (message.type === 'invite') {
+				return;
 			}
 			console.info('received', message);
 		};
@@ -227,7 +233,6 @@ function Chat() {
 	const action = async (username,action) => {
 		
 		try {
-			console.log("username!!!!!!!!!!!!!!!!!! = ",username, userInfo.user.username)
 			const response = await axiosInstance.post('/userlist/', {
 				other: username,
 				action: action,
@@ -242,7 +247,6 @@ function Chat() {
 	const info = async (username) => {
 		// return ;
 		try {
-			console.log("username!!!!!!!!!!!!!!!!!! = ",username, userInfo.user.username)
 			const response = await axiosInstance.post('/userfriendblock/', {
 				friend: username,
 				self: userInfo.user.username,
@@ -289,6 +293,7 @@ function Chat() {
 	return (
 		<div id="chatWindow" className="chat-window">
 			<div id="chatHeader" className="chat-header">
+				{/* //TODO texte brut */}
 				<div id="chatTitle" className="chat-title">Chat</div>
 			</div>
 			<div id="chatBody" className="chat-body">
@@ -301,22 +306,31 @@ function Chat() {
 							<Nav className="ms-auto">
 								<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={message.username} onClick={() => info(message.username)}>
 									
+									{/* //TODO texte brut */}
 									<NavDropdown.Item href={`/${message.username}`}>profile</NavDropdown.Item>
-									<NavDropdown.Divider />
+									{friend != undefined &&  <NavDropdown.Divider />}
 									{/* put Addfriend if friend is false */}
 									{/* put Unfriend if friend is true */}
 									{/* put Block if block is false */}
 									{/* put Unblock if block is true */}
-									{friend === false && <NavDropdown.Item onClick={() => action(message.username,"addfriend")}>AddFriend</NavDropdown.Item>}
-									{/* <NavDropdown.Item onClick={() => action(message.username,"addfriend")}>AddFriend</NavDropdown.Item> */}
-									<NavDropdown.Item onClick={() => action(message.username,"unfriend")}>Unfriend</NavDropdown.Item>
-									<NavDropdown.Item onClick={() => action(message.username,"block")}>Block</NavDropdown.Item>
-									<NavDropdown.Item onClick={() => action(message.username,"unblock")}>Unblock</NavDropdown.Item>
+
+									{/* //TODO texte brut */}
+									<NavDropdown.Item onClick={() => setFormData({ ...formData, message: `/whisper ${message.username}`})}>Whisper</NavDropdown.Item>
+									{friend != undefined && friend === false && <NavDropdown.Item onClick={() => action(message.username,"addfriend")}>AddFriend</NavDropdown.Item>}
+									{friend != undefined && friend === true && <NavDropdown.Item onClick={() => action(message.username,"unfriend")}>Unfriend</NavDropdown.Item>}
+									{block != undefined && block === false && <NavDropdown.Item onClick={() => action(message.username,"block")}>Block</NavDropdown.Item>}
+									{block != undefined && block === true && <NavDropdown.Item onClick={() => action(message.username,"unblock")}>Unblock</NavDropdown.Item>}
 								</NavDropdown>
 							</Nav>
-							<div className="message">
+							{/* <div className="message">
 								{message.message} <span className="message-time">{message.date}</span>
-							</div>
+							</div> */}
+							{message.isPrivate === false && <div className="message">
+								{message.message} <span className="message-time">{message.date}</span>
+							</div>}
+							{message.isPrivate === true && <div className="private">
+								{message.message} <span className="message-time">{message.date}</span>
+							</div>}
 						</div>
 					)).filter((_, index) => index > 0)}
 				</div>
@@ -325,11 +339,12 @@ function Chat() {
 						type="text"
 						id="chatInputField"
 						className="chat-input-field"
+						//TODO texte brut
+						placeholder={`Envoyer dans ${roomName}`}
 						value={formData.message}
 						onChange={handleInputChange}
 						onKeyDown={handleKeyPress}
 					/>
-					{/* <button id="chatSend" className="chat-send" onClick={handleChat}>Send</button> */}
 				</div>
 				<div className="room_chat">
 					<input type="text"

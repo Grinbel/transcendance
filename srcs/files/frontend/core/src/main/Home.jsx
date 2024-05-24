@@ -21,9 +21,13 @@ const Home = () => {
 		<Container fluid className="homeContainer">
 			<Row className="mb-3">
 				<Col className="columnStyle">
+				{/* //TODO texte brut */}
+
 					<Button variant="primary" as={Link} to="/play" className="homeButtons">1V1</Button>
 				</Col>
 				<Col className="columnStyle ">
+				{/* //TODO texte brut */}
+
 					<Button variant="primary" as={Link} to="/play" className="homeButtons">TOURNAMENT </Button>
 				</Col>
 			</Row>

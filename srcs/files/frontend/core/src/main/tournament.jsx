@@ -80,7 +80,11 @@ const tournament = () => {
 	return (
 		<div>
 		<header className="tournament">
+		{/* //TODO texte brut */}
+
 			<h1>tournament {name}</h1>
+			{/* //TODO texte brut */}
+
 			<h3>Max player: {maxCapacity}</h3>
 			<div id="chatContent" className="chat-content">
 				{messages.map((message, index) => (
@@ -93,6 +97,8 @@ const tournament = () => {
 						<div />
 					</div>
 				))}
+								{/* //TODO texte brut */}
+
 			<h3>{displayer}</h3>
 			</div>
 		</header>

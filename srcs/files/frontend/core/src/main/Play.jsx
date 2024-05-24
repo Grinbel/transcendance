@@ -96,12 +96,15 @@ function Play() {
 				setShowSelect(false); 
 				setFormData({ tournamentId: "", isLocal: false, playerCount: 2 });
 				setJoin(true);
+									// TODO texte brut
 				}}>Join Tournament</button>
 			<button onClick={() => { 
 				setShowSelect(true);
 				setShowTextArea(false);
 				setFormData({ tournamentId: "", isLocal: false, playerCount: 2 });
 				setJoin(false);
+									// TODO texte brut
+
 				}}>Create Tournament</button>
 			
 			{showTextArea && (
@@ -116,6 +119,8 @@ function Play() {
 							value={formData.tournamentId}
 							onChange={handleChange}
 							/>
+									{/* //TODO texte brut */}
+
 					<button onClick={handleSubmit}>Submit</button>
 				</div>
 			)}
@@ -132,6 +137,8 @@ function Play() {
 				<option value="8">8</option>
 				</select>
 				<label>
+				{/* //TODO texte brut */}
+
 					Local
 					<input
 						type="checkbox"
@@ -141,10 +148,14 @@ function Play() {
 						onChange={handleChange}
 						/>
 				</label>
+				{/* //TODO texte brut */}
+
 				<button onClick={handleSubmit}>Submit</button>
 			</div>
 			)}
 			<div className="displayer-errors">
+			{/* //TODO texte brut */}
+
 				{displayer}
 			</div>
 		</>

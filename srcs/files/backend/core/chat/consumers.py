@@ -10,6 +10,38 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 from django.contrib.auth import authenticate, login
 
+
+def checkCommand(self, message, user):
+	if (message[0] == '/'):
+		print('commande :',message)
+
+		split = message.split(' ')
+		#check if splis size is bigger than 2
+		if (len(split) < 2):
+			return True
+		elif (split[0] == '/whisper'):
+			#send a private message
+			print("whisper")
+			if (User.objects.filter(username=split[1]).exists() == False):
+				print('user not found')
+				return True
+			elif (user.blacklist.all().filter(username=split[1]).exists()):
+				print('blocked')
+				return True
+			async_to_sync(self.channel_layer.group_send)(
+				self.room_name,
+				{
+					'type': 'send_private_message',
+					'other': split[1],
+					'date': datetime.now().strftime('%H:%M'),
+					'username':user.username,
+					'message': ' '.join(split[2:]),
+				}
+			)
+			return True
+		return True
+	return False
+
 class ChatConsummer(WebsocketConsumer):
 
 	def connect(self):
@@ -27,7 +59,6 @@ class ChatConsummer(WebsocketConsumer):
 			self.channel_name
 		)
 		self.accept()
-		#send las 10 messages of the group
 		
 		print('Connected')
 	
@@ -38,6 +69,8 @@ class ChatConsummer(WebsocketConsumer):
 		async_to_sync(self.channel_layer.group_discard)(
 			self.room_group_name, self.channel_name
 		)
+	
+
 
 	def receive(self, text_data):
 		text_data_json = json.loads(text_data)
@@ -65,10 +98,10 @@ class ChatConsummer(WebsocketConsumer):
 					'username': message.username,
 				}))
 			return
-		
+		elif (checkCommand(self,text_data_json['message'], user) == True):
+			return
 
 		message = text_data_json['message']
-		date = text_data_json['date']
 
 		data = Messages.objects.create(
 			message=message,
@@ -88,33 +121,13 @@ class ChatConsummer(WebsocketConsumer):
 				'username': username,
 			}
 		)
-
-	def checkCommand(self, message, user):
-		if (message[0] == '/'):
-			print('commande :',message)
-			split = message.split(' ')
-			if (split[0] == '/addfriend'):
-				user.addFriend(split[1])
-				return True
-			elif (split[0] == '/removefriend'):
-				user.removeFriend(split[1])
-				return True
-			elif (split[0] == '/block'):
-				print('block')
-				user.addBlacklist(split[1])
-				return True
-			elif (split[0] == '/unblock'):
-				print('unblock',split[1])
-				user.removeBlacklist(split[1])
-				return True
-				
-		return False
+	
 
 	def chat_message(self, event):
 		message = event['message']
 		username = event['username']
 		date = event['date']
-		print('in chat message')
+		# print('in chat message')
 		user= self.scope['user']
 		if (user.blacklist.all().filter(username=username).exists()):
 			print('blocked')
@@ -125,4 +138,21 @@ class ChatConsummer(WebsocketConsumer):
 			'date': date,
 			'username': username,
 
+		}))
+	
+
+	def send_private_message(self, event):
+		other = event['other']
+		username = event['username']
+		if (other != self.scope['user'].username and self.scope['user'].username != username):
+			return
+		print("username :", username)
+		print("other :", other)
+		message = event['message']
+		date = event['date']
+		self.send(text_data=json.dumps({
+			'type': 'private_message',
+			'message': message,
+			'date': date,
+			'username': username,
 		}))

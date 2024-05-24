@@ -68,10 +68,15 @@ const NavLoggedIn = () => {
 			
 			<Nav  className="ms-auto">
 				<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={UserMenu}>
+									{/* //TODO texte brut */}
 
 					<NavDropdown.Item href="/profile">profile</NavDropdown.Item>
+									{/* //TODO texte brut */}
+
 					<Nav.Link className="navCustom playButton me-3" href="/play">play</Nav.Link>
 					<NavDropdown.Divider />
+									{/* //TODO texte brut */}
+
 					<NavDropdown.Item onClick={handleLogout}>logout</NavDropdown.Item>
             	</NavDropdown>
 			</Nav>
@@ -109,7 +114,10 @@ const NavLoggedIn = () => {
 			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
 			<Navbar.Collapse id="responsive-navbar-nav">
 			  <Nav  className="ms-auto navbarCustom">
+									{/* //TODO texte brut */}
 				<Nav.Link className="navCustom me-3" href="/signup">sign up</Nav.Link>
+									{/* //TODO texte brut */}
+
 				<Nav.Link className="navCustom me-3" href='/login' >login</Nav.Link>
 			  </Nav>
 			</Navbar.Collapse>

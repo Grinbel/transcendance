@@ -36,7 +36,7 @@ function Game() {
             const data = JSON.parse(e.data);
             console.log(data);
         };
-        return;
+        // return;
         let loader = new THREE.TextureLoader();
         //let texture = loader.load('https://threejsfundamentals.org/threejs/resources/images/wall.jpg');
         //let texture = loader.load('./opacity.png')

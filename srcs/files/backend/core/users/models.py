@@ -16,9 +16,9 @@ class User(AbstractUser):
 	avatar = models.ImageField(upload_to='avatars/', default='yoshi.jpg')
 	alias = models.CharField(max_length=255, null=True, blank=True)
 	# tournament = models.ForeignKey('tournament.Tournament', on_delete=models.SET_NULL, null=True, blank=True)
-	friends = models.ManyToManyField('self', blank=True)
 	name = models.CharField(max_length=255, null=True, blank=True)
-	blacklist = models.ManyToManyField('self', blank=True)
+	friends = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='user_friends')
+	blacklist = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='user_blacklist')
 
 	def log(self, name):
 		print("username ", name)
@@ -31,31 +31,38 @@ class User(AbstractUser):
 		print("set username to", self.name)
 
 	def addBlacklist(self, name):
-		user = User.objects.get(username=name)
-		if (user):
-			self.blacklist.add(user)
+		other = User.objects.get(username=name)
+		myself = User.objects.get(username=self.username)
+		if (other):
+			myself.blacklist.add(other)
 			print("added")
-		self.save()
+		myself.save()
 	
 	def removeBlacklist(self, name):
-		user = User.objects.get(username=name)
-		if (user and user in self.blacklist.all()):
-			self.blacklist.remove(user)
+		other = User.objects.get(username=name)
+		myself = User.objects.get(username=self.username)
+		if (other and other in myself.blacklist.all()):
+			myself.blacklist.remove(other)
 			print("removed")
-		self.save()
+		myself.save()
 		
 	def addFriend(self, name):
 		user = User.objects.get(username=name)
+		myself = User.objects.get(username=self.username)
+
 		if (user):
-			self.friends.add(user)
-		self.save()
+			myself.friends.add(user)
 		
 	
 	def removeFriend(self, name):
 		user = User.objects.get(username=name)
-		if (user and user in self.friends.all()):
-			self.friends.remove(user)
-		self.save()
+		myself = User.objects.get(username=self.username)
+		if (user and user in myself.friends.all()):
+			myself.friends.remove(user)
+
+
+
+
 	
 	def changeUsername(self, name):
 		if (User.objects.filter(username=name).exists()):
