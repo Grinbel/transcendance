@@ -120,15 +120,24 @@ function Login() {
                 password: formData.password,
                 otp: code
             });
-            axiosInstance.defaults.headers['Authorization'] = "JWT " + response.data.access;
-            localStorage.setItem('access_token', response.data.access);
-            localStorage.setItem('refresh_token', response.data.refresh);
-            userInfo.setUser(formData);  // passing  info to userContext
+            const token = response.data.access;
+            const refresh = response.data.refresh;
+            axiosInstance.defaults.headers['Authorization'] = "JWT " + token;
+            localStorage.setItem('access_token', token);
+            localStorage.setItem('refresh_token', refresh);
+
+            console.log('Login successful with 2FA: navigate to "/"');
+            const decodedToken = jwtDecode(token);
+            console.log('decoded token', decodedToken);
+            const user = {username: decodedToken.username, userId: decodedToken.user_id, userAvatar: decodedToken.avatar};  //SETUP REDIRECT TO HOME PAGE
+            localStorage.setItem('user', JSON.stringify(user));
+            userInfo.setUser(user);
             setStep(1);
             setFormData({ username: "", password: "" });
             setCode('');
+            navigate('/');
 
-            console.log('Login successful: i go to home page', response);  //SETUP REDIRECT TO HOME PAGE
+            console.log('Login successful with 2fa: i go to home page', response);  //SETUP REDIRECT TO HOME PAGE
     
         } catch (error) {
             // console.log('Main Error ', JSON.stringify(error));
@@ -136,9 +145,7 @@ function Login() {
                 // la requête a été faite et le code de réponse du serveur n’est pas dans
                 // la plage 2xx
                 console.log('error RESPONSE')
-                console.log(error.response.data);
                 console.log(error.response.status);
-                console.log(error.response.headers);
               } else if (error.request) {
                 // la requête a été faite mais aucune réponse n’a été reçue
                 // `error.request` est une instance de XMLHttpRequest dans le navigateur

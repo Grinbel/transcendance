@@ -14,6 +14,23 @@ function TwoFactorEnable() {
             console.log('Error fetching 2FA status: ', error.message);
         }
     }
+
+    const handle2Fa = () => {
+
+        setTwoFaStatus(!twoFaStatus);
+
+        return async () => {
+            try {
+                const response = await axiosInstance.post('/2fa/', {
+                    "two_factor": twoFaStatus
+                });
+                
+            } catch (error) {
+                console.log('Error enabling 2FA: ', error.message);
+            }
+        }
+    }
+
     useEffect(() => {
         // Fetch the 2FA status of the user
         custom_fetch();
@@ -25,7 +42,7 @@ function TwoFactorEnable() {
             <Switch
                 name="2FA Authentication"
                 status={twoFaStatus}
-                handleSwitch={() => setTwoFaStatus(!twoFaStatus)}
+                handleSwitch={handle2Fa()}
                 // onColor={'red'}    
             />
         </div>

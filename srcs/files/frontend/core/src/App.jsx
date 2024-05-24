@@ -1,6 +1,7 @@
 import { Routes, Route, Link, } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import { useState , createContext, useContext, useEffect, useMemo} from 'react';
+import { useState , createContext, useContext, useEffect, useMemo, } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import  { axiosInstance, interceptor_response } from "./axiosAPI.js";
 
@@ -64,6 +65,7 @@ async function getProfile(user, setUser, error, setError){
 		const [user, setUser] = useState();
 		const [error, setError] = useState();
 
+		const location = useLocation();
 		const navigate = useNavigate();
 		const userMemo = useMemo(() => {
 			return user;
@@ -79,10 +81,11 @@ async function getProfile(user, setUser, error, setError){
 					setUser(userData);
 					console.log('app: no error in getProfile got a user successfully');
 				} catch (error) {
-					console.error('getUserProfile: Error occurred:', error);
+					// console.error('getUserProfile: Error occurred:', error);
 					setError(error);
 					localStorage.removeItem('token');
 					localStorage.removeItem('refreshToken');
+					if (location.pathname !== '/login' && location.pathname !== '/signup')
 					navigate('/login');
 				}
 			};

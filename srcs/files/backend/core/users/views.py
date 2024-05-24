@@ -191,12 +191,13 @@ class Logout(APIView):
 			return Response(status=status.HTTP_400_BAD_REQUEST)
 	
 class UserList(APIView):
-	permission_classes = [UserPermission]
-
+	permission_classes = [AllowAny]
 	def get(self, request, format=None):
+		print('UserList get function')
 		users = User.objects.all()
+		print('users', users)
 		serializer = UserSerializer(users, many=True)
-		return Response(serializer.data)
+		return Response(serializer.data, status=status.HTTP_200_OK)
 
 # import random
 # import string
