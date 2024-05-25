@@ -6,7 +6,7 @@ import { useGameContext } from './contexts/GameContext.jsx';
 //! ICI j'adapte le code pour jouer en distant avec le bot .
 
 
-function Game() {
+function MultiGame() {
     //TODO : get all options from main page
     const { options } = useGameContext();
     console.log(" COUCOU NOM P1 =" + options.name_p1)
@@ -483,4 +483,4 @@ function Game() {
     return null; // Car le rendu est géré par Three.js et non par React
 }
 
-export default Game;
+export default MultiGame;

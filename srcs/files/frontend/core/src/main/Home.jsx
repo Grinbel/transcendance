@@ -10,7 +10,7 @@ import Card from 'react-bootstrap/Card';
 import { useContext, useState } from "react";
 import { userContext } from "../contexts/userContext.jsx";
 import { useGameContext } from "../contexts/GameContext.jsx";
-
+import { useMultiGameContext } from "../contexts/MultiGameContext.jsx";
 import './Home.css';
 
 const Home = () => {
@@ -19,23 +19,17 @@ const Home = () => {
 	// console.log('Home: userinfo', userinfo.user.userId);
 	//print('Home: userinfo', userinfo)
 	const { setOptions } = useGameContext();
+	const { setOptions: setMultiGameOptions } = useMultiGameContext();
     const navigate = useNavigate();
 
 		const handleVsVacheClick = () => {
 			setOptions(prevOptions => ({
 				...prevOptions, // Gardez les options précédentes
-				nombre: 1, 
-				couleur: 'rouge' 
+				name_p1: userinfo.user.username,
 			}));
 			navigate('/game');
 		};
-		const handleVsIa = () => {
-			setOptions(prevOptions => ({
-				...prevOptions, // Gardez les options précédentes
-				name_p1: userinfo.user.username, 
-			}));
-			navigate('/game');
-		};
+
 		const handle2P= () => {
 			setOptions(prevOptions => ({
 				...prevOptions, // Gardez les options précédentes
@@ -44,8 +38,7 @@ const Home = () => {
 			}));
 			navigate('/game');
 		};
-		const handleNoPowerupsBetterIA= () => {
-			console.log("AVATAR " + userinfo.user.avatar),
+		const handleIA_Custom= () => {
 			setOptions(prevOptions => ({
 				...prevOptions,
 				name_p1: userinfo.user.username,
@@ -53,7 +46,9 @@ const Home = () => {
 				stage_height : 10,
 				ia_time_between_checks : 30,
 				easy_mode : 1,
-				texture_p1 : userinfo.user.avatar,
+				texture_p1 : userinfo.user.userAvatar.replace("/media/", "../../public/"),
+				texture_p1_ball : "https://pbs.twimg.com/profile_images/1335272544451112960/YO2w8LHO_400x400.jpg",
+				texture_p2 : "../../public/princess.jpg"
 			}));
 			navigate('/game');
 		};
@@ -67,10 +62,7 @@ const Home = () => {
 					<Button variant="primary" onClick={handle2P} className="homeButtons">Local 2 Players</Button>
 				</Col>
 				<Col className="columnStyle">
-					<Button variant="primary" onClick={handleVsIa} className="homeButtons">Local Vs Ia</Button>
-				</Col>
-				<Col className="columnStyle">
-					<Button variant="primary" onClick={handleNoPowerupsBetterIA} className="homeButtons">Local Vs better Ia</Button>
+					<Button variant="primary" onClick={handleIA_Custom} className="homeButtons">Local Vs better Ia</Button>
 				</Col>
 				<Col className="columnStyle ">
 					

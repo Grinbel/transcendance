@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState } from 'react';
 import * as THREE from 'three';
-const GameContext = createContext();
+const MultiGameContext = createContext();
 
-export const GameProvider = ({ children }) => {
+export const MultiGameProvider = ({ children }) => {
     const [options, setOptions] = useState({
 
 //! PLACEHOLDERS
@@ -92,12 +92,12 @@ export const GameProvider = ({ children }) => {
     });
 
     return (
-        <GameContext.Provider value={{ options, setOptions }}>
+        <MultiGameContext.Provider value={{ options, setOptions }}>
             {children}
-        </GameContext.Provider>
+        </MultiGameContext.Provider>
     );
 };
 
-export const useGameContext = () => {
-    return useContext(GameContext);
+export const useMultiGameContext = () => {
+    return useContext(MultiGameContext);
 };
