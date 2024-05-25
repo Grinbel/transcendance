@@ -1,22 +1,12 @@
-import React from 'react';
 import  { useEffect, useState } from 'react'; 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Text } from 'troika-three-text';
-import { userContext } from "./contexts/userContext.jsx";
-import { useContext } from "react";
-import { useLocation } from "react-router-dom";
 import { useGameContext } from './contexts/GameContext.jsx';
 //! ICI j'adapte le code pour jouer en distant avec le bot .
 
 
 function Game() {
-    const userInfo = useContext(userContext);
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
-    const userId = searchParams.get("userId");
-    const roomName = searchParams.get("value");
-    console.log('ROOMNAME ' + roomName);
     //TODO : get all options from main page
     const { options } = useGameContext();
     console.log(" COUCOU NOM P1 =" + options.name_p1)
@@ -24,7 +14,6 @@ function Game() {
     console.log(" vitessse balle" + options.ball_starting_speed)
     options.ball_speed=options.ball_starting_speed
       useEffect(() => {
-        let time_before_powerup = Math.random() * (options.max_time_before_powerup - options.min_time_before_powerup) + options.min_time_before_powerup;
         let loader = new THREE.TextureLoader();
         let texture = loader.load(options.texture_ball)
         let texturep1 = loader.load(options.texture_p1)
@@ -62,7 +51,8 @@ function Game() {
         const target = new THREE.CircleGeometry(.1, 32);
         const target_material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
         const target_mesh = new THREE.Mesh(target, target_material);
-        scene.add(target_mesh);
+        if(options.easy_mode == 1)
+            scene.add(target_mesh);
         target_mesh.position.z = options.ball_radius;
         ia_eye.position.x = 0;
         ia_eye.position.y = options.stage_height / 2 + 1.5;
@@ -181,7 +171,7 @@ function Game() {
                 options.ball_pause--;
                 return;
             }
-            if (options.time_before_powerup >= 0)
+            if (options.time_before_powerup >= 0 && options.powerups === 1)
                 options.time_before_powerup--;
             if (options.time_before_powerup < 0 && !options.power_up_on_screen && !options.ball_is_powerup){
                 powerup_render1.position.x = Math.random() * (options.stage_width - options.ball_radius*2) - options.stage_width / 2 + options.ball_radius;

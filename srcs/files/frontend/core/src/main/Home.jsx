@@ -21,16 +21,9 @@ const Home = () => {
 	const { setOptions } = useGameContext();
     const navigate = useNavigate();
 
-	let pop;
-	if (userinfo.user === undefined)
-		pop="";
-	else
-		pop = userinfo.user.userId;
-
 		const handleVsVacheClick = () => {
 			setOptions(prevOptions => ({
 				...prevOptions, // Gardez les options précédentes
-				name_p1: "PAPA", // Mettez à jour seulement name_p1
 				nombre: 1, 
 				couleur: 'rouge' 
 			}));
@@ -39,18 +32,28 @@ const Home = () => {
 		const handleVsIa = () => {
 			setOptions(prevOptions => ({
 				...prevOptions, // Gardez les options précédentes
-				name_p1: "PAPA", // Mettez à jour seulement name_p1
-				nombre: 1, 
-				couleur: 'rouge' 
+				name_p1: userinfo.user.username, 
 			}));
 			navigate('/game');
 		};
 		const handle2P= () => {
 			setOptions(prevOptions => ({
 				...prevOptions, // Gardez les options précédentes
-				name_p1: userinfo.user.username, // Mettez à jour seulement name_p1
+				name_p1: userinfo.user.username,
 				player_is_ia : 0, 
-				couleur: 'rouge' 
+			}));
+			navigate('/game');
+		};
+		const handleNoPowerupsBetterIA= () => {
+			console.log("AVATAR " + userinfo.user.avatar),
+			setOptions(prevOptions => ({
+				...prevOptions,
+				name_p1: userinfo.user.username,
+				powerups : 0,
+				stage_height : 10,
+				ia_time_between_checks : 30,
+				easy_mode : 1,
+				texture_p1 : userinfo.user.avatar,
 			}));
 			navigate('/game');
 		};
@@ -66,9 +69,12 @@ const Home = () => {
 				<Col className="columnStyle">
 					<Button variant="primary" onClick={handleVsIa} className="homeButtons">Local Vs Ia</Button>
 				</Col>
+				<Col className="columnStyle">
+					<Button variant="primary" onClick={handleNoPowerupsBetterIA} className="homeButtons">Local Vs better Ia</Button>
+				</Col>
 				<Col className="columnStyle ">
 					
-				<Button variant="primary" onClick={handleVsVacheClick} className="homeButtons">Vs Vache</Button>
+				<Button variant="primary" onClick={handleVsVacheClick} className="homeButtons">Tac Vs Vache</Button>
 				</Col>
 				<Col className="columnStyle ">
 					<Button variant="primary" as={Link} to="/play" className="homeButtons">TOURNAMENT </Button>

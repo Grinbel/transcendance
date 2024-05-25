@@ -53,6 +53,7 @@ export const GameProvider = ({ children }) => {
         ball_radius : 0.5,
 
 //! OPTIONS DE GAMEPLAY
+        easy_mode : 0,
         ball_starting_speed : 0.03,
         ball_speed : '',
         ball_x : 0,
@@ -73,6 +74,7 @@ export const GameProvider = ({ children }) => {
         max_time_before_powerup : 50,
         ball_is_powerup : 0,
         power_up_on_screen : 0,
+        powerups : 1,
     
 
 
