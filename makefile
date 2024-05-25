@@ -50,7 +50,8 @@ build_nocash:
 		@echo "${GREEN}build finished.${NC}"
 
 up:		build
-		docker-compose  -f ${YML_DIR}/docker-compose.yml up --renew-anon-volumes   $(c)
+		@trap 'docker-compose -f ${YML_DIR}/docker-compose.yml down; exit 0' SIGINT; \
+		docker-compose -f ${YML_DIR}/docker-compose.yml up --renew-anon-volumes $(c)
 		@echo "${GREEN}containers UP in -detach mode ...${NC}"
 # nocash up
 nc:		build_nocash
