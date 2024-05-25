@@ -25,6 +25,8 @@ const tournament = () => {
 	  }
 
 	useEffect(() => {
+		if (userInfo.user === undefined )
+			return ;
 		if (userInfo.user.username === "default")
 		{
 			navigate('/login');
@@ -59,6 +61,10 @@ const tournament = () => {
 				return;
 			}
 			else if (message.type === 'username') {
+				// const usernameExists = messages.some(msg => msg.username === message.username);
+
+				// if (usernameExists) 
+				// 	return;
 				setMessages(prevMessages => [...prevMessages, message]);
 				setName(message.name);
 				setMaxCapacity(message.max_capacity)
@@ -66,6 +72,10 @@ const tournament = () => {
 			}
 			else if (message.type === 'launch_tournament'){
 				setDisplayer("Launching in " + message.timer + " seconds");
+			}
+			else if(message.type === "friends")
+			{
+				console.log("friends!!!!!", message.data)
 			}
 			console.info('received', message);
 		};
@@ -77,6 +87,8 @@ const tournament = () => {
 			ws.close();
 		};
 	}, []);
+	if (userInfo.user === undefined )
+		return (<div />);
 	return (
 		<div>
 		<header className="tournament">

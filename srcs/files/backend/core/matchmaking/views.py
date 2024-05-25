@@ -13,7 +13,8 @@ import time
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 import json
-
+from channels.generic.websocket import AsyncWebsocketConsumer
+from django.core import serializers
 class bot:
 	id = 0
 
@@ -32,12 +33,8 @@ def choice(request):
 		return Response({'room_name': name})
 	playerCount = request.data.get('playerCount')
 	tournamentId = request.data.get('tournamentId')
-	# print('All room names: ', [tournament.name for tournament in Tournament.objects.all()])
-	# print('room name: ', Tournament.objects.all().first().name)
+
 	user = User.objects.get(username=username)
-	# print('username ', username)
-	# print('playerCount ', playerCount)
-	# print('tournamentId ', tournamentId)
 
 	if (tournamentId == ''): #create a new room
 		# user = User.objects.get(username=username)
@@ -112,6 +109,7 @@ class Tournamen(WebsocketConsumer):
 			self.channel_name
 		)
 		self.accept()
+		user = self.scope['user']
 		usernames = tournament.getAllUsername()
 		for username in usernames:
 			print("username: ", username)
@@ -120,6 +118,15 @@ class Tournamen(WebsocketConsumer):
 				'username': username,
 				'name': room_name,
 			}))
+			friends =user.friends.all()
+			#how to send friends?
+			data = serializers.serialize('json', friends)
+
+			self.send(text_data=json.dumps({
+				'type':'friends',
+				'friend': data,
+			}))
+			
 	
 	def disconnect(self, close_code):
 		async_to_sync(self.channel_layer.group_discard)(

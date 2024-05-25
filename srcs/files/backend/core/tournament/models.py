@@ -38,7 +38,6 @@ class Tournament(models.Model):
 		return self
 	
 	def addUser(self,user):
-
 		if (self.players.filter(id=user.id).exists()):
 			return False
 		if self.players.count() == self.max_capacity:

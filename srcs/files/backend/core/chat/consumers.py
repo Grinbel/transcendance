@@ -42,6 +42,29 @@ def checkCommand(self, message, user):
 		return True
 	return False
 
+def sendPrivate(self, message, user,receiver):
+	print("whisper")
+	if (User.objects.filter(username=receiver).exists() == False):
+		print('user not found')
+		return
+	receiver= User.objects.get(username=receiver)
+	if (receiver.blacklist.all().filter(username=user.username).exists() == True):
+		print('blocked')
+		return
+	print("receiver block: ",receiver.blacklist.all())
+	print("user block: ",user.blacklist.all())
+
+	async_to_sync(self.channel_layer.group_send)(
+		self.room_name,
+		{
+			'type': 'send_private_message',
+			'other': receiver.username,
+			'date': datetime.now().strftime('%H:%M'),
+			'username':user.username,
+			'message': message,
+		}
+	)
+
 class ChatConsummer(WebsocketConsumer):
 
 	def connect(self):
@@ -98,29 +121,32 @@ class ChatConsummer(WebsocketConsumer):
 					'username': message.username,
 				}))
 			return
-		elif (checkCommand(self,text_data_json['message'], user) == True):
+		elif(tipe == 'private'):
+			print('private')
+			sendPrivate(self,text_data_json['message'],user,text_data_json['receiver'])
 			return
+		elif (tipe =='chat'):
+			message = text_data_json['message']
 
-		message = text_data_json['message']
 
-		data = Messages.objects.create(
-			message=message,
-			date=datetime.now(),
-			username=username,
-			parent_group=Group.objects.get(groupName=self.room_name)
-		)
-		# print date
-		data.save()
-		print(data.date)
-		async_to_sync(self.channel_layer.group_send)(
-			self.room_name,
-			{
-				'type':'chat_message',
-				'message':message,
-				'date': data.date.strftime('%H:%M'),
-				'username': username,
-			}
-		)
+			data = Messages.objects.create(
+				message=message,
+				date=datetime.now(),
+				username=username,
+				parent_group=Group.objects.get(groupName=self.room_name)
+			)
+			# print date
+			data.save()
+			print(data.date)
+			async_to_sync(self.channel_layer.group_send)(
+				self.room_name,
+				{
+					'type':'chat_message',
+					'message':message,
+					'date': data.date.strftime('%H:%M'),
+					'username': username,
+				}
+			)
 	
 
 	def chat_message(self, event):
