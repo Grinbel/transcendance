@@ -7,7 +7,7 @@ from users.models import User
 # from django.contrib.auth.models import Group
 from .models import Group, Messages
 from django.utils import timezone
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.contrib.auth import authenticate, login
 
 class ChatConsummer(WebsocketConsumer):
@@ -42,9 +42,6 @@ class ChatConsummer(WebsocketConsumer):
 	def receive(self, text_data):
 		text_data_json = json.loads(text_data)
 		user= self.scope['user']
-		print('user:',user)
-		print('username:',user.username)
-
 		print(text_data_json)
 		username = user.username
 
@@ -59,23 +56,16 @@ class ChatConsummer(WebsocketConsumer):
 				if (user.blacklist.all().filter(username=message.username).exists()):
 					print('blocked')
 					continue
-				date = message.date.strftime('%H:%M')
-				#want to add
+				#want to add 2 hour to date
+				date = message.date + timedelta(hours=2)
 				self.send(text_data=json.dumps({
 					'type':'chat',
 					'message':message.message,
-					'date': message.date.strftime('%H:%M'),
+					'date': date.strftime('%H:%M'),
 					'username': message.username,
 				}))
 			return
 		
-		
-		# user.addBlacklist('pop')
-		# user.save()
-		# user.removeBlacklist('bob')
-		if (self.checkCommand(text_data_json['message'], user)):
-			return
-		print('self black list : ',user.blacklist.all())
 
 		message = text_data_json['message']
 		date = text_data_json['date']
