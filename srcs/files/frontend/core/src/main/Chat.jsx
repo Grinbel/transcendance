@@ -10,6 +10,7 @@ import  { axiosInstance } from "../axiosAPI.js";
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import { useNavigate } from 'react-router-dom';
 
 
 // function websockets() {
@@ -32,6 +33,7 @@ function Chat() {
 	const [roomName,setRoomName] = useState("general");
 	const [friend,setFriend] = useState("");
 	const [block,setBlock] = useState("");
+	const navigateTo = useNavigate();
 	const websockets = {};
 	
 	useEffect(() => {
@@ -61,19 +63,17 @@ function Chat() {
 		ws.onmessage = e => {
 			const message = JSON.parse(e.data);
 			if (message.type === 'chat') {
-				message.isPrivate = false;
+				message.type = 'chat';
 				setMessages(prevMessages => [...prevMessages, message]);
-				console.log("private message",message.isPrivate);
-
 			}
 			else if (message.type === 'private_message') {
 				// return;
-				message.isPrivate = true;
+				message.type = 'private';
 				setMessages(prevMessages => [...prevMessages, message]);
-				console.log("private message",message.isPrivate);
 			}
-			else if (message.type === 'invite') {
-				return;
+			else if (message.type === 'send_invite') {
+				message.type = 'invite';
+				setMessages(prevMessages => [...prevMessages, message]);
 			}
 			console.info('received', message);
 		};
@@ -213,6 +213,46 @@ function Chat() {
 		);
 	};
 
+	const goToTournament = async (room) =>{
+		try {
+			const response = await axiosInstance.post('/choice/', {
+				tournamentId: room,
+				playerCount: "",
+				isLocal: "",
+				username: userInfo.user.username,
+				join:true  && room === "",
+			});
+			console.log('response', response.data);
+			console.log('Room name', response.data.room_name);
+			console.log('error', response.data.Error);
+
+			//check if response.data contains the word error
+
+			if (response.data.Error != undefined){
+				setdisplayer(response.data.Error);
+				console.log('Invalid tournament');
+			}
+			else {
+				console.log('Tournament name: ' + response.data.room_name);
+				//! tournament is not inside the cached data
+				userInfo.setUser({
+					...userInfo.user,
+					tournament: response.data.room_name
+				  });
+				navigateTo('/tournament/');
+			}
+		} catch (error) {
+			if (error.response) {
+	
+			} else if (error.request) {
+				console.log('error REQUEST', error.request);
+			} else {
+				console.log('error OBSCURE', error.request);
+			}
+			setError(error.message);
+			throw (error);
+		}
+	}
 	if (userInfo.user === undefined)
 		return (<div></div>);
 
@@ -224,9 +264,7 @@ function Chat() {
 				<div id="chatTitle" className="chat-title">Chat</div>
 			</div>
 			<div id="chatBody" className="chat-body">
-				<div className="displayer-errors">
-					{displayer}
-				</div>
+				
 				<div id="chatContent" className="chat-content">
 					{messages.map((message, index) => (
 						<div key={index} className="chat-message" ref={index === messages.length - 1 ? messagesEndRef : null}>
@@ -248,14 +286,23 @@ function Chat() {
 							{/* <div className="message">
 								{message.message} <span className="message-time">{message.date}</span>
 							</div> */}
-							{message.isPrivate === false && <div className="message">
+							{message.type === 'chat' && <div className="message">
 								{message.message} <span className="message-time">{message.date}</span>
 							</div>}
-							{message.isPrivate === true && <div className="private">
+							{message.type === 'private' && <div className="private">
 								{message.message} <span className="message-time">{message.date}</span>
+							</div>}
+							{message.type === 'invite' && <div className="invite">
+								{message.message}
+								<a href="#" onClick={(e) => {e.preventDefault(); goToTournament(message.room);}}>
+									Accept
+								</a>
 							</div>}
 						</div>
 					)).filter((_, index) => index > 0)}
+				</div>
+				<div className="displayer-errors">
+					{displayer}
 				</div>
 				<div id="chatInput" className="chat-input">
 					<input

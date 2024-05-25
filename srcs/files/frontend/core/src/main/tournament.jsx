@@ -4,6 +4,7 @@ import { userContext } from "../contexts/userContext.jsx";
 import  { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import  { axiosInstance } from "../axiosAPI.js";
 
 const tournament = () => {
 	const userInfo = useContext(userContext);
@@ -94,7 +95,17 @@ const tournament = () => {
 	}, []);
 	const sendInvite = async(username)=>
 	{
-
+		console.log("INVITE ",username)
+		try {
+			const response = await axiosInstance.post('/inviteTournament/', {
+				receiver: username,
+				room: name,
+				self: userInfo.user.username,
+			});
+		} catch (error) {
+			setError(error.message);
+			throw (error);
+		}
 	}
 	if (userInfo.user === undefined )
 		return (<div />);
@@ -124,9 +135,9 @@ const tournament = () => {
 				{friend.map((message, index) => (
 					<div key={index} className="chat-message" ref={index === friend.length - 1 ? messagesEndRef : null}>
 						<div className="chat-username">
-								<h3 title={message.friend} onClick={() => sendInvite(message.friend)} />
-
-							
+						<a href="#" onClick={(e) => {e.preventDefault(); sendInvite(message.friend);}}>
+						{message.friend}
+						</a>
 						</div>
 						<div />
 					</div>

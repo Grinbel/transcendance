@@ -2,13 +2,16 @@ import json
 from django.db import models
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from users.helper import listUsers
 from users.models import User
 # from django.contrib.auth.models import Group
 from .models import Group, Messages
 from django.utils import timezone
 from datetime import datetime, timedelta
-from django.contrib.auth import authenticate, login
+from django.http import HttpResponse
+from rest_framework.decorators import api_view
+
 
 
 def checkCommand(self, message, user):
@@ -65,10 +68,31 @@ def sendPrivate(self, message, user,receiver):
 		}
 	)
 
+@api_view(['POST'])
+def sendInvite(request):
+	receiver = request.data.get('receiver')
+	self = request.data.get('self')
+	room = request.data.get('room')
+	channel_layer = get_channel_layer()
+	other = User.objects.get(username=receiver)
+	if (other is None or other.blacklist.all().filter(username=self).exists()):
+		return HttpResponse("You're blocked")
+	async_to_sync(channel_layer.group_send)(
+		'general',
+		{
+			'type': 'send_invite',
+			'room':room,
+			'self':self,
+			'receiver':receiver,
+		}
+	)
+	return HttpResponse('Invite sent!')
+
 class ChatConsummer(WebsocketConsumer):
 
 	def connect(self):
 		room_name = self.scope['url_route']['kwargs']['room_name']
+
 		# print('user : ',self.scope['user'])
 		print("User.scope :", self.scope['user'])
 
@@ -76,13 +100,15 @@ class ChatConsummer(WebsocketConsumer):
 		#group = Group.objects.get_or_create(groupName=room_name
 		# self.groups.append(group)
 		self.room_name = room_name
-		self.room_group_name = 'chat_%s' % room_name
+		print("room name", room_name)
+		self.room_group_name = room_name
 		async_to_sync(self.channel_layer.group_add)(
-			self.room_name,
+			self.room_group_name,
 			self.channel_name
 		)
 		self.accept()
-		
+		channel_layer = get_channel_layer()
+		print("channel layer ",channel_layer)
 		print('Connected')
 	
 	def disconnect(self, close_code):
@@ -182,3 +208,16 @@ class ChatConsummer(WebsocketConsumer):
 			'date': date,
 			'username': username,
 		}))
+	
+	def send_invite(self,event):
+		other =event['receiver']
+		if (other != self.scope['user'].username):
+			return
+		message = event['self'] + " vous a invite a un tournoi "
+		self.send(text_data=json.dumps({
+			'type': 'send_invite',
+			'message':message,
+			'room':event['room'],
+			'username':event['self'],
+		}
+	))

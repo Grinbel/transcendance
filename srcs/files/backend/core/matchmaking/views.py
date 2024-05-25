@@ -48,9 +48,11 @@ def choice(request):
 	tournament = tournament.first()
 	if (tournament is None):
 		return Response({'Error':'Invalid tournament ID'})
-	# print('tournament ' + str(tournament))
+
 	if tournament.checkAddUser(user) is False:
 		return Response({'Error':'Room is full'})
+	if (tournament.players.all().filter(username=user.username)):
+		return Response({'Error':'You are already inside the tournament'})
 	print('maximum tournament', tournament.max_capacity)
 
 	return Response({'room_name': tournament.name})

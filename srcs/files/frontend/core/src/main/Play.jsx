@@ -65,10 +65,7 @@ function Play() {
 					...userInfo.user,
 					tournament: response.data.room_name
 				  });
-				// console.log('Tournament name: ' + userInfo.user.tournament);
-				// console.log('User info: ' + userInfo.user.username);
 				navigateTo('/tournament/');
-				// props.router.push('/');
 			}
 		} catch (error) {
 			if (error.response) {

@@ -79,8 +79,6 @@ def userlist(request):
 	action = request.data.get('action')
 	user = User.objects.get(username=self)
 	other = User.objects.get(username=otheruser)
-	print('user friend 111111111111111111111: ',user.friends.all())
-	print('other friend : ',other.friends.all())
 
 
 	if (other is None):
@@ -93,8 +91,6 @@ def userlist(request):
 		user.addBlacklist(otheruser)
 	elif (action == 'unblock'):
 		user.removeBlacklist(otheruser)
-	print('user friend 222222222222222222222222: ',user.friends.all())
-	print('other friend : ',other.friends.all())
 	# print('user black list : ',user.blacklist.all())
 
 	return Response({'detail': 'Done'})
