@@ -9,6 +9,7 @@ const tournament = () => {
 	const userInfo = useContext(userContext);
 	const [ws, setWs] = useState(null);
 	const [messages, setMessages] = useState([]);
+	const [friend,setFriend] = useState([]);
 	const messagesEndRef = useRef(null);
 	const [name, setName] = useState('');
 	const [maxCapacity, setMaxCapacity] = useState(2);
@@ -25,14 +26,14 @@ const tournament = () => {
 	  }
 
 	useEffect(() => {
-		if (userInfo.user === undefined )
+		if (userInfo.user === undefined || userInfo.user.tournament === undefined)
 			return ;
-		if (userInfo.user.username === "default")
+		else if (userInfo.user.username === "default")
 		{
 			navigate('/login');
 			return;
 		}
-		if (userInfo.user.tournament === "default")
+		else if (userInfo.user.tournament === "default")
 		{
 			navigate('/play');
 			return;
@@ -61,10 +62,12 @@ const tournament = () => {
 				return;
 			}
 			else if (message.type === 'username') {
-				// const usernameExists = messages.some(msg => msg.username === message.username);
+				const usernameExists = messages.some(msg => msg.username === message.username);
 
-				// if (usernameExists) 
-				// 	return;
+				if (usernameExists){
+					console.log("Username exist!!!!!!!!!!!!!!!") 
+					return;
+				}
 				setMessages(prevMessages => [...prevMessages, message]);
 				setName(message.name);
 				setMaxCapacity(message.max_capacity)
@@ -75,7 +78,9 @@ const tournament = () => {
 			}
 			else if(message.type === "friends")
 			{
-				console.log("friends!!!!!", message.data)
+				console.log("friends!!!!!", message.friend)
+				setFriend(prevFriend => [...prevFriend,message])
+
 			}
 			console.info('received', message);
 		};
@@ -87,6 +92,10 @@ const tournament = () => {
 			ws.close();
 		};
 	}, []);
+	const sendInvite = async(username)=>
+	{
+
+	}
 	if (userInfo.user === undefined )
 		return (<div />);
 	return (
@@ -99,6 +108,7 @@ const tournament = () => {
 
 			<h3>Max player: {maxCapacity}</h3>
 			<div id="chatContent" className="chat-content">
+				<h4>Player</h4>
 				{messages.map((message, index) => (
 					<div key={index} className="chat-message" ref={index === messages.length - 1 ? messagesEndRef : null}>
 						<div className="chat-username">
@@ -109,6 +119,19 @@ const tournament = () => {
 						<div />
 					</div>
 				))}
+			<div className="friend">
+				<h6>Friend List</h6>
+				{friend.map((message, index) => (
+					<div key={index} className="chat-message" ref={index === friend.length - 1 ? messagesEndRef : null}>
+						<div className="chat-username">
+								<h3 title={message.friend} onClick={() => sendInvite(message.friend)} />
+
+							
+						</div>
+						<div />
+					</div>
+				))}
+			</div>
 								{/* //TODO texte brut */}
 
 			<h3>{displayer}</h3>

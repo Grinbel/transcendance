@@ -118,14 +118,13 @@ class Tournamen(WebsocketConsumer):
 				'username': username,
 				'name': room_name,
 			}))
-			friends =user.friends.all()
-			#how to send friends?
-			data = serializers.serialize('json', friends)
-
+		friends_usernames = list(user.friends.all().values_list('username', flat=True))
+		for friend in friends_usernames:
 			self.send(text_data=json.dumps({
 				'type':'friends',
-				'friend': data,
+				'friend': friend,
 			}))
+			print("send friend,",friend)
 			
 	
 	def disconnect(self, close_code):

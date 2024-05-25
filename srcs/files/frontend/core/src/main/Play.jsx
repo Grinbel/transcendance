@@ -60,7 +60,7 @@ function Play() {
 			}
 			else {
 				console.log('Tournament name: ' + response.data.room_name);
-
+				//! tournament is not inside the cached data
 				userInfo.setUser({
 					...userInfo.user,
 					tournament: response.data.room_name
