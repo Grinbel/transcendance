@@ -46,9 +46,9 @@ const Home = () => {
 				stage_height : 10,
 				ia_time_between_checks : 30,
 				easy_mode : 1,
-				texture_p1 : userinfo.user.userAvatar.replace("/media/", "../../public/"),
+				texture_p1 : userinfo.user.userAvatar.replace("/media/", ""),
 				texture_p1_ball : "https://pbs.twimg.com/profile_images/1335272544451112960/YO2w8LHO_400x400.jpg",
-				texture_p2 : "../../public/princess.jpg"
+				texture_p2 : "princess.jpg"
 			}));
 			navigate('/game');
 		};
