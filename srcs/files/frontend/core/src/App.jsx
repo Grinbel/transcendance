@@ -27,11 +27,16 @@ import Chat from './main/Chat.jsx';
 
 import { UserProvider, userContext } from "./contexts/userContext.jsx";
 
+
+//todo:
+// manage user loging with wrong credentials errors
+
+
 //make getProfile async function, show me syntax in comment
 
 async function getProfile(user, setUser, error, setError){
 	// localStorage.clear();
-	localStorage.removeItem('user');
+	//localStorage.removeItem('user');
 	// get user from local storage
 	const userStringified = localStorage.getItem('user');
 	if (userStringified) {
@@ -67,21 +72,22 @@ async function getProfile(user, setUser, error, setError){
 
 		const location = useLocation();
 		const navigate = useNavigate();
-		const userMemo = useMemo(() => {
-			return user;
-		  }, [user]);
+		// const userMemo = useMemo(() => {
+			console.log('app: user', user);
+		// 	return user;
+		//   }, [user]);
 
 		
 		useEffect(() => {
-
+			console.log('app: useEffect');
 			const fetchUserProfile = async () => {
 				try {
+					console.log('app: getProfile called');
 					const userData = await getProfile();
-					localStorage.setItem('user', JSON.stringify(response.data));
 					setUser(userData);
 					console.log('app: no error in getProfile got a user successfully');
 				} catch (error) {
-					// console.error('getUserProfile: Error occurred:', error);
+					console.error('getUserProfile: Error occurred:', error);
 					setError(error);
 					localStorage.removeItem('token');
 					localStorage.removeItem('refreshToken');
@@ -92,7 +98,7 @@ async function getProfile(user, setUser, error, setError){
 	
 			fetchUserProfile();
 
-		}, [userMemo]);
+		}, []);
 		
     // const handleLoginClick = () => {
 	// 	console.log('App: login clicked in navbar');

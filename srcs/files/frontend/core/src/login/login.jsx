@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import  { axiosInstance } from "../axiosAPI.js";
 import { useNavigate } from 'react-router-dom';
 import { userContext } from "../contexts/userContext.jsx";
@@ -28,6 +28,8 @@ function Login() {
     const [code, setCode] = useState('');
     const [error, setError] = useState(null);
     const [validated, set_Validated] = useState(false);
+    const [loggedinMessage, setLoggedinMessage] = useState('');
+
 
     const [formData, setFormData] = useState({ 
         username: "", 
@@ -36,25 +38,22 @@ function Login() {
     
     const navigate = useNavigate();
     const userInfo = useContext(userContext);
-    if (userInfo.user) {
-	    console.log('Login: user ', userInfo.user.username);
-    }
     
+    useEffect(() => {
+        if (userInfo.user) {
+            console.log('Login: user ', userInfo.user.username);
+            setLoggedinMessage('You are already logged in');
+        }
+    }, [userInfo.user]);
 
 
     const handleChange = (event) => {
         setFormData({ ...formData, [event.target.name]: event.target.value });
-        // console.log('Login: handleChange event.target.name', event.target.name);
     };
-
-    //print local storage info
-    console.log('Login: localStorage accessTok', localStorage.getItem('access_token'));
-    // console.log('Login: localStorage refreshTok', localStorage.getItem('refresh_token'));
 
     const handleLogin = async (event) => {
 
         event.preventDefault();
-        // console.log('Login: handleLogin formData', formData);
             try 
             {
                 const response = await axiosInstance.post('/login/', {
@@ -165,7 +164,20 @@ function Login() {
 
     return (
         <div>
-            {step === 1 ? (
+            {loggedinMessage ? (
+                <Container className="mt-5">
+                    <Row>
+                        <Col
+                            md={{
+                                span: 6,
+                                offset: 3,
+                            }}
+                        >
+                            <p style={{ color: 'green' }}>{loggedinMessage}</p>
+                        </Col>
+                    </Row>
+                </Container>
+            ) : step === 1 ? (
                         <Container className="mt-5">
                             <Row>
                                 <Col

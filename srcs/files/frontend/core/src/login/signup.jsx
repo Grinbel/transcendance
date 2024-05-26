@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import  { axiosInstance } from "../axiosAPI.js";
+import  { axiosInstance, interceptor_response } from "../axiosAPI.js";
 
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import '../forms/forms.css'
@@ -8,6 +8,7 @@ import '../forms/forms.css'
 function Signup() {
 	const [validated, set_validated] = useState(false);
 	const [errorMessages, setErrorMessages] = useState("");
+	const [successMessage, setSuccessMessage] = useState('');
 	const [form_Data, set_Form_Data] = useState({
 		username: "",
 		pass: "",
@@ -35,6 +36,8 @@ function Signup() {
 	};
 	
 	const submitFn = async (event) => {
+		// i want to eject interceptors here
+		axiosSignup.interceptors.response.eject(interceptor_response);
 		console.log("submitFn event currentTarget: ", event.currentTarget);
 		const form = event.currentTarget;
 		event.preventDefault();
@@ -62,9 +65,12 @@ function Signup() {
 					password: form_Data.pass,
 					email: form_Data.email,
 				});
-				if (response && response.status === 200) 
+				if (response && (response.status === 201)) 
 				{
 					console.log('user registred successfully response.data', response.data);
+					set_Form_Data({ username: '', email: '', pass: '', confimPass: '' });
+					setSuccessMessage('User registered successfully!');
+					setErrorMessages({});
 				}
 
 			} catch (error) 
@@ -84,6 +90,7 @@ function Signup() {
 					updateErrorMessages('Network', "Network error. Please try again later.");
 					// console.error('error REQUEST', error.request);
 				} else {
+					console.error('error ', error);
 					updateErrorMessages('Client', "An unexpected error occurred. Please try again.");
 				}
 				// throw (error);
@@ -125,6 +132,7 @@ function Signup() {
 						offset: 3,
 					}}
 				>
+				{successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
 				{Object.entries(errorMessages).length > 0 && (
 					<div style={{ color: 'red' }}>
 						{Object.entries(errorMessages).map(([field, message]) => (
