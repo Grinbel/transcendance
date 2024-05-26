@@ -1,6 +1,6 @@
 # users/serializers.py
  
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, ValidationError
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import User
 from django.core.cache import cache
@@ -22,8 +22,15 @@ class UserSerializer(ModelSerializer):
 		fields = ['id', 'otp', 'otp_expiry_time','username', 'password', 'email', 'is_staff', 'two_factor']
 		extra_kwargs = {"password": {"write_only": True}}
 
+	def validate_email(self, value):
+		if User.objects.filter(email=value).exists():
+			raise ValidationError("Email is already in use.")
+		return value
+
 	def create(self, validated_data):
-		user = User(username=validated_data["username"])
+		user = User(username=validated_data["username"],
+			  		email=validated_data["email"])
+
 
 		print('validated-data in serializerrrr', validated_data)
 		password = validated_data.pop('password', None)
