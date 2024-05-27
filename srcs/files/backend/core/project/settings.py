@@ -56,7 +56,7 @@ INSTALLED_APPS = [
 	'daphne',
     'tournament',
     'game',
-    'multigame'
+    'multigame',
     'chat',
 	'corsheaders',
 	'matchmaking',

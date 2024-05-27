@@ -52,6 +52,13 @@ const Home = () => {
 			}));
 			navigate('/game');
 		};
+		const MULTI= () => {
+			setOptions(prevOptions => ({
+				...prevOptions,
+				nb_players : 2,
+			}));
+			navigate('/multigame');
+		};
 	return (
 		<Container fluid className="homeContainer">
 			<Row className="mb-3">
@@ -63,6 +70,10 @@ const Home = () => {
 				</Col>
 				<Col className="columnStyle">
 					<Button variant="primary" onClick={handleIA_Custom} className="homeButtons">Local Vs better Ia</Button>
+				</Col>
+				<Col className="columnStyle ">
+					
+				<Button variant="primary" onClick={MULTI} className="homeButtons">Multi Round Game</Button>
 				</Col>
 				<Col className="columnStyle ">
 					

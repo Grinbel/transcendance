@@ -62,7 +62,7 @@ export const GameProvider = ({ children }) => {
         ball_x_speed : 0,
         ball_y_speed : 0,
         ball_pause : 0,
-        ball_acc : 1.3,
+        ball_acc : 1.2,
         score_to_get : 11, //Score a obtenir pour gagner
         score_diff : 2, //ecart minimal pour gagner
         score_max : 15, // score a atteindre pour gagner sans ecart
