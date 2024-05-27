@@ -255,7 +255,7 @@ function Chat() {
 	}
 
 
-	if (userInfo.user === undefined)
+	if (userInfo.user === undefined || 1)
 		return (<div></div>);
 	return (
 		<div id="chatWindow" className="chat-window">

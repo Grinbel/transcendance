@@ -14,13 +14,13 @@ function MultiGame() {
 		let texture_floor = loader.load(options.texture_floor);
 		let texture = loader.load(options.texture_ball)
 		let scores = [options.nb_players];
-        console.log("NB " + options.nb_joueurs)
+		let players_text = [options.nb_players]
+        console.log("NB " + options.nb_players)
         let directions = [5] ; //! ATTENTION JE LIMITE A 5 JOUEURS !!!!
 		let player_angle =options.players_size / (options.nb_players +1)
         let player_textures = ['/yoshi.jpg', '/princess.jpg', '/ponge.jpg', '/badboy.png', '/players.jpg' ];
+		let player_names = ['Yoshi', 'Princess', 'Bob', 'Bowser' , 'Mario']
 
-        
-		
         function create_player(text_to_use) {
             const innerRadius = options.stage_radius;
             const outerRadius = options.stage_radius + options.player_width;
@@ -95,8 +95,34 @@ function MultiGame() {
 		document.body.appendChild(renderer.domElement);
 		const ball_form = new THREE.SphereGeometry(options.ball_radius, 32, 32);
 
-	for (let i = 0; i < options.nb_players; i++) {
+
+		function create_text(to_show)
+		{
+			const text = new Text();
+			text.text = to_show;
+			text.font = 'https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxP.ttf';
+			let size = 8
+			console.log(size)
+			text.fontSize = 1*5/size;
+			text.color = 0x0000FF;
+	
+			text.rotation.x = Math.PI/2;
+			text.position.y = options.stage_radius 
+			// Après avoir changé des propriétés, vous devez toujours appeler sync()
+			text.sync();
+	
+			// Ajouter le texte à la scène
+			console.log("player " + to_show + " added" )
+			scene.add(text);
+			return text;
+		}
+		for (let i =0; i<options.nb_players; i++)
+		{
 			scores[i] = 0;
+			players_text[i] = create_text(player_names[i] + " " + scores[i])
+			players_text[i].position.x = i%3 *5 - options.stage_radius
+			players_text[i].position.z = Math.floor(i / 3) * 2*options.ball_radius +2
+			console.log("position " + 2*options.ball_radius +2*i)
 		}
 
 
@@ -105,7 +131,7 @@ function MultiGame() {
 		const ball_render = new THREE.Mesh(ball_form, ball_material);
 		scene.add(ball_render);
 		ball_render.position.z = options.ball_radius;
-		let ball_angle = Math.random() * (Math.PI);
+		options.ball_angle = Math.random() * (Math.PI);
 
 	//	controls = new OrbitControls( camera, renderer.domElement );
 		const players = [];
@@ -146,16 +172,30 @@ function MultiGame() {
 			}
 			options.ball_pause = 30;
 			options.ball_bounces = 0;
+			let maxValue = Math.max(...scores);
+			let minValue = Math.min(...scores);
+			for(let i = 0; i< options.nb_players ; i++)
+			{
+				players_text[i].text = player_names[i] + " : " + scores[i]
+				if (scores[i] === maxValue)
+					{
+						players_text[i].color = 0x00FF00;
+					}
+				else if (scores[i] === minValue)
+				{
+					players_text[i].color = 0xFF0000;
+				}
+				else 
+				players_text[i].color = 0x0000FF;
+			}
 		}
 
-		function calculateReflectionAngle(ball_x, ball_y, stage_radius, ball_radius,  ball_angle,collision_angle){
+		function calculateReflectionAngle(collision_angle){
     let normal_angle = collision_angle + Math.PI / 2;
-
-    let ball_vector_x = Math.cos(ball_angle);
-    let ball_vector_y = Math.sin(ball_angle);
-
+    let ball_vector_x = Math.cos(options.ball_angle);
+    let ball_vector_y = Math.sin(options.ball_angle);
     let angle_between = Math.atan2(ball_vector_y, ball_vector_x) - normal_angle;
-    return normal_angle - angle_between +(0.5-Math.random()) * (Math.PI/16);
+    return (normal_angle - angle_between +(0.5-Math.random()) * (Math.PI/16));
 }
 		function normalize_angle(angle){
 			angle = angle % (Math.PI*2);
@@ -172,13 +212,13 @@ function MultiGame() {
 			let player_min_angle;
             console.log("Angle de la balle " + angle)
 			for(let i = 0; i<options.nb_players; i++){
-				player_real_angle = normalize_angle(players[i].mesh.rotation.z - Math.PI / 2) ;
+				player_real_angle = normalize_angle(players[i].mesh.rotation.z ) ;
 				player_max_angle = normalize_angle(player_real_angle + player_angle / 2);
 				player_min_angle = normalize_angle(player_real_angle - player_angle / 2);
                 console.log("angle du joueur " + i + " max " + player_max_angle + " min " + player_min_angle)
 				if (players[i].hit)
 				{	
-					players[i].mesh.material.color.setHex(0xbbbbbb);
+					players[i].mesh.material.color.setHex(0xffffff);
 					players[i].hit = 0;
 					players[i].last_hit = 1;
 				continue;
@@ -187,8 +227,8 @@ function MultiGame() {
 				if ((angle > player_min_angle && (angle < player_max_angle  || player_max_angle < player_min_angle)) || (angle < player_max_angle && (angle > player_min_angle || player_max_angle < player_min_angle)))
 				{
 					players[i].hit = 1;
-					players[i].mesh.material.color.setHex(0x000000);
-					hit = 1;
+					players[i].mesh.material.color.setHex(0xbbbbbb);
+					hit++;
 				}
 
 			}
@@ -209,9 +249,12 @@ function MultiGame() {
 				options.ball_bounces ++;
 				let collision_angle = normalize_angle(Math.atan2(options.ball_y, options.ball_x) );
 				console.log("Valeur du point : " + options.ball_bounces )
-				if (ball_hit(collision_angle))
+				let hit = ball_hit(collision_angle)
+				if (hit >0)
 				{
-                    options.ball_angle = calculateReflectionAngle(options.ball_x, options.ball_y, options.stage_radius, options.ball_radius, options.ball_angle,options.collision_angle);
+					console.log("touche "+ hit)
+                    options.ball_angle = calculateReflectionAngle(collision_angle);
+					console.log("reflection angle calculated : " + options.ball_angle)
                     options.ball_speed *= options.ball_acc;}
 				else {
 					
