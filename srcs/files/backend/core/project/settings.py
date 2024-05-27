@@ -23,7 +23,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1','*']
 AUTH_USER_MODEL = "users.User"
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -200,12 +200,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #security settings
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = [
-    'http://0.0.0.0:5173',
-    'http://localhost:5173',
-    'http://0.0.0.0:8000',
-    # 'http://your-production-url.com',
-]
+# CORS_ALLOWED_ORIGINS = [
+#     'http://0.0.0.0:5173',
+#     'http://localhost:5173',
+#     'http://0.0.0.0:8000',
+# 	'*:5173',
+# 	'*:8000',
+# 	'*'
+# 	'c1r2p6:5173',
+# 	'c1r2p6:8000',
+
+#     # 'http://your-production-url.com',
+# ]
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',
@@ -218,6 +224,8 @@ CORS_ALLOW_METHODS = [
 
 CSRF_TRUSTED_ORIGINS = ['http://localhost:5173/',
                         'http://0.0.0.0:8000/',
+
+
 ]
 CSRF_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SECURE = 'True'

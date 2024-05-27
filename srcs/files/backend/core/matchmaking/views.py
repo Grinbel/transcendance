@@ -15,8 +15,6 @@ from asgiref.sync import async_to_sync
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.core import serializers
-class bot:
-	id = 0
 
 #//! put permisiion in login
 @api_view(['POST'])
@@ -51,8 +49,9 @@ def choice(request):
 
 	if tournament.checkAddUser(user) is False:
 		return Response({'Error':'Room is full'})
-	if (tournament.players.all().filter(username=user.username)):
-		return Response({'Error':'You are already inside the tournament'})
+	if (Tournament.objects.filter(players=user).exists()):
+		return Response({'Error':'You are already inside a tournament'})
+	
 	print('maximum tournament', tournament.max_capacity)
 
 	return Response({'room_name': tournament.name})
@@ -135,6 +134,7 @@ class Tournamen(WebsocketConsumer):
 			self.channel_name
 		)
 		tournament = Tournament.objects.get(name=self.room_name)
+		# return
 		usernames = tournament.getAllUsername()
 		print("player count: " + str(tournament.players.count()))
 		if (tournament.players.count() <= 1):
@@ -189,6 +189,7 @@ class Tournamen(WebsocketConsumer):
 				{
 					'type':'launch_tournament',
 					'timer': timer,
+					'name': name,
 				}
 			)
 			# time.sleep(timer)

@@ -11,7 +11,7 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 from django.http import HttpResponse
 from rest_framework.decorators import api_view
-
+from tournament.models import Tournament
 
 
 def checkCommand(self, message, user):
@@ -77,6 +77,7 @@ def sendInvite(request):
 	other = User.objects.get(username=receiver)
 	if (other is None or other.blacklist.all().filter(username=self).exists()):
 		return HttpResponse("You're blocked")
+	print("send invite!!!!!!!!!!!!!!!!!")
 	async_to_sync(channel_layer.group_send)(
 		'general',
 		{
@@ -87,6 +88,9 @@ def sendInvite(request):
 		}
 	)
 	return HttpResponse('Invite sent!')
+
+
+
 
 class ChatConsummer(WebsocketConsumer):
 
@@ -116,17 +120,21 @@ class ChatConsummer(WebsocketConsumer):
 		user= self.scope['user']
 		print('user:',user)
 		async_to_sync(self.channel_layer.group_discard)(
-			self.room_group_name, self.channel_name
+			self.room_name, self.channel_name
 		)
 	
 
 
 	def receive(self, text_data):
+		# pop = ${SERVER_ADRESS}
+		# print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",${SERVER_ADRESS})
 		text_data_json = json.loads(text_data)
 		user= self.scope['user']
 		print(text_data_json)
 		username = user.username
-
+		games = Tournament.objects.all()
+		for game in games:
+			print("name:",game.name)
 		tipe= text_data_json['type']
 		if (tipe == 'connected'):
 			room_name = self.room_name

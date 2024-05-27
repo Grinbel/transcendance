@@ -23,7 +23,5 @@ urlpatterns = [
 	path("api/", AsgiValidateTokenView.as_view()),
 	path('userlist/', userlist, name='userlist'),
 	path('userfriendblock/', userFriendBlock, name='userfriendblock'),
-	path('inviteTournament/',sendInvite,name='sendInvite')
-
-
+	path('inviteTournament/',sendInvite,name='sendInvite'),
 ]

@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import  { axiosInstance } from "../axiosAPI.js";
 
+
 const tournament = () => {
 	const userInfo = useContext(userContext);
 	const [ws, setWs] = useState(null);
@@ -20,6 +21,7 @@ const tournament = () => {
 
 	function getWebSocket(roomName) {
 		if (!websockets[roomName]) {
+			//! change adress 
 		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/tournament/${roomName}/?uuid=${userInfo.user.userId}`);
 		}
 		setMessages(prevMessages => [""]);
@@ -76,6 +78,9 @@ const tournament = () => {
 			}
 			else if (message.type === 'launch_tournament'){
 				setDisplayer("Launching in " + message.timer + " seconds");
+				console.log("set tournamentIsLaunching")
+				// reminder();
+				userInfo.setUser({...userInfo.user,tournamentIsLaunching:true});
 			}
 			else if(message.type === "friends")
 			{
@@ -93,6 +98,19 @@ const tournament = () => {
 			ws.close();
 		};
 	}, []);
+
+	const reminder = async () => {
+		
+		try {
+			const response = await axiosInstance.post('/reminder/', {
+				name: userInfo.user.username,
+			});
+		} catch (error) {
+			setError(error.message);
+			throw (error);
+		}
+	}
+
 	const sendInvite = async(username)=>
 	{
 		console.log("INVITE ",username)

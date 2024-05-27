@@ -11,18 +11,12 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useNavigate } from 'react-router-dom';
+// import .meta.env.VITE_API_SERVER_ADDRESS
 
-
-// function websockets() {
-// 	const response = await axiosInstance.post('/login/', {
-// 		username: formData.username,
-// 		password: formData.password
-// 		});
-// }
 
 function Chat() {
 	const userInfo = useContext(userContext);
-	
+	const [reminder,setReminder] = useState(false);
 	const [formData, setFormData] = useState({ message: '', date: '', username: '', type: "chat"});
 	const [privateMessage,setPrivate]= useState({message:'', receiver:''});
 	const [error, setError] = useState(null);
@@ -43,6 +37,7 @@ function Chat() {
 	function getWebSocket(roomName) {
 		
 		if (!websockets[roomName]) {
+			//! change adress 
 		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/chat/${roomName}/?uuid=${userInfo.user.userId}`);
 		}
 		setMessages(prevMessages => [""]);
@@ -50,8 +45,18 @@ function Chat() {
 	  }
 
 	useEffect(() => {
+		// const serverAddress = process.env.REACT_APP_SERVER_ADDRESS;
+		// const serverAddres = process.env.VITE_API_SERVER_ADDRESS;
+
+		// console.log('serverAddress', serverAddress);
+		setdisplayer("");
+
 		if (userInfo.user === undefined )
 			return ;
+		else if (userInfo.user.tournamentIsLaunching===true){
+			setdisplayer("La partie va bientot commencer");
+			// userInfo.setUser({...userInfo.user,tournamentIsLaunching:false});
+		}
 		setFormData(prevState => ({...prevState, username: userInfo.user.username}));
 		const ws = getWebSocket(roomName);
 		ws.onopen = () => {
@@ -75,7 +80,10 @@ function Chat() {
 				message.type = 'invite';
 				setMessages(prevMessages => [...prevMessages, message]);
 			}
+			else
+				console.info('received', message);
 			console.info('received', message);
+
 		};
 
 		setWs(ws);
@@ -215,6 +223,7 @@ function Chat() {
 
 	const goToTournament = async (room) =>{
 		try {
+			setdisplayer('');
 			const response = await axiosInstance.post('/choice/', {
 				tournamentId: room,
 				playerCount: "",
@@ -304,6 +313,11 @@ function Chat() {
 				<div className="displayer-errors">
 					{displayer}
 				</div>
+					{userInfo.tournamentIsLaunching ===false &&
+						<div className="reminder">
+							<h4> La partie va bientot commencer</h4>
+					</div>}
+				
 				<div id="chatInput" className="chat-input">
 					<input
 						type="text"

@@ -15,6 +15,7 @@ function Game() {
     function getWebSocket(roomName) {
 		
 		if (!websockets[roomName]) {
+			//! change adress 
 		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/game/`);
 		}
 		return websockets[roomName];
@@ -22,6 +23,7 @@ function Game() {
       
       useEffect(() => {
         // const ws = getWebSocket(roomName);
+		//! change adress 
         const ws = new WebSocket(`ws://localhost:8000/users/ws/game/`);
         ws.onopen = () => {
             console.log('ws game opened');
