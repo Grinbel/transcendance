@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import  { axiosInstance } from "../axiosAPI.js";
+import  { axiosInstance, loginInstance } from "../axiosAPI.js";
 import { useNavigate } from 'react-router-dom';
 import { userContext } from "../contexts/userContext.jsx";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
@@ -56,7 +56,7 @@ function Login() {
         event.preventDefault();
             try 
             {
-                const response = await axiosInstance.post('/login/', {
+                const response = await loginInstance.post('/login/', {
                 username: formData.username,
                 password: formData.password
                 });
@@ -91,21 +91,27 @@ function Login() {
                 }
             } catch (error) 
             {
-                console.log('Error catched in login.jsx ', JSON.stringify(error));
                 if (error.response) {
-                    console.log('error RESPONSE')
-                    console.log(error.response.data);
-                    console.log(error.response.status);
-                    console.log(error.response.headers);
-                } else if (error.request) {
-                    console.log('error REQUEST', error.request);
-                } else {
-                    // quelque chose s’est passé lors de la construction de la requête et cela
-                    // a provoqué une erreur
-                    console.log('error OBSCURE', error.request);
-                }
-                setError(error.message);
-                throw (error);
+                    // The request was made and the server responded with a status code
+                    // that falls out of the range of 2xx
+                    if (error.response.status === 400) {
+                      setError('Incorrect username or password.');
+                    } else if (error.response.status === 401) {
+                      setError('Unauthorized access.');
+                    } else if (error.response.status >= 500) {
+                      setError('Server busy. Please try again later.');
+                    } else {
+                      setError('An unknown error occurred.');
+                    }
+                  } else if (error.request) {
+                    // The request was made but no response was received
+                    setError('Network error. Please check your connection.');
+                  } else {
+                    // Something happened in setting up the request that triggered an Error
+                    setError('An unknown error occurred.');
+                  }
+            } finally {
+                // setLoading(false);
             }
     };
 
@@ -135,28 +141,34 @@ function Login() {
             setFormData({ username: "", password: "" });
             setCode('');
             navigate('/');
-
             console.log('Login successful with 2fa: i go to home page', response);  //SETUP REDIRECT TO HOME PAGE
-    
-        } catch (error) {
-            // console.log('Main Error ', JSON.stringify(error));
+        } catch (error)
+        {
+// The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
             if (error.response) {
-                // la requête a été faite et le code de réponse du serveur n’est pas dans
-                // la plage 2xx
-                console.log('error RESPONSE')
-                console.log(error.response.status);
-              } else if (error.request) {
-                // la requête a été faite mais aucune réponse n’a été reçue
-                // `error.request` est une instance de XMLHttpRequest dans le navigateur
-                // et une instance de http.ClientRequest avec node.js
+                if (error.response.status === 400) {
+                    setError('Invalid OTP. Please try again.');
+                } else if (error.response.status === 401) {
+                    setError('Incorrect username or password.');
+                } else if (error.response.status === 403) {
+                    setError('Expired OTP. Please request a new one.');
+                } else if (error.response.status >= 500) {
+                    setError('Server error. Please try again later.');
+                } else {
+                    setError('An error occurred. Please try again.');
+                }
+            }
+            else if (error.request)
+            {
+                // The request was made but no response was received
                 console.log('error REQUEST', error.request);
+                setError('Network error. Please check your connection.');
             } else {
-                // quelque chose s’est passé lors de la construction de la requête et cela
-                // a provoqué une erreur
-                console.log('error OBSCURE', error.request);
-              }
-            setError(error.message);
-            throw (error);
+                // Something happened in setting up the request that triggered an Error
+                console.log('error OBSCURE', error.message);
+                setError('An unknown error occurred.');
+            }
         }
     };
 
@@ -177,7 +189,7 @@ function Login() {
                         </Col>
                     </Row>
                 </Container>
-            ) : step === 1 ? (
+                ) : step === 1 ? (
                         <Container className="mt-5">
                             <Row>
                                 <Col
@@ -225,7 +237,7 @@ function Login() {
                                         </Form.Group>
                                     
                                         <Button type='submit' role="button" className="buttonCustom"> Login </Button>
-                                   
+                                        {error && <p style={{ color: 'red' }}>{error}</p>}
                                     </Form>
                                 </Col>
                             </Row>
@@ -257,12 +269,11 @@ function Login() {
                                     </Form.Control.Feedback>
                                 </Form.Group>
                                 <Button type='submit' role="button" className="buttonCustom"> Login </Button>
-                                    {/* <Button type="" className="buttonTest"> Gooo ! </Button> */}
+                                {error && <p style={{ color: 'red' }}>{error}</p>}
                             </Form>
                         </Col>
                     </Row>
-                </Container>
-                    )
+                </Container> )
             }
         </div>
     );

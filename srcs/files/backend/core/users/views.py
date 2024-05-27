@@ -79,7 +79,10 @@ def login(request):
 
 	print('request.data', request.data)
 	user = authenticate(request, username=username, password=password)
-	print('user', user)
+	#print for me all the users available and their passwords unhashed
+
+
+	print('user is', user)
 
 
 	#####
@@ -96,6 +99,7 @@ def login(request):
 					return Response(token_serializer.validated_data, status=status.HTTP_200_OK)
 			except Exception as e:
 				raise APIException("Internal server error. Please try again later.")
+			
 
 	###### 2FA implementation ######
 		
