@@ -15,15 +15,24 @@ function MultiGame() {
 		let texture = loader.load(options.texture_ball)
 		let scores = [options.nb_players];
 		let players_text = [options.nb_players]
+		let player_depth = options.ball_radius * 2;
         console.log("NB " + options.nb_players)
-        let directions = [5] ; //! ATTENTION JE LIMITE A 5 JOUEURS !!!!
+        let directions = [options.nb_players] ;
+				for (let i =0; i<options.nb_players; i++)
+				{
+					directions[i] = 0;
+				} 
 		let player_angle =options.players_size / (options.nb_players +1)
-        let player_textures = ['/yoshi.jpg', '/princess.jpg', '/ponge.jpg', '/badboy.png', '/players.jpg' ];
-		let player_names = ['Yoshi', 'Princess', 'Bob', 'Bowser' , 'Mario']
+        let player_textures = ['/yoshi.jpg', '/princess.jpg', '/ponge.jpg', '/badboy.png', '/players.jpg', '/beaudibe.jpg' ];
+		let player_names = ['Yoshi', 'Princess', 'Bob', 'Bowser' , 'Mario', 'jmen fous']
 
-        function create_player(text_to_use) {
-            const innerRadius = options.stage_radius;
-            const outerRadius = options.stage_radius + options.player_width;
+        function create_player(text_to_use, which) {
+			if (which %2 == 1)
+				which = which/2 * -1;
+			else
+				which = which/2;
+            const innerRadius = options.stage_radius + options.player_width *which ;
+            const outerRadius = options.stage_radius + options.player_width * (which +1);
             const arcAngle = player_angle;
             const shape = new THREE.Shape();
             
@@ -48,7 +57,7 @@ function MultiGame() {
 
             const extrudeSettings = {
                 steps: 2,
-                depth: options.player_depth,
+                depth: player_depth,
                 bevelEnabled: true,
                 bevelThickness: 0,
                 bevelSize: 0,
@@ -65,7 +74,7 @@ function MultiGame() {
         }
 		class Player{
             constructor(x) {
-				this.mesh = create_player(player_textures[x]);
+				this.mesh = create_player(player_textures[x],x);
 				
 				this.hit = 0;
 				scene.add(this.mesh);
@@ -82,7 +91,7 @@ function MultiGame() {
         
 		// Our Javascript will go here.
 		const scene = new THREE.Scene();
-		const ground_geometry = new THREE.CircleGeometry(options.stage_radius,1012);
+		const ground_geometry = new THREE.CircleGeometry(options.stage_radius + options.nb_players/2*options.player_width,1012);
 		const ground_material = new THREE.MeshBasicMaterial({ map: texture_floor });
 		const ground = new THREE.Mesh(ground_geometry, ground_material);
 		scene.add(ground);
@@ -246,7 +255,6 @@ function MultiGame() {
 			options.ball_x += options.ball_speed * Math.cos(options.ball_angle);
 			options.ball_y += options.ball_speed * Math.sin(options.ball_angle);
 			if (options.ball_x *options.ball_x + options.ball_y * options.ball_y > (options.stage_radius-options.ball_radius) * (options.stage_radius-options.ball_radius)) {
-				options.ball_bounces ++;
 				let collision_angle = normalize_angle(Math.atan2(options.ball_y, options.ball_x) );
 				console.log("Valeur du point : " + options.ball_bounces )
 				let hit = ball_hit(collision_angle)
@@ -255,7 +263,8 @@ function MultiGame() {
 					console.log("touche "+ hit)
                     options.ball_angle = calculateReflectionAngle(collision_angle);
 					console.log("reflection angle calculated : " + options.ball_angle)
-                    options.ball_speed *= options.ball_acc;}
+                    options.ball_speed *= options.ball_acc;
+					options.ball_bounces ++;}
 				else {
 					
 					ball_reset();}
@@ -266,7 +275,8 @@ function MultiGame() {
 
         //* https://keyevents.netlify.app/
 		function handleKeyDown(event) {
-        //! joueur 0 jouera avec a et d
+			if(options.nb_players <4)
+        {//! joueur 0 jouera avec a et d
   		if (event.keyCode === 65) { 
     		directions[0] = -1;
 			}
@@ -286,10 +296,39 @@ function MultiGame() {
 			}
 		if (event.keyCode === 79) {
 			directions[2] = 1;
+			}}
+		else
+			{
+				//! joueur 0 jouera avec Q
+			if (event.keyCode === 81) {
+				directions[0] = 1;
+				}
+				//! joueur 1 jouera avec C
+				if (event.keyCode === 67) {
+					directions[1] = 1;
+				}
+				//! joueur 2 jouera avec U
+				if (event.keyCode === 85) {
+					directions[2] = 1;
+				}
+				//! joueur 3 jouera avec >
+				if (event.keyCode === 190) {
+					directions[3] = 1;
+				}
+				//! joueur 4 jouera avec 1 du clavier numerique
+				if (event.keyCode === 97) {
+					directions[4] = 1;
+				}
+				//! joueur 5 jouera avec 9 du clavier numerique
+				if (event.keyCode === 105) {
+					directions[5] = 1;
+				}
 			}
 		}
 
 		function handleKeyUp(event) {
+			if(options.nb_players <4)
+			{
 			if (event.keyCode === 65 || event.keyCode === 68) {
 				directions[0] = 0;
 			}
@@ -299,6 +338,28 @@ function MultiGame() {
             if (event.keyCode === 85|| event.keyCode === 79) {
 				directions[2] = 0;
 			}
+		}
+		else
+		{
+			if (event.keyCode === 81) {
+				directions[0] = 0;
+			}
+			if (event.keyCode === 67) {
+				directions[1] = 0;
+			}
+			if (event.keyCode === 85) {
+				directions[2] = 0;
+			}
+			if (event.keyCode === 190) {
+				directions[3] = 0;
+			}
+			if (event.keyCode === 97) {
+				directions[4] = 0;
+			}
+			if (event.keyCode === 105) {
+				directions[5] = 0;
+			}
+		}
   		}
 
 		window.addEventListener('keydown', handleKeyDown, false);

@@ -52,10 +52,18 @@ const Home = () => {
 			}));
 			navigate('/game');
 		};
-		const MULTI= () => {
-			setOptions(prevOptions => ({
+		const MULTI_3P= () => {
+			setMultiGameOptions(prevOptions => ({
 				...prevOptions,
-				nb_players : 2,
+				nb_players : 3,
+			}));
+			navigate('/multigame');
+		};
+
+		const MULTI_6P= () => {
+			setMultiGameOptions(prevOptions => ({
+				...prevOptions,
+				nb_players : 6,
 			}));
 			navigate('/multigame');
 		};
@@ -73,7 +81,11 @@ const Home = () => {
 				</Col>
 				<Col className="columnStyle ">
 					
-				<Button variant="primary" onClick={MULTI} className="homeButtons">Multi Round Game</Button>
+				<Button variant="primary" onClick={MULTI_3P} className="homeButtons">Multi Round Game (3 Players, Double buttons)</Button>
+				</Col>
+				<Col className="columnStyle ">
+
+				<Button variant="primary" onClick={MULTI_6P} className="homeButtons">Multi Round Game (6 Players, Mono buttons)</Button>
 				</Col>
 				<Col className="columnStyle ">
 					

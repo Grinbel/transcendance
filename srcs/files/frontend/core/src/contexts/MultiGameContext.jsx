@@ -20,7 +20,7 @@ export const MultiGameProvider = ({ children }) => {
         players_size : (Math.PI /2) *1.5,
         ball_rotation_z : 1,
         player_size : 2,
-        player_width : 1,
+        player_width : .05,
         player_height : 1,
         stage_radius : 5,
         ball_radius : 0.5,
