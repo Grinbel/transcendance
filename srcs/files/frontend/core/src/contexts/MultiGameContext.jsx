@@ -11,7 +11,6 @@ export const MultiGameProvider = ({ children }) => {
 //! OPTIONS DES JOUEURS
 
         nb_players : 5,
-        player_width : .3,
         player_speed  : 0.1,
 
 

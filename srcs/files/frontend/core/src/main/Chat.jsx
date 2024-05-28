@@ -12,7 +12,6 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useNavigate } from 'react-router-dom';
 import xss from 'xss';
-import DOMPurify from 'dompurify'; 
 
 function Chat() {
 	const userInfo = useContext(userContext);
@@ -120,7 +119,7 @@ function Chat() {
 				return;
 			}
 			const clean =xss(formData.message);
-			// const clean = DOMPurify.sanitize(formData.message);
+
 			const sent = JSON.stringify({ type:'chat',message: clean, date: formattedTime, username: userInfo.user.username});
 			ws.send(sent);
 			// setFormData({ message: '',type: 'chat'});
