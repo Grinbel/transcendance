@@ -11,8 +11,8 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useNavigate } from 'react-router-dom';
-// import .meta.env.VITE_API_SERVER_ADDRESS
-
+import xss from 'xss';
+import DOMPurify from 'dompurify'; 
 
 function Chat() {
 	const userInfo = useContext(userContext);
@@ -37,15 +37,17 @@ function Chat() {
 	function getWebSocket(roomName) {
 		
 		if (!websockets[roomName]) {
-			//! change adress 
-		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/chat/${roomName}/?uuid=${userInfo.user.userId}`);
+			 
+		  websockets[roomName] = new WebSocket(`ws://${import.meta.env.VITE_API_SERVER_ADDRESS}:8000/users/ws/chat/${roomName}/?uuid=${userInfo.user.userId}`);
 		}
 		setMessages(prevMessages => [""]);
 		return websockets[roomName];
 	  }
 
 	useEffect(() => {
-		// const serverAddress = process.env.REACT_APP_SERVER_ADDRESS;
+		// let serverAddress = process.env.REACT_APP_SERVER_ADDRESS;
+		// if (process.env.REACT_APP_SERVER_ADDRESS == 'c1r2p4')
+		// 	console.log("pop");
 		// const serverAddres = process.env.VITE_API_SERVER_ADDRESS;
 
 		// console.log('serverAddress', serverAddress);
@@ -67,7 +69,9 @@ function Chat() {
 		ws.onerror = e => console.log('ws chat error', e);
 		ws.onmessage = e => {
 			const message = JSON.parse(e.data);
-			if (message.type === 'chat') {
+			setMessages(prevMessages => [...prevMessages, message]);
+
+			/*if (message.type === 'chat') {
 				message.type = 'chat';
 				setMessages(prevMessages => [...prevMessages, message]);
 			}
@@ -79,9 +83,7 @@ function Chat() {
 			else if (message.type === 'send_invite') {
 				message.type = 'invite';
 				setMessages(prevMessages => [...prevMessages, message]);
-			}
-			else
-				console.info('received', message);
+			}*/
 			console.info('received', message);
 
 		};
@@ -107,6 +109,7 @@ function Chat() {
 			console.log("Need to be logged in   ", displayer);
 			return;
 		}
+		// else if()
 		setdisplayer("");
 		try {
 			const currentTime = new Date();
@@ -115,7 +118,9 @@ function Chat() {
 			if (formData.message === '') {
 				return;
 			}
-			const sent = JSON.stringify({ type:'chat',message: formData.message, date: formattedTime, username: userInfo.user.username});
+			const clean =xss(formData.message);
+			// const clean = DOMPurify.sanitize(formData.message);
+			const sent = JSON.stringify({ type:'chat',message: clean, date: formattedTime, username: userInfo.user.username});
 			ws.send(sent);
 			// setFormData({ message: '',type: 'chat'});
 			console.info('sent', sent);
@@ -136,7 +141,9 @@ function Chat() {
 		try {
 			if (privateMessage.message === '')
 				return;
-			const sent = JSON.stringify({type:'private', message: privateMessage.message,username: userInfo.user.username, receiver:privateMessage.receiver})
+			const clean =xss(privateMessage.message);
+
+			const sent = JSON.stringify({type:'private', message: clean ,username: userInfo.user.username, receiver:privateMessage.receiver})
 			ws.send(sent);
 		} catch (error) {
 			setError(error.message);
@@ -206,7 +213,7 @@ function Chat() {
 
 	const privateChat = (username) => {
 		return (
-		<div id="privateChat" className="private-input">
+		<div className="chat-input">
 			<input
 				type="text"
 				id="privateInputField"
@@ -298,10 +305,10 @@ function Chat() {
 							{message.type === 'chat' && <div className="message">
 								{message.message} <span className="message-time">{message.date}</span>
 							</div>}
-							{message.type === 'private' && <div className="private">
+							{message.type === 'private_message' && <div className="private">
 								{message.message} <span className="message-time">{message.date}</span>
 							</div>}
-							{message.type === 'invite' && <div className="invite">
+							{message.type === 'send_invite' && <div className="invite">
 								{message.message}
 								<a href="#" onClick={(e) => {e.preventDefault(); goToTournament(message.room);}}>
 									Accept
@@ -318,7 +325,7 @@ function Chat() {
 							<h4> La partie va bientot commencer</h4>
 					</div>}
 				
-				<div id="chatInput" className="chat-input">
+				<div className="chat-chat">
 					<input
 						type="text"
 						id="chatInputField"
@@ -330,16 +337,14 @@ function Chat() {
 						onKeyDown={handleKeyPress}
 					/>
 				</div>
-				<div className="room_chat">
+				{/* <div className="room_chat">
 					<input type="text"
 						id="roomName"
 						className="room-name"
 						value={roomName}
 						onChange={(e) => setRoomName(e.target.value)}
 					/>
-				</div>
-				<div className="button">
-				</div>
+				</div> */}
 			</div>
 		</div>
 	  );

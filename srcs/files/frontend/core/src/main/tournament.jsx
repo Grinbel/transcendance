@@ -21,8 +21,8 @@ const tournament = () => {
 
 	function getWebSocket(roomName) {
 		if (!websockets[roomName]) {
-			//! change adress 
-		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/tournament/${roomName}/?uuid=${userInfo.user.userId}`);
+			 
+		  websockets[roomName] = new WebSocket(`ws://${import.meta.env.VITE_API_SERVER_ADDRESS}:8000/users/ws/tournament/${roomName}/?uuid=${userInfo.user.userId}`);
 		}
 		setMessages(prevMessages => [""]);
 		return websockets[roomName];
@@ -68,7 +68,6 @@ const tournament = () => {
 				const usernameExists = messages.some(msg => msg.username === message.username);
 
 				if (usernameExists){
-					console.log("Username exist!!!!!!!!!!!!!!!") 
 					return;
 				}
 				setMessages(prevMessages => [...prevMessages, message]);
@@ -84,7 +83,6 @@ const tournament = () => {
 			}
 			else if(message.type === "friends")
 			{
-				console.log("friends!!!!!", message.friend)
 				setFriend(prevFriend => [...prevFriend,message])
 
 			}
@@ -98,18 +96,6 @@ const tournament = () => {
 			ws.close();
 		};
 	}, []);
-
-	const reminder = async () => {
-		
-		try {
-			const response = await axiosInstance.post('/reminder/', {
-				name: userInfo.user.username,
-			});
-		} catch (error) {
-			setError(error.message);
-			throw (error);
-		}
-	}
 
 	const sendInvite = async(username)=>
 	{

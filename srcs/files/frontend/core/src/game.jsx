@@ -15,16 +15,16 @@ function Game() {
     function getWebSocket(roomName) {
 		
 		if (!websockets[roomName]) {
-			//! change adress 
-		  websockets[roomName] = new WebSocket(`ws://localhost:8000/users/ws/game/`);
+			 
+		  websockets[roomName] = new WebSocket(`ws://${import.meta.env.VITE_API_SERVER_ADDRESS}:8000/users/ws/game/`);
 		}
 		return websockets[roomName];
 	  }
       
       useEffect(() => {
         // const ws = getWebSocket(roomName);
-		//! change adress 
-        const ws = new WebSocket(`ws://localhost:8000/users/ws/game/`);
+		 
+        const ws = new WebSocket(`ws://${import.meta.env.VITE_API_SERVER_ADDRESS}:8000/users/ws/game/`);
         ws.onopen = () => {
             console.log('ws game opened');
             ws.send(JSON.stringify({

@@ -10,3 +10,4 @@ channels
 daphne
 websockets
 django-channels-jwt
+xss
