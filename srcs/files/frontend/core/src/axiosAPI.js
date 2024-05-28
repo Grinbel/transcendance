@@ -11,7 +11,9 @@ export const loginInstance = axios.create({
 });
 
 export const axiosInstance = axios.create({
-    baseURL: 'http://localhost:8000/users/',
+	 
+    baseURL: `http://${import.meta.env.VITE_API_SERVER_ADDRESS}:8000/users/`,
+	// baseURL: 'http://localhost:8000/users/',
     timeout: 0,
     headers: {
         'Authorization': "Baerer " + localStorage.getItem('access_token'),

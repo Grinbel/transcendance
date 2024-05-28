@@ -51,6 +51,8 @@ def generate_random_digits(n=6):
 @api_view(['GET'])
 def getProfile(request):
 	print('getProfile function request ')
+	# return Response({'detail': 'Invalid token format'}, status=status.HTTP_401_UNAUTHORIZED)
+
 	if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
 		token = request.headers.get('Authorization').split(' ')[1]
 		print('token', token)
@@ -68,6 +70,52 @@ def getProfile(request):
 		print('user_data', user_data)
 		return Response(user_data)
 	return Response({'detail': 'Invalid token format'}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['POST'])
+def userlist(request):
+	print('userlist function')
+	otheruser = request.data.get('other')
+	self = request.data.get('self')
+	action = request.data.get('action')
+	user = User.objects.get(username=self)
+	other = User.objects.get(username=otheruser)
+
+
+	if (other is None):
+		return Response({'detail': 'Invalid user'})
+	if (action == 'addfriend'):
+		user.addFriend(otheruser)
+	elif (action == 'unfriend'):
+		user.removeFriend(otheruser)
+	elif (action == 'block'):
+		user.addBlacklist(otheruser)
+	elif (action == 'unblock'):
+		user.removeBlacklist(otheruser)
+	# print('user black list : ',user.blacklist.all())
+
+	return Response({'detail': 'Done'})
+
+@api_view(['POST'])
+def userFriendBlock(request):
+	print('userFriendBlock function', request)
+	friend = request.data.get('friend')
+	self = request.data.get('self')
+	print("username =",friend)
+	print("self =",self)
+
+	# return Response({'detail': 'Invalid user'})
+	user = User.objects.get(username=self)
+	other = User.objects.get(username=friend)
+	print("user =", user)
+	print("friend =", other)
+
+	if (other is None or user is None):
+		return Response({'detail': 'Invalid user'})
+	elif (user == other):
+		return Response({'detail': 'You cannot block yourself'})
+	isFriend = user.friends.filter(username=friend).exists()
+	isBlacklisted = user.blacklist.filter(username=friend).exists()
+	return Response({'friend': isFriend, 'block': isBlacklisted})
 
 @api_view(['POST'])
 # @permission_classes([IsAuthenticated])

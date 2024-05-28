@@ -13,9 +13,8 @@ import time
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 import json
-
-class bot:
-	id = 0
+from channels.generic.websocket import AsyncWebsocketConsumer
+from django.core import serializers
 
 #//! put permisiion in login
 @api_view(['POST'])
@@ -32,12 +31,8 @@ def choice(request):
 		return Response({'room_name': name})
 	playerCount = request.data.get('playerCount')
 	tournamentId = request.data.get('tournamentId')
-	# print('All room names: ', [tournament.name for tournament in Tournament.objects.all()])
-	# print('room name: ', Tournament.objects.all().first().name)
+
 	user = User.objects.get(username=username)
-	# print('username ', username)
-	# print('playerCount ', playerCount)
-	# print('tournamentId ', tournamentId)
 
 	if (tournamentId == ''): #create a new room
 		# user = User.objects.get(username=username)
@@ -51,9 +46,12 @@ def choice(request):
 	tournament = tournament.first()
 	if (tournament is None):
 		return Response({'Error':'Invalid tournament ID'})
-	# print('tournament ' + str(tournament))
+
 	if tournament.checkAddUser(user) is False:
 		return Response({'Error':'Room is full'})
+	if (Tournament.objects.filter(players=user).exists()):
+		return Response({'Error':'You are already inside a tournament'})
+	
 	print('maximum tournament', tournament.max_capacity)
 
 	return Response({'room_name': tournament.name})
@@ -112,6 +110,7 @@ class Tournamen(WebsocketConsumer):
 			self.channel_name
 		)
 		self.accept()
+		user = self.scope['user']
 		usernames = tournament.getAllUsername()
 		for username in usernames:
 			print("username: ", username)
@@ -120,6 +119,14 @@ class Tournamen(WebsocketConsumer):
 				'username': username,
 				'name': room_name,
 			}))
+		friends_usernames = list(user.friends.all().values_list('username', flat=True))
+		for friend in friends_usernames:
+			self.send(text_data=json.dumps({
+				'type':'friends',
+				'friend': friend,
+			}))
+			print("send friend,",friend)
+			
 	
 	def disconnect(self, close_code):
 		async_to_sync(self.channel_layer.group_discard)(
@@ -127,6 +134,7 @@ class Tournamen(WebsocketConsumer):
 			self.channel_name
 		)
 		tournament = Tournament.objects.get(name=self.room_name)
+		# return
 		usernames = tournament.getAllUsername()
 		print("player count: " + str(tournament.players.count()))
 		if (tournament.players.count() <= 1):
@@ -181,6 +189,7 @@ class Tournamen(WebsocketConsumer):
 				{
 					'type':'launch_tournament',
 					'timer': timer,
+					'name': name,
 				}
 			)
 			# time.sleep(timer)

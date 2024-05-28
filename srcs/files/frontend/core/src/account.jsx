@@ -8,6 +8,8 @@ function Account() {
 	return (
 		<div>
 			<h1>{username}</h1>
+			//TODO texte brut
+
 			<h1> hi</h1>
 		</div>
 	);

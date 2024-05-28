@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useState , createContext, useContext, useEffect, useMemo, } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import Game from './game.jsx'
+import MultiGame from './multigame.jsx'
 import  { axiosInstance, interceptor_response } from "./axiosAPI.js";
 
 
@@ -114,10 +116,13 @@ async function getProfile(user, setUser, error, setError){
 						<Route path="/signup" element={<Signup />} />
 						<Route path="/tournament" element={<Tournament />} />
 						<Route path="/about" element={<About />} />
+						<Route path="/Game/" element={<Game />} />
+						<Route path="/MultiGame/" element={<MultiGame />} />
 						<Route exact path="/" element={<Home />} />
 						<Route path="/*" element={<Error404 />} />
 					</Routes>
-
+				{/* {showLoginForm && <Login />} */}
+				<Chat />
 			</div>
 		</userContext.Provider>
 	);

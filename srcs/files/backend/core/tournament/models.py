@@ -15,7 +15,7 @@ class Tournament(models.Model):
 	name = models.CharField(max_length=6, unique=True, blank=True)
 	status = models.CharField(max_length=255, choices=STATUS_CHOICES, default='pending')
 	creation_date = models.DateTimeField(auto_now_add=True)
-	players = models.ManyToManyField('users.User', related_name='participant')
+	# players = models.ManyToManyField('users.User', related_name='participant')
 	# winner = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='winner', null=True, blank=True)
 	max_capacity = models.IntegerField(default=2)
 	# admin = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='admin', blank=True, null=True)
@@ -38,7 +38,7 @@ class Tournament(models.Model):
 		return self
 	
 	def addUser(self,user):
-		if (user.tournament is not None):
+		if (self.players.filter(id=user.id).exists()):
 			return False
 		if self.players.count() == self.max_capacity:
 			return False
@@ -49,7 +49,7 @@ class Tournament(models.Model):
 			return True
 
 	def checkAddUser(self,user):
-		if (user.tournament is not None):
+		if (self.players.filter(id=user.id).exists()):
 			return False
 		if self.players.count() == self.max_capacity:
 			return False
