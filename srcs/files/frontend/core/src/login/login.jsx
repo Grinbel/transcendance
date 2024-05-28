@@ -27,7 +27,7 @@ function Login() {
     const [step, setStep] = useState(1);
     const [code, setCode] = useState('');
     const [error, setError] = useState(null);
-    const [validated, set_Validated] = useState(false);
+    const [validated, set_validated] = useState(false);
     const [loggedinMessage, setLoggedinMessage] = useState('');
 
 
@@ -53,7 +53,14 @@ function Login() {
 
     const handleLogin = async (event) => {
 
+        const form = event.currentTarget;
         event.preventDefault();
+        if (form.checkValidity() === false) {
+			console.log('form.checkValidity() === false');
+			event.stopPropagation();
+			set_validated(true);
+		}
+        else {
             try 
             {
                 const response = await loginInstance.post('/login/', {
@@ -95,9 +102,9 @@ function Login() {
                     // The request was made and the server responded with a status code
                     // that falls out of the range of 2xx
                     if (error.response.status === 400) {
-                      setError('Incorrect username or password.');
-                    } else if (error.response.status === 401) {
                       setError('Unauthorized access.');
+                    } else if (error.response.status === 401) {
+                      setError('Incorrect username or password.');
                     } else if (error.response.status >= 500) {
                       setError('Server busy. Please try again later.');
                     } else {
@@ -113,6 +120,7 @@ function Login() {
             } finally {
                 // setLoading(false);
             }
+        }
     };
 
 
@@ -209,8 +217,8 @@ function Login() {
                                                 pattern="^[a-zA-Z0-9]+$"
                                                 required
                                                 isInvalid={
-                                                    validated &&
-                                                    !/^[a-zA-Z0-9]+$/.test(formData.user)
+                                                    validated && formData.username.length < 1 &&
+                                                    !/^[a-zA-Z0-9]+$/.test(formData.username)
                                                 }
                                             />
                                             <Form.Control.Feedback type="invalid">
@@ -228,7 +236,7 @@ function Login() {
                                                 minLength={6}
                                                 required
                                                 isInvalid={
-                                                    validated && formData.pass.length < 6
+                                                    validated && formData.password.length < 6
                                                 }
                                             />
                                             <Form.Control.Feedback type="invalid">

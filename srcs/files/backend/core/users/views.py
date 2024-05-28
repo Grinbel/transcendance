@@ -80,11 +80,7 @@ def login(request):
 	print('request.data', request.data)
 	user = authenticate(request, username=username, password=password)
 	#print for me all the users available and their passwords unhashed
-
-
 	print('user is', user)
-
-
 	#####
 	if user is not None:
 	# User credentials are valid, proceed with code generation and email sending
@@ -97,6 +93,8 @@ def login(request):
 				if (token_serializer.is_valid(raise_exception=True)):
 					print('validated_data ok without 2FA', token_serializer.validated_data)
 					return Response(token_serializer.validated_data, status=status.HTTP_200_OK)
+				else:
+					return Response(token_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 			except Exception as e:
 				raise APIException("Internal server error. Please try again later.")
 			
@@ -192,6 +190,7 @@ class Logout(APIView):
 			token.blacklist()
 			return Response(status=status.HTTP_205_RESET_CONTENT)
 		except Exception as e:
+			print('Exception', e)
 			return Response(status=status.HTTP_400_BAD_REQUEST)
 	
 class UserList(APIView):

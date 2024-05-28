@@ -35,9 +35,7 @@ import { UserProvider, userContext } from "./contexts/userContext.jsx";
 //make getProfile async function, show me syntax in comment
 
 async function getProfile(user, setUser, error, setError){
-	// localStorage.clear();
-	//localStorage.removeItem('user');
-	// get user from local storage
+	localStorage.removeItem('user');
 	const userStringified = localStorage.getItem('user');
 	if (userStringified) {
 		const userData = JSON.parse(userStringified);
@@ -47,17 +45,19 @@ async function getProfile(user, setUser, error, setError){
 	{
 		console.log('getProfile: no user in local storage');
 		console.log(("axios headers token :"), axiosInstance.defaults.headers['Authorization']);
-
+		let userData = undefined;
 		await axiosInstance.get('getprofile/')
 			.then((response) => {
-				console.log('app: GETPROFILE response', response);
-				// userinfo.setUser({username:response.data.username, isLogged:true});
-				return (response.data);
+				console.log('app: GETPROFILE response.data', response.data, userData);
+				userData =  response.data;
+				console.log('app: GETPROFILE userData', userData);
+				return userData;
 			})
 			.catch((error) => {
 				console.log('axios getprofile failure, catched here in getProfile: ', error.response.status)
 				throw error;
 			});
+		return userData;
 	}
 
 }
@@ -79,31 +79,24 @@ async function getProfile(user, setUser, error, setError){
 
 		
 		useEffect(() => {
-			console.log('app: useEffect');
+			console.log('app: useEffect user start', user);
 			const fetchUserProfile = async () => {
 				try {
-					console.log('app: getProfile called');
+					console.log('app: useEffect tryblock');
 					const userData = await getProfile();
+					console.log('app: useEffect getProfile userData', userData);
 					setUser(userData);
-					console.log('app: no error in getProfile got a user successfully');
 				} catch (error) {
-					console.error('getUserProfile: Error occurred:', error);
 					setError(error);
 					localStorage.removeItem('token');
 					localStorage.removeItem('refreshToken');
 					if (location.pathname !== '/login' && location.pathname !== '/signup')
 					navigate('/login');
-				}
+			}
 			};
 	
 			fetchUserProfile();
-
 		}, []);
-		
-    // const handleLoginClick = () => {
-	// 	console.log('App: login clicked in navbar');
-    //   setShowLoginForm(true);
-    // };
 
 	return (
 		<userContext.Provider value={{user, setUser}}>
@@ -122,10 +115,9 @@ async function getProfile(user, setUser, error, setError){
 						<Route path="/tournament" element={<Tournament />} />
 						<Route path="/about" element={<About />} />
 						<Route exact path="/" element={<Home />} />
-						{/* <Route path="/*" element={<Error404 />} /> */}
+						<Route path="/*" element={<Error404 />} />
 					</Routes>
-				{/* {showLoginForm && <Login />} */}
-				{/* <Chat /> */}
+
 			</div>
 		</userContext.Provider>
 	);

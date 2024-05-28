@@ -1,8 +1,6 @@
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 
-
-
 export const loginInstance = axios.create({
     baseURL: 'http://localhost:8000/users/',
     timeout: 10000,

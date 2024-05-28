@@ -24,6 +24,7 @@ import { userContext } from "../contexts/userContext.jsx";
 
 // Composant pour la barre de navigation lorsqu'un utilisateur est connecté
 const NavLoggedIn = () => {
+	const [error, setError] = useState(null);
 	const navigate = useNavigate();
 	const userinfo = useContext(userContext);
 	const avatar = userinfo.user.avatar ? userinfo.user.avatar : '../../public/yoshi.jpg';
@@ -44,16 +45,20 @@ const NavLoggedIn = () => {
 			const response = await axiosInstance.post('/logout/', {
 				"refresh_token": localStorage.getItem("refresh_token")
 			});
-			localStorage.removeItem('access_token');
-			localStorage.removeItem('refresh_token');
-			axiosInstance.defaults.headers['Authorization'] = null;
 		}
 		catch (e) {
 			console.log(e);
+			if (e.response.status === 400 || e.response.status === 401) {
+				setError("Session expired. Please log in again.");
+			}
 		}
 	  // Logique de déconnexion (par exemple, suppression des jetons d'authentification, etc.)
 	  // Ici, nous simulons juste la déconnexion en modifiant l'état
-		userinfo.setUser({});
+	  	localStorage.removeItem('access_token');
+		localStorage.removeItem('refresh_token');
+		localStorage.removeItem('user');
+		axiosInstance.defaults.headers['Authorization'] = null;
+		userinfo.setUser();
 		console.log('NavLoggedIn: logout successful frontend');
 		navigate('/');
 	};
