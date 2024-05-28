@@ -15,6 +15,7 @@ import xss from 'xss';
 
 function Chat() {
 	const userInfo = useContext(userContext);
+	console.log('CHAT //// userInfo', userInfo.user);
 	const [reminder,setReminder] = useState(false);
 	const [formData, setFormData] = useState({ message: '', date: '', username: '', type: "chat"});
 	const [privateMessage,setPrivate]= useState({message:'', receiver:''});
@@ -36,8 +37,8 @@ function Chat() {
 	function getWebSocket(roomName) {
 		
 		if (!websockets[roomName]) {
-			 
-		  websockets[roomName] = new WebSocket(`ws://${import.meta.env.VITE_API_SERVER_ADDRESS}:8000/users/ws/chat/${roomName}/?uuid=${userInfo.user.userId}`);
+			console.log('user uuid', userInfo.user.id);
+		  websockets[roomName] = new WebSocket(`ws://${import.meta.env.VITE_API_SERVER_ADDRESS}:8000/users/ws/chat/${roomName}/?uuid=${userInfo.user.id}`);
 		}
 		setMessages(prevMessages => [""]);
 		return websockets[roomName];

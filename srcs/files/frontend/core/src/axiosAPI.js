@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 
 export const loginInstance = axios.create({
-    baseURL: 'http://localhost:8000/users/',
+    baseURL: `http://${import.meta.env.VITE_API_SERVER_ADDRESS}:8000/users/`,
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',

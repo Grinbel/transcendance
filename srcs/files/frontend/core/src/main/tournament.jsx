@@ -22,7 +22,7 @@ const tournament = () => {
 	function getWebSocket(roomName) {
 		if (!websockets[roomName]) {
 			 
-		  websockets[roomName] = new WebSocket(`ws://${import.meta.env.VITE_API_SERVER_ADDRESS}:8000/users/ws/tournament/${roomName}/?uuid=${userInfo.user.userId}`);
+		  websockets[roomName] = new WebSocket(`ws://${import.meta.env.VITE_API_SERVER_ADDRESS}:8000/users/ws/tournament/${roomName}/?uuid=${userInfo.user.id}`);
 		}
 		setMessages(prevMessages => [""]);
 		return websockets[roomName];

@@ -19,7 +19,8 @@ class UserSerializer(ModelSerializer):
 	 
 	class Meta:
 		model = User
-		fields = ['id', 'otp', 'otp_expiry_time','username', 'password', 'email', 'is_staff', 'two_factor']
+		fields = ['id', 'otp', 'otp_expiry_time','username', 'password', 'email', 'is_staff', 'two_factor', 'avatar']
+		
 		extra_kwargs = {"password": {"write_only": True}}
 
 	def validate_email(self, value):

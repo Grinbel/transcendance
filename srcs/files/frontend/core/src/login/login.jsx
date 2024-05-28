@@ -91,14 +91,14 @@ function Login() {
                         const decodedToken = jwtDecode(token);
                         console.log('decoded token', decodedToken);
                         const user = {username: decodedToken.username, 
-							userId: decodedToken.user_id,
-							userAvatar: decodedToken.avatar,
+							id: decodedToken.user_id,
+							avatar: decodedToken.avatar,
 							email:decodedToken.email,
 							isActive:decodedToken.is_active,
 							exp:decodedToken.exp,
 							iat:decodedToken.iat,
-							isStaff:decodedToken.is_staff,
-							twoFactor:decodedToken.two_factor,
+							is_staff:decodedToken.is_staff,
+							two_factor:decodedToken.two_factor,
 							uuid:decodedToken.uuid};  //SETUP REDIRECT TO HOME PAGE
                         localStorage.setItem('user', JSON.stringify(user));
                         userInfo.setUser(user);
@@ -151,8 +151,17 @@ function Login() {
             console.log('Login successful with 2FA: navigate to "/"');
             const decodedToken = jwtDecode(token);
             console.log('decoded token', decodedToken);
-            const user = {username: decodedToken.username, userId: decodedToken.user_id, userAvatar: decodedToken.avatar};  //SETUP REDIRECT TO HOME PAGE
-            localStorage.setItem('user', JSON.stringify(user));
+            const user = {username: decodedToken.username, 
+                id: decodedToken.user_id,
+                avatar: decodedToken.avatar,
+                email:decodedToken.email,
+                isActive:decodedToken.is_active,
+                exp:decodedToken.exp,
+                iat:decodedToken.iat,
+                is_staff:decodedToken.is_staff,
+                two_factor:decodedToken.two_factor,
+                uuid:decodedToken.uuid};  //SETUP REDIRECT TO HOME PAGE
+                localStorage.setItem('user', JSON.stringify(user));
             userInfo.setUser(user);
             setStep(1);
             setFormData({ username: "", password: "" });
