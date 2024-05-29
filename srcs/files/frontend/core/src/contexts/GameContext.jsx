@@ -52,6 +52,11 @@ export const GameProvider = ({ children }) => {
         stage_width : 15,
         ball_radius : 0.5,
 
+        //!OPTIONS SPECIFIQUES TOURNOI
+        is_tournament : 0,
+        nb_initial_players : 2,
+        names : '',
+
 //! OPTIONS DE GAMEPLAY
         easy_mode : 0,
         ball_starting_speed : 0.03,
