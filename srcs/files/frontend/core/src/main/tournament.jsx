@@ -5,7 +5,7 @@ import  { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import  { axiosInstance } from "../axiosAPI.js";
-
+import Game from "../game.jsx";
 
 const tournament = () => {
 	const userInfo = useContext(userContext);
@@ -80,6 +80,7 @@ const tournament = () => {
 				console.log("set tournamentIsLaunching")
 				// reminder();
 				userInfo.setUser({...userInfo.user,tournamentIsLaunching:true});
+				Game();
 			}
 			else if(message.type === "friends")
 			{
