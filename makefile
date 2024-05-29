@@ -34,6 +34,7 @@ push:
 	@echo "${GREEN}pushing finished.${NC}"
 
 build:
+	/bin/sh hostnames.sh
 	docker-compose -f ${YML_DIR}/docker-compose.yml build $(c)
 	@echo "${GREEN}build finished.${NC}"
 
