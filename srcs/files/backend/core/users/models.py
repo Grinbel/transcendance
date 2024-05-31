@@ -53,16 +53,11 @@ class User(AbstractUser):
 		if (user):
 			myself.friends.add(user)
 		
-	
 	def removeFriend(self, name):
 		user = User.objects.get(username=name)
 		myself = User.objects.get(username=self.username)
 		if (user and user in myself.friends.all()):
 			myself.friends.remove(user)
-
-
-
-
 	
 	def changeUsername(self, name):
 		if (User.objects.filter(username=name).exists()):

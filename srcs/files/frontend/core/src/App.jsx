@@ -26,6 +26,7 @@ import Error404 from './main/Error404.jsx';
 import Tournament from './main/tournament.jsx';
 import About from './main/About.jsx';
 import Chat from './main/Chat.jsx';
+import Profile from './main/Profile.jsx';
 
 import { UserProvider, userContext } from "./contexts/userContext.jsx";
 
@@ -117,6 +118,9 @@ async function getProfile(user, setUser, error, setError){
 						<Route path="/tournament" element={<Tournament />} />
 						<Route path="/about" element={<About />} />
 						<Route path="/Game/" element={<Game />} />
+						<Route path="/profile" element={<Profile />} />
+
+						<Route path="/profile/:username" element={<Profile />} />
 						<Route path="/MultiGame/" element={<MultiGame />} />
 						<Route exact path="/" element={<Home />} />
 						<Route path="/*" element={<Error404 />} />

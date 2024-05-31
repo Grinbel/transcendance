@@ -1,7 +1,7 @@
 import React from 'react';
 // import  { axiosInstance } from "./axiosAPI.js";
 import  { useEffect, useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useLocation } from 'react-router-dom';
 import "./Chat.css";
 import "./Home.css";
 import { useContext } from "react";
@@ -15,7 +15,7 @@ import xss from 'xss';
 
 function Chat() {
 	const userInfo = useContext(userContext);
-	console.log('CHAT //// userInfo', userInfo.user);
+	// console.log('CHAT //// userInfo', userInfo.user);
 	const [reminder,setReminder] = useState(false);
 	const [formData, setFormData] = useState({ message: '', date: '', username: '', type: "chat"});
 	const [privateMessage,setPrivate]= useState({message:'', receiver:''});
@@ -29,7 +29,8 @@ function Chat() {
 	const [block,setBlock] = useState("");
 	const navigateTo = useNavigate();
 	const websockets = {};
-	
+	let location = useLocation();
+
 	useEffect(() => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 	}, [messages]);
@@ -37,7 +38,7 @@ function Chat() {
 	function getWebSocket(roomName) {
 		
 		if (!websockets[roomName]) {
-			console.log('user uuid', userInfo.user.id);
+			// console.log('user uuid', userInfo.user.id);
 		  websockets[roomName] = new WebSocket(`ws://${import.meta.env.VITE_API_SERVER_ADDRESS}:8000/users/ws/chat/${roomName}/?uuid=${userInfo.user.id}`);
 		}
 		setMessages(prevMessages => [""]);
@@ -64,36 +65,20 @@ function Chat() {
 		// const ws = new WebSocket('ws://localhost:8000/users/ws/chat/general/');
 		ws.onopen = () => {
 			ws.send(JSON.stringify({type:"connected",username: userInfo.user.username}));
-			console.log('ws chat opened', userInfo.user)
+			// console.log('ws chat opened', userInfo.user)
 		};
 		ws.onclose = () => console.log('ws chat closed');
 		ws.onerror = e => console.log('ws chat error', e);
 		ws.onmessage = e => {
 			const message = JSON.parse(e.data);
 			setMessages(prevMessages => [...prevMessages, message]);
-
-			/*if (message.type === 'chat') {
-				message.type = 'chat';
-				setMessages(prevMessages => [...prevMessages, message]);
-			}
-			else if (message.type === 'private_message') {
-				// return;
-				message.type = 'private';
-				setMessages(prevMessages => [...prevMessages, message]);
-			}
-			else if (message.type === 'send_invite') {
-				message.type = 'invite';
-				setMessages(prevMessages => [...prevMessages, message]);
-			}*/
-			console.info('received', message);
-
 		};
 
 		setWs(ws);
 		setFormData({ message: '' });
 
 		return () => {
-			console.error('ws chat closed');
+			// console.error('ws chat closed');
 			ws.onopen = null;
 			ws.onclose = null;
 			ws.onerror = null;
@@ -104,10 +89,10 @@ function Chat() {
 	const handleChat = async (event) => {
 		event.preventDefault();
 		// setuserInfo(useContext(userContext));
-		console.log('username =', userInfo.user);
+		// console.log('username =', userInfo.user);
 		if (userInfo.user.isLogged ===  false) {
 			setdisplayer("Need to be logged in");
-			console.log("Need to be logged in   ", displayer);
+			// console.log("Need to be logged in   ", displayer);
 			return;
 		}
 		// else if()
@@ -124,7 +109,7 @@ function Chat() {
 			const sent = JSON.stringify({ type:'chat',message: clean, date: formattedTime, username: userInfo.user.username});
 			ws.send(sent);
 			// setFormData({ message: '',type: 'chat'});
-			console.info('sent', sent);
+			// console.info('sent', sent);
 		} catch (error) {
 			setError(error.message);
 			throw (error);
@@ -135,7 +120,7 @@ function Chat() {
 		event.preventDefault();
 		if (userInfo.user.isLogged ===  false) {
 			setdisplayer("Need to be logged in");
-			console.log("Need to be logged in   ", displayer);
+			// console.log("Need to be logged in   ", displayer);
 			return;
 		}
 		setdisplayer("");
@@ -182,8 +167,6 @@ function Chat() {
 			}
 			setFriend(response.data.friend);
 			setBlock(response.data.block);
-			console.log("friend = ",friend);
-			console.log("block = ",block);
 		} catch (error) {
 			setError(error.message);
 			throw (error);
@@ -239,9 +222,9 @@ function Chat() {
 				username: userInfo.user.username,
 				join:true  && room === "",
 			});
-			console.log('response', response.data);
-			console.log('Room name', response.data.room_name);
-			console.log('error', response.data.Error);
+			// console.log('response', response.data);
+			// console.log('Room name', response.data.room_name);
+			// console.log('error', response.data.Error);
 
 			//check if response.data contains the word error
 
@@ -270,8 +253,11 @@ function Chat() {
 			throw (error);
 		}
 	}
-	if (userInfo.user === undefined)
+	
+	if (userInfo.user === undefined || location.pathname === '/game' ){
+		console.log('chat: user undefined')
 		return (<div></div>);
+	}
 
 
 	return (
