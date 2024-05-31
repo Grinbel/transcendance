@@ -130,6 +130,7 @@ class ChatConsummer(WebsocketConsumer):
 		# print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",${SERVER_ADRESS})
 		text_data_json = json.loads(text_data)
 		user= self.scope['user']
+		print("Tournament name: ",user.tournament_name)
 		print(text_data_json)
 		username = user.username
 		games = Tournament.objects.all()

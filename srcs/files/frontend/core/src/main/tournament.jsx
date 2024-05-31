@@ -44,6 +44,17 @@ const tournament = () => {
 			console.log("return")
 			return;
 		}
+		user = messages[0];
+		console.log("user",user);
+		if (userInfo.username != user)
+		{
+			setDisplayer("You are not the host. Go on the screen of ",user," to launch the game.");
+			return;
+		}
+		setDisplayer("Launching");
+
+		return ;
+		//!
 		messages.sort(() => Math.random() - 0.5);
 		console.log("Message messages ", messages);
 		const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
@@ -58,27 +69,23 @@ const tournament = () => {
 			usernames : usernames,
 			avatar : avatars,
 		}));
-		navigate('/game');
+		//! navigate('/game');
 		console.log("userInfo.tournamentIsLaunching",userInfo.tournamentIsLaunching)
-		if (userInfo.tournamentIsLaunching === true)
-			console.log("LAUNCHING", messages.username)
 	  }, [messages,isTrue]);
 
 
 	
 	useEffect(() => {
-		if (userInfo.user === undefined || userInfo.user.tournament === undefined)
-			return ;
-		else if (userInfo.user.username === "default")
+		if (userInfo.user === undefined || userInfo.user.tournament === "")
 		{
 			navigate('/login');
 			return;
 		}
-		else if (userInfo.user.tournament === "default")
-		{
-			navigate('/play');
-			return;
-		}
+		// if (userInfo.user.tournament === "default")
+		// {
+		// 	navigate('/play');
+		// 	return;
+		// }
 		const ws = getWebSocket(userInfo.user.tournament);
 		ws.onopen = () => {
 			const user = {type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament }
@@ -116,16 +123,16 @@ const tournament = () => {
 				setFriend(prevFriend => [...prevFriend,message])
 
 			}
-			console.info('received', message);
+			// console.info('received', message);
 		};
 
 		setWs(ws);
 
 		return () => {
-			console.error('ws chat closed');
+			console.error('ws tournament closed');
 			ws.close();
 		};
-	}, []);
+	}, [userInfo.user]);
 
 	const sendInvite = async(username)=>
 	{

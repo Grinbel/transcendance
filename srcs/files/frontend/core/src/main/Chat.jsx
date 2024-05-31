@@ -257,7 +257,20 @@ function Chat() {
 			throw (error);
 		}
 	}
-
+	const sendInvite = async(username)=>
+		{
+			console.log("INVITE ",username)
+			try {
+				const response = await axiosInstance.post('/inviteTournament/', {
+					receiver: username,
+					room: userInfo.user.tournament,
+					self: userInfo.user.username,
+				});
+			} catch (error) {
+				setError(error.message);
+				throw (error);
+			}
+		}
 	if (userInfo.user === undefined || location.pathname === '/game' ){
 		return (<div></div>);
 	}
@@ -286,6 +299,7 @@ function Chat() {
 									{friend != undefined && friend === true && <NavDropdown.Item onClick={() => action(message.username,"unfriend")}>Unfriend</NavDropdown.Item>}
 									{block != undefined && block === false && <NavDropdown.Item onClick={() => action(message.username,"block")}>Block</NavDropdown.Item>}
 									{block != undefined && block === true && <NavDropdown.Item onClick={() => action(message.username,"unblock")}>Unblock</NavDropdown.Item>}
+									{userInfo.user.tournament != ""&&message.username != userInfo.user.username && <NavDropdown.Item onClick={() => sendInvite(message.username)}>Invite</NavDropdown.Item>}
 									{privateChat(message.username)}
 								</NavDropdown>
 							</Nav>

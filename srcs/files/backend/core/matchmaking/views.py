@@ -110,6 +110,8 @@ class Tournamen(WebsocketConsumer):
 			self.channel_name
 		)
 		self.accept()
+		self.scope['user'].tournament_name = room_name
+		self.scope['user'].save()
 		user = self.scope['user']
 		players = tournament.players.all()
 		# usernames = tournament.getAllUsername()
@@ -130,6 +132,8 @@ class Tournamen(WebsocketConsumer):
 			
 	
 	def disconnect(self, close_code):
+		# self.scope['user'].tournament_name = ''
+		# self.scope['user'].save()
 		async_to_sync(self.channel_layer.group_discard)(
 			self.room_name,
 			self.channel_name

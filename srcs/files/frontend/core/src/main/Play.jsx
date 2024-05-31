@@ -65,6 +65,8 @@ function Play() {
 					...userInfo.user,
 					tournament: response.data.room_name
 				  });
+				const local = userInfo.user
+				localStorage.setItem('user', JSON.stringify(local));
 				navigateTo('/tournament/');
 			}
 		} catch (error) {

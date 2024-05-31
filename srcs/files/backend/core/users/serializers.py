@@ -19,7 +19,17 @@ class UserSerializer(ModelSerializer):
 	 
 	class Meta:
 		model = User
-		fields = ['id', 'otp', 'otp_expiry_time','username', 'password', 'email', 'is_staff', 'two_factor', 'avatar']
+		fields = ['id',
+		'otp',
+		'otp_expiry_time',
+		'username',
+		'password',
+		'email',
+		'is_staff',
+		'two_factor',
+		'avatar',
+		'is_active',
+		'tournament_name']
 		
 		extra_kwargs = {"password": {"write_only": True}}
 
@@ -59,4 +69,5 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 		token['avatar'] = user.avatar.url if user.avatar else None
 		token['is_active'] = user.is_active
 		token['uuid'] = uuid_ticket
+		token['tournament'] = user.tournament_name
 		return token
