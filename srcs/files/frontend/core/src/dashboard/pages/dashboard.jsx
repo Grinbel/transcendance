@@ -24,11 +24,15 @@ import { userContext } from "../../contexts/userContext.jsx";
 
 
 const Dashboard = () => {
+	console.log('Dashboard component');
 	const userinfo = useContext(userContext);
-
+	if (userinfo.user) {
+		console.log('userinfo.user', userinfo.user);
+		console.log('userinfo.user.islogged ?', userinfo.user.isLogged);
+	}
 	return (
 		<div>
-			{userinfo.user && userInfo.user.isLogged ? (
+			{userinfo.user && userinfo.user.isLogged ? (
 			<div className="dashboard">
 					<div className="container">
 						<div className="sidebarContainer">

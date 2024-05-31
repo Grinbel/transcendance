@@ -75,10 +75,10 @@ const NavLoggedIn = () => {
 				<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={UserMenu}>
 									{/* //TODO texte brut */}
 
-					<NavDropdown.Item href="/profile">profile</NavDropdown.Item>
+					<NavDropdown.Item as={Link} to="/dashboard">profile</NavDropdown.Item>
 									{/* //TODO texte brut */}
 
-					<Nav.Link className="navCustom playButton me-3" href="/play">play</Nav.Link>
+					<Nav.Link className="navCustom playButton me-3" as={Link} to="/play">play</Nav.Link>
 					<NavDropdown.Divider />
 									{/* //TODO texte brut */}
 

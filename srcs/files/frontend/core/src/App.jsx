@@ -47,7 +47,7 @@ async function getProfile(user, setUser, error, setError){
 	{
 		console.log('getProfile: no user in local storage');
 		console.log(("axios headers token :"), axiosInstance.defaults.headers['Authorization']);
-		let userData = undefined;
+		let userData = {};
 		await axiosInstance.get('getprofile/')
 			.then((response) => {
 				console.log('app: GETPROFILE response.data', response.data, userData);
@@ -74,31 +74,53 @@ async function getProfile(user, setUser, error, setError){
 
 		const location = useLocation();
 		const navigate = useNavigate();
+		// const [loading, setLoading] = useState(true);
 		// const userMemo = useMemo(() => {
-			console.log('app: user', user);
+		// console.log('app: user', user);
 		// 	return user;
 		//   }, [user]);
 
 		
 		useEffect(() => {
 			console.log('app: useEffect user start', user);
-			const fetchUserProfile = async () => {
-				try {
-					console.log('app: useEffect tryblock');
-					const userData = await getProfile();
-					console.log('app: useEffect getProfile userData', userData);
-					setUser(userData);
+			if(!user)
+			{
+
+				const fetchUserProfile = async () => {
+					try {
+						console.log('app: useEffect tryblock');
+						const userData = await getProfile();
+						console.log('app: useEffect getProfile userData', userData);
+						setUser(userData);
+						console.log('app: useEffect getProfile User log', { ...userData, isLogged: true });
+					let newuser = { ...userData, isLogged: true };
+					setUser(newuser);
+					console.log('app: useEffect getProfile User', user);
+					// setLoading(false);
 				} catch (error) {
+					// setUser(...user, isLogged = false);
+					
 					setError(error);
 					localStorage.removeItem('token');
 					localStorage.removeItem('refreshToken');
 					if (location.pathname !== '/login' && location.pathname !== '/signup')
 					navigate('/login');
+					}
+				};
+				fetchUserProfile();
 			}
-			};
-	
-			fetchUserProfile();
-		}, []);
+	}, []);
+
+	// if (loading) {
+	// 	return <div>Loading...</div>;
+	// }
+
+		// useEffect(() => {
+		// 	console.log('app: user updated', user);
+		// 	if (user) {
+		// 	  console.log('User state after update:', user);
+		// 	}
+		//   }, [user]);
 
 	return (
 		<userContext.Provider value={{user, setUser}}>
@@ -122,7 +144,7 @@ async function getProfile(user, setUser, error, setError){
 						<Route path="/*" element={<Error404 />} />
 					</Routes>
 				{/* {showLoginForm && <Login />} */}
-				<Chat />
+				{/* <Chat /> */}
 			</div>
 		</userContext.Provider>
 	);

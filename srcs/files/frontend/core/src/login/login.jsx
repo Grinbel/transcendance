@@ -99,7 +99,9 @@ function Login() {
 							iat:decodedToken.iat,
 							is_staff:decodedToken.is_staff,
 							two_factor:decodedToken.two_factor,
-							uuid:decodedToken.uuid};  //SETUP REDIRECT TO HOME PAGE
+							uuid:decodedToken.uuid,
+                            isLogged:true,
+                        };  //SETUP REDIRECT TO HOME PAGE
                         localStorage.setItem('user', JSON.stringify(user));
                         userInfo.setUser(user);
                         navigate('/');
@@ -107,6 +109,7 @@ function Login() {
                 }
             } catch (error) 
             {
+                console.log('LOGIN CATCH ERROR', error);
                 if (error.response) {
                     // The request was made and the server responded with a status code
                     // that falls out of the range of 2xx
@@ -160,8 +163,10 @@ function Login() {
                 iat:decodedToken.iat,
                 is_staff:decodedToken.is_staff,
                 two_factor:decodedToken.two_factor,
-                uuid:decodedToken.uuid};  //SETUP REDIRECT TO HOME PAGE
-                localStorage.setItem('user', JSON.stringify(user));
+                uuid:decodedToken.uuid,
+                isLogged: true,
+            };  //SETUP REDIRECT TO HOME PAGE
+            localStorage.setItem('user', JSON.stringify(user));
             userInfo.setUser(user);
             setStep(1);
             setFormData({ username: "", password: "" });

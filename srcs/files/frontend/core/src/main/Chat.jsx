@@ -15,7 +15,7 @@ import xss from 'xss';
 
 function Chat() {
 	const userInfo = useContext(userContext);
-	console.log('CHAT //// userInfo', userInfo.user);
+	// console.log('CHAT /// userInfo', userInfo.user);
 	const [reminder,setReminder] = useState(false);
 	const [formData, setFormData] = useState({ message: '', date: '', username: '', type: "chat"});
 	const [privateMessage,setPrivate]= useState({message:'', receiver:''});
@@ -85,7 +85,7 @@ function Chat() {
 				message.type = 'invite';
 				setMessages(prevMessages => [...prevMessages, message]);
 			}*/
-			console.info('received', message);
+			// console.info('received', message);
 
 		};
 

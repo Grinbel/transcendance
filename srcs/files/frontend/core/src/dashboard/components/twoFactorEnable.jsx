@@ -5,7 +5,11 @@ import Switch from "./switch.jsx";
 function TwoFactorEnable() {
     const [twoFaStatus, setTwoFaStatus] = useState(false);
 
+    console.log('TwoFactorEnable component');
+    console.log('twoFaStatus', twoFaStatus);
+
     const custom_fetch = async () => {
+        console.log('TwoFactorEnable: custom_fetch');
         try 
         {
             const response = await axiosInstance.get('/getprofile/');
@@ -16,7 +20,7 @@ function TwoFactorEnable() {
     }
 
     const handle2Fa = () => {
-
+        console.log('TwoFactorEnable: handle2Fa');
         setTwoFaStatus(!twoFaStatus);
 
         return async () => {
@@ -33,6 +37,7 @@ function TwoFactorEnable() {
 
     useEffect(() => {
         // Fetch the 2FA status of the user
+        console.log('TwoFactorEnable: useEffect');
         custom_fetch();
     }, []);
 

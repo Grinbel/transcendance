@@ -9,6 +9,13 @@ const Settings = () => {
 	const [password, setPassword] = React.useState("Unset");
 	const [alias, setAlias] = React.useState("Unset");
 
+	console.log('Settings component');
+	console.log('isEditing', isEditing);
+	console.log('username', username);
+	console.log('email', email);
+	console.log('password', password);
+	console.log('alias', alias);
+	
 	return (
 		<div className="settings">
 			<div className="settingsContainer">
