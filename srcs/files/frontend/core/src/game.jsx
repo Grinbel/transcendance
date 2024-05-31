@@ -14,7 +14,9 @@ function Game() {
         {
             console.log("TOURNOI")
             options.round_results = options.round_results || [];
+            console.log(options.round_results)
             options.usernames = options.usernames || [];
+            console.log(options.usernames)
             options.avatar = options.avatar || [];
             options.texture_balls = options.texture_balls || [];
             let i = options.round_results.length ;
