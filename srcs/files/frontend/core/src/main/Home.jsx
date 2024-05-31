@@ -20,6 +20,7 @@ const Home = () => {
 	const { setOptions } = useGameContext();
 	const { setOptions: setMultiGameOptions } = useMultiGameContext();
     const navigate = useNavigate();
+	
 
 		const handleVsVacheClick = () => {
 			setOptions(prevOptions => ({
@@ -41,10 +42,11 @@ const Home = () => {
 			setOptions(prevOptions => ({
 				...prevOptions,
 				name_p1: userinfo.user.username,
-				powerups : 0,
+				powerups : 1,
 				stage_height : 10,
-				ia_time_between_checks : 30,
-				easy_mode : 1,
+				stage_width : 15,
+				ia_time_between_checks : 60,
+				easy_mode : 0,
 				texture_p1 : userinfo.user.avatar.replace("/media/", ""),
 				texture_p1_ball : "https://pbs.twimg.com/profile_images/1335272544451112960/YO2w8LHO_400x400.jpg",
 				texture_p2 : "princess.jpg"
@@ -66,6 +68,16 @@ const Home = () => {
 			}));
 			navigate('/multigame');
 		};
+		const tournoitest = () => {
+			setOptions(prevOptions => ({
+				...prevOptions, // Gardez les options précédentes
+				is_tournament : 1,
+				usernames : ["J1", "J2", "J3", "J4"],
+				avatar : ["https://pbs.twimg.com/profile_images/1335272544451112960/YO2w8LHO_400x400.jpg", "https://pbs.twimg.com/profile_images/1335272544451112960/YO2w8LHO_400x400.jpg", "https://pbs.twimg.com/profile_images/1335272544451112960/YO2w8LHO_400x400.jpg", "https://pbs.twimg.com/profile_images/1335272544451112960/YO2w8LHO_400x400.jpg"],
+
+			}));
+			navigate('/game');
+		};
 	return (
 		<Container fluid className="homeContainer">
 			<Row className="mb-3">
@@ -80,14 +92,21 @@ const Home = () => {
 				<Col className="columnStyle">
 					<Button variant="primary" onClick={handleIA_Custom} className="homeButtons">Local Vs better Ia</Button>
 				</Col>
+				<Col className="columnStyle">
+					<Button variant="primary" onClick={tournoitest} className="homeButtons"> Test Tournoi</Button>
+				</Col>
 				<Col className="columnStyle ">
+  					<Button variant="primary" as={Link} to="/multi-options" className="homeButtons">MULTI</Button>
+				</Col>
+				
+				{/* <Col className="columnStyle ">
 					
 				<Button variant="primary" onClick={MULTI_3P} className="homeButtons">Multi Round Game (3 Players, Double buttons)</Button>
 				</Col>
 				<Col className="columnStyle ">
 
 				<Button variant="primary" onClick={MULTI_6P} className="homeButtons">Multi Round Game (6 Players, Mono buttons)</Button>
-				</Col>
+				</Col> */}
 				<Col className="columnStyle ">
 					
 				<Button variant="primary" onClick={handleVsVacheClick} className="homeButtons">Tac Vs Vache</Button>

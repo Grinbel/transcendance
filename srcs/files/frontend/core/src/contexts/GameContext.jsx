@@ -52,14 +52,16 @@ export const GameProvider = ({ children }) => {
         stage_width : 15,
         ball_radius : 0.5,
 
-        //!OPTIONS SPECIFIQUES TOURNOI
+//!OPTIONS SPECIFIQUES TOURNOI
         is_tournament : 0,
-        nb_initial_players : 2,
-        names : '',
+        rounds_results : [],
+        avatar : [],
+        usernames : [],
+        texture_balls : [],
 
 //! OPTIONS DE GAMEPLAY
         easy_mode : 0,
-        ball_starting_speed : 0.03,
+        ball_starting_speed : 0.05,
         ball_speed : '',
         ball_x : 0,
         ball_y : 0,
@@ -68,8 +70,8 @@ export const GameProvider = ({ children }) => {
         ball_y_speed : 0,
         ball_pause : 0,
         ball_acc : 1.2,
-        score_to_get : 11, //Score a obtenir pour gagner
-        score_diff : 2, //ecart minimal pour gagner
+        score_to_get : 1, //Score a obtenir pour gagner
+        score_diff : 0, //ecart minimal pour gagner
         score_max : 15, // score a atteindre pour gagner sans ecart
             //! OPTIONS DE BUFFS / DEBUFFS
         p1_is_frozen : 0,

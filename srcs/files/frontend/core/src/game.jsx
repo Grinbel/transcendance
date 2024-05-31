@@ -3,12 +3,32 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Text } from 'troika-three-text';
 import { useGameContext } from './contexts/GameContext.jsx';
-//! ICI j'adapte le code pour jouer en distant avec le bot .
+import { useNavigate } from 'react-router-dom';
 
 
 function Game() {
-    //TODO : get all options from main page
     const { options } = useGameContext();
+    const navigate = useNavigate();
+    const { setOptions } = useGameContext();
+    if(options.is_tournament === 1)
+        {
+            console.log("TOURNOI")
+            options.round_results = options.round_results || [];
+            options.usernames = options.usernames || [];
+            options.avatar = options.avatar || [];
+            options.texture_balls = options.texture_balls || [];
+            let i = options.round_results.length ;
+            options.name_p1 = options.usernames[i*2];
+            options.name_p2 = options.usernames[i*2 + 1];
+            options.texture_p1 = options.avatar[i*2];
+            options.texture_p2 = options.avatar[i*2 + 1];
+            options.texture_ball_p1 = options.texture_balls[i*2];
+            options.texture_ball_p2 = options.texture_balls[i*2 + 1];
+            options.player_is_ia = 0;
+            //TODO => choper le P1 et le P2 
+            //TODO => choper leurs Avatars
+            
+        }
     console.log(" COUCOU NOM P1 =" + options.name_p1)
     //console.log(" COUCOU NOM P2 =" + options.name_p2)
     console.log(" vitessse balle" + options.ball_starting_speed)
@@ -456,7 +476,7 @@ function Game() {
                     console.log(options.winner);
                     options.winner = create_text("WINNER : " + options.winner );
                     options.winner.position.x = -3
-                    return(end_of_game(-1));
+                    return(end_of_game(120));
                 }
             requestAnimationFrame(animate);
             ball_render.rotation.z += (Math.abs(options.ball_y_speed) + Math.abs(options.ball_x_speed))* options.ball_rotation_z;
@@ -473,14 +493,51 @@ function Game() {
                 {
                     options.winner.rotation.y +=0.1;
                     requestAnimationFrame(() => end_of_game(counter - 1));}
-            
+            else
+                {
+                    window.removeEventListener('keydown', local_handleKeyDown, false);
+                    window.removeEventListener('keyup', local_handleKeyUp, false);
+                    window.removeEventListener('mousemove', handleMouseMove);
+                    if (options.is_tournament === 1)
+                        {
+                            let i = options.round_results.length;
+                            options.round_results.push(options.score_p1 + " " + options.score_p2);
+                            options.usernames.push(options.score_p1>options.score_p2?options.name_p1:options.name_p2);
+                            options.usernames[i*2] = options.name_p1 + " : " + options.score_p1;
+                            options.usernames[i*2 + 1] = options.name_p2 + " : " + options.score_p2;
+                            options.avatar.push(options.score_p1>options.score_p2?options.texture_p1:options.texture_p2);
+                            options.texture_balls.push(options.score_p1>options.score_p2?options.texture_p1_ball:options.texture_p2_ball);
+                            setOptions(prevOptions => ({ ...prevOptions, ...options }));
+                            
+                            if (options.usernames.length === 7 || options.usernames.length === 15 || options.usernames.length === 3)
+                                {
+                                    options.winner = create_text("FIN DU TOURNOI " + options.winner );
+                                    return(end_of_tournament);}
+//!                            navigate('/tournament_continues');
+                                
+                            navigate('/game');
+                        }
+                    else
+                        navigate('/home');
+                    return () => {
+                        console.log("GAME FINIE - WINNER : " + options.winner)
+                        // Nettoyez les ressources Three.js et arrêtez les écoutes d'événements si nécessaire
+                    };
+                }
+        }
+        function end_of_tournament(){
+            renderer.render(scene, camera);
+            options.winner.rotation.y +=0.01;
+            requestAnimationFrame(end_of_tournament);
+
         }
         return () => {
+            
             // Nettoyez les ressources Three.js et arrêtez les écoutes d'événements si nécessaire
         };
     }, []);
 
-    return null; // Car le rendu est géré par Three.js et non par React
+    return ; // Car le rendu est géré par Three.js et non par React
 }
 
 export default Game;
