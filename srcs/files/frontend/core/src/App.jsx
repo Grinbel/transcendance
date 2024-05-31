@@ -29,7 +29,7 @@ import Chat from './main/Chat.jsx';
 import Profile from './main/Profile.jsx';
 
 import { UserProvider, userContext } from "./contexts/userContext.jsx";
-
+import MultiOptions from './MultiOptions.jsx';
 
 //todo:
 // manage user loging with wrong credentials errors
@@ -112,6 +112,7 @@ async function getProfile(user, setUser, error, setError){
 							<Route path="friends" element={<Friends />} />
 							<Route path="settings" element={<Settings />} />
 						</Route>
+						<Route path="/multi-options" element={<MultiOptions />} />
 						<Route path="/play" element={<Play />} />
 						<Route path="/login" element={<Login />} /> 
 						<Route path="/signup" element={<Signup />} />
