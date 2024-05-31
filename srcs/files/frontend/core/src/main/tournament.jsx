@@ -5,7 +5,7 @@ import  { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import  { axiosInstance } from "../axiosAPI.js";
-import Game from "../game.jsx";
+import { useGameContext } from "../contexts/GameContext.jsx";
 
 const tournament = () => {
 	const userInfo = useContext(userContext);
@@ -18,6 +18,9 @@ const tournament = () => {
 	const [displayer, setDisplayer] = useState("");
 	const navigate = useNavigate();
 	const websockets = {};
+	const { setOptions } = useGameContext();
+	const [isTrue, setIsTrue] = useState(false);
+
 
 	function getWebSocket(roomName) {
 		if (!websockets[roomName]) {
@@ -27,24 +30,41 @@ const tournament = () => {
 		setMessages(prevMessages => [""]);
 		return websockets[roomName];
 	  }
+	
+	// const launch = (messages) => {
+	// 	console.log("launching",messages);
+	// 	messages.sort(() => Math.random() - 0.5);
+	// 	const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
+	// 	  const avatars = messages.map(message => message ? message.avatar : undefined).filter(Boolean);
+	// 	  console.log("username:",usernames);
+	// 	  console.log("avatar:",avatars);
+	// }
 	  useEffect(() => {
+		if (isTrue === false){
+			console.log("return")
+			return;
+		}
+		messages.sort(() => Math.random() - 0.5);
 		console.log("Message messages ", messages);
+		const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
+		  const avatars = messages.map(message => message ? message.avatar.replace("/media/", "") : undefined).filter(Boolean);
+		  console.log("username:",usernames);
+		  console.log("avatar:",avatars);
+		
+		console.log("Launching");
+		setOptions(prevOptions => ({
+			...prevOptions, // Gardez les options précédentes
+			is_tournament : 1,
+			usernames : usernames,
+			avatar : avatars,
+		}));
+		navigate('/game');
+		console.log("userInfo.tournamentIsLaunching",userInfo.tournamentIsLaunching)
 		if (userInfo.tournamentIsLaunching === true)
 			console.log("LAUNCHING", messages.username)
-	  }, [messages,userInfo]);
+	  }, [messages,isTrue]);
 
 
-	  useEffect(() => {
-		console.log("Launching");
-		// messages.shuffle()
-		messages.sort(() => Math.random() - 0.5);
-		const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
-		const avatars = messages.map(message => message ? message.avatar : undefined).filter(Boolean);
-		const trueArray = new Array(usernames.length).fill(true);
-		console.log("username:",usernames);
-		console.log("avatar:",avatars);
-		console.log("trueArray:",trueArray);
-	}, [userInfo,messages]);
 	
 	useEffect(() => {
 		if (userInfo.user === undefined || userInfo.user.tournament === undefined)
@@ -89,6 +109,7 @@ const tournament = () => {
 				setDisplayer("Launching in " + message.timer + " seconds");
 				console.log("set tournamentIsLaunching")
 				userInfo.setUser({...userInfo.user,tournamentIsLaunching:true});
+				setIsTrue(true);
 			}
 			else if(message.type === "friends")
 			{
