@@ -95,7 +95,8 @@ function Chat() {
 			// console.log("Need to be logged in   ", displayer);
 			return;
 		}
-		// else if()
+
+
 		setdisplayer("");
 		try {
 			const currentTime = new Date();
@@ -179,6 +180,7 @@ function Chat() {
 			if (formData.message === '') {
 				return;
 			}
+
 			handleChat(event);
 			setFormData({ message: ''});
 			event.preventDefault();
@@ -186,7 +188,7 @@ function Chat() {
 	}
 	const handleKeyPressprivate = (event) => {
 		if (event.key === 'Enter') {
-			if (privateMessage.message === '') {
+			if (privateMessage.message === '' ) {
 				return;
 			}
 			handlePrivate(event);
@@ -207,6 +209,8 @@ function Chat() {
 				value={privateMessage.message}
 				onChange={(e) =>setPrivate({message:e.target.value, receiver:username})}
 				onKeyDown={handleKeyPressprivate}
+				maxLength={90}
+
 			/> 
 		</div>
 		);
@@ -253,9 +257,8 @@ function Chat() {
 			throw (error);
 		}
 	}
-	
+
 	if (userInfo.user === undefined || location.pathname === '/game' ){
-		console.log('chat: user undefined')
 		return (<div></div>);
 	}
 
@@ -322,6 +325,7 @@ function Chat() {
 						value={formData.message}
 						onChange={(e) =>setFormData({ message: e.target.value })}
 						onKeyDown={handleKeyPress}
+						maxLength={90}
 					/>
 				</div>
 				{/* <div className="room_chat">

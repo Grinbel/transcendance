@@ -111,13 +111,14 @@ class Tournamen(WebsocketConsumer):
 		)
 		self.accept()
 		user = self.scope['user']
-		usernames = tournament.getAllUsername()
-		for username in usernames:
-			print("username: ", username)
+		players = tournament.players.all()
+		# usernames = tournament.getAllUsername()
+		for player in players:
 			self.send(text_data=json.dumps({
 				'type': 'username',
-				'username': username,
+				'username': player.username,
 				'name': room_name,
+				'avatar': player.avatar.url,
 			}))
 		friends_usernames = list(user.friends.all().values_list('username', flat=True))
 		for friend in friends_usernames:
@@ -179,6 +180,7 @@ class Tournamen(WebsocketConsumer):
 				'username': username,
 				'name': name,
 				'max_capacity': tournament.max_capacity,
+				'avatar': user.avatar.url,
 			}
 		)
 		if (tournament.max_capacity == tournament.players.count()):
@@ -201,6 +203,7 @@ class Tournamen(WebsocketConsumer):
 			'username': event['username'],
 			'name': event['name'],
 			'max_capacity': event['max_capacity'],
+			'avatar': event['avatar'],
 		}))
 	
 	def disconnected(self, event):

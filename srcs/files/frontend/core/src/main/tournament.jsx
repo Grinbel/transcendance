@@ -33,10 +33,17 @@ const tournament = () => {
 			console.log("LAUNCHING", messages.username)
 	  }, [messages,userInfo]);
 
+
 	  useEffect(() => {
 		console.log("Launching");
+		// messages.shuffle()
+		messages.sort(() => Math.random() - 0.5);
 		const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
+		const avatars = messages.map(message => message ? message.avatar : undefined).filter(Boolean);
+		const trueArray = new Array(usernames.length).fill(true);
 		console.log("username:",usernames);
+		console.log("avatar:",avatars);
+		console.log("trueArray:",trueArray);
 	}, [userInfo,messages]);
 	
 	useEffect(() => {
@@ -71,11 +78,6 @@ const tournament = () => {
 				return;
 			}
 			else if (message.type === 'username') {
-				// const usernameExists = messages.some(msg => msg.username === message.username);
-
-				// if (usernameExists){
-				// 	return;
-				// }
 				if (message && message.username)
 				{
 					setMessages(prevMessages => [...prevMessages, message]);
