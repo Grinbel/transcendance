@@ -73,17 +73,14 @@ const NavLoggedIn = () => {
 			
 			<Nav  className="ms-auto">
 				<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={UserMenu}>
-									{/* //TODO texte brut */}
-
-					<NavDropdown.Item href="/profile">profile</NavDropdown.Item>
-									{/* //TODO texte brut */}
-
+					{/* //TODO texte brut */}
+					<NavDropdown.Item href={`/profile/${userinfo.user.username}`}>profile</NavDropdown.Item>
+					{/* //TODO texte brut */}
 					<Nav.Link className="navCustom playButton me-3" href="/play">play</Nav.Link>
 					<NavDropdown.Divider />
-									{/* //TODO texte brut */}
-
+					{/* //TODO texte brut */}
 					<NavDropdown.Item onClick={handleLogout}>logout</NavDropdown.Item>
-            	</NavDropdown>
+				</NavDropdown>
 			</Nav>
 		  </Container>
 		</Navbar>

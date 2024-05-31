@@ -67,6 +67,9 @@ class Tournament(models.Model):
 
 	def getAllUsername(self):
 		return [user.username for user in self.players.all()]
+	
+	def getAllAvatar(self):
+		return [user.avatar.url for user in self.players.all()]
 
 	@classmethod
 	def getNextTournament(self):

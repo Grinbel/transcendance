@@ -5,7 +5,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from .views import Signup, login, verify, Logout, UserList, getProfile, userlist,userFriendBlock
+from .views import Signup, login, verify, Logout, UserList, getProfile, userlist,userFriendBlock, userExist,userFriendList
 from chat.consumers import sendInvite
 from matchmaking.views import choice
 from middle.views import AsgiValidateTokenView
@@ -24,4 +24,6 @@ urlpatterns = [
 	path('userlist/', userlist, name='userlist'),
 	path('userfriendblock/', userFriendBlock, name='userfriendblock'),
 	path('inviteTournament/',sendInvite,name='sendInvite'),
+	path('userexist/',userExist,name='userexist'),
+	path('userfriendlist/',userFriendList,name='userfriendlist')
 ]

@@ -27,7 +27,25 @@ const tournament = () => {
 		setMessages(prevMessages => [""]);
 		return websockets[roomName];
 	  }
+	  useEffect(() => {
+		console.log("Message messages ", messages);
+		if (userInfo.tournamentIsLaunching === true)
+			console.log("LAUNCHING", messages.username)
+	  }, [messages,userInfo]);
 
+
+	  useEffect(() => {
+		console.log("Launching");
+		// messages.shuffle()
+		messages.sort(() => Math.random() - 0.5);
+		const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
+		const avatars = messages.map(message => message ? message.avatar : undefined).filter(Boolean);
+		const trueArray = new Array(usernames.length).fill(true);
+		console.log("username:",usernames);
+		console.log("avatar:",avatars);
+		console.log("trueArray:",trueArray);
+	}, [userInfo,messages]);
+	
 	useEffect(() => {
 		if (userInfo.user === undefined || userInfo.user.tournament === undefined)
 			return ;
@@ -43,14 +61,10 @@ const tournament = () => {
 		}
 		const ws = getWebSocket(userInfo.user.tournament);
 		ws.onopen = () => {
-			console.log('ws tournament opened');
 			const user = {type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament }
-			// user = JSON.parse(JSON.stringify(user));
-			console.log('user =', JSON.stringify(user));
 			ws.send(JSON.stringify({ type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament }));
 		}
 		ws.onclose = () => {
-			console.log('ws tournament closed');
 		}
 		ws.onerror = e => console.log('ws tournament error', e);
 		ws.onmessage = e => {
@@ -61,26 +75,20 @@ const tournament = () => {
 			else if (message.type === 'disconnected') {
 				setMessages(prevMessages => []);
 				ws.send(JSON.stringify({ type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament }));
-				setName(message.name);
 				return;
 			}
 			else if (message.type === 'username') {
-				const usernameExists = messages.some(msg => msg.username === message.username);
-
-				if (usernameExists){
-					return;
+				if (message && message.username)
+				{
+					setMessages(prevMessages => [...prevMessages, message]);
+					setName(message.name);
+					setMaxCapacity(message.max_capacity)
 				}
-				setMessages(prevMessages => [...prevMessages, message]);
-				setName(message.name);
-				setMaxCapacity(message.max_capacity)
-				// message.date = new Date().toLocaleTimeString();
 			}
 			else if (message.type === 'launch_tournament'){
 				setDisplayer("Launching in " + message.timer + " seconds");
 				console.log("set tournamentIsLaunching")
-				// reminder();
 				userInfo.setUser({...userInfo.user,tournamentIsLaunching:true});
-				Game();
 			}
 			else if(message.type === "friends")
 			{
