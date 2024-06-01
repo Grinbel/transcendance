@@ -23,6 +23,15 @@ export const axiosInstance = axios.create({
 
 });
 
+const refreshInstance = axios.create({
+  baseURL: `http://${import.meta.env.VITE_API_SERVER_ADDRESS}:8000/users/`,
+  timeout: 0,
+  headers: {
+      'Content-Type': 'application/json',
+      'accept': 'application/json'
+  },
+});
+
 
 let refreshing = false;
 let subscribers = [];
@@ -50,7 +59,7 @@ export const interceptor_response = axiosInstance.interceptors.response.use(
         refreshing = true;
         originalRequest._retry = true;
 
-        return (axiosInstance
+        return (refreshInstance
           .post('/token/refresh/', { refresh: localStorage.getItem('refresh_token') })
           .then((response) => {
             if (response.status === 200) {

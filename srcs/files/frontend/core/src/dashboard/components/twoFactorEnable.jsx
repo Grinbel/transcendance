@@ -23,7 +23,7 @@ function TwoFactorEnable() {
         console.log('TwoFactorEnable: handle2Fa');
         setTwoFaStatus(!twoFaStatus);
 
-        return async () => {
+        const sendFastatus = async () => {
             try {
                 const response = await axiosInstance.post('/2fa/', {
                     "two_factor": twoFaStatus
@@ -33,6 +33,7 @@ function TwoFactorEnable() {
                 console.log('Error enabling 2FA: ', error.message);
             }
         }
+        sendFastatus();
     }
 
     useEffect(() => {
@@ -47,7 +48,7 @@ function TwoFactorEnable() {
             <Switch
                 name="2FA Authentication"
                 status={twoFaStatus}
-                handleSwitch={handle2Fa()}
+                handleSwitch={handle2Fa}
                 // onColor={'red'}    
             />
         </div>

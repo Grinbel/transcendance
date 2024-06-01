@@ -27,26 +27,13 @@ from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from .helper import authenticate
 import random
 import os
+import logging
  
 ##remember to check USER_ID_FIELD and USER_ID_CLAIM in jwt settings in case picking the email adress as the user id
 
 
-# class Login(TokenObtainPairView):
-#     permission_classes = [permissions.AllowAny]
-#     serializer_class = MyTokenObtainPairSerializer
-
-#     def post(self, request, *args, **kwargs):
-#         print('request.data', request.data)
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         return Response(serializer.validated_data, status=status.HTTP_200_OK)
-
 def generate_random_digits(n=6):
 	return "".join(map(str, random.sample(range(0, 10), n)))
-
-# give me a function that gets me user informations when receiving the correspondent token
-
-
 
 @api_view(['GET'])
 def getProfile(request):
@@ -70,6 +57,48 @@ def getProfile(request):
 		print('user_data', user_data)
 		return Response(user_data)
 	return Response({'detail': 'Invalid token format'}, status=status.HTTP_401_UNAUTHORIZED)
+
+# a  view that receives and sets  the 2FA preference of a user
+@api_view(['POST'])
+def set2FA(request):
+	# check authentication
+	if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
+		token = request.headers.get('Authorization').split(' ')[1]
+		print('token', token)
+		try:
+			untyped_token = UntypedToken(token)
+			print('untyped_token', untyped_token)
+		except (InvalidToken, TokenError) as e:
+			print('Invalid token')
+			return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+		print('2fa untyped_token', untyped_token)
+		id = untyped_token['user_id']
+		user = User.objects.get(id=id)
+	# Validate input data
+   
+	two_factor = request.data.get('two_factor')
+
+	if	two_factor is None:
+		return Response({'detail': 'two_factor field are required.'}, status=status.HTTP_400_BAD_REQUEST)
+	
+	if not isinstance(two_factor, bool):
+		return Response({'detail': 'Invalid value for two_factor. It must be a boolean.'}, status=status.HTTP_400_BAD_REQUEST)
+
+	try:
+		user = User.objects.get(username=username)
+		
+		# Ensure the user making the request is the same as the user whose 2FA setting is being changed
+		if request.user != user:
+			return Response({'detail': 'You are not authorized to change this user\'s 2FA setting.'}, status=status.HTTP_403_FORBIDDEN)
+
+		user.two_factor = two_factor
+		user.save()
+		return Response({'detail': '2FA preference updated successfully.'}, status=status.HTTP_200_OK)
+	except User.DoesNotExist:
+		return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+	except Exception as e:
+		logger.error(f'Error updating 2FA preference: {e}')
+		return Response({'detail': 'An error occurred while updating 2FA preference.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
 def userlist(request):
@@ -249,64 +278,3 @@ class UserList(APIView):
 		print('users', users)
 		serializer = UserSerializer(users, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
-
-# import random
-# import string
-# from datetime import datetime, timedelta
-# from django.contrib.auth import authenticate
-# from django.utils.timezone import make_aware
-# from rest_framework import status
-# from rest_framework.response import Response
-# from rest_framework.views import APIView
-# from .serializers import MyTokenObtainPairSerializer
-
-# class Login(APIView):
-#     serializer_class = MyTokenObtainPairSerializer
-
-#     def generate_verification_code(self):
-#         return ''.join(random.choices(string.digits, k=6))  # Generate a 6-digit random code
-
-#     def send_verification_code(self, user, code):
-#         # Implement code to send verification code to the user (e.g., via email, SMS)
-#         pass
-
-#     def post(self, request, *args, **kwargs):
-#         username = request.data.get('username')
-#         password = request.data.get('password')
-
-#         user = authenticate(username=username, password=password)
-#         if user is not None:
-#             verification_code = self.generate_verification_code()
-#             self.send_verification_code(user, verification_code)
-
-#             # Store verification code and expiration time in session
-#             request.session['verification_code'] = verification_code
-#             request.session['verification_code_expiry'] = make_aware(datetime.now() + timedelta(minutes=5))
-
-#             return Response({"message": "Please enter the verification code"}, status=status.HTTP_200_OK)
-#         else:
-#             return Response({"message": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
-
-#     def verify(self, request, *args, **kwargs):
-#         verification_code = request.data.get('verification_code')
-
-#         # Check if verification code matches the one stored in the session
-#         stored_code = request.session.get('verification_code')
-#         if verification_code == stored_code:
-#             # Check if verification code is still valid
-#             expiry_time = request.session.get('verification_code_expiry')
-#             if expiry_time and expiry_time > datetime.now():
-#                 # If valid, authenticate user and return token
-#                 username = request.data.get('username')
-#                 password = request.data.get('password')
-#                 user = authenticate(username=username, password=password)
-#                 if user is not None:
-#                     serializer = self.serializer_class(data={'username': username, 'password': password})
-#                     if serializer.is_valid():
-#                         token = serializer.validated_data['access']
-#                         return Response({"token": token}, status=status.HTTP_200_OK)
-#                 return Response({"message": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
-#             else:
-#                 return Response({"message": "Verification code has expired"}, status=status.HTTP_400_BAD_REQUEST)
-#         else:
-#             return Response({"message": "Invalid verification code"}, status=status.HTTP_400_BAD_REQUEST)
