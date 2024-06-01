@@ -57,8 +57,8 @@ const Home = () => {
 			setOptions(prevOptions => ({
 				...prevOptions, // Gardez les options précédentes
 				is_tournament : 1,
-				usernames : ["Alaide", "Besouin", "Crame", "Dorothée"],
-				avatar : ["https://pbs.twimg.com/profile_images/1335272544451112960/YO2w8LHO_400x400.jpg", "https://pbs.twimg.com/profile_images/1335272544451112960/YO2w8LHO_400x400.jpg", "https://pbs.twimg.com/profile_images/1335272544451112960/YO2w8LHO_400x400.jpg", "https://pbs.twimg.com/profile_images/1335272544451112960/YO2w8LHO_400x400.jpg"],
+				usernames : ["Alaide", "Besouin", "Crame", "Dorothée", "Eugène", "Félicie", "Gaston", "Huguette" ],
+				avatar : ["/badboy.png","/players.jpg","/princess.jpg","/ponge.jpg","/yoshi.jpg","/xrenoux.jpg","/abelhadi.jpg","/beaudibe.jpg"],
 
 			}));
 			navigate('/game');

@@ -19,6 +19,7 @@ function Game() {
             options.usernames = options.usernames || [];
             console.log(options.usernames)
             options.avatar = options.avatar || [];
+            console.log(options.avatar)
             options.texture_balls = options.texture_balls || [];
             let i = options.round_results.length ;
             options.name_p1 = options.usernames[i*2];
@@ -454,11 +455,12 @@ function Game() {
         const text = new Text();
         text.text = to_show;
         text.font = 'https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxP.ttf';
-        let size = Math.max(options.name_p1.length,options.name_p2.length);
-        console.log(size)
-        text.fontSize = 1*5/size;
+        //let size = Math.max(options.name_p1.length,options.name_p2.length);
+        //console.log(size)
+        //text.fontSize = 1*5/size;
+        text.fontSize = 1*5/6;
         text.color = 0x0000FF;
-
+        console.log("creation de text : " + to_show)
         text.rotation.x = Math.PI/2;
         text.position.y = options.stage_height /2
         // Après avoir changé des propriétés, vous devez toujours appeler sync()
@@ -557,10 +559,10 @@ function Game() {
                                         {
                                             for (let j =0; j< 8;j=j+2)
                                                 {
-                                                    Hall_of_Fame[j].position.z = (j+1)*3;
-                                                    Hall_of_Fame[j+1].position.z = (j+1)*3 +1;
-                                                    Hall_of_Fame[j].position.x = -6;
-                                                    Hall_of_Fame[j+1].position.x = -6;
+                                                    Hall_of_Fame[j].position.z = (j)*3;
+                                                    Hall_of_Fame[j+1].position.z = (j)*3 +1;
+                                                    Hall_of_Fame[j].position.x = -8;
+                                                    Hall_of_Fame[j+1].position.x = -8;
                                                 }
                                             saved = 8;
 
@@ -572,8 +574,10 @@ function Game() {
                                             for(let j = 0; j< 4 ; j=j+2)
                                                 {
                                             
-                                                    Hall_of_Fame[j+saved].position.z = j*6+1.5;
-                                                    Hall_of_Fame[j+1+saved].position.z = j*6 +2.5;
+                                                    Hall_of_Fame[j+saved].position.z = j*6+2.5;
+                                                    Hall_of_Fame[j+1+saved].position.z = j*6 +4.5;
+                                                    Hall_of_Fame[j+saved].fontSize *= 2;
+                                                    Hall_of_Fame[j+1+saved].fontSize *= 2;
                                                     Hall_of_Fame[j+saved].position.x = -2;
                                                     Hall_of_Fame[j+1+saved].position.x = -2;
                                                 }
@@ -585,21 +589,27 @@ function Game() {
                                             for(let j = 0; j< 2 ; j=j+2)
                                                 {
                                         
-                                                    Hall_of_Fame[j+saved].position.z = 4.5
-                                                    Hall_of_Fame[j+1+saved].position.z = 5.5
-                                                    Hall_of_Fame[j+saved].position.x = 2;
-                                                    Hall_of_Fame[j+1+saved].position.x = 2;
+                                                    Hall_of_Fame[j+saved].position.z = 8
+                                                    Hall_of_Fame[j+1+saved].position.z = 12
+                                                    Hall_of_Fame[j+saved].fontSize *= 3;
+                                                    Hall_of_Fame[j+1+saved].fontSize *= 3;
+                                                    Hall_of_Fame[j+saved].position.x = 9;
+                                                    Hall_of_Fame[j+1+saved].position.x = 9;
                                                 }
                                         
                                         }
-                                  
-                                    Hall_of_Fame[i-1].position.z = 5.5
-                                    Hall_of_Fame[i-1].position.x = 6;
+                                        
+                                    Hall_of_Fame[i-1].position.z = 12
+                                    Hall_of_Fame[i-1].fontSize *= 4;
+                                    Hall_of_Fame[i-1].position.x = 25;
                                     console.log("tout a ete place")
+                                    for(let i = 0; i< Hall_of_Fame.length; i++)
+                                        {
+                                            scene.add(Hall_of_Fame[i]);
+                                        }
                                     return(end_of_tournament(0));}
 //!                            navigate('/tournament_continues');
                             setOptions(prevOptions => ({ ...prevOptions, ...options }));
-                            scene.add(Hall_of_Fame[6])
                             navigate('/game');
                         }
                     else
