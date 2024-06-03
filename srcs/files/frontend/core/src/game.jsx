@@ -10,12 +10,16 @@ function Game() {
     const { options } = useGameContext();
     const navigate = useNavigate();
     const { setOptions } = useGameContext();
+    let Hall_of_Fame = [];
     if(options.is_tournament === 1)
         {
             console.log("TOURNOI")
             options.round_results = options.round_results || [];
+            console.log(options.round_results)
             options.usernames = options.usernames || [];
+            console.log(options.usernames)
             options.avatar = options.avatar || [];
+            console.log(options.avatar)
             options.texture_balls = options.texture_balls || [];
             let i = options.round_results.length ;
             options.name_p1 = options.usernames[i*2];
@@ -25,15 +29,20 @@ function Game() {
             options.texture_ball_p1 = options.texture_balls[i*2];
             options.texture_ball_p2 = options.texture_balls[i*2 + 1];
             options.player_is_ia = 0;
+            options.score_p1 = 0;
+            options.score_p2 = 0;
             //TODO => choper le P1 et le P2 
             //TODO => choper leurs Avatars
             
         }
     console.log(" COUCOU NOM P1 =" + options.name_p1)
-    //console.log(" COUCOU NOM P2 =" + options.name_p2)
+    console.log(" COUCOU NOM P2 =" + options.name_p2)
     console.log(" vitessse balle" + options.ball_starting_speed)
     options.ball_speed=options.ball_starting_speed
+    console.log("juste avant le use effect")
       useEffect(() => {
+
+        console.log("on est rentres dans UseEffect")
         if (options.texture_p1_ball ===1)
             options.texture_p1_ball = options.texture_ball
         if (options.texture_p2_ball ===1)
@@ -47,7 +56,8 @@ function Game() {
         let texturep2 = loader.load(options.texture_p2);
         let eye_texture = loader.load(options.texture_eye);
         let wall_texture = loader.load(options.wall_texture)
-        
+        console.log("on est rentres dans UseEffect")
+        console.log(options)
         // Our Javascript will go here.
         const scene = new THREE.Scene();
         const ground_geometry = new THREE.BoxGeometry(options.stage_width, options.stage_height, .0);
@@ -445,27 +455,28 @@ function Game() {
         const text = new Text();
         text.text = to_show;
         text.font = 'https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxP.ttf';
-        let size = Math.max(options.name_p1.length,options.name_p2.length);
-        console.log(size)
-        text.fontSize = 1*5/size;
+        //let size = Math.max(options.name_p1.length,options.name_p2.length);
+        //console.log(size)
+        //text.fontSize = 1*5/size;
+        text.fontSize = 1*5/6;
         text.color = 0x0000FF;
-
+        console.log("creation de text : " + to_show)
         text.rotation.x = Math.PI/2;
         text.position.y = options.stage_height /2
         // Après avoir changé des propriétés, vous devez toujours appeler sync()
         text.sync();
 
         // Ajouter le texte à la scène
-
-        scene.add(text);
         return text;
     }
 
 
         let text_p1 = create_text(options.name_p1 + " : " + options.score_p1);
+        scene.add(text_p1);
         text_p1.position.z += options.ball_radius *2 +2
         text_p1.position.x = -options.stage_width/2
         let text_p2 = create_text(options.name_p2 + " : " + options.score_p2);
+        scene.add(text_p2);
         text_p2.position.z+=  options.ball_radius*2 +2
         server_ball_reset()
         function animate() {
@@ -475,6 +486,7 @@ function Game() {
                     options.winner = options.score_p1>options.score_p2?options.name_p1:options.name_p2;
                     console.log(options.winner);
                     options.winner = create_text("WINNER : " + options.winner );
+                    scene.add(options.winner);
                     options.winner.position.x = -3
                     return(end_of_game(120));
                 }
@@ -491,7 +503,7 @@ function Game() {
             renderer.render(scene, camera);
             if (counter !=0)
                 {
-                    options.winner.rotation.y +=0.1;
+                    options.winner.rotation.y +=0.01;
                     requestAnimationFrame(() => end_of_game(counter - 1));}
             else
                 {
@@ -500,6 +512,7 @@ function Game() {
                     window.removeEventListener('mousemove', handleMouseMove);
                     if (options.is_tournament === 1)
                         {
+                            scene.remove(options.winner)
                             let i = options.round_results.length;
                             options.round_results.push(options.score_p1 + " " + options.score_p2);
                             options.usernames.push(options.score_p1>options.score_p2?options.name_p1:options.name_p2);
@@ -507,14 +520,96 @@ function Game() {
                             options.usernames[i*2 + 1] = options.name_p2 + " : " + options.score_p2;
                             options.avatar.push(options.score_p1>options.score_p2?options.texture_p1:options.texture_p2);
                             options.texture_balls.push(options.score_p1>options.score_p2?options.texture_p1_ball:options.texture_p2_ball);
-                            setOptions(prevOptions => ({ ...prevOptions, ...options }));
                             
+                            console.log("taille usernames" + options.usernames.length)
                             if (options.usernames.length === 7 || options.usernames.length === 15 || options.usernames.length === 3)
                                 {
-                                    options.winner = create_text("FIN DU TOURNOI " + options.winner );
-                                    return(end_of_tournament);}
+                                    console.log("FIN DU TOURNOI")
+                                    scene.remove(options.winner)
+                                    //options.winner = create_text( options.score_p1>options.score_p2?options.name_p1:options.name_p2 + " REMPORTE LE TOURNOI");
+                                    //setShouldRunEffect(false);
+                                    for (let i = 0; i < options.usernames.length; i=i+2)
+                                        {
+                                            Hall_of_Fame[i] = create_text(options.usernames[i]);
+                                            if (i +1 < options.usernames.length)
+                                                {
+                                                    Hall_of_Fame[i+1] =create_text(options.usernames[i+1]);
+                                                    if(parseInt(options.usernames[i + 1].split(':')[1]) > parseInt(options.usernames[i].split(':')[1]))
+                                                        {
+                                                            Hall_of_Fame[i].color = 0x0000FF;
+                                                            Hall_of_Fame[i+1].color = 0xFF0000;
+                                                        }
+                                                    else 
+                                                        {
+                                                            Hall_of_Fame[i].color = 0xFF0000;
+                                                            Hall_of_Fame[i+1].color = 0x0000FF;
+                                                        }
+                                                }
+                                            else {
+                                                Hall_of_Fame[i].color = 0x0000FF;
+                                                Hall_of_Fame[i].fontSize *=2;
+                                            }
+
+                                        }
+                                        console.log("tout a ete cree")
+                                        console.log(Hall_of_Fame)
+                                    let i = options.usernames.length;
+                                    let saved = 0;
+                                    if (i > 14)
+                                        {
+                                            for (let j =0; j< 8;j=j+2)
+                                                {
+                                                    Hall_of_Fame[j].position.z = (j)*3;
+                                                    Hall_of_Fame[j+1].position.z = (j)*3 +1;
+                                                    Hall_of_Fame[j].position.x = -8;
+                                                    Hall_of_Fame[j+1].position.x = -8;
+                                                }
+                                            saved = 8;
+
+                                        }
+                                      
+                                    if (i-saved >6)
+                                        {
+                                            
+                                            for(let j = 0; j< 4 ; j=j+2)
+                                                {
+                                            
+                                                    Hall_of_Fame[j+saved].position.z = j*6+2.5;
+                                                    Hall_of_Fame[j+1+saved].position.z = j*6 +4.5;
+                                                    Hall_of_Fame[j+saved].fontSize *= 2;
+                                                    Hall_of_Fame[j+1+saved].fontSize *= 2;
+                                                    Hall_of_Fame[j+saved].position.x = -2;
+                                                    Hall_of_Fame[j+1+saved].position.x = -2;
+                                                }
+                                            saved +=4;
+                                        }
+                                    if (i-saved >2)
+                                        {
+                                         
+                                            for(let j = 0; j< 2 ; j=j+2)
+                                                {
+                                        
+                                                    Hall_of_Fame[j+saved].position.z = 8
+                                                    Hall_of_Fame[j+1+saved].position.z = 12
+                                                    Hall_of_Fame[j+saved].fontSize *= 3;
+                                                    Hall_of_Fame[j+1+saved].fontSize *= 3;
+                                                    Hall_of_Fame[j+saved].position.x = 9;
+                                                    Hall_of_Fame[j+1+saved].position.x = 9;
+                                                }
+                                        
+                                        }
+                                        
+                                    Hall_of_Fame[i-1].position.z = 12
+                                    Hall_of_Fame[i-1].fontSize *= 4;
+                                    Hall_of_Fame[i-1].position.x = 25;
+                                    console.log("tout a ete place")
+                                    for(let i = 0; i< Hall_of_Fame.length; i++)
+                                        {
+                                            scene.add(Hall_of_Fame[i]);
+                                        }
+                                    return(end_of_tournament(0));}
 //!                            navigate('/tournament_continues');
-                                
+                            setOptions(prevOptions => ({ ...prevOptions, ...options }));
                             navigate('/game');
                         }
                     else
@@ -525,17 +620,25 @@ function Game() {
                     };
                 }
         }
-        function end_of_tournament(){
+        function end_of_tournament(counter){
             renderer.render(scene, camera);
-            options.winner.rotation.y +=0.01;
-            requestAnimationFrame(end_of_tournament);
+            console.log("COUNTER = " + counter)
+            if(counter/30 < options.usernames.length)
+                counter ++;
+       //     if(counter / 30)
+         //       {
+           //         scene.add(Hall_of_Fame[counter/30]);
+             //   }
+            requestAnimationFrame(() => end_of_tournament(counter));
+            
+            
 
         }
         return () => {
             
             // Nettoyez les ressources Three.js et arrêtez les écoutes d'événements si nécessaire
         };
-    }, []);
+    }, [options]);
 
     return ; // Car le rendu est géré par Three.js et non par React
 }

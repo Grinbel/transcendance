@@ -53,27 +53,12 @@ const Home = () => {
 			}));
 			navigate('/game');
 		};
-		const MULTI_3P= () => {
-			setMultiGameOptions(prevOptions => ({
-				...prevOptions,
-				nb_players : 3,
-			}));
-			navigate('/multigame');
-		};
-
-		const MULTI_6P= () => {
-			setMultiGameOptions(prevOptions => ({
-				...prevOptions,
-				nb_players : 6,
-			}));
-			navigate('/multigame');
-		};
 		const tournoitest = () => {
 			setOptions(prevOptions => ({
 				...prevOptions, // Gardez les options précédentes
 				is_tournament : 1,
-				usernames : ["J1", "J2", "J3", "J4"],
-				avatar : ["https://pbs.twimg.com/profile_images/1335272544451112960/YO2w8LHO_400x400.jpg", "https://pbs.twimg.com/profile_images/1335272544451112960/YO2w8LHO_400x400.jpg", "https://pbs.twimg.com/profile_images/1335272544451112960/YO2w8LHO_400x400.jpg", "https://pbs.twimg.com/profile_images/1335272544451112960/YO2w8LHO_400x400.jpg"],
+				usernames : ["Alaide", "Besouin", "Crame", "Dorothée", "Eugène", "Félicie", "Gaston", "Huguette" ],
+				avatar : ["/badboy.png","/players.jpg","/princess.jpg","/ponge.jpg","/yoshi.jpg","/xrenoux.jpg","/abelhadi.jpg","/beaudibe.jpg"],
 
 			}));
 			navigate('/game');
