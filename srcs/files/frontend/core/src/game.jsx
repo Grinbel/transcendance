@@ -565,15 +565,12 @@ function Game() {
                                                     Hall_of_Fame[j+1].position.x = -8;
                                                 }
                                             saved = 8;
-
                                         }
                                       
                                     if (i-saved >6)
                                         {
-                                            
                                             for(let j = 0; j< 4 ; j=j+2)
                                                 {
-                                            
                                                     Hall_of_Fame[j+saved].position.z = j*6+2.5;
                                                     Hall_of_Fame[j+1+saved].position.z = j*6 +4.5;
                                                     Hall_of_Fame[j+saved].fontSize *= 2;
@@ -603,11 +600,7 @@ function Game() {
                                     Hall_of_Fame[i-1].fontSize *= 4;
                                     Hall_of_Fame[i-1].position.x = 25;
                                     console.log("tout a ete place")
-                                    for(let i = 0; i< Hall_of_Fame.length; i++)
-                                        {
-                                            scene.add(Hall_of_Fame[i]);
-                                        }
-                                    return(end_of_tournament(0));}
+                                    return(end_of_tournament(-1));}
 //!                            navigate('/tournament_continues');
                             setOptions(prevOptions => ({ ...prevOptions, ...options }));
                             navigate('/game');
@@ -623,13 +616,13 @@ function Game() {
         function end_of_tournament(counter){
             renderer.render(scene, camera);
             console.log("COUNTER = " + counter)
-            if(counter/30 < options.usernames.length)
-                counter ++;
-       //     if(counter / 30)
-         //       {
-           //         scene.add(Hall_of_Fame[counter/30]);
-             //   }
-            requestAnimationFrame(() => end_of_tournament(counter));
+            if(counter/60 < options.usernames.length -1) // options.usernames[15]
+                {counter ++;
+            if(counter % 60 === 0)
+                {
+                    scene.add(Hall_of_Fame[counter/60]);
+                }
+            requestAnimationFrame(() => end_of_tournament(counter));}
             
             
 
