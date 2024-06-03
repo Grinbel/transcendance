@@ -55,8 +55,10 @@ const Home = () => {
 		};
 		const tournoitest = () => {
 			setOptions(prevOptions => ({
-				...prevOptions, // Gardez les options précédentes
+				...prevOptions, 
 				is_tournament : 1,
+				score_to_get : 1, 
+        		score_diff : 0,
 				usernames : ["Alaide", "Besouin", "Crame", "Dorothée", "Eugène", "Félicie", "Gaston", "Huguette" ],
 				avatar : ["/badboy.png","/players.jpg","/princess.jpg","/ponge.jpg","/yoshi.jpg","/xrenoux.jpg","/abelhadi.jpg","/beaudibe.jpg"],
 
@@ -83,15 +85,6 @@ const Home = () => {
 				<Col className="columnStyle ">
   					<Button variant="primary" as={Link} to="/multi-options" className="homeButtons">MULTI</Button>
 				</Col>
-				
-				{/* <Col className="columnStyle ">
-					
-				<Button variant="primary" onClick={MULTI_3P} className="homeButtons">Multi Round Game (3 Players, Double buttons)</Button>
-				</Col>
-				<Col className="columnStyle ">
-
-				<Button variant="primary" onClick={MULTI_6P} className="homeButtons">Multi Round Game (6 Players, Mono buttons)</Button>
-				</Col> */}
 				<Col className="columnStyle ">
 					
 				<Button variant="primary" onClick={handleVsVacheClick} className="homeButtons">Tac Vs Vache</Button>

@@ -70,9 +70,9 @@ export const GameProvider = ({ children }) => {
         ball_y_speed : 0,
         ball_pause : 0,
         ball_acc : 1.2,
-        score_to_get : 1, //Score a obtenir pour gagner
-        score_diff : 0, //ecart minimal pour gagner
-        score_max : 15, // score a atteindre pour gagner sans ecart
+        score_to_get : 7, //Score a obtenir pour gagner
+        score_diff : 2, //ecart minimal pour gagner
+        score_max : 10, // score a atteindre pour gagner sans ecart
             //! OPTIONS DE BUFFS / DEBUFFS
         p1_is_frozen : 0,
         p2_is_frozen : 0,
