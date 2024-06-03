@@ -21,7 +21,20 @@ const tournament = () => {
 	const { setOptions } = useGameContext();
 	const [isTrue, setIsTrue] = useState(false);
 
-
+	const nextgameplayer = async (name) => {
+		
+		try {
+			const response = await axiosInstance.post('/nextgameplayer/', {
+				p1: 'bob',
+				p2: 'alice',
+				room: name,
+				
+			});
+		} catch (error) {
+			setError(error.message);
+			throw (error);
+		}
+	}
 	function getWebSocket(roomName) {
 		if (!websockets[roomName]) {
 			 
@@ -44,37 +57,40 @@ const tournament = () => {
 			console.log("return")
 			return;
 		}
-		// user = messages[0];
 		console.log("messages",messages);
 		const user = messages.map(message => message ? message.username : undefined).filter(Boolean);
+		const sortedMessages = [...user].sort((a, b) => a.localeCompare(b));
 
-		console.log("user",user[0]);
-		if (userInfo.user.username != user[0])
-		{
-			setDisplayer("You are not the host. Go on the screen of ",user[0]," to launch the game.");
-			return;
+		if (userInfo.user.username === sortedMessages[0])
+			{
+			console.log("user!!!!!!!!!!!",sortedMessages[0],userInfo.user.username);
+			console.log("user is equal ",sortedMessages[0] === userInfo.user.username);
+			console.log("user list",sortedMessages);
+			setDisplayer("Launching");
+
+			messages.sort(() => Math.random() - 0.5);
+			console.log("Message messages ", messages);
+			const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
+			const avatars = messages.map(message => message ? message.avatar.replace("/media/", "") : undefined).filter(Boolean);
+			console.log("username:",usernames);
+			console.log("avatar:",avatars);
+			
+			console.log("Launching");
+			setOptions(prevOptions => ({
+				...prevOptions, // Gardez les options précédentes
+				is_tournament : 1,
+				usernames : usernames,
+				avatar : avatars,
+				room : name,
+			}));
+			navigate('/game');
 		}
-		setDisplayer("Launching");
-
-		// return ;
-		//!
-		messages.sort(() => Math.random() - 0.5);
-		console.log("Message messages ", messages);
-		const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
-		  const avatars = messages.map(message => message ? message.avatar.replace("/media/", "") : undefined).filter(Boolean);
-		  console.log("username:",usernames);
-		  console.log("avatar:",avatars);
-		
-		console.log("Launching");
-		setOptions(prevOptions => ({
-			...prevOptions, // Gardez les options précédentes
-			is_tournament : 1,
-			usernames : usernames,
-			avatar : avatars,
-		}));
-		//! navigate('/game');
-		console.log("userInfo.tournamentIsLaunching",userInfo.tournamentIsLaunching)
-	  }, [messages,isTrue]);
+		else
+		{
+			setIsTrue(false);
+			setDisplayer("You are not the host. Go on the screen of " +user[0] +" to launch the game.");
+		}
+	}, [messages,isTrue,name]);
 
 	  useEffect(() => {
 		console.log("messages",messages);

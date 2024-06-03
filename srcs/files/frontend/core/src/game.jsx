@@ -4,9 +4,24 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Text } from 'troika-three-text';
 import { useGameContext } from './contexts/GameContext.jsx';
 import { useNavigate } from 'react-router-dom';
+import  { axiosInstance } from "./axiosAPI.js";
 
 
 function Game() {
+	const nextgameplayer = async (name,p1,p2) => {
+			
+		try {
+			const response = await axiosInstance.post('/nextgameplayer/', {
+				p1: p1,
+				p2: p2,
+				room: name,
+				
+			});
+		} catch (error) {
+			setError(error.message);
+			throw (error);
+		}
+	}
     const { options } = useGameContext();
     const navigate = useNavigate();
     const { setOptions } = useGameContext();
@@ -33,6 +48,7 @@ function Game() {
             options.score_p2 = 0;
             //TODO => choper le P1 et le P2 
             //TODO => choper leurs Avatars
+			nextgameplayer(options.room,options.name_p1,options.name_p2);
             
         }
     console.log(" COUCOU NOM P1 =" + options.name_p1)
@@ -622,7 +638,7 @@ function Game() {
         }
         function end_of_tournament(counter){
             renderer.render(scene, camera);
-            console.log("COUNTER = " + counter)
+            // console.log("COUNTER = " + counter)
             if(counter/30 < options.usernames.length)
                 counter ++;
        //     if(counter / 30)

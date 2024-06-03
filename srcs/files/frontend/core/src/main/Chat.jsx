@@ -72,6 +72,7 @@ function Chat() {
 		ws.onmessage = e => {
 			const message = JSON.parse(e.data);
 			setMessages(prevMessages => [...prevMessages, message]);
+			console.log('ws chat message', message, message.username);
 		};
 
 		setWs(ws);
@@ -285,9 +286,9 @@ function Chat() {
 			<div id="chatBody" className="chat-body">
 				
 				<div id="chatContent" className="chat-content">
-					{messages.map((message, index) => (
+					{messages.filter((message, index) => index > 0 ).map((message, index) => (
 						<div key={index} className="chat-message" ref={index === messages.length - 1 ? messagesEndRef : null}>
-							<Nav className="ms-auto">
+							{ message.username !== undefined &&<Nav className="ms-auto">
 								<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={message.username} onClick={() => info(message.username)}>
 									
 									{/* //TODO texte brut */}
@@ -302,7 +303,7 @@ function Chat() {
 									{userInfo.user.tournament != ""&&message.username != userInfo.user.username && <NavDropdown.Item onClick={() => sendInvite(message.username)}>Invite</NavDropdown.Item>}
 									{privateChat(message.username)}
 								</NavDropdown>
-							</Nav>
+							</Nav>}
 							{/* <div className="message">
 								{message.message} <span className="message-time">{message.date}</span>
 							</div> */}
@@ -318,16 +319,15 @@ function Chat() {
 									Accept
 								</a>
 							</div>}
+							{message.type === 'send_next_game_player' && <div className="send_next_game_player">
+								{message.message}
+							</div>}
 						</div>
-					)).filter((_, index) => index > 0)}
+					))}
 				</div>
 				<div className="displayer-errors">
 					{displayer}
 				</div>
-					{userInfo.tournamentIsLaunching ===false &&
-						<div className="reminder">
-							<h4> La partie va bientot commencer</h4>
-					</div>}
 				
 				<div className="chat-chat">
 					<input
