@@ -44,16 +44,19 @@ const tournament = () => {
 			console.log("return")
 			return;
 		}
-		user = messages[0];
-		console.log("user",user);
-		if (userInfo.username != user)
+		// user = messages[0];
+		console.log("messages",messages);
+		const user = messages.map(message => message ? message.username : undefined).filter(Boolean);
+
+		console.log("user",user[0]);
+		if (userInfo.user.username != user[0])
 		{
-			setDisplayer("You are not the host. Go on the screen of ",user," to launch the game.");
+			setDisplayer("You are not the host. Go on the screen of ",user[0]," to launch the game.");
 			return;
 		}
 		setDisplayer("Launching");
 
-		return ;
+		// return ;
 		//!
 		messages.sort(() => Math.random() - 0.5);
 		console.log("Message messages ", messages);
@@ -73,7 +76,9 @@ const tournament = () => {
 		console.log("userInfo.tournamentIsLaunching",userInfo.tournamentIsLaunching)
 	  }, [messages,isTrue]);
 
-
+	  useEffect(() => {
+		console.log("messages",messages);
+	  }, [messages]);
 	
 	useEffect(() => {
 		if (userInfo.user === undefined || userInfo.user.tournament === "")
@@ -115,7 +120,7 @@ const tournament = () => {
 			else if (message.type === 'launch_tournament'){
 				setDisplayer("Launching in " + message.timer + " seconds");
 				console.log("set tournamentIsLaunching")
-				userInfo.setUser({...userInfo.user,tournamentIsLaunching:true});
+				// userInfo.setUser({...userInfo.user,tournamentIsLaunching:true});
 				setIsTrue(true);
 			}
 			else if(message.type === "friends")
