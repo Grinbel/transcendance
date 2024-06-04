@@ -676,7 +676,7 @@ function Game() {
             renderer.render(scene, camera);
             camera.position.z = 0;
             camera.position.x = 0;
-            camera.position.y = -50;
+            camera.position.y = -40;
             camera.lookAt(new THREE.Vector3(0, 0, 0));
             if(counter/60 < options.usernames.length -1) // options.usernames[15]
                 {counter ++;
@@ -686,7 +686,11 @@ function Game() {
                 }
             requestAnimationFrame(() => end_of_tournament(counter));}
             else
-                {
+                {counter ++;
+                    if(counter < options.usernames.length * 60 + 1800)
+                        requestAnimationFrame(() => end_of_tournament(counter));
+                    else{
+
                     for (let i = 0; i < options.usernames.length; i++)
                         {
                             scene.remove(Hall_of_Fame[i]);
@@ -695,7 +699,7 @@ function Game() {
                     document.body.removeChild(renderer.domElement);
                     renderer.dispose();
                     setOptions(prevOptions => ({ ...prevOptions, ...options }));
-                    navigate('/');}
+                    navigate('/');}}
             
 
         }
