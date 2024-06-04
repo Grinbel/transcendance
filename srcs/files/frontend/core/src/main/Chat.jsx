@@ -320,7 +320,7 @@ function Chat() {
 									Accept
 								</a>
 							</div>}
-							{message.type === 'next_game_player' && <div className="message">
+							{message.type === 'next_game_player' && <div className="private">
 								{message.message}
 							</div>}
 						</div>

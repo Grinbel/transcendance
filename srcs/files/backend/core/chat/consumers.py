@@ -244,14 +244,9 @@ class ChatConsummer(WebsocketConsumer):
 		
 	def send_next_game_player(self,event):
 		room =event['room']
-		print('room : ',room)
-
 		usernames = Tournament.objects.get(name=room).players.all()
-		print("usernames : ",usernames)
 		usernames = [user.username for user in usernames]
 		username = self.scope['user'].username
-		print("usernames : ",usernames)
-		print("username : ",username)
 		if ( username not in usernames):
 			return
 		message ="Le joueur "+event['p1']+" et le joueur "+event['p2']+" sont demande pour le prochain match"

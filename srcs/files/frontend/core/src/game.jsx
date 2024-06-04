@@ -11,7 +11,7 @@ function Game() {
     const navigate = useNavigate();
     const { setOptions } = useGameContext();
     let Hall_of_Fame = [];
-    const end_of_game = async (name,winner) => {
+    const EndOfTournament = async (name,winner) => {
 			
 		try {
 			const response = await axiosInstance.post('/endofgame/', {

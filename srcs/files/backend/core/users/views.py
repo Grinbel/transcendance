@@ -98,9 +98,8 @@ def userFriendList(request):
 	user = User.objects.get(username=username)
 	friends = user.friends.all()
 	usernames = [friend.username for friend in friends]
-	print('usernames', usernames)
 	return Response({'friends': usernames})
-	return Response({'friends': friends})
+
 
 
 @api_view(['POST'])
@@ -120,9 +119,9 @@ def userFriendBlock(request):
 	other = User.objects.get(username=friend)
 
 	if (other is None or user is None):
-		return Response({'detail': 'Invalid user'})
+		return Response({'detail': 'Invalid user','friend': 0, 'block': 0})
 	elif (user == other):
-		return Response({'detail': 'You cannot block yourself'})
+		return Response({'detail': 'You cannot block yourself','friend': 0, 'block': 0})
 	isFriend = user.friends.filter(username=friend).exists()
 	isBlacklisted = user.blacklist.filter(username=friend).exists()
 	return Response({'friend': isFriend, 'block': isBlacklisted})
@@ -259,64 +258,3 @@ class UserList(APIView):
 		print('users', users)
 		serializer = UserSerializer(users, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
-
-# import random
-# import string
-# from datetime import datetime, timedelta
-# from django.contrib.auth import authenticate
-# from django.utils.timezone import make_aware
-# from rest_framework import status
-# from rest_framework.response import Response
-# from rest_framework.views import APIView
-# from .serializers import MyTokenObtainPairSerializer
-
-# class Login(APIView):
-#     serializer_class = MyTokenObtainPairSerializer
-
-#     def generate_verification_code(self):
-#         return ''.join(random.choices(string.digits, k=6))  # Generate a 6-digit random code
-
-#     def send_verification_code(self, user, code):
-#         # Implement code to send verification code to the user (e.g., via email, SMS)
-#         pass
-
-#     def post(self, request, *args, **kwargs):
-#         username = request.data.get('username')
-#         password = request.data.get('password')
-
-#         user = authenticate(username=username, password=password)
-#         if user is not None:
-#             verification_code = self.generate_verification_code()
-#             self.send_verification_code(user, verification_code)
-
-#             # Store verification code and expiration time in session
-#             request.session['verification_code'] = verification_code
-#             request.session['verification_code_expiry'] = make_aware(datetime.now() + timedelta(minutes=5))
-
-#             return Response({"message": "Please enter the verification code"}, status=status.HTTP_200_OK)
-#         else:
-#             return Response({"message": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
-
-#     def verify(self, request, *args, **kwargs):
-#         verification_code = request.data.get('verification_code')
-
-#         # Check if verification code matches the one stored in the session
-#         stored_code = request.session.get('verification_code')
-#         if verification_code == stored_code:
-#             # Check if verification code is still valid
-#             expiry_time = request.session.get('verification_code_expiry')
-#             if expiry_time and expiry_time > datetime.now():
-#                 # If valid, authenticate user and return token
-#                 username = request.data.get('username')
-#                 password = request.data.get('password')
-#                 user = authenticate(username=username, password=password)
-#                 if user is not None:
-#                     serializer = self.serializer_class(data={'username': username, 'password': password})
-#                     if serializer.is_valid():
-#                         token = serializer.validated_data['access']
-#                         return Response({"token": token}, status=status.HTTP_200_OK)
-#                 return Response({"message": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
-#             else:
-#                 return Response({"message": "Verification code has expired"}, status=status.HTTP_400_BAD_REQUEST)
-#         else:
-#             return Response({"message": "Invalid verification code"}, status=status.HTTP_400_BAD_REQUEST)
