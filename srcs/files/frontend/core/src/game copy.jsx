@@ -11,35 +11,35 @@ function Game() {
     const navigate = useNavigate();
     const { setOptions } = useGameContext();
     let Hall_of_Fame = [];
-
+    if(options.is_tournament === 1)
+        {
+            console.log("TOURNOI")
+            options.round_results = options.round_results || [];
+            console.log(options.round_results)
+            options.usernames = options.usernames || [];
+            console.log(options.usernames)
+            options.avatar = options.avatar || [];
+            console.log(options.avatar)
+            options.texture_balls = options.texture_balls || [];
+            let i = options.round_results.length ;
+            options.name_p1 = options.usernames[i*2];
+            options.name_p2 = options.usernames[i*2 + 1];
+            options.texture_p1 = options.avatar[i*2];
+            options.texture_p2 = options.avatar[i*2 + 1];
+            options.texture_ball_p1 = options.texture_balls[i*2];
+            options.texture_ball_p2 = options.texture_balls[i*2 + 1];
+            options.player_is_ia = 0;
+            options.score_p1 = 0;
+            options.score_p2 = 0;
+            //TODO => choper le P1 et le P2 
+            //TODO => choper leurs Avatars
+            
+        }
     options.ball_speed=options.ball_starting_speed
     console.log("juste avant le use effect")
       useEffect(() => {
+
         console.log("on est rentres dans UseEffect")
-        if(options.is_tournament === 1)
-            {
-                console.log("TOURNOI")
-                options.round_results = options.round_results || [];
-                console.log(options.round_results)
-                options.usernames = options.usernames || [];
-                console.log(options.usernames)
-                options.avatar = options.avatar || [];
-                console.log(options.avatar)
-                options.texture_balls = options.texture_balls || [];
-                let i = options.round_results.length ;
-                options.name_p1 = options.usernames[i*2];
-                options.name_p2 = options.usernames[i*2 + 1];
-                options.texture_p1 = options.avatar[i*2];
-                options.texture_p2 = options.avatar[i*2 + 1];
-                options.texture_ball_p1 = options.texture_balls[i*2];
-                options.texture_ball_p2 = options.texture_balls[i*2 + 1];
-                options.player_is_ia = 0;
-                options.score_p1 = 0;
-                options.score_p2 = 0;
-                //TODO => choper le P1 et le P2 
-                //TODO => choper leurs Avatars
-                
-            }
         if (options.texture_p1_ball ===1)
             options.texture_p1_ball = options.texture_ball
         if (options.texture_p2_ball ===1)
@@ -53,6 +53,7 @@ function Game() {
         let texturep2 = loader.load(options.texture_p2);
         let eye_texture = loader.load(options.texture_eye);
         let wall_texture = loader.load(options.wall_texture)
+        console.log("on est rentres dans UseEffect")
         console.log(options)
         // Our Javascript will go here.
         const scene = new THREE.Scene();
@@ -95,7 +96,7 @@ function Game() {
         const renderer = new THREE.WebGLRenderer();
         camera.lookAt(new THREE.Vector3(0, 0, 0));
         renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.insertBefore(renderer.domElement, document.body.firstChild);
+        document.body.appendChild(renderer.domElement);
         const ball_form = new THREE.SphereGeometry(options.ball_radius, 32, 32);
         const p1_weapon = new THREE.BoxGeometry(options.player_width, options.player_size, options.player_height);
         const p2_weapon = new THREE.BoxGeometry(options.player_width, options.player_size, options.player_height);
@@ -598,8 +599,6 @@ function Game() {
                                     console.log("tout a ete place")
                                     return(end_of_tournament(-1));}
 //!                            navigate('/tournament_continues');
-                            document.body.removeChild(renderer.domElement);
-                            renderer.dispose();
                             setOptions(prevOptions => ({ ...prevOptions, ...options }));
                             navigate('/game');
                         }
