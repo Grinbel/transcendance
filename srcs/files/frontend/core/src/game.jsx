@@ -685,6 +685,17 @@ function Game() {
                     scene.add(Hall_of_Fame[counter/60]);
                 }
             requestAnimationFrame(() => end_of_tournament(counter));}
+            else
+                {
+                    for (let i = 0; i < options.usernames.length; i++)
+                        {
+                            scene.remove(Hall_of_Fame[i]);
+                            Hall_of_Fame[i].dispose();
+                        }
+                    document.body.removeChild(renderer.domElement);
+                    renderer.dispose();
+                    setOptions(prevOptions => ({ ...prevOptions, ...options }));
+                    navigate('/');}
             
 
         }
