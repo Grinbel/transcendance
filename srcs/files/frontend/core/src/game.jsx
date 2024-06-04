@@ -35,9 +35,6 @@ function Game() {
             //TODO => choper leurs Avatars
             
         }
-    console.log(" COUCOU NOM P1 =" + options.name_p1)
-    console.log(" COUCOU NOM P2 =" + options.name_p2)
-    console.log(" vitessse balle" + options.ball_starting_speed)
     options.ball_speed=options.ball_starting_speed
     console.log("juste avant le use effect")
       useEffect(() => {
