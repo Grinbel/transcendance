@@ -22,6 +22,18 @@ function Game() {
 			throw (error);
 		}
 	}
+	const end_of_game = async (name,winner) => {
+			
+		try {
+			const response = await axiosInstance.post('/endofgame/', {
+				room: name,
+				winner: winner,
+			});
+		} catch (error) {
+			setError(error.message);
+			throw (error);
+		}
+	}
     const { options } = useGameContext();
     const navigate = useNavigate();
     const { setOptions } = useGameContext();
@@ -49,7 +61,6 @@ function Game() {
             //TODO => choper le P1 et le P2 
             //TODO => choper leurs Avatars
 			nextgameplayer(options.room,options.name_p1,options.name_p2);
-            
         }
     console.log(" COUCOU NOM P1 =" + options.name_p1)
     console.log(" COUCOU NOM P2 =" + options.name_p2)

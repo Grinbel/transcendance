@@ -93,7 +93,6 @@ def NextGamePlayer(request):
 	p1 = request.data.get('p1')
 	p2 = request.data.get('p2')
 	room = request.data.get('room')
-
 	channel_layer = get_channel_layer()
 	async_to_sync(channel_layer.group_send)(
 		'general',
@@ -146,12 +145,9 @@ class ChatConsummer(WebsocketConsumer):
 		# print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",${SERVER_ADRESS})
 		text_data_json = json.loads(text_data)
 		user= self.scope['user']
-		print("Tournament name: ",user.tournament_name)
-		print(text_data_json)
+		
+
 		username = user.username
-		games = Tournament.objects.all()
-		for game in games:
-			print("name:",game.name)
 		tipe= text_data_json['type']
 		if (tipe == 'connected'):
 			room_name = self.room_name
@@ -248,14 +244,19 @@ class ChatConsummer(WebsocketConsumer):
 		
 	def send_next_game_player(self,event):
 		room =event['room']
+		print('room : ',room)
+
 		usernames = Tournament.objects.get(name=room).players.all()
+		print("usernames : ",usernames)
 		usernames = [user.username for user in usernames]
 		username = self.scope['user'].username
+		print("usernames : ",usernames)
+		print("username : ",username)
 		if ( username not in usernames):
 			return
-		message ="Le joueur "+event['p1']+" et le joueur "+event['p2']+" sont pret pour le prochain match"
+		message ="Le joueur "+event['p1']+" et le joueur "+event['p2']+" sont demande pour le prochain match"
 		self.send(text_data=json.dumps({
-			'type': 'send_next_game_player',
+			'type': 'next_game_player',
 			'message':message,
 			'room':event['room'],
 		}

@@ -15,6 +15,8 @@ from asgiref.sync import async_to_sync
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.core import serializers
+from channels.layers import get_channel_layer
+from django.http import HttpResponse
 
 #//! put permisiion in login
 @api_view(['POST'])
@@ -45,15 +47,32 @@ def choice(request):
 	tournament = tournament.first()
 	if (tournament is None):
 		return Response({'Error':'Invalid tournament ID'})
-	if tournament.checkAddUser(user) is False:
+	elif tournament.checkAddUser(user) is False:
 		return Response({'Error':'Room is full'})
-	if (Tournament.objects.filter(players=user).exists()):
+	elif (Tournament.objects.filter(players=user).exists()):
 		return Response({'Error':'You are already inside a tournament'})
-	return Response({'room_name': tournament.name})
+	elif (tournament.status == 'inprogress'):
+		return Response({'Error':'Tournament is already in progress'})
+	else:
+		return Response({'room_name': tournament.name})
 	
+@api_view(['POST'])
+def EndOfGame(request):
+	print('end of game!!!!!!!!!!')
+	winner = request.data.get('winner')
+	room = request.data.get('room')
+	channel_layer = get_channel_layer()
+	async_to_sync(channel_layer.group_send)(
+		room,
+		{
+			'type': 'end_of_game',
+			'winner':winner,
+			'room':room,
+		}
+	)
+	return HttpResponse('Player Ready!')
 
-
-class Tournamen(WebsocketConsumer):
+class Matchmaking(WebsocketConsumer):
 	def connect(self):
 		room_name = self.scope['url_route']['kwargs']['room_name']
 		self.room_name = room_name
@@ -148,6 +167,8 @@ class Tournamen(WebsocketConsumer):
 					'name': name,
 				}
 			)
+			tournament.status= 'inprogress'
+			tournament.save()
 
 
 	def tournament(self, event):
@@ -170,4 +191,12 @@ class Tournamen(WebsocketConsumer):
 		self.send(text_data=json.dumps({
 			'type': 'launch_tournament',
 			'timer': event['timer'],
+		}))
+	
+	def end_of_game(self,event):
+		print('end of game')
+		self.send(text_data=json.dumps({
+			'type':'end',
+			'winner': event['winner'],
+			'room': event['room'],
 		}))

@@ -22,7 +22,7 @@ function Chat() {
 	const [error, setError] = useState(null);
 	const [messages, setMessages] = useState([]);
 	const [ws, setWs] = useState(null);
-	const messagesEndRef = useRef(null);
+	const messagesEndRef = React.createRef()
 	const [displayer, setdisplayer] = useState("");
 	const [roomName,setRoomName] = useState("general");
 	const [friend,setFriend] = useState("");
@@ -31,9 +31,10 @@ function Chat() {
 	const websockets = {};
 	let location = useLocation();
 
+
 	useEffect(() => {
-		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-	}, [messages]);
+		  messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+	  }, [messages]);
 
 	function getWebSocket(roomName) {
 		
@@ -72,7 +73,7 @@ function Chat() {
 		ws.onmessage = e => {
 			const message = JSON.parse(e.data);
 			setMessages(prevMessages => [...prevMessages, message]);
-			// console.log('ws chat message', message, message.username);
+			console.log('ws chat message', message, message.username);
 		};
 
 		setWs(ws);
@@ -287,12 +288,12 @@ function Chat() {
 				
 				<div id="chatContent" className="chat-content">
 					{messages.filter((message, index) => index > 0 ).map((message, index) => (
-						<div key={index} className="chat-message" ref={index === messages.length - 1 ? messagesEndRef : null}>
+						<div key={index} className="chat-message" ref={messagesEndRef}>
 							{ message.username !== undefined &&<Nav className="ms-auto">
 								<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={message.username} onClick={() => info(message.username)}>
 									
 									{/* //TODO texte brut */}
-									<NavDropdown.Item href={`/${message.username}`}>profile</NavDropdown.Item>
+									<NavDropdown.Item href={`/profile/${message.username}`}>profile</NavDropdown.Item>
 									{friend != undefined &&  <NavDropdown.Divider />}
 									{/* //TODO texte brut */}
 									{/* <NavDropdown.Item onClick={() => setFormData({message: `/whisper ${message.username}`,type : 'private'})}>Whisper</NavDropdown.Item> */}
@@ -319,7 +320,7 @@ function Chat() {
 									Accept
 								</a>
 							</div>}
-							{message.type === 'send_next_game_player' && <div className="send_next_game_player">
+							{message.type === 'next_game_player' && <div className="message">
 								{message.message}
 							</div>}
 						</div>

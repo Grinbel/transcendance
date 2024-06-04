@@ -35,6 +35,19 @@ const tournament = () => {
 			throw (error);
 		}
 	}
+
+	const end_of_game = async (name,winner) => {
+			
+		try {
+			const response = await axiosInstance.post('/endofgame/', {
+				room: name,
+				winner: winner,
+			});
+		} catch (error) {
+			// setError(error.message);
+			throw (error);
+		}
+	}
 	function getWebSocket(roomName) {
 		if (!websockets[roomName]) {
 			 
@@ -52,6 +65,7 @@ const tournament = () => {
 	// 	  console.log("username:",usernames);
 	// 	  console.log("avatar:",avatars);
 	// }
+	const delay = ms => new Promise(res => setTimeout(res, ms));
 	  useEffect(() => {
 		if (isTrue === false){
 			return;
@@ -62,9 +76,6 @@ const tournament = () => {
 
 		if (userInfo.user.username === sortedMessages[0])
 			{
-			console.log("user!!!!!!!!!!!",sortedMessages[0],userInfo.user.username);
-			console.log("user is equal ",sortedMessages[0] === userInfo.user.username);
-			console.log("user list",sortedMessages);
 			setDisplayer("Launching");
 
 			messages.sort(() => Math.random() - 0.5);
@@ -72,10 +83,6 @@ const tournament = () => {
 			const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
 			const avatars = messages.map(message => message ? message.avatar.replace("/media/", "") : undefined).filter(Boolean);
 			const alias = messages.map(message => message ? message.alias : undefined).filter(Boolean);
-			console.log("username:",usernames);
-			console.log("avatar:",avatars);
-			console.log("alias:",alias);
-			console.log("Launching");
 			setOptions(prevOptions => ({
 				...prevOptions, // Gardez les options précédentes
 				is_tournament : 1,
@@ -84,26 +91,32 @@ const tournament = () => {
 				room : name,
 				alias: usernames,
 			}));
-			navigate('/game');
+			setIsTrue(false);
+			// nextgameplayer(name);
+			// end_of_game(name,userInfo.user.username);
+			setDisplayer("You are  the host. Launching the game.");
+			
+			delay(1000).then(() => navigate('/game'));
 		}
 		else
 		{
 			setIsTrue(false);
 			setDisplayer("You are not the host. Go on the screen of " +user[0] +" to launch the game.");
+			// delay(5000).then(() => navigate('/'));
 		}
 	}, [messages,isTrue,name]);
 
 	useEffect(() => {
-		// if (userInfo.user === undefined || userInfo.user.tournament === "")
-		// {
-		// 	navigate('/login');
-		// 	return;
-		// }
-		// if (userInfo.user.tournament === "default")
-		// {
-		// 	navigate('/play');
-		// 	return;
-		// }
+		if (userInfo.user === undefined)
+		{
+			navigate('/login');
+			return;
+		}
+		if (userInfo.user.tournament === undefined || userInfo.user.tournament === "" || userInfo.user.tournament === "default")
+		{
+			navigate('/play');
+			return;
+		}
 		const ws = getWebSocket(userInfo.user.tournament);
 		ws.onopen = () => {
 			ws.send(JSON.stringify({ type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament ,alias:userInfo.user.alias}));
@@ -126,21 +139,24 @@ const tournament = () => {
 				{
 					setMessages(prevMessages => [...prevMessages, message]);
 					setName(message.name);
-					setMaxCapacity(message.max_capacity)
-					const alias = messages.map(message =>  message.alias);
-					
+					setMaxCapacity(message.max_capacity)					
 				}
 			}
 			else if (message.type === 'launch_tournament'){
 				// setDisplayer("Launching in " + message.timer + " seconds");
 				console.log("set tournamentIsLaunching")
 				// userInfo.setUser({...userInfo.user,tournamentIsLaunching:true});
-				// setIsTrue(true);
+				setIsTrue(true);
 			}
 			else if(message.type === "friends")
 			{
 				setFriend(prevFriend => [...prevFriend,message])
-
+			}
+			else if (message.type === 'end')
+			{
+				setDisplayer("The tournament is over");
+				delay(5000).then(() => navigate('/'));
+				// ws.close();
 			}
 			// console.info('received', message);
 		};
