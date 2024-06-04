@@ -54,7 +54,6 @@ const tournament = () => {
 	// }
 	  useEffect(() => {
 		if (isTrue === false){
-			console.log("return")
 			return;
 		}
 		console.log("messages",messages);
@@ -72,16 +71,18 @@ const tournament = () => {
 			console.log("Message messages ", messages);
 			const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
 			const avatars = messages.map(message => message ? message.avatar.replace("/media/", "") : undefined).filter(Boolean);
+			const alias = messages.map(message => message ? message.alias : undefined).filter(Boolean);
 			console.log("username:",usernames);
 			console.log("avatar:",avatars);
-			
+			console.log("alias:",alias);
 			console.log("Launching");
 			setOptions(prevOptions => ({
 				...prevOptions, // Gardez les options précédentes
 				is_tournament : 1,
-				usernames : usernames,
+				usernames : alias,
 				avatar : avatars,
 				room : name,
+				alias: usernames,
 			}));
 			navigate('/game');
 		}
@@ -92,16 +93,12 @@ const tournament = () => {
 		}
 	}, [messages,isTrue,name]);
 
-	  useEffect(() => {
-		console.log("messages",messages);
-	  }, [messages]);
-	
 	useEffect(() => {
-		if (userInfo.user === undefined || userInfo.user.tournament === "")
-		{
-			navigate('/login');
-			return;
-		}
+		// if (userInfo.user === undefined || userInfo.user.tournament === "")
+		// {
+		// 	navigate('/login');
+		// 	return;
+		// }
 		// if (userInfo.user.tournament === "default")
 		// {
 		// 	navigate('/play');
@@ -109,8 +106,7 @@ const tournament = () => {
 		// }
 		const ws = getWebSocket(userInfo.user.tournament);
 		ws.onopen = () => {
-			const user = {type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament }
-			ws.send(JSON.stringify({ type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament }));
+			ws.send(JSON.stringify({ type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament ,alias:userInfo.user.alias}));
 		}
 		ws.onclose = () => {
 		}
@@ -122,7 +118,7 @@ const tournament = () => {
 			}
 			else if (message.type === 'disconnected') {
 				setMessages(prevMessages => []);
-				ws.send(JSON.stringify({ type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament }));
+				ws.send(JSON.stringify({ type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament, alias:userInfo.user.alias }));
 				return;
 			}
 			else if (message.type === 'username') {
@@ -131,13 +127,15 @@ const tournament = () => {
 					setMessages(prevMessages => [...prevMessages, message]);
 					setName(message.name);
 					setMaxCapacity(message.max_capacity)
+					const alias = messages.map(message =>  message.alias);
+					
 				}
 			}
 			else if (message.type === 'launch_tournament'){
-				setDisplayer("Launching in " + message.timer + " seconds");
+				// setDisplayer("Launching in " + message.timer + " seconds");
 				console.log("set tournamentIsLaunching")
 				// userInfo.setUser({...userInfo.user,tournamentIsLaunching:true});
-				setIsTrue(true);
+				// setIsTrue(true);
 			}
 			else if(message.type === "friends")
 			{
@@ -175,7 +173,6 @@ const tournament = () => {
 		<div>
 		<header className="tournament">
 		{/* //TODO texte brut */}
-
 			<h1>tournament {name}</h1>
 			{/* //TODO texte brut */}
 
@@ -186,7 +183,7 @@ const tournament = () => {
 					<div key={index} className="chat-message" ref={index === messages.length - 1 ? messagesEndRef : null}>
 						<div className="chat-username">
 							<Link to={`/${message.username}`}>
-							{message.username}
+								{message.alias}
 							</Link>
 						</div>
 						<div />

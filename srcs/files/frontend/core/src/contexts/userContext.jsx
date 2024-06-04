@@ -10,6 +10,7 @@ function  UserProvider({children}){
 	two_factor:false, 
 	avatar:null, 
 	tournament:"default",
+	alias:"",
 	tournamentIsLaunching:false,
 	email:"default",
 	uuid:"default",

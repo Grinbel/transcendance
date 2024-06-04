@@ -72,7 +72,7 @@ function Chat() {
 		ws.onmessage = e => {
 			const message = JSON.parse(e.data);
 			setMessages(prevMessages => [...prevMessages, message]);
-			console.log('ws chat message', message, message.username);
+			// console.log('ws chat message', message, message.username);
 		};
 
 		setWs(ws);
