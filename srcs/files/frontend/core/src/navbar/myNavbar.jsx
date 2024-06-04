@@ -32,7 +32,7 @@ const NavLoggedIn = () => {
 
 	const UserMenu = (
 		<Image
-		  src={avatar}
+		  src={userinfo.user.avatar.replace("/media/", "")}
 		  alt="UserName profile image"
 		  roundedCircle
 		  style={{ width: '40px' }}
@@ -67,7 +67,7 @@ const NavLoggedIn = () => {
 		<Navbar  collapseOnSelect expand="sm" className="bg-body-tertiary">
 		  <Container >
 
-			<Navbar.Brand href="#home" className='logoName'>
+			<Navbar.Brand href="/" className='logoName'>
 				Pong
 			</Navbar.Brand>
 			

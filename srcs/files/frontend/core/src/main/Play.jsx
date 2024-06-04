@@ -16,6 +16,7 @@ function Play() {
 	const [error, setError] = useState(null);
 	const [join, setJoin] = useState(false);
 	const [formData, setFormData] = useState({ tournamentId: "", playerCount: 2, isLocal: false });
+	const [alias, setAlias] = useState("");
 	const [displayer, setDisplayer] = useState("");
 
 	const handleChange = (event) => {
@@ -40,6 +41,11 @@ function Play() {
 		setDisplayer("");
 		// setIsLoading(true);
 		event.preventDefault();
+		if (alias === ""){
+			setAlias(userInfo.user.username);
+		}
+
+
 		try {
 			const response = await axiosInstance.post('/choice/', {
 				tournamentId: formData.tournamentId,
@@ -47,10 +53,8 @@ function Play() {
 				isLocal: formData.isLocal,
 				username: userInfo.user.username,
 				join:join  && formData.tournamentId === "",
+				alias: alias === "" ? userInfo.user.username : alias,
 			});
-			console.log('response', response.data);
-			console.log('Room name', response.data.room_name);
-			console.log('error', response.data.Error);
 
 			//check if response.data contains the word error
 
@@ -63,8 +67,11 @@ function Play() {
 				//! tournament is not inside the cached data
 				userInfo.setUser({
 					...userInfo.user,
-					tournament: response.data.room_name
-				  });
+					tournament: response.data.room_name,
+					alias: alias === "" ? userInfo.user.username : alias,
+				});
+				const local = userInfo.user
+				localStorage.setItem('user', JSON.stringify(local));
 				navigateTo('/tournament/');
 			}
 		} catch (error) {
@@ -115,9 +122,25 @@ function Play() {
 							placeholder="Enter tournament ID"
 							value={formData.tournamentId}
 							onChange={handleChange}
+							maxLength="6"
 							/>
 									{/* //TODO texte brut */}
+					<label htmlFor="alias"></label>
+						<input
+							type="text"
+							id="alias"
+							name="alias"
+							placeholder="Enter alias"
+							value={alias}
+							onChange={(e) => {
+								const re = /^[a-zA-Z0-9]+$/; // Regex for alphanumeric characters
+								if (e.target.value === '' || re.test(e.target.value)) {
+									setAlias(e.target.value);
+								}
+							}}
+							maxLength="7"
 
+							/>
 					<button onClick={handleSubmit}>Submit</button>
 				</div>
 			)}
@@ -137,16 +160,29 @@ function Play() {
 				{/* //TODO texte brut */}
 
 					Local
-					<input
-						type="checkbox"
-						id="isLocal"
-						name="isLocal"
-						checked={formData.isLocal}
-						onChange={handleChange}
-						/>
+				<input
+					type="checkbox"
+					id="isLocal"
+					name="isLocal"
+					checked={formData.isLocal}
+					onChange={handleChange}
+					/>
 				</label>
 				{/* //TODO texte brut */}
-
+				<input
+					type="text"
+					id="alias"
+					name="alias"
+					placeholder="Enter alias"
+					value={alias}
+					onChange={(e) => {
+						const re = /^[a-zA-Z0-9]+$/; // Regex for alphanumeric characters
+						if (e.target.value === '' || re.test(e.target.value)) {
+							setAlias(e.target.value);
+						}
+					}}
+					maxLength="7"
+					/>
 				<button onClick={handleSubmit}>Submit</button>
 			</div>
 			)}

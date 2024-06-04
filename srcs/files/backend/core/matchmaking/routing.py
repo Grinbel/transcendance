@@ -1,7 +1,7 @@
 from django.urls import re_path
 
-from .views import Tournamen
+from .views import Matchmaking
 
 urlpatterns = [
-	re_path(r'ws/tournament/', Tournamen.as_asgi()),
+	re_path(r'ws/tournament/', Matchmaking.as_asgi()),
 ]

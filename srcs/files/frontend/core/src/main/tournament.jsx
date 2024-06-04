@@ -5,7 +5,7 @@ import  { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import  { axiosInstance } from "../axiosAPI.js";
-import Game from "../game.jsx";
+import { useGameContext } from "../contexts/GameContext.jsx";
 
 const tournament = () => {
 	const userInfo = useContext(userContext);
@@ -18,7 +18,36 @@ const tournament = () => {
 	const [displayer, setDisplayer] = useState("");
 	const navigate = useNavigate();
 	const websockets = {};
+	const { setOptions } = useGameContext();
+	const [isTrue, setIsTrue] = useState(false);
 
+	const nextgameplayer = async (name) => {
+		
+		try {
+			const response = await axiosInstance.post('/nextgameplayer/', {
+				p1: 'bob',
+				p2: 'alice',
+				room: name,
+				
+			});
+		} catch (error) {
+			setError(error.message);
+			throw (error);
+		}
+	}
+
+	const end_of_game = async (name,winner) => {
+			
+		try {
+			const response = await axiosInstance.post('/endofgame/', {
+				room: name,
+				winner: winner,
+			});
+		} catch (error) {
+			// setError(error.message);
+			throw (error);
+		}
+	}
 	function getWebSocket(roomName) {
 		if (!websockets[roomName]) {
 			 
@@ -27,42 +56,70 @@ const tournament = () => {
 		setMessages(prevMessages => [""]);
 		return websockets[roomName];
 	  }
-	  useEffect(() => {
-		console.log("Message messages ", messages);
-		if (userInfo.tournamentIsLaunching === true)
-			console.log("LAUNCHING", messages.username)
-	  }, [messages,userInfo]);
-
-
-	  useEffect(() => {
-		console.log("Launching");
-		// messages.shuffle()
-		messages.sort(() => Math.random() - 0.5);
-		const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
-		const avatars = messages.map(message => message ? message.avatar : undefined).filter(Boolean);
-		const trueArray = new Array(usernames.length).fill(true);
-		console.log("username:",usernames);
-		console.log("avatar:",avatars);
-		console.log("trueArray:",trueArray);
-	}, [userInfo,messages]);
 	
+	// const launch = (messages) => {
+	// 	console.log("launching",messages);
+	// 	messages.sort(() => Math.random() - 0.5);
+	// 	const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
+	// 	  const avatars = messages.map(message => message ? message.avatar : undefined).filter(Boolean);
+	// 	  console.log("username:",usernames);
+	// 	  console.log("avatar:",avatars);
+	// }
+	const delay = ms => new Promise(res => setTimeout(res, ms));
+	  useEffect(() => {
+		if (isTrue === false){
+			return;
+		}
+		console.log("messages",messages);
+		const user = messages.map(message => message ? message.username : undefined).filter(Boolean);
+		const sortedMessages = [...user].sort((a, b) => a.localeCompare(b));
+
+		if (userInfo.user.username === sortedMessages[0])
+			{
+			setDisplayer("Launching");
+
+			messages.sort(() => Math.random() - 0.5);
+			console.log("Message messages ", messages);
+			const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
+			const avatars = messages.map(message => message ? message.avatar.replace("/media/", "") : undefined).filter(Boolean);
+			const alias = messages.map(message => message ? message.alias : undefined).filter(Boolean);
+			setOptions(prevOptions => ({
+				...prevOptions, // Gardez les options précédentes
+				is_tournament : 1,
+				usernames : alias,
+				avatar : avatars,
+				room : name,
+				alias: usernames,
+			}));
+			setIsTrue(false);
+			// nextgameplayer(name);
+			// end_of_game(name,userInfo.user.username);
+			setDisplayer("You are  the host. Launching the game.");
+			
+			delay(1000).then(() => navigate('/game'));
+		}
+		else
+		{
+			setIsTrue(false);
+			setDisplayer("You are not the host. Go on the screen of " +user[0] +" to launch the game.");
+			// delay(5000).then(() => navigate('/'));
+		}
+	}, [messages,isTrue,name]);
+
 	useEffect(() => {
-		if (userInfo.user === undefined || userInfo.user.tournament === undefined)
-			return ;
-		else if (userInfo.user.username === "default")
+		if (userInfo.user === undefined)
 		{
 			navigate('/login');
 			return;
 		}
-		else if (userInfo.user.tournament === "default")
+		if (userInfo.user.tournament === undefined || userInfo.user.tournament === "" || userInfo.user.tournament === "default")
 		{
 			navigate('/play');
 			return;
 		}
 		const ws = getWebSocket(userInfo.user.tournament);
 		ws.onopen = () => {
-			const user = {type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament }
-			ws.send(JSON.stringify({ type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament }));
+			ws.send(JSON.stringify({ type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament ,alias:userInfo.user.alias}));
 		}
 		ws.onclose = () => {
 		}
@@ -74,7 +131,7 @@ const tournament = () => {
 			}
 			else if (message.type === 'disconnected') {
 				setMessages(prevMessages => []);
-				ws.send(JSON.stringify({ type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament }));
+				ws.send(JSON.stringify({ type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament, alias:userInfo.user.alias }));
 				return;
 			}
 			else if (message.type === 'username') {
@@ -82,29 +139,35 @@ const tournament = () => {
 				{
 					setMessages(prevMessages => [...prevMessages, message]);
 					setName(message.name);
-					setMaxCapacity(message.max_capacity)
+					setMaxCapacity(message.max_capacity)					
 				}
 			}
 			else if (message.type === 'launch_tournament'){
-				setDisplayer("Launching in " + message.timer + " seconds");
+				// setDisplayer("Launching in " + message.timer + " seconds");
 				console.log("set tournamentIsLaunching")
-				userInfo.setUser({...userInfo.user,tournamentIsLaunching:true});
+				// userInfo.setUser({...userInfo.user,tournamentIsLaunching:true});
+				setIsTrue(true);
 			}
 			else if(message.type === "friends")
 			{
 				setFriend(prevFriend => [...prevFriend,message])
-
 			}
-			console.info('received', message);
+			else if (message.type === 'end')
+			{
+				setDisplayer("The tournament is over");
+				delay(5000).then(() => navigate('/'));
+				// ws.close();
+			}
+			// console.info('received', message);
 		};
 
 		setWs(ws);
 
 		return () => {
-			console.error('ws chat closed');
+			console.error('ws tournament closed');
 			ws.close();
 		};
-	}, []);
+	}, [userInfo.user]);
 
 	const sendInvite = async(username)=>
 	{
@@ -126,7 +189,6 @@ const tournament = () => {
 		<div>
 		<header className="tournament">
 		{/* //TODO texte brut */}
-
 			<h1>tournament {name}</h1>
 			{/* //TODO texte brut */}
 
@@ -137,7 +199,7 @@ const tournament = () => {
 					<div key={index} className="chat-message" ref={index === messages.length - 1 ? messagesEndRef : null}>
 						<div className="chat-username">
 							<Link to={`/${message.username}`}>
-							{message.username}
+								{message.alias}
 							</Link>
 						</div>
 						<div />

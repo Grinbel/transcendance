@@ -22,7 +22,7 @@ function Chat() {
 	const [error, setError] = useState(null);
 	const [messages, setMessages] = useState([]);
 	const [ws, setWs] = useState(null);
-	const messagesEndRef = useRef(null);
+	const messagesEndRef = React.createRef()
 	const [displayer, setdisplayer] = useState("");
 	const [roomName,setRoomName] = useState("general");
 	const [friend,setFriend] = useState("");
@@ -31,9 +31,10 @@ function Chat() {
 	const websockets = {};
 	let location = useLocation();
 
+
 	useEffect(() => {
-		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-	}, [messages]);
+		  messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+	  }, [messages]);
 
 	function getWebSocket(roomName) {
 		
@@ -72,6 +73,7 @@ function Chat() {
 		ws.onmessage = e => {
 			const message = JSON.parse(e.data);
 			setMessages(prevMessages => [...prevMessages, message]);
+			console.log('ws chat message', message, message.username);
 		};
 
 		setWs(ws);
@@ -257,7 +259,20 @@ function Chat() {
 			throw (error);
 		}
 	}
-
+	const sendInvite = async(username)=>
+		{
+			console.log("INVITE ",username)
+			try {
+				const response = await axiosInstance.post('/inviteTournament/', {
+					receiver: username,
+					room: userInfo.user.tournament,
+					self: userInfo.user.username,
+				});
+			} catch (error) {
+				setError(error.message);
+				throw (error);
+			}
+		}
 	if (userInfo.user === undefined || location.pathname === '/game' ){
 		return (<div></div>);
 	}
@@ -272,13 +287,13 @@ function Chat() {
 			<div id="chatBody" className="chat-body">
 				
 				<div id="chatContent" className="chat-content">
-					{messages.map((message, index) => (
-						<div key={index} className="chat-message" ref={index === messages.length - 1 ? messagesEndRef : null}>
-							<Nav className="ms-auto">
+					{messages.filter((message, index) => index > 0 ).map((message, index) => (
+						<div key={index} className="chat-message" ref={messagesEndRef}>
+							{ message.username !== undefined &&<Nav className="ms-auto">
 								<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={message.username} onClick={() => info(message.username)}>
 									
 									{/* //TODO texte brut */}
-									<NavDropdown.Item href={`/${message.username}`}>profile</NavDropdown.Item>
+									<NavDropdown.Item href={`/profile/${message.username}`}>profile</NavDropdown.Item>
 									{friend != undefined &&  <NavDropdown.Divider />}
 									{/* //TODO texte brut */}
 									{/* <NavDropdown.Item onClick={() => setFormData({message: `/whisper ${message.username}`,type : 'private'})}>Whisper</NavDropdown.Item> */}
@@ -286,9 +301,10 @@ function Chat() {
 									{friend != undefined && friend === true && <NavDropdown.Item onClick={() => action(message.username,"unfriend")}>Unfriend</NavDropdown.Item>}
 									{block != undefined && block === false && <NavDropdown.Item onClick={() => action(message.username,"block")}>Block</NavDropdown.Item>}
 									{block != undefined && block === true && <NavDropdown.Item onClick={() => action(message.username,"unblock")}>Unblock</NavDropdown.Item>}
+									{userInfo.user.tournament != ""&&message.username != userInfo.user.username && <NavDropdown.Item onClick={() => sendInvite(message.username)}>Invite</NavDropdown.Item>}
 									{privateChat(message.username)}
 								</NavDropdown>
-							</Nav>
+							</Nav>}
 							{/* <div className="message">
 								{message.message} <span className="message-time">{message.date}</span>
 							</div> */}
@@ -304,16 +320,15 @@ function Chat() {
 									Accept
 								</a>
 							</div>}
+							{message.type === 'next_game_player' && <div className="message">
+								{message.message}
+							</div>}
 						</div>
-					)).filter((_, index) => index > 0)}
+					))}
 				</div>
 				<div className="displayer-errors">
 					{displayer}
 				</div>
-					{userInfo.tournamentIsLaunching ===false &&
-						<div className="reminder">
-							<h4> La partie va bientot commencer</h4>
-					</div>}
 				
 				<div className="chat-chat">
 					<input

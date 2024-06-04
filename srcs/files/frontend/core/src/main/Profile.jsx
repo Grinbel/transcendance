@@ -4,6 +4,7 @@ import { useNavigate, useLocation,useParams } from "react-router-dom";
 import { useContext } from "react";
 import { userContext } from "../contexts/userContext.jsx";
 import  { axiosInstance } from "../axiosAPI.js";
+import "./Home.css";
 import { Button } from "react-bootstrap";
 const Profile = () => {
 	let { username } = useParams();
