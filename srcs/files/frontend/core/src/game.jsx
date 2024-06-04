@@ -122,7 +122,12 @@ function Game() {
         const renderer = new THREE.WebGLRenderer();
         camera.lookAt(new THREE.Vector3(0, 0, 0));
         renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.insertBefore(renderer.domElement, document.body.firstChild);
+        renderer.domElement.style.position = 'absolute';
+        renderer.domElement.style.top = 0;
+        renderer.domElement.style.left = 0;
+        renderer.domElement.style.zIndex = 1000; // Make sure this is higher than the z-index of other elements
+        document.body.appendChild(renderer.domElement);
+        //document.body.insertBefore(renderer.domElement, document.body.firstChild);
         const ball_form = new THREE.SphereGeometry(options.ball_radius, 32, 32);
         const p1_weapon = new THREE.BoxGeometry(options.player_width, options.player_size, options.player_height);
         const p2_weapon = new THREE.BoxGeometry(options.player_width, options.player_size, options.player_height);
@@ -169,7 +174,15 @@ function Game() {
 
         window.addEventListener('mousemove', handleMouseMove);
 
-
+        function clear_components(component){
+            if (component.geometry)
+                component.geometry.dispose();
+            if (component.material)
+                component.material.dispose();
+            if (component.texture)
+                component.texture.dispose();
+        
+        }
         function server_ball_reset() {
             options.time_before_powerup = Math.random() * (options.max_time_before_powerup -options.min_time_before_powerup) + options.min_time_before_powerup;
             options.ball_x = 0;
@@ -522,6 +535,26 @@ function Game() {
         }
         animate();
         function end_of_game(counter){
+            scene.remove(text_p1);
+            scene.remove(text_p2);
+            text_p1.dispose();
+            text_p2.dispose();
+            scene.remove(p1_weapon_mesh);
+            scene.remove(p2_weapon_mesh);
+            scene.remove(ball_render);
+            scene.remove(ia_eye);
+            scene.remove(target_mesh);
+            scene.remove(powerup_render1);
+            scene.remove(first_wall);
+            scene.remove(second_wall);
+            clear_components(p1_weapon_mesh);
+            clear_components(p2_weapon_mesh);
+            clear_components(ball_render);
+            clear_components(ia_eye);
+            clear_components(target_mesh);
+            clear_components(powerup_render1);
+            clear_components(first_wall);
+            clear_components(second_wall);
 
             renderer.render(scene, camera);
             if (counter !=0)
@@ -641,7 +674,10 @@ function Game() {
         }
         function end_of_tournament(counter){
             renderer.render(scene, camera);
-            console.log("COUNTER = " + counter)
+            camera.position.z = 0;
+            camera.position.x = 0;
+            camera.position.y = -50;
+            camera.lookAt(new THREE.Vector3(0, 0, 0));
             if(counter/60 < options.usernames.length -1) // options.usernames[15]
                 {counter ++;
             if(counter % 60 === 0)
@@ -649,7 +685,6 @@ function Game() {
                     scene.add(Hall_of_Fame[counter/60]);
                 }
             requestAnimationFrame(() => end_of_tournament(counter));}
-            
             
 
         }
