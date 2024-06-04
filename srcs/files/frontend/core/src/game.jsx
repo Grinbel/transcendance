@@ -11,7 +11,33 @@ function Game() {
     const navigate = useNavigate();
     const { setOptions } = useGameContext();
     let Hall_of_Fame = [];
+    const end_of_game = async (name,winner) => {
+			
+		try {
+			const response = await axiosInstance.post('/endofgame/', {
+				room: name,
+				winner: winner,
+			});
+		} catch (error) {
+			// setError(error.message);
+			throw (error);
+		}
+	}
 
+    const nextgameplayer = async (name,p1,p2) => {
+		
+		try {
+			const response = await axiosInstance.post('/nextgameplayer/', {
+				p1: p1,
+				p2: p2,
+				room: name,
+				
+			});
+		} catch (error) {
+			setError(error.message);
+			throw (error);
+		}
+	}
     options.ball_speed=options.ball_starting_speed
     console.log("juste avant le use effect")
       useEffect(() => {
@@ -36,6 +62,7 @@ function Game() {
                 options.player_is_ia = 0;
                 options.score_p1 = 0;
                 options.score_p2 = 0;
+                nextgameplayer(options.room,options.name_p1,options.name_p2)
                 //TODO => choper le P1 et le P2 
                 //TODO => choper leurs Avatars
                 
@@ -596,6 +623,7 @@ function Game() {
                                     Hall_of_Fame[i-1].fontSize *= 4;
                                     Hall_of_Fame[i-1].position.x = 25;
                                     console.log("tout a ete place")
+                                    end_of_game (options.room, options.usernames[options.usernames.length -1])
                                     return(end_of_tournament(-1));}
 //!                            navigate('/tournament_continues');
                             document.body.removeChild(renderer.domElement);
