@@ -7,6 +7,7 @@ export const GameProvider = ({ children }) => {
 
 //! PLACEHOLDERS
 
+        language : 'en',
         winner : '', //placeholder pour gagnant
 //! OPTIONS DES JOUEURS
 
@@ -70,8 +71,8 @@ export const GameProvider = ({ children }) => {
         ball_y_speed : 0,
         ball_pause : 0,
         ball_acc : 1.2,
-        score_to_get : 7, //Score a obtenir pour gagner
-        score_diff : 2, //ecart minimal pour gagner
+        score_to_get : 1, //Score a obtenir pour gagner
+        score_diff : 1, //ecart minimal pour gagner
         score_max : 10, // score a atteindre pour gagner sans ecart
             //! OPTIONS DE BUFFS / DEBUFFS
         p1_is_frozen : 0,

@@ -35,11 +35,11 @@ push:
 
 build:
 	/bin/sh hostnames.sh
-	docker-compose -f ${YML_DIR}/docker-compose.yml build $(c)
+	docker compose -f ${YML_DIR}/docker-compose.yml build $(c)
 	@echo "${GREEN}build finished.${NC}"
 
 build_nocash:
-	docker-compose -f ${YML_DIR}/docker-compose.yml build --no-cache $(c)
+	docker compose -f ${YML_DIR}/docker-compose.yml build --no-cache $(c)
 	@echo "${GREEN}build finished.${NC}"
 
 up: build
@@ -47,29 +47,29 @@ up: build
 	@echo "${GREEN}containers UP in -detach mode ...${NC}"
 
 nc: build_nocash
-	docker-compose -V ${YML_DIR}/docker-compose.yml up $(c)
+	docker compose -V ${YML_DIR}/docker-compose.yml up $(c)
 	@echo "${GREEN}containers UP in -detach mode ...${NC}"
 
 db: build
-	docker-compose -f ${YML_DIR}/docker-compose.yml up backend database
+	docker compose -f ${YML_DIR}/docker-compose.yml up backend database
 	@echo "${GREEN}containers UP in -detach mode ...${NC}"
 
 startdb:
-	docker-compose -f ${YML_DIR}/docker-compose.yml start backend database
+	docker compose -f ${YML_DIR}/docker-compose.yml start backend database
 
 start:
-	docker-compose -f ${YML_DIR}/docker-compose.yml start $(c)
+	docker compose -f ${YML_DIR}/docker-compose.yml start $(c)
 
 down:
-	docker-compose -f ${YML_DIR}/docker-compose.yml down $(c)
+	docker compose -f ${YML_DIR}/docker-compose.yml down $(c)
 	@echo "${RED}containers are down${NC}"
 
 destroy:
-	docker-compose -f ${YML_DIR}/docker-compose.yml down -v $(c)
+	docker compose -f ${YML_DIR}/docker-compose.yml down -v $(c)
 	@echo "${RED}destroying containers and volumes (not equivalent to delete- rules) ...${NC}"
 
 stop:
-	docker-compose -f ${YML_DIR}/docker-compose.yml stop $(c)
+	docker compose -f ${YML_DIR}/docker-compose.yml stop $(c)
 
 del_containers:
 	@docker rm $$(docker ps -aq) -f

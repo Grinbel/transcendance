@@ -34,7 +34,7 @@ function Game() {
 				
 			});
 		} catch (error) {
-			setError(error.message);
+			//setError(error.message);
 			throw (error);
 		}
 	}
@@ -63,8 +63,7 @@ function Game() {
                 options.score_p1 = 0;
                 options.score_p2 = 0;
                 nextgameplayer(options.room,options.name_p1,options.name_p2)
-                //TODO => choper le P1 et le P2 
-                //TODO => choper leurs Avatars
+
                 
             }
         if (options.texture_p1_ball ===1)
@@ -175,6 +174,7 @@ function Game() {
         window.addEventListener('mousemove', handleMouseMove);
 
         function clear_components(component){
+            scene.remove(component);
             if (component.geometry)
                 component.geometry.dispose();
             if (component.material)
@@ -519,9 +519,21 @@ function Game() {
             if(((options.score_p1 >= options.score_to_get || options.score_p2 >= options.score_to_get) && Math.abs(options.score_p1-options.score_p2) >= options.score_diff) || options.score_p1>options.score_max || options.score_p2>options.score_max)
                 {
                     scene.clear();
+                    scene.remove(text_p1);
+                    scene.remove(text_p2);
+                    text_p1.dispose();
+                    text_p2.dispose();
+                    clear_components(p1_weapon_mesh);
+                    clear_components(p2_weapon_mesh);
+                    clear_components(ball_render);
+                    clear_components(ia_eye);
+                    clear_components(target_mesh);
+                    clear_components(powerup_render1);
+                    clear_components(first_wall);
+                    clear_components(second_wall);
                     options.winner = options.score_p1>options.score_p2?options.name_p1:options.name_p2;
                     console.log(options.winner);
-                    options.winner = create_text("WINNER : " + options.winner );
+                    options.winner = create_text((options.language==='en'?"WINNER : ":options.language==='fr'?"GAGNANT : ":"GEWINNER : ") + options.winner );
                     scene.add(options.winner);
                     options.winner.position.x = -3
                     return(end_of_game(120));
@@ -535,26 +547,7 @@ function Game() {
         }
         animate();
         function end_of_game(counter){
-            scene.remove(text_p1);
-            scene.remove(text_p2);
-            text_p1.dispose();
-            text_p2.dispose();
-            scene.remove(p1_weapon_mesh);
-            scene.remove(p2_weapon_mesh);
-            scene.remove(ball_render);
-            scene.remove(ia_eye);
-            scene.remove(target_mesh);
-            scene.remove(powerup_render1);
-            scene.remove(first_wall);
-            scene.remove(second_wall);
-            clear_components(p1_weapon_mesh);
-            clear_components(p2_weapon_mesh);
-            clear_components(ball_render);
-            clear_components(ia_eye);
-            clear_components(target_mesh);
-            clear_components(powerup_render1);
-            clear_components(first_wall);
-            clear_components(second_wall);
+
 
             renderer.render(scene, camera);
             if (counter !=0)

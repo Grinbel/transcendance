@@ -101,7 +101,11 @@ function MultiGame() {
 		const renderer = new THREE.WebGLRenderer();
 		camera.lookAt(new THREE.Vector3(0, 0, 0));
 		renderer.setSize(window.innerWidth, window.innerHeight);
-		document.body.appendChild(renderer.domElement);
+        renderer.domElement.style.position = 'absolute';
+        renderer.domElement.style.top = 0;
+        renderer.domElement.style.left = 0;
+        renderer.domElement.style.zIndex = 1000; // Make sure this is higher than the z-index of other elements
+        document.body.appendChild(renderer.domElement);
 		const ball_form = new THREE.SphereGeometry(options.ball_radius, 32, 32);
 
 
