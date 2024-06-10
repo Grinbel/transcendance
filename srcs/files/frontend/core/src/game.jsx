@@ -7,9 +7,8 @@ import { useNavigate } from 'react-router-dom';
 
 
 function Game() {
-    const { options } = useGameContext();
+    const { options ,resetOptions} = useGameContext();
     const navigate = useNavigate();
-    const { setOptions } = useGameContext();
     let Hall_of_Fame = [];
     const end_of_game = async (name,winner) => {
 			
@@ -740,7 +739,7 @@ function Game() {
                         document.body.removeChild(renderer.domElement);
                         document.body.removeChild(dialogContainer);
                         renderer.dispose();
-                        setOptions(prevOptions => ({ ...prevOptions, ...options }));
+                        resetOptions();
                         navigate('/');
                     }
                     return () => {
@@ -775,7 +774,7 @@ function Game() {
                         }
                     document.body.removeChild(renderer.domElement);
                     renderer.dispose();
-                    setOptions(prevOptions => ({ ...prevOptions, ...options }));
+                    resetOptions();
                     navigate('/');}}
             
 

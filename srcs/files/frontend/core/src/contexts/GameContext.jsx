@@ -3,7 +3,7 @@ import * as THREE from 'three';
 const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
-    const [options, setOptions] = useState({
+        const defaultOptions = {
 
 //! PLACEHOLDERS
 
@@ -97,10 +97,14 @@ export const GameProvider = ({ children }) => {
         texture_p2_ball : 1,
 
 
-    });
+    };
+
+    const [options, setOptions] = useState(defaultOptions);
+
+    const resetOptions = () => setOptions(defaultOptions);
 
     return (
-        <GameContext.Provider value={{ options, setOptions }}>
+        <GameContext.Provider value={{ options, setOptions, resetOptions }}>
             {children}
         </GameContext.Provider>
     );
