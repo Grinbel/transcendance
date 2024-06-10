@@ -496,11 +496,11 @@ function Game() {
                 options.player1_direction = -1;
             }
             if (event.keyCode === 38) {
-                options.player_is_ia =0;
+                //options.player_is_ia =0;
                 options.player2_direction = -1;
             }
             if (event.keyCode === 40) {
-                options.player_is_ia = 0;
+                //options.player_is_ia = 0;
                 options.player2_direction = 1;
             }
         }
