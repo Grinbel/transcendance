@@ -27,7 +27,7 @@ function Chat() {
 	const [roomName,setRoomName] = useState("general");
 	const [friend,setFriend] = useState("");
 	const [block,setBlock] = useState("");
-	const navigateTo = useNavigate();
+	const navigate = useNavigate();
 	const websockets = {};
 	let location = useLocation();
 
@@ -293,7 +293,8 @@ function Chat() {
 								<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={message.username} onClick={() => info(message.username)}>
 									
 									{/* //TODO texte brut */}
-									<NavDropdown.Item href={`/profile/${message.username}`}>profile</NavDropdown.Item>
+									<NavDropdown.Item onClick={() => navigate(`/profile/${message.username}`)}>profile</NavDropdown.Item>
+
 									{friend != undefined &&  <NavDropdown.Divider />}
 									{/* //TODO texte brut */}
 									{/* <NavDropdown.Item onClick={() => setFormData({message: `/whisper ${message.username}`,type : 'private'})}>Whisper</NavDropdown.Item> */}
@@ -305,9 +306,7 @@ function Chat() {
 									{privateChat(message.username)}
 								</NavDropdown>
 							</Nav>}
-							{/* <div className="message">
-								{message.message} <span className="message-time">{message.date}</span>
-							</div> */}
+							
 							{message.type === 'chat' && <div className="message">
 								{message.message} <span className="message-time">{message.date}</span>
 							</div>}
