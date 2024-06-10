@@ -259,6 +259,9 @@ function Game() {
             if (ball_angle > 6 * Math.PI / 8)
                 ball_angle = 6 * Math.PI / 8;
             ball_angle += (Math.PI / 2) * Math.floor(Math.random() * 4);
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            ball_angle = 0;
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             options.ball_x_speed = options.ball_speed * Math.cos(ball_angle);
             options.ball_y_speed = options.ball_speed * Math.sin(ball_angle);
             if(options.ball_x_speed > 0)
@@ -267,9 +270,11 @@ function Game() {
                 ball_render.material = ball_material_2
             ball_render.geometry.uvsNeedUpdate = true; //pour qu il recalcule les coordonnees de texture
             ball_render.needsUpdate = true; // pour prevenir que le materiau a change
+            console.log(" RESET BALL ")
             console.log("ball_x_speed " + options.ball_x_speed)
             console.log("ball_y_speed " + options.ball_y_speed)
             console.log("ball_angle " + ball_angle)
+            console.log(" FIN RESET BALL ")
             if(!options.ball_pause)
                 options.ball_pause = 40;
             if(options.player_is_ia){
@@ -301,6 +306,7 @@ function Game() {
                 options.power_up_on_screen = 1;
                 
             }
+            console.log("PUTAIN DE Y SPEED : " + options.ball_y_speed)
             options.ball_x += options.ball_x_speed;
             options.ball_y += options.ball_y_speed;
             if(options.power_up_on_screen){
@@ -318,6 +324,7 @@ function Game() {
                 if (options.ball_y > p2_weapon_mesh.position.y + options.player_size / 2 || options.ball_y < p2_weapon_mesh.position.y - options.player_size / 2) {
                     options.score_p1++;
                     server_ball_reset();
+                    return;
                 }
                 ball_render.material = ball_material_2
                 if (options.ball_is_powerup)
@@ -328,8 +335,22 @@ function Game() {
                     p2_weapon_mesh.material.color.setHex(0x0000ff);
                     options.time_before_powerup = Math.random() * (options.max_time_before_powerup - options.min_time_before_powerup) + options.min_time_before_powerup;
                 }
-                options.ball_x_speed = -options.ball_x_speed * options.ball_acc;
-                options.ball_y_speed = options.ball_y_speed * options.ball_acc;
+            //calculate ball angle
+                let angle = Math.atan2(options.ball_y_speed, options.ball_x_speed);
+                console.log("angle de reception" + angle)
+                console.log("alors que la vitesse x est : " + options.ball_x_speed)
+                console.log("et la vitesse y est : " + options.ball_y_speed)
+                let impact = p2_weapon_mesh.position.y - options.ball_y;
+                let incidence = Math.PI / 4 * impact / (options.player_size / 2);
+                angle = -angle + incidence + Math.PI;
+                console.log("return angle " + angle)
+                options.ball_speed *= options.ball_acc;
+                options.ball_x_speed = options.ball_speed * Math.cos(angle);
+                console.log( " Y SPEED AVAnt" + options.ball_y_speed)
+                options.ball_y_speed = options.ball_speed * Math.sin(angle);
+                console.log("Y SPEED APRES" + options.ball_y_speed)
+//                options.ball_x_speed = -options.ball_x_speed * options.ball_acc;
+//                options.ball_y_speed = options.ball_y_speed * options.ball_acc;
                 options.ball_rotation_z *= -1;
                 if (options.p2_is_frozen)
                     {options.p2_is_frozen --;
@@ -340,6 +361,7 @@ function Game() {
                 if (options.ball_y > p1_weapon_mesh.position.y + options.player_size / 2 || options.ball_y < p1_weapon_mesh.position.y - options.player_size / 2) {
                     options.score_p2++;
                     server_ball_reset();
+                    return;
                 }
                 ball_render.material = ball_material_1
                 if (options.ball_is_powerup)
@@ -350,6 +372,14 @@ function Game() {
                     p1_weapon_mesh.material.color.setHex(0x0000ff);
                     options.time_before_powerup = Math.random() * (options.max_time_before_powerup - options.min_time_before_powerup) + options.min_time_before_powerup;
                 }
+                let angle = Math.atan2(options.ball_y_speed, options.ball_x_speed);
+                let impact = p1_weapon_mesh.position.y - options.ball_y;
+              //  let incidence = Math.PI / 4 * impact / (options.player_size / 2);
+            //    angle = -angle - incidence + Math.PI;
+    //            options.ball_speed *= options.ball_acc;
+      //          options.ball_x_speed = options.ball_speed * Math.cos(angle);
+        //        options.ball_y_speed = options.ball_speed * Math.sin(angle);
+
                 options.ball_x_speed = -options.ball_x_speed * options.ball_acc;
                 options.ball_y_speed = options.ball_y_speed * options.ball_acc;
                 options.ball_rotation_z *=-1;

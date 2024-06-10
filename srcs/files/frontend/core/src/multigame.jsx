@@ -24,7 +24,7 @@ function MultiGame() {
 				} 
 		let player_angle =options.players_size / (options.nb_players +1)
         let player_textures = ['/yoshi.jpg', '/princess.jpg', '/ponge.jpg', '/badboy.png', '/players.jpg', '/beaudibe.jpg' ];
-		let player_names = ['Yoshi', 'Princess', 'Bob', 'Bowser' , 'Mario', 'jmen fous']
+		let player_names = ['Yoshi', 'Princess', 'Bob', 'Bowser' , 'Mario', 'Benoit le BG']
 
         function create_player(text_to_use, which) {
 			if (which %2 == 1)
