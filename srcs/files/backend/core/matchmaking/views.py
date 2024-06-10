@@ -55,10 +55,16 @@ def choice(request):
 		return Response({'Error':'Tournament is already in progress'})
 	else:
 		return Response({'room_name': tournament.name})
-	
+
+@api_view(['POST'])
+def options(request):
+	print("OPTIONSSSSSSSSSSSSSSSSs")
+	name = request.data.get('name')
+	tournament =Tournament.objects.filter(name=name)
+	return Response({'texture_ball': tournament.texture_ball,'ball_starting_speed':tournament.ball_starting_speed})
+
 @api_view(['POST'])
 def EndOfGame(request):
-	print('end of game!!!!!!!!!!')
 	winner = request.data.get('winner')
 	room = request.data.get('room')
 	channel_layer = get_channel_layer()

@@ -19,7 +19,10 @@ class Tournament(models.Model):
 	# winner = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='winner', null=True, blank=True)
 	max_capacity = models.IntegerField(default=2)
 	# admin = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='admin', blank=True, null=True)
-	
+	ball_starting_speed = models.IntegerField(default=0.5)
+	texture_ball = models.CharField(default="badboy.png")
+
+
 	@staticmethod
 	def createRoomName():
 		name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))

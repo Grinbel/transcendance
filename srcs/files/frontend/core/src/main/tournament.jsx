@@ -36,6 +36,19 @@ const tournament = () => {
 		}
 	}
 
+	// const options = async (name) => {
+		
+	// 	try {
+	// 		const response = await axiosInstance.post('/options/', {
+	// 			room: name,
+	// 		});
+	// 		return response.data
+	// 	} catch (error) {
+	// 		setError(error.message);
+	// 		throw (error);
+	// 	}
+	// }
+
 	const end_of_game = async (name,winner) => {
 			
 		try {
@@ -70,7 +83,7 @@ const tournament = () => {
 		if (isTrue === false){
 			return;
 		}
-		console.log("messages",messages);
+		// console.log("messages",messages);
 		const user = messages.map(message => message ? message.username : undefined).filter(Boolean);
 		const sortedMessages = [...user].sort((a, b) => a.localeCompare(b));
 
@@ -83,6 +96,8 @@ const tournament = () => {
 			const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
 			const avatars = messages.map(message => message ? message.avatar.replace("/media/", "") : undefined).filter(Boolean);
 			const alias = messages.map(message => message ? message.alias : undefined).filter(Boolean);
+			// const option = options(name);
+			// console.log(option);
 			setOptions(prevOptions => ({
 				...prevOptions, // Gardez les options précédentes
 				is_tournament : 1,
@@ -90,13 +105,15 @@ const tournament = () => {
 				avatar : avatars,
 				room : name,
 				alias: usernames,
+				// ball_starting_speed: option.ball_starting_speed,
+				// texture_ball: option.texture_ball,
 			}));
 			setIsTrue(false);
 			// nextgameplayer(name);
 			// end_of_game(name,userInfo.user.username);
 			setDisplayer("You are  the host. Launching the game.");
 			
-			delay(1000).then(() => navigate('/game'));
+			// delay(1000).then(() => navigate('/game'));
 		}
 		else
 		{
