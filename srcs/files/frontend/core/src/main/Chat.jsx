@@ -226,6 +226,8 @@ function Chat() {
 				playerCount: "",
 				isLocal: "",
 				username: userInfo.user.username,
+				alias: userInfo.user.username,
+
 				join:true  && room === "",
 			});
 			// console.log('response', response.data);
