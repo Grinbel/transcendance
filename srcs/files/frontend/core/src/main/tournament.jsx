@@ -36,18 +36,20 @@ const tournament = () => {
 		}
 	}
 
-	// const options = async (name) => {
+	const options = async (name) => {
 		
-	// 	try {
-	// 		const response = await axiosInstance.post('/options/', {
-	// 			room: name,
-	// 		});
-	// 		return response.data
-	// 	} catch (error) {
-	// 		setError(error.message);
-	// 		throw (error);
-	// 	}
-	// }
+		try {
+			const response = await axiosInstance.post('/options/', {
+				room: name,
+			});
+			console.log("RESPONSE",response.data)
+			const data = response.data
+			return data
+		} catch (error) {
+			setError(error.message);
+			throw (error);
+		}
+	}
 
 	const end_of_game = async (name,winner) => {
 			
@@ -70,14 +72,14 @@ const tournament = () => {
 		return websockets[roomName];
 	  }
 	
-	// const launch = (messages) => {
-	// 	console.log("launching",messages);
-	// 	messages.sort(() => Math.random() - 0.5);
-	// 	const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
-	// 	  const avatars = messages.map(message => message ? message.avatar : undefined).filter(Boolean);
-	// 	  console.log("username:",usernames);
-	// 	  console.log("avatar:",avatars);
-	// }
+	const launch = (messages) => {
+		console.log("launching",messages);
+		messages.sort(() => Math.random() - 0.5);
+		const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
+		  const avatars = messages.map(message => message ? message.avatar : undefined).filter(Boolean);
+		  console.log("username:",usernames);
+		  console.log("avatar:",avatars);
+	}
 	const delay = ms => new Promise(res => setTimeout(res, ms));
 	  useEffect(() => {
 		if (isTrue === false){
@@ -96,24 +98,25 @@ const tournament = () => {
 			const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
 			const avatars = messages.map(message => message ? message.avatar.replace("/media/", "") : undefined).filter(Boolean);
 			const alias = messages.map(message => message ? message.alias : undefined).filter(Boolean);
-			// const option = options(name);
-			// console.log(option);
-			setOptions(prevOptions => ({
-				...prevOptions, // Gardez les options précédentes
-				is_tournament : 1,
-				usernames : alias,
-				avatar : avatars,
-				room : name,
-				alias: usernames,
-				// ball_starting_speed: option.ball_starting_speed,
-				// texture_ball: option.texture_ball,
-			}));
+			const option = options(name).then(data =>{
+
+				setOptions(prevOptions => ({
+					...prevOptions, // Gardez les options précédentes
+					is_tournament : 1,
+					usernames : alias,
+					avatar : avatars,
+					room : name,
+					alias: usernames,
+					ball_starting_speed: data.ball_starting_speed,
+					texture_ball: data.texture_ball,
+				}));
+				delay(1000).then(() => navigate('/game'));
+			});
 			setIsTrue(false);
 			// nextgameplayer(name);
 			// end_of_game(name,userInfo.user.username);
 			setDisplayer("You are  the host. Launching the game.");
 			
-			// delay(1000).then(() => navigate('/game'));
 		}
 		else
 		{

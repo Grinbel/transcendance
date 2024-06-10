@@ -20,7 +20,7 @@ function Game() {
 			});
 		} catch (error) {
 			// setError(error.message);
-			throw (error);
+			// throw (error);
 		}
 	}
 
@@ -34,8 +34,8 @@ function Game() {
 				
 			});
 		} catch (error) {
-			setError(error.message);
-			throw (error);
+			// setError(error.message);
+			// throw (error);
 		}
 	}
     options.ball_speed=options.ball_starting_speed

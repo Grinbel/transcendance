@@ -19,8 +19,10 @@ class Tournament(models.Model):
 	# winner = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='winner', null=True, blank=True)
 	max_capacity = models.IntegerField(default=2)
 	# admin = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='admin', blank=True, null=True)
-	ball_starting_speed = models.IntegerField(default=0.5)
-	texture_ball = models.CharField(default="badboy.png")
+	ball_starting_speed = models.FloatField(default=0.05)
+	texture_ball = models.CharField(default="beaudibe.jpg")
+	score = models.IntegerField(default=10)
+	easyMode = models.BooleanField(default=False)
 
 
 	@staticmethod
@@ -31,13 +33,16 @@ class Tournament(models.Model):
 		return name
 
 	@classmethod
-	def create(self, max_capacity=8, user=None, name=None):
+	def create(self, max_capacity=2, user=None, name=None,ball_starting_speed=0.05):
 		self = Tournament.objects.create(name=name)
 		self.max_capacity = max_capacity
+		self.ball_starting_speed = ball_starting_speed/1000
 		if user:
 			# tournament.admin = user
 			self.addUser (user)
 		self.save()
+		# print("TOURNAMENT!!!!!!!!!!!",self)
+		print("TEXTURE:",self.texture_ball)
 		return self
 	
 	def addUser(self,user):
@@ -47,8 +52,11 @@ class Tournament(models.Model):
 			return False
 		else:
 			# user.tournament = self
-			print('user added to room ',self)
+			# print('user added to room ',self)
+			# print("TEXTURE:",self.texture_ball)
+
 			self.players.add(user)
+			self.save()
 			return True
 
 	def checkAddUser(self,user):
@@ -93,4 +101,4 @@ class Tournament(models.Model):
 		return name
 
 	def __str__(self):
-		return self.name
+		return ', '.join(f'{key}: {value}' for key, value in self.__dict__.items())

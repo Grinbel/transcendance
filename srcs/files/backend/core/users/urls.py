@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import (
 )
 from .views import Signup, login, verify, Logout, UserList, getProfile, userlist,userFriendBlock, userExist,userFriendList
 from chat.consumers import sendInvite, NextGamePlayer
-from matchmaking.views import choice, EndOfGame
+from matchmaking.views import choice, EndOfGame, options
 from middle.views import AsgiValidateTokenView
 # from django_channels_jwt.views import AsgiValidateTokenView
 
@@ -28,4 +28,6 @@ urlpatterns = [
 	path('userfriendlist/',userFriendList,name='userfriendlist'),
 	path('nextgameplayer/',NextGamePlayer,name='nextgameplayer'),
 	path('endofgame/',EndOfGame,name='endofgame'),
+	path('options/',options,name='options'),
+
 ]

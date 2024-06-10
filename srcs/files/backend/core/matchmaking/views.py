@@ -27,6 +27,9 @@ def choice(request):
 	username = request.data.get('username')
 	join = request.data.get('join')
 	alias = request.data.get('alias')
+	score = request.data.get('score')
+	speed = request.data.get('speed')
+
 	user = User.objects.get(username=username)
 	user.alias = alias
 	user.save()
@@ -40,7 +43,7 @@ def choice(request):
 	if (tournamentId == ''): #create a new room
 		# user = User.objects.get(username=username)
 		name = Tournament.createRoomName()
-		tournament = Tournament.create(name=name,max_capacity=playerCount)
+		tournament = Tournament.create(name=name,max_capacity=playerCount,ball_starting_speed=speed)
 		return Response({'room_name': name})
 	#check if tournamendid exist
 	tournament = Tournament.objects.filter(name=tournamentId)
@@ -59,8 +62,13 @@ def choice(request):
 @api_view(['POST'])
 def options(request):
 	print("OPTIONSSSSSSSSSSSSSSSSs")
-	name = request.data.get('name')
-	tournament =Tournament.objects.filter(name=name)
+	name = request.data.get('room')
+	print("name",name)
+	tournament =Tournament.objects.filter(name=name).first()
+	print("tournament",tournament)
+	# texture_ball = tournament.texture_ball
+	# print("texture_ball", texture_ball)
+	# return Response('ok')
 	return Response({'texture_ball': tournament.texture_ball,'ball_starting_speed':tournament.ball_starting_speed})
 
 @api_view(['POST'])
