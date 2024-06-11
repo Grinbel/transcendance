@@ -61,44 +61,33 @@ def getProfile(request):
 # a  view that receives and sets  the 2FA preference of a user
 @api_view(['POST'])
 def set2FA(request):
+	print("set 2FA")
 	# check authentication
 	if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
 		token = request.headers.get('Authorization').split(' ')[1]
-		print('token', token)
 		try:
 			untyped_token = UntypedToken(token)
 			print('untyped_token', untyped_token)
 		except (InvalidToken, TokenError) as e:
-			print('Invalid token')
+			print('set 2FA Invalid token')
 			return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
 		print('2fa untyped_token', untyped_token)
 		id = untyped_token['user_id']
-		user = User.objects.get(id=id)
-	# Validate input data
-   
-	two_factor = request.data.get('two_factor')
-
-	if	two_factor is None:
-		return Response({'detail': 'two_factor field are required.'}, status=status.HTTP_400_BAD_REQUEST)
-	
-	if not isinstance(two_factor, bool):
-		return Response({'detail': 'Invalid value for two_factor. It must be a boolean.'}, status=status.HTTP_400_BAD_REQUEST)
-
-	try:
-		user = User.objects.get(username=username)
-		
-		# Ensure the user making the request is the same as the user whose 2FA setting is being changed
-		if request.user != user:
-			return Response({'detail': 'You are not authorized to change this user\'s 2FA setting.'}, status=status.HTTP_403_FORBIDDEN)
-
-		user.two_factor = two_factor
-		user.save()
-		return Response({'detail': '2FA preference updated successfully.'}, status=status.HTTP_200_OK)
-	except User.DoesNotExist:
-		return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
-	except Exception as e:
-		logger.error(f'Error updating 2FA preference: {e}')
-		return Response({'detail': 'An error occurred while updating 2FA preference.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+		two_factor = request.data.get('two_factor')
+		if	two_factor is None:
+			return Response({'detail': 'two_factor field are required.'}, status=status.HTTP_400_BAD_REQUEST)
+		if not isinstance(two_factor, bool):
+			return Response({'detail': 'Invalid value for two_factor. It must be a boolean.'}, status=status.HTTP_400_BAD_REQUEST)
+		try:
+			user = User.objects.get(id=id)
+			user.two_factor = two_factor
+			user.save()
+			return Response({'detail': '2FA preference updated successfully.'}, status=status.HTTP_200_OK)
+		except User.DoesNotExist:
+			return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+		except Exception as e:
+			print(f'Error updating 2FA preference: {e}')
+			return Response({'detail': 'An error occurred while updating 2FA preference.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
 def userlist(request):
@@ -163,8 +152,8 @@ def login(request):
 	# User credentials are valid, proceed with code generation and email sending
 		user_obj = User.objects.get(id=user.id)
 		data = {'username': user_obj.username, 'password': password}
+		token_serializer = MyTokenObtainPairSerializer(data=data)
 		if user_obj.two_factor == False:
-			token_serializer = MyTokenObtainPairSerializer(data=data)
 			print('token_serializer without 2FA', token_serializer)
 			try:
 				if (token_serializer.is_valid(raise_exception=True)):
@@ -176,8 +165,7 @@ def login(request):
 				raise APIException("Internal server error. Please try again later.")
 			
 
-	###### 2FA implementation ######
-		
+		###### 2FA implementation ######
 		# Generate a 6-digit code and set the expiry time to 1 hour from now
 		verification_code = generate_random_digits(6)
 		print('verification_code', verification_code)
@@ -196,8 +184,8 @@ def login(request):
 			fail_silently=False,
 		)
 		print('email sent')
-		return Response({'detail': 'Verification code sent successfully.'}, status=status.HTTP_200_OK)
 
+		return Response({'detail': 'Verification code sent successfully.', 'two_factor': user_obj.two_factor}, status=status.HTTP_200_OK)
 	return Response({'detail': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['POST'])

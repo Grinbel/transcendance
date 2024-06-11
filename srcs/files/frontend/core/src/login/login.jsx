@@ -69,9 +69,12 @@ function Login() {
                 });
                 if (response) {
                     console.log('response.status', response.status);
+                    console.log('response.data.2fa', response.data.two_factor);
                 }
                 if (response && response.status === 200) 
                 {
+                    // const test = false;
+                    setError();
                     if (response.data.two_factor)
                     {
                         console.log('Login successful 2FA: i go to code page', response);  //SETUP REDIRECT TO HOME PAGE
@@ -90,7 +93,7 @@ function Login() {
                         console.log('Login successful no 2FA: navigate to "/"');
                         const decodedToken = jwtDecode(token);
                         console.log('decoded token', decodedToken);
-                        const user = {username: decodedToken.username, 
+                        const user = {username: decodedToken.username,
 							id: decodedToken.user_id,
 							avatar: decodedToken.avatar,
 							email:decodedToken.email,
@@ -140,7 +143,7 @@ function Login() {
         // alert('A username and password was submitted: ' + formData.username + " " + formData.password);
         event.preventDefault();
         try {
-                const response = await axiosInstance.post('/verify/', {
+                const response = await loginInstance.post('/verify/', {
                 username: formData.username,
                 password: formData.password,
                 otp: code
@@ -178,17 +181,18 @@ function Login() {
 // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
             if (error.response) {
-                if (error.response.status === 400) {
-                    setError('Invalid OTP. Please try again.');
-                } else if (error.response.status === 401) {
-                    setError('Incorrect username or password.');
-                } else if (error.response.status === 403) {
-                    setError('Expired OTP. Please request a new one.');
-                } else if (error.response.status >= 500) {
-                    setError('Server error. Please try again later.');
-                } else {
-                    setError('An error occurred. Please try again.');
-                }
+                // if (error.response.status === 400) {
+                //     setError('Invalid OTP. Please try again.');
+                // } else if (error.response.status === 401) {
+                //     setError('Incorrect username or password.');
+                // } else if (error.response.status === 403) {
+                //     setError('Expired OTP. Please request a new one.');
+                // } else if (error.response.status >= 500) {
+                //     setError('Server error. Please try again later.');
+                // } else {
+                //     setError('An error occurred. Please try again.');
+                // }
+                setError(error.response.data.detail);
             }
             else if (error.request)
             {

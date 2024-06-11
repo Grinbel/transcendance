@@ -8,7 +8,7 @@ const Switch = ({name, status, handleSwitch, onColor}) => {
 		<span className="switchName">2FA Authentication: </span>
 		<input
 			checked={status}
-			onChange={handleSwitch}
+			onChange={handleSwitch()}
 			className="switchCheckbox"
 			id={`switch`}
 			type="checkbox"

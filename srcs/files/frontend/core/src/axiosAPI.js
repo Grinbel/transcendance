@@ -75,9 +75,9 @@ export const interceptor_response = axiosInstance.interceptors.response.use(
           })
           .catch((err) => {
             console.log('Refresh token is expired, user needs to login again:', err.response.status);
+            localStorage.removeItem('user');
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
-            navigate('/login');
             return Promise.reject(err);
           })
           .finally(() => {

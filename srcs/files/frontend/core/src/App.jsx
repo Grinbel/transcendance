@@ -36,6 +36,19 @@ import { UserProvider, userContext } from "./contexts/userContext.jsx";
 
 //make getProfile async function, show me syntax in comment
 
+const PrivateRoute = ({ component: Component, user, ...rest }) => (
+	<Route
+	  {...rest}
+	  render={props =>
+		user ? (
+		  <Component {...props} />
+		) : (
+		  <Redirect to="/login" />
+		)
+	  }
+	/>
+  );
+
 async function getProfile(user, setUser, error, setError){
 	localStorage.removeItem('user');
 	const userStringified = localStorage.getItem('user');
