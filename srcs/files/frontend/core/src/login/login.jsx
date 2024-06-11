@@ -148,11 +148,8 @@ function Login() {
         // alert('A username and password was submitted: ' + formData.username + " " + formData.password);
         event.preventDefault();
         const form = event.currentTarget;
-        console.log('handleVerify: form', form);
         if (form.checkValidity() === false) {
-			console.log('form.checkValidity() === false');
 			event.stopPropagation();
-			set_validated(true);
 		}
         else {
             try {

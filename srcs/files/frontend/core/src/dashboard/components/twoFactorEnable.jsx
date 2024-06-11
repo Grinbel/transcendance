@@ -12,7 +12,7 @@ function TwoFactorEnable() {
     const userinfo = useContext(userContext);
 
     console.log('TwoFactorEnable component');
-    console.log('twoFaStatus', twoFaStatus);
+    console.log(' in TWOFACTORENABLE /////////////// twoFaStatus', twoFaStatus);
 
     const custom_fetch = async () => {
         console.log('TwoFactorEnable: custom_fetch');
@@ -34,18 +34,20 @@ function TwoFactorEnable() {
     const handle2Fa = () => {
         console.log('handle2Fa');
         setTwoFaStatus(!twoFaStatus);
+        console.log('twoFaStatus: ', twoFaStatus);
         setNumber(number + 1);
-        if (number > 1)
+        console.log('number: ', number);
+        if (number > 9)
             return;
 
         const sendFastatus = async () => {
             try {
+
                 const response = await axiosInstance.post('/2fa/', {
-                    "two_factor": twoFaStatus
+                    "two_factor": !twoFaStatus
                 });
                 const old_user = userinfo.user;
-                userinfo.setUser({...old_user, 'two_factor':twoFaStatus})
-                console.log('user after 2fa activation: ', userinfo.user);
+                userinfo.setUser({...old_user, 'two_factor':!twoFaStatus})
             } catch (error) {
                 console.log('Error enabling 2FA: ', error.message);
                 console.log('Error status: ', error.response.status);

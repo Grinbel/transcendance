@@ -27,12 +27,12 @@ const NavLoggedIn = () => {
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
 	const userinfo = useContext(userContext);
-	const avatar = userinfo.user.avatar ? userinfo.user.avatar : '../../public/yoshi.jpg';
+	const avatar = userinfo.user.avatar ? userinfo.user.avatar : '../../public/mario.jpg';
 	console.log('avatar', avatar);
 
 	const UserMenu = (
 		<Image
-		  src={avatar}
+		  src={`http://localhost:8000${avatar}`}
 		  alt="UserName profile image"
 		  roundedCircle
 		  style={{ width: '40px' }}
@@ -104,13 +104,6 @@ const NavLoggedIn = () => {
 		<Navbar collapseOnSelect expand="lg" className="bg-body-tertiary navbarCustom">
 		  <Container>
 			<Navbar.Brand as={Link} to="/" className='logoName'>
-				{/* <img
-					// src="../src/assets/pong.png" // Replace with the path to your logo
-					width="50"
-					height="50"
-					className="d-inline-block align-top me-2"
-					// alt="Pong"
-				/> */}
 				Pong
 			</Navbar.Brand>
 			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
