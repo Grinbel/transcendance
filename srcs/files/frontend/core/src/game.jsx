@@ -338,12 +338,12 @@ function Game() {
             //calculate ball angle
                 let angle = Math.atan2(options.ball_y_speed, options.ball_x_speed);
                 console.log("angle de reception" + angle)
-                console.log("alors que la vitesse x est : " + options.ball_x_speed)
-                console.log("et la vitesse y est : " + options.ball_y_speed)
                 let impact = p2_weapon_mesh.position.y - options.ball_y;
                 let incidence = Math.PI / 4 * impact / (options.player_size / 2);
-                angle = -angle + incidence + Math.PI;
+                //angle = -angle + incidence + Math.PI;
+                angle = Math.PI - incidence
                 console.log("return angle " + angle)
+                console.log("incidence " + incidence)
                 options.ball_speed *= options.ball_acc;
                 options.ball_x_speed = options.ball_speed * Math.cos(angle);
                 console.log( " Y SPEED AVAnt" + options.ball_y_speed)
