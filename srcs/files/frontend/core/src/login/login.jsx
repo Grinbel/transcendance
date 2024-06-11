@@ -51,6 +51,10 @@ function Login() {
         setFormData({ ...formData, [event.target.name]: event.target.value });
     };
 
+    const handleCode = (event) => {
+        setCode(event.target.value);
+    };
+
     const handleLogin = async (event) => {
 
         const form = event.currentTarget;
@@ -79,6 +83,7 @@ function Login() {
                     {
                         console.log('Login successful 2FA: i go to code page', response);  //SETUP REDIRECT TO HOME PAGE
                         setStep(2);
+                        set_validated(false);
                     }
                     else
                     {
@@ -142,72 +147,79 @@ function Login() {
     const handleVerify =  async (event) => {
         // alert('A username and password was submitted: ' + formData.username + " " + formData.password);
         event.preventDefault();
-        try {
-                const response = await loginInstance.post('/verify/', {
-                username: formData.username,
-                password: formData.password,
-                otp: code
-            });
-            const token = response.data.access;
-            const refresh = response.data.refresh;
-            axiosInstance.defaults.headers['Authorization'] = "JWT " + token;
-            localStorage.setItem('access_token', token);
-            localStorage.setItem('refresh_token', refresh);
+        const form = event.currentTarget;
+        console.log('handleVerify: form', form);
+        if (form.checkValidity() === false) {
+			console.log('form.checkValidity() === false');
+			event.stopPropagation();
+			set_validated(true);
+		}
+        else {
+            try {
+                    const response = await loginInstance.post('/verify/', {
+                    username: formData.username,
+                    password: formData.password,
+                    otp: code
+                });
+                const token = response.data.access;
+                const refresh = response.data.refresh;
+                axiosInstance.defaults.headers['Authorization'] = "JWT " + token;
+                localStorage.setItem('access_token', token);
+                localStorage.setItem('refresh_token', refresh);
 
-            console.log('Login successful with 2FA: navigate to "/"');
-            const decodedToken = jwtDecode(token);
-            console.log('decoded token', decodedToken);
-            const user = {username: decodedToken.username, 
-                id: decodedToken.user_id,
-                avatar: decodedToken.avatar,
-                email:decodedToken.email,
-                isActive:decodedToken.is_active,
-                exp:decodedToken.exp,
-                iat:decodedToken.iat,
-                is_staff:decodedToken.is_staff,
-                two_factor:decodedToken.two_factor,
-                uuid:decodedToken.uuid,
-                isLogged: true,
-            };  //SETUP REDIRECT TO HOME PAGE
-            localStorage.setItem('user', JSON.stringify(user));
-            userInfo.setUser(user);
-            setStep(1);
-            setFormData({ username: "", password: "" });
-            setCode('');
-            navigate('/');
-            console.log('Login successful with 2fa: i go to home page', response);  //SETUP REDIRECT TO HOME PAGE
-        } catch (error)
-        {
-// The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-            if (error.response) {
-                // if (error.response.status === 400) {
-                //     setError('Invalid OTP. Please try again.');
-                // } else if (error.response.status === 401) {
-                //     setError('Incorrect username or password.');
-                // } else if (error.response.status === 403) {
-                //     setError('Expired OTP. Please request a new one.');
-                // } else if (error.response.status >= 500) {
-                //     setError('Server error. Please try again later.');
-                // } else {
-                //     setError('An error occurred. Please try again.');
-                // }
-                setError(error.response.data.detail);
-            }
-            else if (error.request)
+                console.log('Login successful with 2FA: navigate to "/"');
+                const decodedToken = jwtDecode(token);
+                console.log('decoded token', decodedToken);
+                const user = {username: decodedToken.username, 
+                    id: decodedToken.user_id,
+                    avatar: decodedToken.avatar,
+                    email:decodedToken.email,
+                    isActive:decodedToken.is_active,
+                    exp:decodedToken.exp,
+                    iat:decodedToken.iat,
+                    is_staff:decodedToken.is_staff,
+                    two_factor:decodedToken.two_factor,
+                    uuid:decodedToken.uuid,
+                    isLogged: true,
+                };  //SETUP REDIRECT TO HOME PAGE
+                localStorage.setItem('user', JSON.stringify(user));
+                userInfo.setUser(user);
+                setStep(1);
+                setFormData({ username: "", password: "" });
+                setCode('');
+                navigate('/');
+                console.log('Login successful with 2fa: i go to home page', response);  //SETUP REDIRECT TO HOME PAGE
+            } catch (error)
             {
-                // The request was made but no response was received
-                console.log('error REQUEST', error.request);
-                setError('Network error. Please check your connection.');
-            } else {
-                // Something happened in setting up the request that triggered an Error
-                console.log('error OBSCURE', error.message);
-                setError('An unknown error occurred.');
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                if (error.response) {
+                    // if (error.response.status === 400) {
+                    //     setError('Invalid OTP. Please try again.');
+                    // } else if (error.response.status === 401) {
+                    //     setError('Incorrect username or password.');
+                    // } else if (error.response.status === 403) {
+                    //     setError('Expired OTP. Please request a new one.');
+                    // } else if (error.response.status >= 500) {
+                    //     setError('Server error. Please try again later.');
+                    // } else {
+                    //     setError('An error occurred. Please try again.');
+                    // }
+                    setError(error.response.data.detail);
+                }
+                else if (error.request)
+                {
+                    // The request was made but no response was received
+                    console.log('error REQUEST', error.request);
+                    setError('Network error. Please check your connection.');
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('error OBSCURE', error.message);
+                    setError('An unknown error occurred.');
+                }
             }
         }
     };
-
-
 
     return (
         <div>
@@ -295,12 +307,13 @@ function Login() {
                                         type="number"
                                         name="verificationCode"
                                         value={code}
-                                        // onChange={handleChange}
+                                        onChange={handleCode}
                                         maxLength={6}
                                         required
+                                        isInvalid={(code.length !== 6 || !/^[0-9]+$/.test(code))}                                      
                                     />
                                     <Form.Control.Feedback type="invalid">
-                                        Please enter a valid verification code.
+                                        Please enter a valid verification code. It should be 6 digits (only) long.
                                     </Form.Control.Feedback>
                                 </Form.Group>
                                 <Button type='submit' role="button" className="buttonCustom"> Login </Button>

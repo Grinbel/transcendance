@@ -8,7 +8,7 @@ import Switch from "./switch.jsx";
 function TwoFactorEnable() {
     const [twoFaStatus, setTwoFaStatus] = useState(false);
     const navigate = useNavigate();
-
+    const [number, setNumber] = useState(0);
     const userinfo = useContext(userContext);
 
     console.log('TwoFactorEnable component');
@@ -34,6 +34,9 @@ function TwoFactorEnable() {
     const handle2Fa = () => {
         console.log('handle2Fa');
         setTwoFaStatus(!twoFaStatus);
+        setNumber(number + 1);
+        if (number > 1)
+            return;
 
         const sendFastatus = async () => {
             try {

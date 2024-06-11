@@ -198,6 +198,10 @@ def verify(request):
 
 	user_profile = User.objects.get(username=username)
 	print('user_profile', user_profile)
+	print('user_profile.otp', user_profile.otp)
+	print('received_otp', received_otp)
+	print('user_profile.otp_expiry_time', user_profile.otp_expiry_time)
+	print('timezone.now()', timezone.now())
 		# Check if the verification code is valid and not expired
 	if (
 		user_profile is not None and
@@ -212,6 +216,7 @@ def verify(request):
 		token_serializer = MyTokenObtainPairSerializer(data=data)
 		print('token_serializer', token_serializer)
 		try:
+			print('verify tryblock')
 			if (token_serializer.is_valid(raise_exception=True)):
 				print('token_serializer.validated_data', token_serializer.validated_data)
 				# Reset verification otp_code and expiry time
