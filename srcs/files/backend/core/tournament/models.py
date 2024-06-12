@@ -23,6 +23,8 @@ class Tournament(models.Model):
 	texture_ball = models.CharField(default="beaudibe.jpg")
 	score = models.IntegerField(default=10)
 	easyMode = models.BooleanField(default=False)
+	skin = models.IntegerField(default=2)
+
 
 
 	@staticmethod
@@ -33,10 +35,14 @@ class Tournament(models.Model):
 		return name
 
 	@classmethod
-	def create(self, max_capacity=2, user=None, name=None,ball_starting_speed=0.05):
+	def create(self, max_capacity=2, user=None, name=None,ball_starting_speed=0.05,texture_ball="beaudibe.jpg",score=10,easyMode=False,skin=2):
 		self = Tournament.objects.create(name=name)
 		self.max_capacity = max_capacity
 		self.ball_starting_speed = ball_starting_speed/1000
+		self.texture_ball = texture_ball
+		self.score = score
+		self.easyMode = easyMode
+		self.skin = skin
 		if user:
 			# tournament.admin = user
 			self.addUser (user)

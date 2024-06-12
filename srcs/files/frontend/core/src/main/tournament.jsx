@@ -99,7 +99,7 @@ const tournament = () => {
 			const avatars = messages.map(message => message ? message.avatar.replace("/media/", "") : undefined).filter(Boolean);
 			const alias = messages.map(message => message ? message.alias : undefined).filter(Boolean);
 			const option = options(name).then(data =>{
-
+				console.log("DATA!!!!!!!!",data);
 				setOptions(prevOptions => ({
 					...prevOptions, // Gardez les options précédentes
 					is_tournament : 1,
@@ -109,6 +109,10 @@ const tournament = () => {
 					alias: usernames,
 					ball_starting_speed: data.ball_starting_speed,
 					texture_ball: data.texture_ball,
+					score_to_get: data.score,
+					score_max:data.score + 4,
+					easy_mode: data.easyMode,
+					skin : data.skin,
 				}));
 				delay(1000).then(() => navigate('/game'));
 			});

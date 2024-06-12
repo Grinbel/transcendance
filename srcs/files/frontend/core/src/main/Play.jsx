@@ -222,7 +222,8 @@ function Play() {
 						type="number"
 						id="playerCount"
 						name="playerCount"
-						onChange={handleChange}>
+						onChange={(e) => setSkin(e.target.value)}>
+
 						<option value="1">beaudibe</option>
 						<option value="2">abelhadi</option>
 						<option value="3">xrenoux</option>

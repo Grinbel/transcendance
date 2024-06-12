@@ -29,6 +29,9 @@ def choice(request):
 	alias = request.data.get('alias')
 	score = request.data.get('score')
 	speed = request.data.get('speed')
+	isEasy = request.data.get('isEasy')
+	skin = request.data.get('skin')
+
 
 	user = User.objects.get(username=username)
 	user.alias = alias
@@ -43,7 +46,7 @@ def choice(request):
 	if (tournamentId == ''): #create a new room
 		# user = User.objects.get(username=username)
 		name = Tournament.createRoomName()
-		tournament = Tournament.create(name=name,max_capacity=playerCount,ball_starting_speed=speed)
+		tournament = Tournament.create(name=name,max_capacity=playerCount,ball_starting_speed=speed,score=score,easyMode=isEasy,skin=skin)
 		return Response({'room_name': name})
 	#check if tournamendid exist
 	tournament = Tournament.objects.filter(name=tournamentId)
@@ -69,7 +72,7 @@ def options(request):
 	# texture_ball = tournament.texture_ball
 	# print("texture_ball", texture_ball)
 	# return Response('ok')
-	return Response({'texture_ball': tournament.texture_ball,'ball_starting_speed':tournament.ball_starting_speed})
+	return Response({'texture_ball': tournament.texture_ball,'ball_starting_speed':tournament.ball_starting_speed,'score':tournament.score,'easyMode':tournament.easyMode,'skin':tournament.skin})
 
 @api_view(['POST'])
 def EndOfGame(request):
