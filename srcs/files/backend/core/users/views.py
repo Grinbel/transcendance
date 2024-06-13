@@ -32,6 +32,59 @@ import logging
 ##remember to check USER_ID_FIELD and USER_ID_CLAIM in jwt settings in case picking the email adress as the user id
 
 
+# a  view that updates user data partially first approach
+# @api_view(['PATCH'])
+# def updateUser(request):
+# 	print("updateUser function")
+# 	# check authentication
+# 	if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
+# 		token = request.headers.get('Authorization').split(' ')[1]
+# 		try:
+# 			untyped_token = UntypedToken(token)
+# 		except (InvalidToken, TokenError) as e:
+# 			print('updateUser Invalid token')
+# 			return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+# 		# print('updateUser untyped_token', untyped_token)
+# 		id = untyped_token['user_id']
+# 		newpassword = request.data.get('password')
+# 		newusername = request.data.get('username')
+# 		newemail = request.data.get('email')
+# 		newalias = request.data.get('alias')
+
+# 		try:
+# 			user = User.objects.get(id=id)
+# 			if (newpassword is not None):
+# 				user.is_active = True
+# 				user.set_password(newpassword)
+# 			user.username = newusername
+# 			user.email = newemail
+# 			user.alias = newalias
+# 			user.save()
+# 			return Response({'detail': 'User updated successfully.'}, status=status.HTTP_200_OK)
+# 		except User.DoesNotExist:
+# 			return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+# 		except Exception as e:
+# 			print(f'Error updating user data: {e}')
+# 			return Response({'detail': 'An error occurred while updating user data.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['PATCH'])
+def updateUser(request, pk):
+	print('userUpdate function request DATA ////// >>>>>:', request.data)
+	try:
+		user = User.objects.get(pk=pk)
+		print('user found with his id in updateUser', user)
+	except User.DoesNotExist:
+		return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+	serializer = UserSerializer(user, data=request.data, partial=(request.method == 'PATCH'))
+	if serializer.is_valid():
+		serializer.save()
+		print('user updated successfully: >>', serializer.data)
+		return Response(serializer.data)
+	print('user not updated successfully: >>', serializer.errors)
+	return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 def generate_random_digits(n=6):
 	return "".join(map(str, random.sample(range(0, 10), n)))
 
@@ -42,19 +95,15 @@ def getProfile(request):
 
 	if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
 		token = request.headers.get('Authorization').split(' ')[1]
-		print('token', token)
 		try:
 			untyped_token = UntypedToken(token)
-			print('untyped_token', untyped_token)
 		except (InvalidToken, TokenError) as e:
-			print('Invalid token')
 			return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
-		print('untyped_token', untyped_token)
 		id = untyped_token['user_id']
 		user = User.objects.get(id=id)
 		# Now you have the user instance and can return the necessary information
 		user_data = UserSerializer(user).data
-		print('user_data', user_data)
+		print('getprofile user_data', user_data)
 		return Response(user_data)
 	return Response({'detail': 'Invalid token format'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -67,11 +116,8 @@ def set2FA(request):
 		token = request.headers.get('Authorization').split(' ')[1]
 		try:
 			untyped_token = UntypedToken(token)
-			print('untyped_token', untyped_token)
 		except (InvalidToken, TokenError) as e:
-			print('set 2FA Invalid token')
 			return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
-		print('2fa untyped_token', untyped_token)
 		id = untyped_token['user_id']
 		two_factor = request.data.get('two_factor')
 		if	two_factor is None:
@@ -86,7 +132,6 @@ def set2FA(request):
 		except User.DoesNotExist:
 			return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
 		except Exception as e:
-			print(f'Error updating 2FA preference: {e}')
 			return Response({'detail': 'An error occurred while updating 2FA preference.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])

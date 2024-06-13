@@ -11,8 +11,8 @@ function TwoFactorEnable() {
     const [number, setNumber] = useState(0);
     const userinfo = useContext(userContext);
 
-    console.log('TwoFactorEnable component');
-    console.log(' in TWOFACTORENABLE /////////////// twoFaStatus', twoFaStatus);
+   // console.log('TwoFactorEnable component');
+   // console.log(' in TWOFACTORENABLE /////////////// twoFaStatus', twoFaStatus);
 
     const custom_fetch = async () => {
         console.log('TwoFactorEnable: custom_fetch');
@@ -22,7 +22,7 @@ function TwoFactorEnable() {
             setTwoFaStatus(response.data.two_factor);
 
         } catch (error){
-            console.log('Error fetching 2FA status: ', error.message);
+            //console.log('Error fetching 2FA status: ', error.message);
             if (error.response.status  === 400)
                 {
                     userinfo.setUser();
@@ -32,13 +32,11 @@ function TwoFactorEnable() {
     }
 
     const handle2Fa = () => {
-        console.log('handle2Fa');
+       // console.log('handle2Fa');
         setTwoFaStatus(!twoFaStatus);
-        console.log('twoFaStatus: ', twoFaStatus);
-        setNumber(number + 1);
-        console.log('number: ', number);
-        if (number > 9)
-            return;
+        //console.log('twoFaStatus: ', twoFaStatus);
+      //  setNumber(number + 1);
+
 
         const sendFastatus = async () => {
             try {
@@ -49,8 +47,8 @@ function TwoFactorEnable() {
                 const old_user = userinfo.user;
                 userinfo.setUser({...old_user, 'two_factor':!twoFaStatus})
             } catch (error) {
-                console.log('Error enabling 2FA: ', error.message);
-                console.log('Error status: ', error.response.status);
+                //console.log('Error enabling 2FA: ', error.message);
+               // console.log('Error status: ', error.response.status);
                 if (error.response.status  === 400)
                 {
                     userinfo.setUser();
@@ -63,7 +61,7 @@ function TwoFactorEnable() {
 
     useEffect(() => {
         // Fetch the 2FA status of the user
-        console.log('TwoFactorEnable: useEffect');
+        //console.log('TwoFactorEnable: useEffect');
         custom_fetch();
     }, []);
 

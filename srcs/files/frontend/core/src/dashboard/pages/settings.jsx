@@ -2,25 +2,29 @@ import "./settings.scss";
 import * as React from "react";
 import TwoFactorEnable from "../components/twoFactorEnable.jsx";
 import { userContext } from "../../contexts/userContext.jsx";
+import  { axiosInstance, loginInstance } from "../../axiosAPI.js";
 
 
 
  
 const updateUser = async (updatedData) => {
-	const { user, setUser } = useUser();
-  
+	console.log('updateUser: Updating user data 45454');
+	const userinfo = React.useContext(userContext);
+	
 	try {
-	  console.log('updateUser: Updating user data');
-  
-	  // Make a PUT or PATCH request to update the user data
-	  const response = await axiosInstance.put(`/users/${user.id}/`, updatedData);
-  
+	  console.log('updateUser: Updating user data:', updatedData);
+	  // send the updated data to the server
+	  // const response = await axiosInstance.post(`/users/${userinfo.user.id}/`, updatedData);
+
+	//   const response = await axiosInstance.post(`/users/${userinfo.user.id}/`, updatedData);
+  	
 	  // Update the user context with the new user data
-	  setUser(response.data);
+	  userinfo.setUser(response.data);
   
 	  console.log('updateUser: User data updated successfully', response.data);
 	  return response.data;
 	} catch (error) {
+		console.log('updateUser: Error updating user data');	
 	  if (error.response) {
 		console.error('updateUser: Error response', error.response.status, error.response.data);
 	  } else if (error.request) {
@@ -36,7 +40,7 @@ const updateUser = async (updatedData) => {
 const Settings = () => {
 	const [isEditing, setIsEditing] = React.useState(false);
 
-	const [error, setError] = React.useState(null);
+	const [errors, setErrors] = React.useState(null);
 	const [loading, setLoading] = React.useState(false);
 	const userinfo = React.useContext(userContext);
 
@@ -127,17 +131,21 @@ const Settings = () => {
 	
 
 	const handleSave = async () => {
+		console.log('handleSave')
 		const { username, email, password, alias } = formData;
 		if (validateUsername(username) && validateEmail(email) && validatePassword(password) && validateAlias(alias)) 
 		{
-	
+			console.log('handleSave: all formData is valid');
 		  setLoading(true);
 		  setErrors({});
 		  try {
+			
 			const updatedData = { username, email, alias };
 			if (password) updatedData.password = password; // Include password only if it's being updated
 			const updatedUser = await updateUser(updatedData);
+			console.log('handleSave: updatedUser successfully', updatedUser);
 			setUser(updatedUser);
+
 			setIsEditing(false);
 		  } catch (error) {
 			setErrors({ form: error.message });
