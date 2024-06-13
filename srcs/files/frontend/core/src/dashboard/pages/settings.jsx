@@ -1,21 +1,160 @@
 import "./settings.scss";
 import * as React from "react";
 import TwoFactorEnable from "../components/twoFactorEnable.jsx";
+import { userContext } from "../../contexts/userContext.jsx";
+
+
+
+ 
+const updateUser = async (updatedData) => {
+	const { user, setUser } = useUser();
+  
+	try {
+	  console.log('updateUser: Updating user data');
+  
+	  // Make a PUT or PATCH request to update the user data
+	  const response = await axiosInstance.put(`/users/${user.id}/`, updatedData);
+  
+	  // Update the user context with the new user data
+	  setUser(response.data);
+  
+	  console.log('updateUser: User data updated successfully', response.data);
+	  return response.data;
+	} catch (error) {
+	  if (error.response) {
+		console.error('updateUser: Error response', error.response.status, error.response.data);
+	  } else if (error.request) {
+		console.error('updateUser: Error request', error.request);
+	  } else {
+		console.error('updateUser: Error', error.message);
+	  }
+	  throw error;
+	}
+  };
+
 
 const Settings = () => {
 	const [isEditing, setIsEditing] = React.useState(false);
-	const [username, setUsername] = React.useState("Unset");
-	const [email, setEmail] = React.useState("Unset");
-	const [password, setPassword] = React.useState("Unset");
-	const [alias, setAlias] = React.useState("Unset");
+
+	const [error, setError] = React.useState(null);
+	const [loading, setLoading] = React.useState(false);
+	const userinfo = React.useContext(userContext);
+
+	const [formData, setFormData] = React.useState({
+		username: userinfo.user?.username || 'Unset',
+		email: userinfo.user?.email || 'Unset',
+		password: '******',
+		alias: userinfo.user?.alias || 'Unset',
+	  });
 
 	console.log('Settings component');
 	console.log('isEditing', isEditing);
-	console.log('username', username);
-	console.log('email', email);
-	console.log('password', password);
-	console.log('alias', alias);
+	console.log('username', formData.username);
+	console.log('email', formData.email);
+	console.log('password', formData.password);
+	console.log('alias', formData.alias);
+
+	React.useEffect(() => {
+		if (userinfo.user) {
+		  setFormData({
+			username: userinfo.user.username,
+			email: userinfo.user.email,
+			password: '******', // Don't prefill password
+			alias: userinfo.user.alias || 'Unset',
+		  });
+		}
+	  }, [userinfo.user]);
+
+
+	const validateUsername = (username) => {
+	return username.trim() !== '' && /^[a-zA-Z0-9_]+$/.test(username);
+	};
+
+	const validateEmail = (email) => {
+	return email.trim() !== '' && /\S+@\S+\.\S+/.test(email);
+	};
+
+	const validatePassword = (password) => {
+	return password.trim() !== '' && password.length >= 6;
+	};
+
+	const validateAlias = (alias) => {
+	return alias.trim() !== '' && /^[a-zA-Z0-9_]+$/.test(alias);
+	};
+
+	const handleChange = (e) => {
+		
+		const { name, value } = e.target;
+		console.log('handleChange event target', name, value);
+		setFormData({ ...formData, [name]: value });
+
+ 		// Inline validation
+		let valid;
+		switch (name) {
+		case 'username':
+			valid = validateUsername(value);
+			setErrors((prevErrors) => ({
+			...prevErrors,
+			username: valid ? '' : 'Invalid username. Only letters, numbers, and underscores are allowed.',
+			}));
+			break;
+		case 'email':
+			valid = validateEmail(value);
+			setErrors((prevErrors) => ({
+			...prevErrors,
+			email: valid ? '' : 'Invalid email address.',
+			}));
+			break;
+		case 'password':
+			valid = validatePassword(value);
+			setErrors((prevErrors) => ({
+			...prevErrors,
+			password: valid ? '' : 'Password must be at least 6 characters long.',
+			}));
+			break;
+		case 'alias':
+			valid = validateAlias(value);
+			setErrors((prevErrors) => ({
+			...prevErrors,
+			alias: valid ? '' : 'Invalid alias. Only letters, numbers, and underscores are allowed.',
+			}));
+			break;
+		default:
+			break;
+		};
+
+	};
 	
+
+	const handleSave = async () => {
+		const { username, email, password, alias } = formData;
+		if (validateUsername(username) && validateEmail(email) && validatePassword(password) && validateAlias(alias)) 
+		{
+	
+		  setLoading(true);
+		  setErrors({});
+		  try {
+			const updatedData = { username, email, alias };
+			if (password) updatedData.password = password; // Include password only if it's being updated
+			const updatedUser = await updateUser(updatedData);
+			setUser(updatedUser);
+			setIsEditing(false);
+		  } catch (error) {
+			setErrors({ form: error.message });
+		  } finally {
+			setLoading(false);
+		  }
+
+		} else {
+		  setErrors({
+			username: validateUsername(username) ? '' : 'Invalid username.',
+			email: validateEmail(email) ? '' : 'Invalid email.',
+			password: password === '' || validatePassword(password) ? '' : 'Invalid password.',
+			alias: validateAlias(alias) ? '' : 'Invalid alias.',
+		  });
+		}
+	};
+
 	return (
 		<div className="settings">
 			<div className="settingsContainer">
@@ -28,26 +167,28 @@ const Settings = () => {
 						
 						{isEditing ? (
 							<input
+								name="username"
 								type="text"
 								className="settingsItemInput"
-								value={username}
-								onChange={(e) => setUsername(e.target.value)}
+								value={formData.username}
+								onChange={handleChange}
 							/>
 						) : (
-							<span className="settingsItemContent">{username}</span>
+							<span className="settingsItemContent">{formData.username}</span>
 						)}
 					</div>
 					<div className="settingsItem">
 						<span className="settingsItemTitle">Email: </span>
 						{isEditing ? (
 							<input
+								name="email"
 								type="text"
 								className="settingsItemInput"
-								value={email}
-								onChange={(e) => setEmail(e.target.value)}
+								value={formData.email}
+								onChange={handleChange}
 							/>
 						) : (
-							<span className="settingsItemContent">{email}</span>
+							<span className="settingsItemContent">{formData.email}</span>
 						)}
 					</div>
 					<div className="settingsItem">
@@ -55,13 +196,14 @@ const Settings = () => {
 
 						{isEditing ? (
 							<input
+								name= "password"
 								type="password"
 								className="settingsItemInput"
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
+								value={formData.password}
+								onChange={handleChange}
 							/>
 						) : (
-							<span className="settingsItemContent">{password}</span>
+							<span className="settingsItemContent">{formData.password}</span>
 						)}
 					</div>
 					<div className="settingsItem">
@@ -69,24 +211,32 @@ const Settings = () => {
 						
 						{isEditing ? (
 							<input
+								name="alias"
 								type="text"
 								className="settingsItemInput"
-								value={alias}
-								onChange={(e) => setAlias(e.target.value)}
+								value={formData.alias}
+								onChange={handleChange}
 							/>
 						) : (
-							<span className="settingsItemContent">{alias}</span>
+							<span className="settingsItemContent">{formData.alias}</span>
 						)}
 					</div>
 				</div>
+
 				<div className="settingsFooter">
-					<button
-						className="settingsButton"
-						onClick={() => setIsEditing(!isEditing)}
-					>
-						{isEditing ? "Save" : "Edit"}
-					</button>
+					{isEditing ? (
+						<button className="settingsButton" onClick={handleSave} disabled={loading}>
+						{loading ? 'Saving...' : 'Save'}
+						</button>
+					) : (
+						<button className="settingsButton" onClick={() => setIsEditing(true)}>
+						Edit
+						</button>
+					)}
 				</div>
+
+
+
 			</div>
 				<div className="settingsContainer">
 					<div className="settingsHeader">
