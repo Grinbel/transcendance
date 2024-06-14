@@ -109,6 +109,7 @@ function Login() {
 							two_factor:decodedToken.two_factor,
 							uuid:decodedToken.uuid,
                             isLogged:true,
+                            alias:decodedToken.alias,
                         };  //SETUP REDIRECT TO HOME PAGE
                         localStorage.setItem('user', JSON.stringify(user));
                         userInfo.setUser(user);
@@ -178,6 +179,7 @@ function Login() {
                     two_factor:decodedToken.two_factor,
                     uuid:decodedToken.uuid,
                     isLogged: true,
+                    alias:decodedToken.alias,
                 };  //SETUP REDIRECT TO HOME PAGE
                 localStorage.setItem('user', JSON.stringify(user));
                 userInfo.setUser(user);

@@ -69,20 +69,28 @@ import logging
 
 @api_view(['PATCH'])
 def updateUser(request, pk):
-	print('userUpdate function request DATA ////// >>>>>:', request.data)
-	try:
-		user = User.objects.get(pk=pk)
-		print('user found with his id in updateUser', user)
-	except User.DoesNotExist:
-		return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    print('userUpdate function request DATA ////// >>>>>:', request.data)
+    try:
+        user = User.objects.get(pk=pk)
+        print('user found with his id in updateUser', user)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
-	serializer = UserSerializer(user, data=request.data, partial=(request.method == 'PATCH'))
-	if serializer.is_valid():
-		serializer.save()
-		print('user updated successfully: >>', serializer.data)
-		return Response(serializer.data)
-	print('user not updated successfully: >>', serializer.errors)
-	return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # Check for email uniqueness if email is being updated
+    if 'email' in request.data:
+        email = request.data['email']
+        if User.objects.filter(email=email).exclude(pk=pk).exists():
+            return Response({'email': 'Email is already in use.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    serializer = UserSerializer(user, data=request.data, partial=True)
+    if serializer.is_valid():
+        print('serializer is valid, saving data:', serializer.validated_data)
+        serializer.save()
+        print('user updated successfully: >>', serializer.data)
+        return Response(serializer.data)
+    
+    print('user not updated successfully: >>', serializer.errors)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def generate_random_digits(n=6):

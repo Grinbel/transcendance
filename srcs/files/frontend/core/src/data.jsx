@@ -16,28 +16,10 @@ export const sidebar = [
 	  listItems: [
 		{
 		  id: 1,
-		  title: "Main",
-		  url: "/dashboard",
-		  icon: IoHomeOutline,
-		},
-		{
-		  id: 2,
 		  title: "Settings",
 		  url: "settings",
 		  icon: IoSettingsOutline,
 		},
-		{
-			id: 3,
-			title: "Friends",
-			url: "friends",
-			icon: TbFriends,
-		  },
-		  {
-			id: 4,
-			title: "History",
-			url: "history",
-			icon: AiOutlineHistory,
-		  },
 	  ],
 	},
   ];

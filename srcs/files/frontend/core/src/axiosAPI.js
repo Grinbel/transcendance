@@ -23,7 +23,16 @@ export const axiosInstance = axios.create({
 
 });
 
-const refreshInstance = axios.create({
+export const refreshInstance = axios.create({
+  baseURL: `http://${import.meta.env.VITE_API_SERVER_ADDRESS}:8000/users/`,
+  timeout: 0,
+  headers: {
+      'Content-Type': 'application/json',
+      'accept': 'application/json'
+  },
+});
+
+export const updateInstance = axios.create({
   baseURL: `http://${import.meta.env.VITE_API_SERVER_ADDRESS}:8000/users/`,
   timeout: 0,
   headers: {
@@ -112,4 +121,4 @@ export const interceptor_response = axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance;
+

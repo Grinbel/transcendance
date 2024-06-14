@@ -141,10 +141,7 @@ async function getProfile(user, setUser, error, setError){
 				<MyNavbar/>
 					<Routes>
 						<Route path="/dashboard" element={<Dashboard />}>
-							<Route index element={<MyMain />} />
-							<Route path="history" element={<History />} />
-							<Route path="friends" element={<Friends />} />
-							<Route path="settings" element={<Settings />} />
+							<Route index element={<Settings />} />
 						</Route>
 						<Route path="/play" element={<Play />} />
 						<Route path="/login" element={<Login />} /> 
