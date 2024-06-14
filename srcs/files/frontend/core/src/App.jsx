@@ -82,7 +82,7 @@ async function getProfile(user, setUser, error, setError){
 		// 	return user;
 		//   }, [user]);
 		//initializeI18n(userinfo.user.langage);
-		initializeI18n('fr')
+		initializeI18n('de')
 		
 		useEffect(() => {
 			console.log('app: useEffect user start', user);
