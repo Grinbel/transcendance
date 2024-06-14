@@ -6,7 +6,9 @@ import { userContext } from "../contexts/userContext.jsx";
 import  { axiosInstance } from "../axiosAPI.js";
 import "./Home.css";
 import { Button } from "react-bootstrap";
+import { useTranslation } from 'react-i18next';
 const Profile = () => {
+	const { t } = useTranslation();
 	let { username } = useParams();
 	const userInfo = useContext(userContext);
 	const [friend, setFriend] = useState();
@@ -106,7 +108,7 @@ const Profile = () => {
 				{block != undefined && block === true && <Button onClick={() => { action(username,"unblock"); setBlock(false);}}>Unblock</Button>}
 			</header>
 			<div className="friend">
-				<h6>Friend List</h6>
+				<h6>{t('friend_list')}</h6>
 				{Array.isArray(friends.friends) && friends.friends.map((friend, index) => (
 					<div key={index} className="chat-message">
 						<div className="chat-username">
