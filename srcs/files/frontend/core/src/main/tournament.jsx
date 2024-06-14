@@ -106,10 +106,10 @@ const tournament = () => {
 						data = {...data, texture_ball: "basketball.jpg", texture_floor: "basket.jpg"};
 						break;
 					case 2:
-						data = {...data, texture_ball: "billardball.png", texture_floor: "billardtable.png"};
+						data = {...data, texture_ball: "https://thumbs.dreamstime.com/b/bille-de-football-de-texture-13533294.jpg", texture_floor: "https://t2.uc.ltmcdn.com/fr/posts/8/4/8/quelle_est_la_taille_d_un_terrain_de_football_12848_600.webp"};
 						break;
 					case 3:
-						data = {...data, texture_ball: "https://thumbs.dreamstime.com/b/bille-de-football-de-texture-13533294.jpg", texture_floor: "https://t2.uc.ltmcdn.com/fr/posts/8/4/8/quelle_est_la_taille_d_un_terrain_de_football_12848_600.webp"};
+						data = {...data, texture_ball: "billardball.png", texture_floor: "billardtable.png"};
 						break;
 					case 4:
 						data = {...data, texture_ball: "tennisball.jpg", texture_floor: "tennisfield.jpg"};
