@@ -7,9 +7,8 @@ import { useNavigate } from 'react-router-dom';
 
 
 function Game() {
-    const { options } = useGameContext();
+    const { options ,resetOptions} = useGameContext();
     const navigate = useNavigate();
-    const { setOptions } = useGameContext();
     let Hall_of_Fame = [];
     const EndOfTournament = async (name,winner) => {
 			
@@ -63,8 +62,7 @@ function Game() {
                 options.score_p1 = 0;
                 options.score_p2 = 0;
                 nextgameplayer(options.room,options.name_p1,options.name_p2)
-                //TODO => choper le P1 et le P2 
-                //TODO => choper leurs Avatars
+
                 
             }
         if (options.texture_p1_ball ===1)
@@ -113,16 +111,18 @@ function Game() {
         if(options.easy_mode == 1)
             scene.add(target_mesh);
         target_mesh.position.z = options.ball_radius;
-        ia_eye.position.x = 0;
-        ia_eye.position.y = options.stage_height / 2 + 1.5;
-        ia_eye.position.z = 3;
-        ia_eye.lookAt(new THREE.Vector3(0, 0, 0));
+
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth /
             window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer();
         camera.lookAt(new THREE.Vector3(0, 0, 0));
         renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.insertBefore(renderer.domElement, document.body.firstChild);
+        renderer.domElement.style.position = 'absolute';
+        renderer.domElement.style.top = 0;
+        renderer.domElement.style.left = 0;
+        renderer.domElement.style.zIndex = 1000; // Make sure this is higher than the z-index of other elements
+        document.body.appendChild(renderer.domElement);
+        //document.body.insertBefore(renderer.domElement, document.body.firstChild);
         const ball_form = new THREE.SphereGeometry(options.ball_radius, 32, 32);
         const p1_weapon = new THREE.BoxGeometry(options.player_width, options.player_size, options.player_height);
         const p2_weapon = new THREE.BoxGeometry(options.player_width, options.player_size, options.player_height);
@@ -139,6 +139,15 @@ function Game() {
         scene.add(p1_weapon_mesh);
         scene.add(p2_weapon_mesh);
         scene.add(ball_render);
+        ia_eye.position.x = 0;
+        ia_eye.position.y = options.stage_height / 2 + 1.5;
+        ia_eye.position.z = 3;
+        ia_eye.lookAt(new THREE.Vector3(0, 0, 0));
+//!        const ia_spotlight = new THREE.SpotLight(0xff0000);
+//!        ia_spotlight.position.set(0, options.stage_height / 2 + 1.5, 3);
+//!        scene.add(ia_spotlight);
+//!        scene.add(ia_spotlight.target);
+//!        ia_spotlight.target = ball_render;
         //const light = new THREE.AmbientLight(0xffcccc, 1);
         //scene.add(light);
         const powerup_form = new THREE.SphereGeometry(options.ball_radius, 32, 32);
@@ -154,7 +163,41 @@ function Game() {
         p2_weapon_mesh.position.z = options.player_height/2;
         ball_render.position.z = options.ball_radius;
         
-                
+
+                //* PREPARATION DU POPUP
+                const dialogContainer = document.createElement('div');
+                dialogContainer.id = 'dialog-renderer';
+                dialogContainer.style.position = 'absolute';
+                dialogContainer.style.top = '25%';
+                dialogContainer.style.left = '25%';
+                dialogContainer.style.width = '50%';
+                dialogContainer.style.height = '50%';
+                dialogContainer.style.zIndex = 1001; 
+                dialogContainer.style.backgroundColor = 'white';
+                dialogContainer.style.display = 'flex';
+                dialogContainer.style.justifyContent = 'center';
+                dialogContainer.style.alignItems = 'center';
+                document.body.appendChild(dialogContainer);
+                const message = document.createElement('p');
+                message.style.textAlign = 'center';
+                message.innerHTML = 'Bienvenue dans le match opposant <span style="font-size: larger; color: red; text-transform: uppercase;">' 
+                + options.name_p1 + '</span> à <span style="font-size: larger; color: red; text-transform: uppercase;">' 
+                + options.name_p2 + "</span> !<br>" 
+                + 'Le premier joueur à atteindre ' + options.score_to_get + ' points avec une différence de ' 
+                + options.score_diff + ' remporte la partie !<br>' 
+                + 'Appuyez sur la touche ESPACE pour commencer !'
+                + '<br>Appuyez sur les touches W et S pour déplacer le joueur 1 et les touches HAUT et BAS pour déplacer le joueur 2 !';
+                dialogContainer.appendChild(message);
+                const dialogRenderer = new THREE.WebGLRenderer();
+                dialogRenderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
+                dialogRenderer.domElement.style.position = 'absolute';
+                dialogRenderer.domElement.style.top = 0;
+                dialogRenderer.domElement.style.left = 0;
+                dialogRenderer.domElement.style.zIndex = 1001;
+                dialogContainer.appendChild(dialogRenderer.domElement);
+                renderer.domElement.style.filter = 'blur(5px)';
+                options.ball_pause = -1;
+
         const controls = new OrbitControls(camera, renderer.domElement);
 
         const handleMouseMove = (event) => {
@@ -169,7 +212,16 @@ function Game() {
 
         window.addEventListener('mousemove', handleMouseMove);
 
-
+        function clear_components(component){
+            scene.remove(component);
+            if (component.geometry)
+                component.geometry.dispose();
+            if (component.material)
+                component.material.dispose();
+            if (component.texture)
+                component.texture.dispose();
+        
+        }
         function server_ball_reset() {
             options.time_before_powerup = Math.random() * (options.max_time_before_powerup -options.min_time_before_powerup) + options.min_time_before_powerup;
             options.ball_x = 0;
@@ -207,6 +259,9 @@ function Game() {
             if (ball_angle > 6 * Math.PI / 8)
                 ball_angle = 6 * Math.PI / 8;
             ball_angle += (Math.PI / 2) * Math.floor(Math.random() * 4);
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            ball_angle = 0;
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             options.ball_x_speed = options.ball_speed * Math.cos(ball_angle);
             options.ball_y_speed = options.ball_speed * Math.sin(ball_angle);
             if(options.ball_x_speed > 0)
@@ -215,10 +270,13 @@ function Game() {
                 ball_render.material = ball_material_2
             ball_render.geometry.uvsNeedUpdate = true; //pour qu il recalcule les coordonnees de texture
             ball_render.needsUpdate = true; // pour prevenir que le materiau a change
+            console.log(" RESET BALL ")
             console.log("ball_x_speed " + options.ball_x_speed)
             console.log("ball_y_speed " + options.ball_y_speed)
             console.log("ball_angle " + ball_angle)
-            options.ball_pause = 40;
+            console.log(" FIN RESET BALL ")
+            if(!options.ball_pause)
+                options.ball_pause = 40;
             if(options.player_is_ia){
                 options.ia_ball_estimated_impact_y = 0;
                 options.ia_ball_estimated_y_speed = 0;
@@ -248,6 +306,7 @@ function Game() {
                 options.power_up_on_screen = 1;
                 
             }
+            console.log("PUTAIN DE Y SPEED : " + options.ball_y_speed)
             options.ball_x += options.ball_x_speed;
             options.ball_y += options.ball_y_speed;
             if(options.power_up_on_screen){
@@ -265,6 +324,7 @@ function Game() {
                 if (options.ball_y > p2_weapon_mesh.position.y + options.player_size / 2 || options.ball_y < p2_weapon_mesh.position.y - options.player_size / 2) {
                     options.score_p1++;
                     server_ball_reset();
+                    return;
                 }
                 ball_render.material = ball_material_2
                 if (options.ball_is_powerup)
@@ -275,8 +335,22 @@ function Game() {
                     p2_weapon_mesh.material.color.setHex(0x0000ff);
                     options.time_before_powerup = Math.random() * (options.max_time_before_powerup - options.min_time_before_powerup) + options.min_time_before_powerup;
                 }
-                options.ball_x_speed = -options.ball_x_speed * options.ball_acc;
-                options.ball_y_speed = options.ball_y_speed * options.ball_acc;
+            //calculate ball angle
+                let angle = Math.atan2(options.ball_y_speed, options.ball_x_speed);
+                console.log("angle de reception" + angle)
+                let impact = p2_weapon_mesh.position.y - options.ball_y;
+                let incidence = Math.PI / 4 * impact / (options.player_size / 2);
+                //angle = -angle + incidence + Math.PI;
+                angle = Math.PI - incidence
+                console.log("return angle " + angle)
+                console.log("incidence " + incidence)
+                options.ball_speed *= options.ball_acc;
+                options.ball_x_speed = options.ball_speed * Math.cos(angle);
+                console.log( " Y SPEED AVAnt" + options.ball_y_speed)
+                options.ball_y_speed = options.ball_speed * Math.sin(angle);
+                console.log("Y SPEED APRES" + options.ball_y_speed)
+//                options.ball_x_speed = -options.ball_x_speed * options.ball_acc;
+//                options.ball_y_speed = options.ball_y_speed * options.ball_acc;
                 options.ball_rotation_z *= -1;
                 if (options.p2_is_frozen)
                     {options.p2_is_frozen --;
@@ -287,6 +361,7 @@ function Game() {
                 if (options.ball_y > p1_weapon_mesh.position.y + options.player_size / 2 || options.ball_y < p1_weapon_mesh.position.y - options.player_size / 2) {
                     options.score_p2++;
                     server_ball_reset();
+                    return;
                 }
                 ball_render.material = ball_material_1
                 if (options.ball_is_powerup)
@@ -297,6 +372,14 @@ function Game() {
                     p1_weapon_mesh.material.color.setHex(0x0000ff);
                     options.time_before_powerup = Math.random() * (options.max_time_before_powerup - options.min_time_before_powerup) + options.min_time_before_powerup;
                 }
+                let angle = Math.atan2(options.ball_y_speed, options.ball_x_speed);
+                let impact = p1_weapon_mesh.position.y - options.ball_y;
+              //  let incidence = Math.PI / 4 * impact / (options.player_size / 2);
+            //    angle = -angle - incidence + Math.PI;
+    //            options.ball_speed *= options.ball_acc;
+      //          options.ball_x_speed = options.ball_speed * Math.cos(angle);
+        //        options.ball_y_speed = options.ball_speed * Math.sin(angle);
+
                 options.ball_x_speed = -options.ball_x_speed * options.ball_acc;
                 options.ball_y_speed = options.ball_y_speed * options.ball_acc;
                 options.ball_rotation_z *=-1;
@@ -378,12 +461,15 @@ function Game() {
         }
 
         function server_ia_move(){
+            if(options.ball_pause)
+                return;
             options.ia_position = p2_weapon_mesh.position.y;
             options.ia_direction = 1;
                 
             if (options.ia_time_since_last_check >= options.ia_time_between_checks || !options.ia_this_point_time){
                 if (options.player_is_ia){
                     scene.add(ia_eye);
+//!                    scene.add(ia_spotlight);
                 }
                 options.ia_time_since_last_check = 0;
                 options.ia_last_ball_x_position = options.ia_new_ball_x_position;
@@ -395,6 +481,7 @@ function Game() {
             }
             if (options.ia_time_since_last_check >6){
                 scene.remove(ia_eye);
+//!                scene.remove(ia_spotlight);
             }
                     
             options.ia_time_since_last_check++;
@@ -407,6 +494,31 @@ function Game() {
         }
         
         function local_handleKeyDown(event) {
+            //si on appuie sur espace : 
+            if (event.keyCode === 32) {
+                if (options.ball_pause)
+                    {
+                        renderer.domElement.style.filter = 'none';
+                        dialogContainer.style.zIndex = 999; 
+                        //dialogRenderer.domElement.style.zIndex = 999
+                        options.ball_pause = 0;
+                    }
+                else
+                {
+                    renderer.domElement.style.filter = 'blur(5px)';
+                    dialogContainer.style.zIndex = 1001;
+                    dialogContainer.style.top = '35%';
+                    dialogContainer.style.left = '35%';
+                    dialogContainer.style.width = '30%';
+                    dialogContainer.style.height = '30%';
+                    message.innerHTML = "Le Match est en pause !<br>Appuyez sur la touche ESPACE pour continuer !<br>Appuyez sur les touches W et S pour déplacer le joueur 1";
+                    if (options.player_is_ia === 0) {
+                        message.innerHTML += " et les touches HAUT et BAS pour déplacer le joueur 2 !";
+                    }
+                    //dialogRenderer.domElement.style.zIndex = 1001
+                    options.ball_pause = -1;
+                }
+            }
             if (event.keyCode === 87) { 
                 options.player1_direction = 1;
             }
@@ -414,11 +526,11 @@ function Game() {
                 options.player1_direction = -1;
             }
             if (event.keyCode === 38) {
-                options.player_is_ia =0;
+                //options.player_is_ia =0;
                 options.player2_direction = -1;
             }
             if (event.keyCode === 40) {
-                options.player_is_ia = 0;
+                //options.player_is_ia = 0;
                 options.player2_direction = 1;
             }
         }
@@ -436,6 +548,8 @@ function Game() {
         window.addEventListener('keyup', local_handleKeyUp, false);
 
         function server_player_move(received_direction) {
+            if(options.ball_pause)
+                return;
             options.player1_direction = received_direction;
             if (options.p1_is_frozen)
                 options.player1_direction = options.player1_direction/3*2;
@@ -464,13 +578,13 @@ function Game() {
         
         
         function server_side_work(received_direction){
-            server_ball_move();
-            server_ia_move();
-            if (options.player_is_ia)
-                options.player2_direction = options.ia_direction;
-            else
+                server_ball_move();
+                server_ia_move();
+                if (options.player_is_ia)
+                    options.player2_direction = options.ia_direction;
+                else
                 server_estimate_ball_speeds()
-            server_player_move(received_direction);
+                server_player_move(received_direction);
 }
 
     function create_text(to_show)
@@ -506,22 +620,39 @@ function Game() {
             if(((options.score_p1 >= options.score_to_get || options.score_p2 >= options.score_to_get) && Math.abs(options.score_p1-options.score_p2) >= options.score_diff) || options.score_p1>options.score_max || options.score_p2>options.score_max)
                 {
                     scene.clear();
+                    scene.remove(text_p1);
+                    scene.remove(text_p2);
+                    text_p1.dispose();
+                    text_p2.dispose();
+                    clear_components(p1_weapon_mesh);
+                    clear_components(p2_weapon_mesh);
+                    clear_components(ball_render);
+                    clear_components(ia_eye);
+//*                    clear_components(ia_spotlight);
+                    clear_components(target_mesh);
+                    clear_components(powerup_render1);
+                    clear_components(first_wall);
+                    clear_components(second_wall);
                     options.winner = options.score_p1>options.score_p2?options.name_p1:options.name_p2;
                     console.log(options.winner);
-                    options.winner = create_text("WINNER : " + options.winner );
+                    options.winner = create_text((options.language==='en'?"WINNER : ":options.language==='fr'?"GAGNANT : ":"GEWINNER : ") + options.winner );
                     scene.add(options.winner);
                     options.winner.position.x = -3
                     return(end_of_game(120));
                 }
             requestAnimationFrame(animate);
-            ball_render.rotation.z += (Math.abs(options.ball_y_speed) + Math.abs(options.ball_x_speed))* options.ball_rotation_z;
-    //		ball_render.rotation.y += ball_x_speed * 2;
-    //		ball_render.rotation.x += ball_y_speed * 2;
-            server_side_work(options.player1_direction);
+            if(!options.ball_pause)
+                {
+//            ball_render.rotation.z += (Math.abs(options.ball_y_speed) + Math.abs(options.ball_x_speed))* options.ball_rotation_z;
+    		ball_render.rotation.y += options.ball_x_speed * 2;
+    		ball_render.rotation.x += options.ball_y_speed //* 2;
+                }
+    server_side_work(options.player1_direction);
             renderer.render(scene, camera);
         }
         animate();
         function end_of_game(counter){
+
 
             renderer.render(scene, camera);
             if (counter !=0)
@@ -632,7 +763,15 @@ function Game() {
                             navigate('/game');
                         }
                     else
-                        navigate('/home');
+                    {
+                        scene.remove(options.winner)
+                        clear_components(options.winner);
+                        document.body.removeChild(renderer.domElement);
+                        document.body.removeChild(dialogContainer);
+                        renderer.dispose();
+                        resetOptions();
+                        navigate('/');
+                    }
                     return () => {
                         console.log("GAME FINIE - WINNER : " + options.winner)
                         // Nettoyez les ressources Three.js et arrêtez les écoutes d'événements si nécessaire
@@ -641,7 +780,10 @@ function Game() {
         }
         function end_of_tournament(counter){
             renderer.render(scene, camera);
-            console.log("COUNTER = " + counter)
+            camera.position.z = 0;
+            camera.position.x = 0;
+            camera.position.y = -40;
+            camera.lookAt(new THREE.Vector3(0, 0, 0));
             if(counter/60 < options.usernames.length -1) // options.usernames[15]
                 {counter ++;
             if(counter % 60 === 0)
@@ -649,7 +791,21 @@ function Game() {
                     scene.add(Hall_of_Fame[counter/60]);
                 }
             requestAnimationFrame(() => end_of_tournament(counter));}
-            
+            else
+                {counter ++;
+                    if(counter < options.usernames.length * 60 + 1800)
+                        requestAnimationFrame(() => end_of_tournament(counter));
+                    else{
+
+                    for (let i = 0; i < options.usernames.length; i++)
+                        {
+                            scene.remove(Hall_of_Fame[i]);
+                            Hall_of_Fame[i].dispose();
+                        }
+                    document.body.removeChild(renderer.domElement);
+                    renderer.dispose();
+                    resetOptions();
+                    navigate('/');}}
             
 
         }

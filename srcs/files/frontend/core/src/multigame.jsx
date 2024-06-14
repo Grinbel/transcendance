@@ -24,7 +24,7 @@ function MultiGame() {
 				} 
 		let player_angle =options.players_size / (options.nb_players +1)
         let player_textures = ['/yoshi.jpg', '/princess.jpg', '/ponge.jpg', '/badboy.png', '/players.jpg', '/beaudibe.jpg' ];
-		let player_names = ['Yoshi', 'Princess', 'Bob', 'Bowser' , 'Mario', 'jmen fous']
+		let player_names = ['Yoshi', 'Princess', 'Bob', 'Bowser' , 'Mario', 'Benoit le BG']
 
         function create_player(text_to_use, which) {
 			if (which %2 == 1)
@@ -101,7 +101,11 @@ function MultiGame() {
 		const renderer = new THREE.WebGLRenderer();
 		camera.lookAt(new THREE.Vector3(0, 0, 0));
 		renderer.setSize(window.innerWidth, window.innerHeight);
-		document.body.appendChild(renderer.domElement);
+        renderer.domElement.style.position = 'absolute';
+        renderer.domElement.style.top = 0;
+        renderer.domElement.style.left = 0;
+        renderer.domElement.style.zIndex = 1000; // Make sure this is higher than the z-index of other elements
+        document.body.appendChild(renderer.domElement);
 		const ball_form = new THREE.SphereGeometry(options.ball_radius, 32, 32);
 
 

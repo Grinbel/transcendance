@@ -6,7 +6,7 @@ export const MultiGameProvider = ({ children }) => {
     const [options, setOptions] = useState({
 
 //! PLACEHOLDERS
-
+        language : 'en',
         winner : '', //placeholder pour gagnant
 //! OPTIONS DES JOUEURS
 

@@ -60,6 +60,8 @@ const Home = () => {
 				score_to_get : 1, 
         		score_diff : 0,
 				usernames : ["Alaide", "Besouin", "Crame", "Dorothée", "Eugène", "Félicie", "Gaston", "Huguette" ],
+				//usernames : ["Alaide", "Besouin"],
+				//avatar : ["/badboy.png","/players.jpg"],
 				avatar : ["/badboy.png","/players.jpg","/princess.jpg","/ponge.jpg","/yoshi.jpg","/xrenoux.jpg","/abelhadi.jpg","/beaudibe.jpg"],
 
 			}));

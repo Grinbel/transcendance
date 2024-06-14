@@ -3,7 +3,7 @@
 # Fonction pour arrêter les conteneurs
 stop_containers() {
     echo "Stopping containers..."
-    docker-compose -f ./srcs/docker-compose.yml down
+    docker compose -f ./srcs/docker-compose.yml down
     exit 0
 }
 
@@ -11,5 +11,5 @@ stop_containers() {
 trap stop_containers INT
 
 # Démarrer les conteneurs
-docker-compose -f ./srcs/docker-compose.yml up --renew-anon-volumes
+docker compose -f ./srcs/docker-compose.yml up --renew-anon-volumes
 

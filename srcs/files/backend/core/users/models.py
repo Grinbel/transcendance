@@ -16,6 +16,7 @@ class User(AbstractUser):
 	avatar = models.ImageField(upload_to='avatars/', default='yoshi.jpg')
 	alias = models.CharField(max_length=255, null=True, blank=True)
 	tournament_name = models.CharField(max_length=7, blank=True)
+	language = models.CharField(max_length=255, blank=True,default='en')
 	name = models.CharField(max_length=255, null=True, blank=True)
 	friends = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='user_friends')
 	blacklist = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='user_blacklist')
