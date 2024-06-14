@@ -41,5 +41,15 @@
   "player" : "Spieler",
   "User avatar" : "Benutzeravatar",
   "join_tournament" : "An einem Turnier teilnehmen",
-  "create_tournament" : "Ein Turnier erstellen"
+  "create_tournament" : "Ein Turnier erstellen",
+  "Nb joueurs" : "Anzahl der Spieler",
+  "Easy mode" : "Einfacher Modus",
+  "ball_speed" : "Ballgeschwindigkeit",
+  "score_toget" : "Zu erreichender Punktestand",
+  "terrain" : "Feld",
+  "basketball": "Basketball",
+  "football": "Fußball",
+  "tennis": "Tennis",
+  "billard": "Billard",
+  "submit": "einreichen"
 }

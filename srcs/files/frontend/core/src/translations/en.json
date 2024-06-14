@@ -41,5 +41,15 @@
   "player" : "Player",
   "User avatar" : "User avatar",
   "join_tournament" : "Join a tournament",
-  "create_tournament" : "Create a tournament"
+  "create_tournament" : "Create a tournament",
+  "Nb joueurs" : "Number of players",
+  "Easy mode" : "Easy mode",
+  "ball_speed" : "Ball speed",
+  "score_toget" : "Score to reach",
+  "terrain" : "Field",
+  "football": "Soccer",
+  "basketball": "Basketball",
+  "tennis": "Tennis",
+  "billard": "Billard",
+  "submit": "submit"
 }

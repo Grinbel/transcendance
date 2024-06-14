@@ -159,7 +159,7 @@ function Play() {
 			
 			{showSelect && (
 				<div>
-				<p>Nombre PLayer:
+				<p>{t('Nb joueurs')}
 					<select value={formData.playerCount} 
 							type="number"
 							id="playerCount"
@@ -172,8 +172,7 @@ function Play() {
 				</p>
 				
 				<label>
-				{/* //TODO texte brut */}
-					Easy Mode
+					{t('Easy mode')}
 				<input
 					type="checkbox"
 					id="isEasy"
@@ -206,7 +205,7 @@ function Play() {
 					value={ballSpeed}
 					onChange={(e) => setBallSpeed(parseFloat(e.target.value))}
 				/>
-				<p>Ball speed: {ballSpeed}</p>
+				<p>{t("ball_speed")}: {ballSpeed}</p>
 				<input
 					type="range"
 					min="1"
@@ -215,8 +214,8 @@ function Play() {
 					value={score}
 					onChange={(e) => setScore(parseFloat(e.target.value))}
 				/>
-				<p>Score to get: {score}</p>
-				<p> Skin:
+				<p>{t("score_toget")}: {score}</p>
+				<p> {t('terrain')}:
 					<select
 						value={skin} 
 						type="number"
@@ -224,13 +223,13 @@ function Play() {
 						name="playerCount"
 						onChange={(e) => setSkin(e.target.value)}>
 
-						<option value="1">basket</option>
-						<option value="2">foot</option>
-						<option value="3">billard</option>
-						<option value="4">tennis</option>
+						<option value="1">{t('basketball')}</option>
+						<option value="2">{t('football')}</option>
+						<option value="3">{t('billard')}</option>
+						<option value="4">{t('tennis')}</option>
 					</select>
 				</p>
-				<button onClick={handleSubmit}>Submit</button>
+				<button onClick={handleSubmit}>{t('submit')}</button>
 			</div>
 			)}
 			<div className="displayer-errors">
