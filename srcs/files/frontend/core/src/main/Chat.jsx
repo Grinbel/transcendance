@@ -12,8 +12,11 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useNavigate } from 'react-router-dom';
 import xss from 'xss';
+import { useTranslation } from 'react-i18next';
+
 
 function Chat() {
+	const { t } = useTranslation();
 	const userInfo = useContext(userContext);
 	// console.log('CHAT //// userInfo', userInfo.user);
 	const [reminder,setReminder] = useState(false);
@@ -206,8 +209,7 @@ function Chat() {
 				type="text"
 				id="privateInputField"
 				className="private-input-field"
-				//TODO texte brut
-				placeholder={`Envoyer a ${username}`}
+				placeholder={`${t('send_to')} ${username}`}
 				value={privateMessage.message}
 				onChange={(e) =>setPrivate({message:e.target.value, receiver:username})}
 				onKeyDown={handleKeyPressprivate}
@@ -283,8 +285,7 @@ function Chat() {
 	return (
 		<div id="chatWindow" className="chat-window">
 			<div id="chatHeader" className="chat-header">
-				{/* //TODO texte brut */}
-				<div id="chatTitle" className="chat-title">Chat</div>
+				<div id="chatTitle" className="chat-title">{t('Chat')}</div>
 			</div>
 			<div id="chatBody" className="chat-body">
 				
@@ -294,16 +295,13 @@ function Chat() {
 							{ message.username !== undefined &&<Nav className="ms-auto">
 								<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={message.username} onClick={() => info(message.username)}>
 									
-									{/* //TODO texte brut */}
-									<NavDropdown.Item onClick={() => navigate(`/profile/${message.username}`)}>profile</NavDropdown.Item>
-
+									<NavDropdown.Item href={`/profile/${message.username}`}>{t('profile')}</NavDropdown.Item>
 									{friend != undefined &&  <NavDropdown.Divider />}
-									{/* //TODO texte brut */}
 									{/* <NavDropdown.Item onClick={() => setFormData({message: `/whisper ${message.username}`,type : 'private'})}>Whisper</NavDropdown.Item> */}
-									{friend != undefined && friend === false && <NavDropdown.Item onClick={() => action(message.username,"addfriend")}>AddFriend</NavDropdown.Item>}
-									{friend != undefined && friend === true && <NavDropdown.Item onClick={() => action(message.username,"unfriend")}>Unfriend</NavDropdown.Item>}
-									{block != undefined && block === false && <NavDropdown.Item onClick={() => action(message.username,"block")}>Block</NavDropdown.Item>}
-									{block != undefined && block === true && <NavDropdown.Item onClick={() => action(message.username,"unblock")}>Unblock</NavDropdown.Item>}
+									{friend != undefined && friend === false && <NavDropdown.Item onClick={() => action(message.username,"addfriend")}>{t('addfriend')}</NavDropdown.Item>}
+									{friend != undefined && friend === true && <NavDropdown.Item onClick={() => action(message.username,"unfriend")}>{t('unfriend')}</NavDropdown.Item>}
+									{block != undefined && block === false && <NavDropdown.Item onClick={() => action(message.username,"block")}>{t('block')}</NavDropdown.Item>}
+									{block != undefined && block === true && <NavDropdown.Item onClick={() => action(message.username,"unblock")}>{t('unblock')}</NavDropdown.Item>}
 									{userInfo.user.tournament != ""&&message.username != userInfo.user.username && <NavDropdown.Item onClick={() => sendInvite(message.username)}>Invite</NavDropdown.Item>}
 									{privateChat(message.username)}
 								</NavDropdown>
@@ -336,8 +334,7 @@ function Chat() {
 						type="text"
 						id="chatInputField"
 						className="chat-input-field"
-						//TODO texte brut
-						placeholder={`Envoyer dans ${roomName}`}
+						placeholder={`${t('send')}`}
 						value={formData.message}
 						onChange={(e) =>setFormData({ message: e.target.value })}
 						onKeyDown={handleKeyPress}

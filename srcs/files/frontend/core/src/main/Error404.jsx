@@ -1,12 +1,13 @@
 import React from "react";
+import { useTranslation } from 'react-i18next';
 
 const Error404 = () => {
+	const { t } = useTranslation();
 	  return (
 	<div>
 	  <header className="Error404">
-		{/* //TODO texte brut */}
 
-		<h1>Error404</h1>
+		<h1>{t('error')} 404</h1>
 	  </header>
 	</div>
   );

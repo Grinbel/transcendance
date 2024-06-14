@@ -1,12 +1,12 @@
 import React from "react";
 
 const Loading = () => {
+	const { t } = useTranslation();
 	return (
 		<div>
 		  <header className="Loading">
-		  {/* //TODO texte brut */}
 
-			<h1>Loading...</h1>
+			<h1>{t('loading')}</h1>
 		  </header>
 		</div>
 	  );

@@ -6,8 +6,11 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import  { axiosInstance } from "../axiosAPI.js";
 import { useGameContext } from "../contexts/GameContext.jsx";
+import { useTranslation } from 'react-i18next';
+
 
 const tournament = () => {
+	const { t } = useTranslation();
 	const userInfo = useContext(userContext);
 	const [ws, setWs] = useState(null);
 	const [messages, setMessages] = useState([]);
@@ -231,13 +234,11 @@ const tournament = () => {
 	return (
 		<div>
 		<header className="tournament">
-		{/* //TODO texte brut */}
-			<h1>tournament {name}</h1>
-			{/* //TODO texte brut */}
+			<h1>{t('tournament')} {name}</h1>
 
 			<h3>Max player: {maxCapacity}</h3>
 			<div id="chatContent" className="chat-content">
-				<h4>Player</h4>
+				<h4>{t('player')}</h4>
 				{messages.map((message, index) => (
 					<div key={index} className="chat-message" ref={index === messages.length - 1 ? messagesEndRef : null}>
 						<div className="chat-username">
@@ -249,7 +250,7 @@ const tournament = () => {
 					</div>
 				))}
 			<div className="friend">
-				<h6>Friend List</h6>
+				<h6>{t('friend_list')}</h6>
 				{friend.map((message, index) => (
 					<div key={index} className="chat-message" ref={index === friend.length - 1 ? messagesEndRef : null}>
 						<div className="chat-username">
@@ -261,7 +262,6 @@ const tournament = () => {
 					</div>
 				))}
 			</div>
-								{/* //TODO texte brut */}
 
 			<h3>{displayer}</h3>
 			</div>
