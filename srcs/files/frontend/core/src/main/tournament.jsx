@@ -133,7 +133,6 @@ const tournament = () => {
 					score_to_get: data.score,
 					score_max:data.score + 4,
 					easy_mode: data.easyMode,
-					texture_ball : data.texture_ball,
 					texture_floor : data.texture_floor,
 				}));
 				delay(1000).then(() => navigate('/game'));
