@@ -75,8 +75,9 @@ const NavLoggedIn = () => {
 			
 			<Nav  className="ms-auto">
 				<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={UserMenu}>
-					<NavDropdown.Item href={`/profile/${userinfo.user.username}`}>{t('profile')}</NavDropdown.Item>
-					<Nav.Link className="navCustom playButton me-3" href="/play">{t('play')}</Nav.Link>
+					<NavDropdown.Item onClick={() => navigate(`/profile/${userinfo.user.username}`)}>{t('profile')}</NavDropdown.Item>
+
+					<Nav.Link className="navCustom playButton me-3" onClick={() => navigate(`/play`)}>{t('play')}</Nav.Link>
 					<NavDropdown.Divider />
 					<NavDropdown.Item onClick={handleLogout}>{t('logout')}</NavDropdown.Item>
 				</NavDropdown>

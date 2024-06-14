@@ -294,8 +294,7 @@ function Chat() {
 						<div key={index} className="chat-message" ref={messagesEndRef}>
 							{ message.username !== undefined &&<Nav className="ms-auto">
 								<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={message.username} onClick={() => info(message.username)}>
-									
-									<NavDropdown.Item href={`/profile/${message.username}`}>{t('profile')}</NavDropdown.Item>
+									<NavDropdown.Item onClick={() => navigate(`/profile/${message.username}`)}>{t('profile')}</NavDropdown.Item>
 									{friend != undefined &&  <NavDropdown.Divider />}
 									{/* <NavDropdown.Item onClick={() => setFormData({message: `/whisper ${message.username}`,type : 'private'})}>Whisper</NavDropdown.Item> */}
 									{friend != undefined && friend === false && <NavDropdown.Item onClick={() => action(message.username,"addfriend")}>{t('addfriend')}</NavDropdown.Item>}
