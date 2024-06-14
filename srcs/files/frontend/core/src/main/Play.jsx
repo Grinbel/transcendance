@@ -17,7 +17,7 @@ function Play() {
 	const [join, setJoin] = useState(false);
 	const [ballSpeed, setBallSpeed] = useState(50);
 	const [score, setScore] = useState(5);
-	const [skin, setSkin]= useState(1);
+	const [skin, setSkin]= useState(3);
 	const [formData, setFormData] = useState({ tournamentId: "", playerCount: 2, isEasy: false });
 	const [alias, setAlias] = useState("");
 	const [displayer, setDisplayer] = useState("");
@@ -224,10 +224,10 @@ function Play() {
 						name="playerCount"
 						onChange={(e) => setSkin(e.target.value)}>
 
-						<option value="1">beaudibe</option>
-						<option value="2">abelhadi</option>
-						<option value="3">xrenoux</option>
-						<option value="4">tac</option>
+						<option value="1">basket</option>
+						<option value="2">billard</option>
+						<option value="3">foot</option>
+						<option value="4">tennis</option>
 					</select>
 				</p>
 				<button onClick={handleSubmit}>Submit</button>
