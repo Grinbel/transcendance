@@ -3,11 +3,15 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Text } from 'troika-three-text';
 import { useMultiGameContext } from './contexts/MultiGameContext.jsx';
+import { useNavigate } from 'react-router-dom';
 
 
 function MultiGame() {
         const { options } = useMultiGameContext();
+		const navigate = useNavigate();
         options.ball_speed = options.ball_starting_speed
+		if(options.nb_players === 7)
+			return(navigate('/'));
         useEffect(() => {
         
 		let loader = new THREE.TextureLoader();
@@ -225,7 +229,7 @@ function MultiGame() {
 			let player_min_angle;
             console.log("Angle de la balle " + angle)
 			for(let i = 0; i<options.nb_players; i++){
-				player_real_angle = normalize_angle(players[i].mesh.rotation.z ) ;
+				player_real_angle = normalize_angle(Math.PI - players[i].mesh.rotation.z ) ;
 				player_max_angle = normalize_angle(player_real_angle + player_angle / 2);
 				player_min_angle = normalize_angle(player_real_angle - player_angle / 2);
                 console.log("angle du joueur " + i + " max " + player_max_angle + " min " + player_min_angle)

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { userContext } from "../contexts/userContext.jsx";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import '../forms/forms.css'
+import { useTranslation } from 'react-i18next';
 
 import { jwtDecode } from "jwt-decode";
 
@@ -23,6 +24,7 @@ async function getUuid(userInfo){
 }
 
 function Login() {
+    const { t } = useTranslation();
     console.log('Login:');
     const [step, setStep] = useState(1);
     const [code, setCode] = useState('');
@@ -262,7 +264,7 @@ function Login() {
                                             </Form.Control.Feedback>
                                         </Form.Group>
                                     
-                                        <Button type='submit' role="button" className="buttonCustom"> Login </Button>
+                                        <Button type='submit' role="button" className="buttonCustom"> {t('Login')} </Button>
                                         {error && <p style={{ color: 'red' }}>{error}</p>}
                                     </Form>
                                 </Col>

@@ -6,6 +6,9 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card'; 
+import { useTranslation } from 'react-i18next';
+
+
 
 import { useContext, useState } from "react";
 import { userContext } from "../contexts/userContext.jsx";
@@ -20,6 +23,8 @@ const Home = () => {
 	const { setOptions } = useGameContext();
 	const { setOptions: setMultiGameOptions } = useMultiGameContext();
     const navigate = useNavigate();
+	const { t } = useTranslation();
+
 	
 
 		const handleVsVacheClick = () => {
@@ -71,30 +76,26 @@ const Home = () => {
 		<Container fluid className="homeContainer">
 			<Row className="mb-3">
 				<Col className="columnStyle">
-				{/* //TODO texte brut */}
-
-					<Button variant="primary" as={Link} to="/play" className="homeButtons">1V1</Button>
+					<Button variant="primary" as={Link} to="/play" className="homeButtons">{t('1V1')}</Button>
 				</Col>
 				<Col className="columnStyle">
-					<Button variant="primary" onClick={handle2P} className="homeButtons">Local 2 Players</Button>
+					<Button variant="primary" onClick={handle2P} className="homeButtons">{t('Local 2 Players')}</Button>
 				</Col>
 				<Col className="columnStyle">
-					<Button variant="primary" onClick={handleIA_Custom} className="homeButtons">Local Vs better Ia</Button>
+					<Button variant="primary" onClick={handleIA_Custom} className="homeButtons">{t('Local Vs better Ia')}</Button>
 				</Col>
 				<Col className="columnStyle">
-					<Button variant="primary" onClick={tournoitest} className="homeButtons"> Test Tournoi</Button>
+					<Button variant="primary" onClick={tournoitest} className="homeButtons"> {t('Test Tournoi')}</Button>
 				</Col>
 				<Col className="columnStyle ">
-  					<Button variant="primary" as={Link} to="/multi-options" className="homeButtons">MULTI</Button>
+  					<Button variant="primary" as={Link} to="/multi-options" className="homeButtons">{t('Multi')}</Button>
 				</Col>
 				<Col className="columnStyle ">
 					
-				<Button variant="primary" onClick={handleVsVacheClick} className="homeButtons">Tac Vs Vache</Button>
+				<Button variant="primary" onClick={handleVsVacheClick} className="homeButtons">{t('Tac vs Vache')}</Button>
 				</Col>
 				<Col className="columnStyle ">
-				{/* //TODO texte brut */}
-
-					<Button variant="primary" as={Link} to="/play" className="homeButtons">TOURNAMENT </Button>
+					<Button variant="primary" as={Link} to="/play" className="homeButtons">{t('TOURNAMENT')}</Button>
 				</Col>
 			</Row>
 		</Container>

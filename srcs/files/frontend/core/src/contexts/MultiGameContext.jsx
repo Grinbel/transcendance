@@ -10,7 +10,7 @@ export const MultiGameProvider = ({ children }) => {
         winner : '', //placeholder pour gagnant
 //! OPTIONS DES JOUEURS
 
-        nb_players : 5,
+        nb_players : 7,
         player_speed  : 0.1,
 
 

@@ -5,9 +5,11 @@ import  { axiosInstance } from "../axiosAPI.js";
 import { useContext } from "react";
 import { userContext } from "../contexts/userContext.jsx";
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import "./Home.css";
 
 function Play() {
+	const { t } = useTranslation();
 	const navigateTo = useNavigate();
 	const userInfo = useContext(userContext);
 	const [showSelect, setShowSelect] = useState(false);
@@ -119,18 +121,17 @@ function Play() {
 							type="text"
 							id="tournamentId"
 							name="tournamentId"
-							placeholder="Enter tournament ID"
+							placeholder={t('Enter tournament ID')}
 							value={formData.tournamentId}
 							onChange={handleChange}
 							maxLength="6"
 							/>
-									{/* //TODO texte brut */}
 					<label htmlFor="alias"></label>
 						<input
 							type="text"
 							id="alias"
 							name="alias"
-							placeholder="Enter alias"
+							placeholder={t('Enter alias')}
 							value={alias}
 							onChange={(e) => {
 								const re = /^[a-zA-Z0-9]+$/; // Regex for alphanumeric characters
@@ -168,12 +169,11 @@ function Play() {
 					onChange={handleChange}
 					/>
 				</label>
-				{/* //TODO texte brut */}
 				<input
 					type="text"
 					id="alias"
 					name="alias"
-					placeholder="Enter alias"
+					placeholder={t('Enter alias')}
 					value={alias}
 					onChange={(e) => {
 						const re = /^[a-zA-Z0-9]+$/; // Regex for alphanumeric characters
@@ -187,7 +187,6 @@ function Play() {
 			</div>
 			)}
 			<div className="displayer-errors">
-			{/* //TODO texte brut */}
 
 				{displayer}
 			</div>

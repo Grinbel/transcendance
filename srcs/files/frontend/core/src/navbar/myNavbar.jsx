@@ -17,6 +17,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
+import { useTranslation } from 'react-i18next';
 
 import { userContext } from "../contexts/userContext.jsx";
 
@@ -24,6 +25,7 @@ import { userContext } from "../contexts/userContext.jsx";
 
 // Composant pour la barre de navigation lorsqu'un utilisateur est connecté
 const NavLoggedIn = () => {
+	const { t } = useTranslation();
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
 	const userinfo = useContext(userContext);
@@ -73,13 +75,10 @@ const NavLoggedIn = () => {
 			
 			<Nav  className="ms-auto">
 				<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={UserMenu}>
-					{/* //TODO texte brut */}
-					<NavDropdown.Item href={`/profile/${userinfo.user.username}`}>profile</NavDropdown.Item>
-					{/* //TODO texte brut */}
-					<Nav.Link className="navCustom playButton me-3" href="/play">play</Nav.Link>
+					<NavDropdown.Item href={`/profile/${userinfo.user.username}`}>{t('profile')}</NavDropdown.Item>
+					<Nav.Link className="navCustom playButton me-3" href="/play">{t('play')}</Nav.Link>
 					<NavDropdown.Divider />
-					{/* //TODO texte brut */}
-					<NavDropdown.Item onClick={handleLogout}>logout</NavDropdown.Item>
+					<NavDropdown.Item onClick={handleLogout}>{t('logout')}</NavDropdown.Item>
 				</NavDropdown>
 			</Nav>
 		  </Container>
@@ -93,6 +92,7 @@ const NavLoggedIn = () => {
 
   // Composant pour la barre de navigation lorsqu'aucun utilisateur n'est connecté
   const NavLoggedOut = () => {
+	const { t } = useTranslation();
 
 	const navigate = useNavigate();
 	const userinfo = useContext(userContext);
@@ -113,8 +113,8 @@ const NavLoggedIn = () => {
 			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
 			<Navbar.Collapse id="responsive-navbar-nav">
 			  <Nav  className="ms-auto navbarCustom">
-				<Nav.Link className="navCustom me-3" as={Link} to="/signup">sign up</Nav.Link>
-				<Nav.Link className="navCustom me-3" as={Link} to="/login" >login</Nav.Link>
+				<Nav.Link className="navCustom me-3" as={Link} to="/signup">{t('sign_up')}</Nav.Link>
+				<Nav.Link className="navCustom me-3" as={Link} to="/login" >{t('login')}</Nav.Link>
 			  </Nav>
 			</Navbar.Collapse>
 		  </Container>

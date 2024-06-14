@@ -1,13 +1,13 @@
 import React from "react";
 import "./App.css";
+import { useTranslation } from 'react-i18next';
 
 const User = () => {
+	const { t } = useTranslation();
 	return (
 		<div>
 		  <header className="User">
-									{/* //TODO texte brut */}
-
-			<h3>User</h3>
+			<h3>{t('User')}</h3>
 		  </header>
 		</div>
 	  );

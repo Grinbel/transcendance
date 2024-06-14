@@ -4,12 +4,22 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Text } from 'troika-three-text';
 import { useGameContext } from './contexts/GameContext.jsx';
 import { useNavigate } from 'react-router-dom';
-
+import { useTranslation } from 'react-i18next';
 
 function Game() {
-    const { options ,resetOptions} = useGameContext();
+    const { options ,resetOptions,setOptions} = useGameContext();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     let Hall_of_Fame = [];
+
+    function normalize_angle(angle){
+        angle = angle % (Math.PI*2);
+        if (angle < -Math.PI)
+            angle += Math.PI*2;
+        if (angle > Math.PI)
+            angle -= Math.PI*2;
+        return angle;
+    }
     const end_of_game = async (name,winner) => {
 			
 		try {
@@ -120,7 +130,10 @@ function Game() {
         renderer.domElement.style.position = 'absolute';
         renderer.domElement.style.top = 0;
         renderer.domElement.style.left = 0;
-        renderer.domElement.style.zIndex = 1000; // Make sure this is higher than the z-index of other elements
+        renderer.domElement.style.zIndex = 1000; 
+        renderer.domElement.style.width = '100%';
+        renderer.domElement.style.height = '100%';
+        renderer.domElement.style.backgroundColor = 'transparent';
         document.body.appendChild(renderer.domElement);
         //document.body.insertBefore(renderer.domElement, document.body.firstChild);
         const ball_form = new THREE.SphereGeometry(options.ball_radius, 32, 32);
@@ -173,20 +186,25 @@ function Game() {
                 dialogContainer.style.width = '50%';
                 dialogContainer.style.height = '50%';
                 dialogContainer.style.zIndex = 1001; 
-                dialogContainer.style.backgroundColor = 'white';
+                dialogContainer.style.backgroundColor = 'transparent';
                 dialogContainer.style.display = 'flex';
                 dialogContainer.style.justifyContent = 'center';
                 dialogContainer.style.alignItems = 'center';
                 document.body.appendChild(dialogContainer);
                 const message = document.createElement('p');
                 message.style.textAlign = 'center';
-                message.innerHTML = 'Bienvenue dans le match opposant <span style="font-size: larger; color: red; text-transform: uppercase;">' 
-                + options.name_p1 + '</span> à <span style="font-size: larger; color: red; text-transform: uppercase;">' 
-                + options.name_p2 + "</span> !<br>" 
-                + 'Le premier joueur à atteindre ' + options.score_to_get + ' points avec une différence de ' 
-                + options.score_diff + ' remporte la partie !<br>' 
-                + 'Appuyez sur la touche ESPACE pour commencer !'
-                + '<br>Appuyez sur les touches W et S pour déplacer le joueur 1 et les touches HAUT et BAS pour déplacer le joueur 2 !';
+                message.innerHTML =  t('beginning_of_speech') + ' ' + options.name_p1 + ' ' + t('à') + ' ' + options.name_p2 + ' ' + t('to_reach') + ' ' + options.score_to_get + ' ' + t('diff') + ' ' + options.score_diff + ' ' + t('fin_intro') + t('controlsj1');
+                if(options.player_is_ia === 1)
+                    message.innerHTML +="!"
+                else
+                    message.innerHTML += t('controlsj2');
+                //'Bienvenue dans le match opposant <span style="font-size: larger; color: red; text-transform: uppercase;">' 
+                //+ options.name_p1 + '</span> à <span style="font-size: larger; color: red; text-transform: uppercase;">' 
+                //+ options.name_p2 + "</span> !<br>" 
+               // + 'Le premier joueur à atteindre ' + options.score_to_get + ' points avec une différence de ' 
+                //+ options.score_diff + ' remporte la partie !<br>' 
+              //  + 'Appuyez sur la touche ESPACE pour commencer !'
+            //    + '<br>Appuyez sur les touches W et S pour déplacer le joueur 1 et les touches HAUT et BAS pour déplacer le joueur 2 !';
                 dialogContainer.appendChild(message);
                 const dialogRenderer = new THREE.WebGLRenderer();
                 dialogRenderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
@@ -260,7 +278,7 @@ function Game() {
                 ball_angle = 6 * Math.PI / 8;
             ball_angle += (Math.PI / 2) * Math.floor(Math.random() * 4);
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            ball_angle = 0;
+            ball_angle = Math.PI *7/8;
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             options.ball_x_speed = options.ball_speed * Math.cos(ball_angle);
             options.ball_y_speed = options.ball_speed * Math.sin(ball_angle);
@@ -270,11 +288,6 @@ function Game() {
                 ball_render.material = ball_material_2
             ball_render.geometry.uvsNeedUpdate = true; //pour qu il recalcule les coordonnees de texture
             ball_render.needsUpdate = true; // pour prevenir que le materiau a change
-            console.log(" RESET BALL ")
-            console.log("ball_x_speed " + options.ball_x_speed)
-            console.log("ball_y_speed " + options.ball_y_speed)
-            console.log("ball_angle " + ball_angle)
-            console.log(" FIN RESET BALL ")
             if(!options.ball_pause)
                 options.ball_pause = 40;
             if(options.player_is_ia){
@@ -306,7 +319,8 @@ function Game() {
                 options.power_up_on_screen = 1;
                 
             }
-            console.log("PUTAIN DE Y SPEED : " + options.ball_y_speed)
+            console.log("PUTAIN DE Y SPEED : " + options.ball_y_speed + " ET X SPEED : " + options.ball_x_speed)
+
             options.ball_x += options.ball_x_speed;
             options.ball_y += options.ball_y_speed;
             if(options.power_up_on_screen){
@@ -337,20 +351,13 @@ function Game() {
                 }
             //calculate ball angle
                 let angle = Math.atan2(options.ball_y_speed, options.ball_x_speed);
-                console.log("angle de reception" + angle)
                 let impact = p2_weapon_mesh.position.y - options.ball_y;
-                let incidence = Math.PI / 4 * impact / (options.player_size / 2);
-                //angle = -angle + incidence + Math.PI;
-                angle = Math.PI - incidence
-                console.log("return angle " + angle)
-                console.log("incidence " + incidence)
+                let incidence = Math.PI / 2 * impact / (options.player_size / 2);
+                console.log("P2 incidence " + incidence + " angle " + angle)
+                angle = Math.PI + (incidence -angle)/2
                 options.ball_speed *= options.ball_acc;
                 options.ball_x_speed = options.ball_speed * Math.cos(angle);
-                console.log( " Y SPEED AVAnt" + options.ball_y_speed)
                 options.ball_y_speed = options.ball_speed * Math.sin(angle);
-                console.log("Y SPEED APRES" + options.ball_y_speed)
-//                options.ball_x_speed = -options.ball_x_speed * options.ball_acc;
-//                options.ball_y_speed = options.ball_y_speed * options.ball_acc;
                 options.ball_rotation_z *= -1;
                 if (options.p2_is_frozen)
                     {options.p2_is_frozen --;
@@ -374,14 +381,21 @@ function Game() {
                 }
                 let angle = Math.atan2(options.ball_y_speed, options.ball_x_speed);
                 let impact = p1_weapon_mesh.position.y - options.ball_y;
-              //  let incidence = Math.PI / 4 * impact / (options.player_size / 2);
-            //    angle = -angle - incidence + Math.PI;
-    //            options.ball_speed *= options.ball_acc;
-      //          options.ball_x_speed = options.ball_speed * Math.cos(angle);
-        //        options.ball_y_speed = options.ball_speed * Math.sin(angle);
-
-                options.ball_x_speed = -options.ball_x_speed * options.ball_acc;
-                options.ball_y_speed = options.ball_y_speed * options.ball_acc;
+                let incidence = Math.PI - Math.PI / 2 * impact / (options.player_size / 2);
+                console.log("P1 incidence " + incidence + " angle " + angle);
+                angle = normalize_angle(angle);
+                incidence = normalize_angle(incidence);
+                console.log("P1 incidence normalized " + incidence + " angle " + angle);
+                //let reboundAngle = Math.PI  + (incidence - angle) /2
+                let reboundAngle = Math.PI - angle
+                
+                console.log("angle de rebond" + reboundAngle)
+                //let reboundAngle = -Math.PI - (incidence - angle) / 2;
+ 
+                options.ball_speed *= options.ball_acc;
+ 
+                options.ball_x_speed = options.ball_speed * Math.cos(reboundAngle);
+                options.ball_y_speed = options.ball_speed * Math.sin(reboundAngle);
                 options.ball_rotation_z *=-1;
                 if (options.p1_is_frozen)
                 {options.p1_is_frozen --;
@@ -511,10 +525,12 @@ function Game() {
                     dialogContainer.style.left = '35%';
                     dialogContainer.style.width = '30%';
                     dialogContainer.style.height = '30%';
-                    message.innerHTML = "Le Match est en pause !<br>Appuyez sur la touche ESPACE pour continuer !<br>Appuyez sur les touches W et S pour déplacer le joueur 1";
+                    message.innerHTML = t('pause') + '<br>' + t('continue') + '<br>' + t('controlsj1');
                     if (options.player_is_ia === 0) {
-                        message.innerHTML += " et les touches HAUT et BAS pour déplacer le joueur 2 !";
+                        message.innerHTML += t('controlsj2');
                     }
+                    else
+                        message.innerHTML += "!";
                     //dialogRenderer.domElement.style.zIndex = 1001
                     options.ball_pause = -1;
                 }
@@ -601,7 +617,7 @@ function Game() {
         text.rotation.x = Math.PI/2;
         text.position.y = options.stage_height /2
         // Après avoir changé des propriétés, vous devez toujours appeler sync()
-        text.sync();
+        //text.sync();
 
         // Ajouter le texte à la scène
         return text;
@@ -635,7 +651,7 @@ function Game() {
                     clear_components(second_wall);
                     options.winner = options.score_p1>options.score_p2?options.name_p1:options.name_p2;
                     console.log(options.winner);
-                    options.winner = create_text((options.language==='en'?"WINNER : ":options.language==='fr'?"GAGNANT : ":"GEWINNER : ") + options.winner );
+                    options.winner = create_text(t('winner') + options.winner );
                     scene.add(options.winner);
                     options.winner.position.x = -3
                     return(end_of_game(120));
