@@ -51,5 +51,19 @@
   "basketball": "Basketball",
   "tennis": "Tennis",
   "billard": "Billard",
-  "submit": "submit"
+  "submit": "submit",
+  "game_begins": "The game will start soon!",
+  "need_login": "You need to be logged in",
+  "invite" : " invited you to a tournament ",
+  "next_game1"  : " and ",
+  "next_game2" : " will face each other in the next match",
+  "join" : "Join",
+  "invalid": "Invalid tournament number",
+    "full" : "The tournament is full",
+    "inside" : "You are already in a tournament",
+    "progress" : "The tournament is in progress",
+    "host": "You are the host, game is launching",
+    "not_host" : "You are not the host, please go to ",
+    "not_host2" : " computer to launch the game",
+    "over" : "The tournament is over"
 }

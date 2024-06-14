@@ -51,5 +51,19 @@
   "football": "Fußball",
   "tennis": "Tennis",
   "billard": "Billard",
-  "submit": "einreichen"
+  "submit": "einreichen",
+  "game_begins": "Das Spiel beginnt bald!",
+  "need_login": "Sie müssen angemeldet sein",
+  "invite" : " hat Sie zu einem Turnier eingeladen ",
+  "next_game1"  : " und ",
+  "next_game2" : " werden im nächsten Spiel gegeneinander antreten",
+  "join" : "Beitreten",
+  "invalid": "Ungültige Turniernummer",
+    "full" : "Das Turnier ist voll",
+    "inside" : "Sie sind bereits in einem Turnier",
+    "progress" : "Das Turnier läuft",
+    "host": "Sie sind der Gastgeber, das Spiel wird gestartet",
+    "not_host" : "Sie sind nicht der Gastgeber, bitte gehen Sie zu ",
+    "not_host2" : " Computer, um das Spiel zu starten",
+    "over" : "Das Turnier ist vorbei" 
 }

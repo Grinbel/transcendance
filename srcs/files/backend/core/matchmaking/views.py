@@ -52,13 +52,13 @@ def choice(request):
 	tournament = Tournament.objects.filter(name=tournamentId)
 	tournament = tournament.first()
 	if (tournament is None):
-		return Response({'Error':'Invalid tournament ID'})
+		return Response({'Error':'invalid'})
 	elif tournament.checkAddUser(user) is False:
-		return Response({'Error':'Room is full'})
+		return Response({'Error':'full'})
 	elif (Tournament.objects.filter(players=user).exists()):
-		return Response({'Error':'You are already inside a tournament'})
+		return Response({'Error':'inside'})
 	elif (tournament.status == 'inprogress'):
-		return Response({'Error':'Tournament is already in progress'})
+		return Response({'Error':'progress'})
 	else:
 		return Response({'room_name': tournament.name})
 
