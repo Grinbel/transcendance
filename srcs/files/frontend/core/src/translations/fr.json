@@ -52,5 +52,19 @@
     "football": "Football",
     "tennis": "Tennis",
     "billard": "Billard",
-    "submit": "envoyer"
+    "submit": "envoyer",
+    "game_begins": "Le jeu va bientot commencer!",
+    "need_login": "Vous devez être connecté",
+    "invite" : " vous a invite a un tournoi ",
+    "next_game1"  : " et ",
+    "next_game2" : " vont s'affronter dans le prochain match",
+    "join": "Rejoindre",
+    "invalid": "Numero de tournoi invalide",
+    "full" : "Le tournoi est plein",
+    "inside" : "Vous etes deja dans un tournoi",
+    "progress" : "Le tournoi est en cours",
+    "host": "Vous etes l'hote, partie en cours de lancement",
+    "not_host" : "Vous n'etes pas l'hote, veuillez allez a l'ordinateur de ",
+    "not_host2" : " pour lancer la partie",
+    "over" : "Le Tournoi est terminé"
   }

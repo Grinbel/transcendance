@@ -61,7 +61,7 @@ function Chat() {
 		if (userInfo.user === undefined )
 			return ;
 		else if (userInfo.user.tournamentIsLaunching===true){
-			setdisplayer("La partie va bientot commencer");
+			setdisplayer(t('game_begins'));
 			// userInfo.setUser({...userInfo.user,tournamentIsLaunching:false});
 		}
 		setFormData(prevState => ({...prevState, username: userInfo.user.username}));
@@ -75,7 +75,17 @@ function Chat() {
 		ws.onerror = e => console.log('ws chat error', e);
 		ws.onmessage = e => {
 			const message = JSON.parse(e.data);
-			setMessages(prevMessages => [...prevMessages, message]);
+			let newmessage;
+			if (message.type === 'send_invite'){
+				newmessage = {...message, message: `${message.username} ${t('invite')}`};
+				setMessages(prevMessages => [...prevMessages, newmessage]);
+			}
+			else if (message.type === 'next_game_player'){
+				newmessage = {...message, message: `${message.p1} ${t('next_game1')} ${message.p2} ${t('next_game2')}`};
+				setMessages(prevMessages => [...prevMessages, newmessage]);
+			}
+			else
+				setMessages(prevMessages => [...prevMessages, message]);
 			console.log('ws chat message', message, message.username);
 		};
 
@@ -96,7 +106,7 @@ function Chat() {
 		// setuserInfo(useContext(userContext));
 		// console.log('username =', userInfo.user);
 		if (userInfo.user.isLogged ===  false) {
-			setdisplayer("Need to be logged in");
+			setdisplayer(t('need login'));
 			// console.log("Need to be logged in   ", displayer);
 			return;
 		}
@@ -125,7 +135,7 @@ function Chat() {
 	const handlePrivate = async (event) =>{
 		event.preventDefault();
 		if (userInfo.user.isLogged ===  false) {
-			setdisplayer("Need to be logged in");
+			setdisplayer(t('need_login'));
 			// console.log("Need to be logged in   ", displayer);
 			return;
 		}
@@ -239,7 +249,7 @@ function Chat() {
 			//check if response.data contains the word error
 
 			if (response.data.Error != undefined){
-				setdisplayer(response.data.Error);
+				setdisplayer(t(response.data.Error));
 				console.log('Invalid tournament');
 			}
 			else {
@@ -249,7 +259,7 @@ function Chat() {
 					...userInfo.user,
 					tournament: response.data.room_name
 				  });
-				navigateTo('/tournament/');
+				navigate('/tournament/');
 			}
 		} catch (error) {
 			if (error.response) {
@@ -315,7 +325,7 @@ function Chat() {
 							{message.type === 'send_invite' && <div className="invite">
 								{message.message}
 								<a href="#" onClick={(e) => {e.preventDefault(); goToTournament(message.room);}}>
-									Accept
+									{t('join')}
 								</a>
 							</div>}
 							{message.type === 'next_game_player' && <div className="private">

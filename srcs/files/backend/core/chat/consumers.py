@@ -254,5 +254,7 @@ class ChatConsummer(WebsocketConsumer):
 			'type': 'next_game_player',
 			'message':message,
 			'room':event['room'],
+			'p1':event['p1'],
+			'p2':event['p2'],
 		}
 	))

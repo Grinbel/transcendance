@@ -95,7 +95,7 @@ const tournament = () => {
 
 		if (userInfo.user.username === sortedMessages[0])
 			{
-			setDisplayer("Launching");
+			setDisplayer(t("Launching"));
 
 			messages.sort(() => Math.random() - 0.5);
 			console.log("Message messages ", messages);
@@ -142,13 +142,13 @@ const tournament = () => {
 			setIsTrue(false);
 			// nextgameplayer(name);
 			// end_of_game(name,userInfo.user.username);
-			setDisplayer("You are  the host. Launching the game.");
+			setDisplayer(t('host'));
 			delay(3000).then(() => navigate('/game'));
 		}
 		else
 		{
 			setIsTrue(false);
-			setDisplayer("You are not the host. Go on the screen of " +user[0] +" to launch the game.");
+			setDisplayer(t('not_host') +user[0] +t('not_host2'));
 			// delay(5000).then(() => navigate('/'));
 		}
 	}, [messages,isTrue,name]);
@@ -201,7 +201,7 @@ const tournament = () => {
 			}
 			else if (message.type === 'end')
 			{
-				setDisplayer("The tournament is over");
+				setDisplayer(t('over'));
 				delay(5000).then(() => navigate('/'));
 				// ws.close();
 			}

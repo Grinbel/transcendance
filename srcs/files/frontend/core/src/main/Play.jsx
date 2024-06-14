@@ -72,7 +72,7 @@ function Play() {
 			//check if response.data contains the word error
 
 			if (response.data.Error != undefined){
-				setDisplayer(response.data.Error);
+				setDisplayer(t(response.data.Error));
 				console.log('Invalid tournament');
 			}
 			else {
