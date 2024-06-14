@@ -588,7 +588,12 @@ function Game() {
         
                     
         }
-        camera.position.z = 10;
+		camera.position.z = 10;
+		if (camera.position.z / options.stage_height < .67)
+			camera.position.z = options.stage_height * .67;
+		if (camera.position.z / options.stage_width < .67)
+			camera.position.z = options.stage_width  * .67;
+        
         camera.lookAt(new THREE.Vector3(0, 0, 0));
         ground.position.z = 0.0;
         
