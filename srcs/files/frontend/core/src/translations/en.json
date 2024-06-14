@@ -38,5 +38,8 @@
   "Enter alias" : "Enter alias",
   "tournament" : "Tournament",
   "friend_list" : "Friend list",
-  "player" : "Player"
+  "player" : "Player",
+  "User avatar" : "User avatar",
+  "join_tournament" : "Join a tournament",
+  "create_tournament" : "Create a tournament"
 }

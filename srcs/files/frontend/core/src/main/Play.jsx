@@ -103,7 +103,7 @@ function Play() {
 				setFormData({ tournamentId: "", isLocal: false, playerCount: 2 });
 				setJoin(true);
 									// TODO texte brut
-				}}>Join Tournament</button>
+				}}>{t('join_tournament')}</button>
 			<button onClick={() => { 
 				setShowSelect(true);
 				setShowTextArea(false);
@@ -111,7 +111,7 @@ function Play() {
 				setJoin(false);
 									// TODO texte brut
 
-				}}>Create Tournament</button>
+				}}>{t('create_tournament')}</button>
 			
 			{showTextArea && (
 				

@@ -35,7 +35,7 @@ const NavLoggedIn = () => {
 	const UserMenu = (
 		<Image
 		  src={userinfo.user.avatar.replace("/media/", "")}
-		  alt="UserName profile image"
+		  alt={t('User avatar')}
 		  roundedCircle
 		  style={{ width: '40px' }}
 		/>

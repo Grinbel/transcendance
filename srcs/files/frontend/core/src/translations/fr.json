@@ -39,5 +39,8 @@
     "Enter alias" : "Entrez un alias",
     "tournament" : "Tournoi",
     "friend_list" : "Liste d'amis",
-    "player" : "Joueur"
+    "player" : "Joueur",
+    "User avatar" : "Avatar de l'utilisateur",
+    "join_tournament" : "Rejoindre un tournoi",
+    "create_tournament" : "Créer un tournoi"
   }
