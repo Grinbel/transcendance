@@ -30,7 +30,7 @@ function Chat() {
 	const [roomName,setRoomName] = useState("general");
 	const [friend,setFriend] = useState("");
 	const [block,setBlock] = useState("");
-	const navigateTo = useNavigate();
+	const navigate = useNavigate();
 	const websockets = {};
 	let location = useLocation();
 
@@ -228,6 +228,8 @@ function Chat() {
 				playerCount: "",
 				isLocal: "",
 				username: userInfo.user.username,
+				alias: userInfo.user.username,
+
 				join:true  && room === "",
 			});
 			// console.log('response', response.data);
@@ -304,9 +306,7 @@ function Chat() {
 									{privateChat(message.username)}
 								</NavDropdown>
 							</Nav>}
-							{/* <div className="message">
-								{message.message} <span className="message-time">{message.date}</span>
-							</div> */}
+							
 							{message.type === 'chat' && <div className="message">
 								{message.message} <span className="message-time">{message.date}</span>
 							</div>}
@@ -319,7 +319,7 @@ function Chat() {
 									Accept
 								</a>
 							</div>}
-							{message.type === 'next_game_player' && <div className="message">
+							{message.type === 'next_game_player' && <div className="private">
 								{message.message}
 							</div>}
 						</div>

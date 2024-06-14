@@ -17,7 +17,10 @@ function Play() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const [join, setJoin] = useState(false);
-	const [formData, setFormData] = useState({ tournamentId: "", playerCount: 2, isLocal: false });
+	const [ballSpeed, setBallSpeed] = useState(50);
+	const [score, setScore] = useState(5);
+	const [skin, setSkin]= useState(2);
+	const [formData, setFormData] = useState({ tournamentId: "", playerCount: 2, isEasy: false });
 	const [alias, setAlias] = useState("");
 	const [displayer, setDisplayer] = useState("");
 
@@ -31,6 +34,10 @@ function Play() {
 		console.log(value);
 	};
 
+	const handleChangeSpeed=(event)=>{
+		setBallSpeed(event.target.value);
+		console.log((event.target.value))
+	};
 	const handleSubmit = async (event) => {
 		
 		// if (join  && formData.tournamentId === ""){
@@ -52,10 +59,14 @@ function Play() {
 			const response = await axiosInstance.post('/choice/', {
 				tournamentId: formData.tournamentId,
 				playerCount: formData.playerCount,
-				isLocal: formData.isLocal,
+				isEasy: formData.isEasy,
 				username: userInfo.user.username,
 				join:join  && formData.tournamentId === "",
 				alias: alias === "" ? userInfo.user.username : alias,
+				speed:ballSpeed,
+				score:score,
+				skin:skin,
+				//! a finir l'envoi de skin et autre option de changement
 			});
 
 			//check if response.data contains the word error
@@ -100,14 +111,14 @@ function Play() {
 			<button onClick={() => { 
 				setShowTextArea(true); 
 				setShowSelect(false); 
-				setFormData({ tournamentId: "", isLocal: false, playerCount: 2 });
+				setFormData({ tournamentId: "", isEasy: false, playerCount: 2 });
 				setJoin(true);
 									// TODO texte brut
 				}}>{t('join_tournament')}</button>
 			<button onClick={() => { 
 				setShowSelect(true);
 				setShowTextArea(false);
-				setFormData({ tournamentId: "", isLocal: false, playerCount: 2 });
+				setFormData({ tournamentId: "", isEasy: false, playerCount: 2 });
 				setJoin(false);
 									// TODO texte brut
 
@@ -148,27 +159,30 @@ function Play() {
 			
 			{showSelect && (
 				<div>
-				<select value={formData.playerCount} 
-					type="number"
-					id="playerCount"
-					name="playerCount"
-					onChange={handleChange}>
-				<option value="2">2</option>
-				<option value="4">4</option>
-				<option value="8">8</option>
-				</select>
+				<p>Nombre PLayer:
+					<select value={formData.playerCount} 
+							type="number"
+							id="playerCount"
+							name="playerCount"
+							onChange={handleChange}>
+						<option value="2">2</option>
+						<option value="4">4</option>
+						<option value="8">8</option>
+					</select>
+				</p>
+				
 				<label>
 				{/* //TODO texte brut */}
-
-					Local
+					Easy Mode
 				<input
 					type="checkbox"
-					id="isLocal"
-					name="isLocal"
-					checked={formData.isLocal}
+					id="isEasy"
+					name="isEasy"
+					checked={formData.isEasy}
 					onChange={handleChange}
 					/>
 				</label>
+				<p />
 				<input
 					type="text"
 					id="alias"
@@ -183,6 +197,39 @@ function Play() {
 					}}
 					maxLength="7"
 					/>
+				<p />
+				<input
+					type="range"
+					min="1"
+					max="200"
+					step="1"
+					value={ballSpeed}
+					onChange={(e) => setBallSpeed(parseFloat(e.target.value))}
+				/>
+				<p>Ball speed: {ballSpeed}</p>
+				<input
+					type="range"
+					min="1"
+					max="15"
+					step="1"
+					value={score}
+					onChange={(e) => setScore(parseFloat(e.target.value))}
+				/>
+				<p>Score to get: {score}</p>
+				<p> Skin:
+					<select
+						value={skin} 
+						type="number"
+						id="playerCount"
+						name="playerCount"
+						onChange={(e) => setSkin(e.target.value)}>
+
+						<option value="1">basket</option>
+						<option value="2">foot</option>
+						<option value="3">billard</option>
+						<option value="4">tennis</option>
+					</select>
+				</p>
 				<button onClick={handleSubmit}>Submit</button>
 			</div>
 			)}

@@ -39,6 +39,21 @@ const tournament = () => {
 		}
 	}
 
+	const options = async (name) => {
+		
+		try {
+			const response = await axiosInstance.post('/options/', {
+				room: name,
+			});
+			console.log("RESPONSE",response.data)
+			const data = response.data
+			return data
+		} catch (error) {
+			setError(error.message);
+			throw (error);
+		}
+	}
+
 	const end_of_game = async (name,winner) => {
 			
 		try {
@@ -51,6 +66,7 @@ const tournament = () => {
 			throw (error);
 		}
 	}
+
 	function getWebSocket(roomName) {
 		if (!websockets[roomName]) {
 			 
@@ -60,20 +76,20 @@ const tournament = () => {
 		return websockets[roomName];
 	  }
 	
-	// const launch = (messages) => {
-	// 	console.log("launching",messages);
-	// 	messages.sort(() => Math.random() - 0.5);
-	// 	const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
-	// 	  const avatars = messages.map(message => message ? message.avatar : undefined).filter(Boolean);
-	// 	  console.log("username:",usernames);
-	// 	  console.log("avatar:",avatars);
-	// }
+	const launch = (messages) => {
+		console.log("launching",messages);
+		messages.sort(() => Math.random() - 0.5);
+		const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
+		  const avatars = messages.map(message => message ? message.avatar : undefined).filter(Boolean);
+		  console.log("username:",usernames);
+		  console.log("avatar:",avatars);
+	}
 	const delay = ms => new Promise(res => setTimeout(res, ms));
 	  useEffect(() => {
 		if (isTrue === false){
 			return;
 		}
-		console.log("messages",messages);
+		// console.log("messages",messages);
 		const user = messages.map(message => message ? message.username : undefined).filter(Boolean);
 		const sortedMessages = [...user].sort((a, b) => a.localeCompare(b));
 
@@ -86,20 +102,46 @@ const tournament = () => {
 			const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
 			const avatars = messages.map(message => message ? message.avatar.replace("/media/", "") : undefined).filter(Boolean);
 			const alias = messages.map(message => message ? message.alias : undefined).filter(Boolean);
-			setOptions(prevOptions => ({
-				...prevOptions, // Gardez les options précédentes
-				is_tournament : 1,
-				usernames : alias,
-				avatar : avatars,
-				room : name,
-				alias: usernames,
-			}));
+			const option = options(name).then(data =>{
+				
+				switch(data.skin){
+					case 1:
+						data = {...data, texture_ball: "basketball.jpg", texture_floor: "basket.jpg"};
+						break;
+					case 2:
+						data = {...data, texture_ball: "https://thumbs.dreamstime.com/b/bille-de-football-de-texture-13533294.jpg", texture_floor: "https://t2.uc.ltmcdn.com/fr/posts/8/4/8/quelle_est_la_taille_d_un_terrain_de_football_12848_600.webp"};
+						break;
+					case 3:
+						data = {...data, texture_ball: "billardball.png", texture_floor: "billardtable.png"};
+						break;
+					case 4:
+						data = {...data, texture_ball: "tennisball.jpg", texture_floor: "tennisfield.jpg"};
+						break;
+					default:
+						break;
+				}
+				console.log("DATA!!!!!!!!",data);
+				setOptions(prevOptions => ({
+					...prevOptions, // Gardez les options précédentes
+					is_tournament : 1,
+					usernames : alias,
+					avatar : avatars,
+					room : name,
+					alias: usernames,
+					ball_starting_speed: data.ball_starting_speed,
+					texture_ball: data.texture_ball,
+					score_to_get: data.score,
+					score_max:data.score + 4,
+					easy_mode: data.easyMode,
+					texture_floor : data.texture_floor,
+				}));
+				delay(1000).then(() => navigate('/game'));
+			});
 			setIsTrue(false);
 			// nextgameplayer(name);
 			// end_of_game(name,userInfo.user.username);
 			setDisplayer("You are  the host. Launching the game.");
-			
-			delay(1000).then(() => navigate('/game'));
+			delay(3000).then(() => navigate('/game'));
 		}
 		else
 		{

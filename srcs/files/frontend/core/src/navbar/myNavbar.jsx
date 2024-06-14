@@ -69,7 +69,7 @@ const NavLoggedIn = () => {
 		<Navbar  collapseOnSelect expand="sm" className="bg-body-tertiary">
 		  <Container >
 
-			<Navbar.Brand href="/" className='logoName'>
+			<Navbar.Brand onClick={() => navigate(`/`)} className='logoName'>
 				Pong
 			</Navbar.Brand>
 			
