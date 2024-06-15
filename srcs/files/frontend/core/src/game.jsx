@@ -6,6 +6,7 @@ import { useGameContext } from './contexts/GameContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+
 function Game() {
     const { options ,resetOptions,setOptions} = useGameContext();
     const navigate = useNavigate();
@@ -201,6 +202,24 @@ function Game() {
                     message.innerHTML +="!"
                 else
                     message.innerHTML += t('controlsj2');
+                    if(options.is_tournament === 1)
+                        {
+                            let i = options.round_results.length +1;
+                            if ( i*2 + 1 <= options.usernames.length){
+                                message.innerHTML += '<br>' + t('next_matches') + '<br>';
+                                while(options.usernames.length > i*2 + 1)
+                                {
+                                    let next_p1 = options.usernames[i*2];
+                                    let next_p2 = options.usernames[i*2 + 1];
+                                    message.innerHTML += next_p1 + t('affrontera') + next_p2 + '<br>';
+                                    i++;
+                                }
+                                if(options.usernames.length === i*2 + 1)
+                                    message.innerHTML += options.usernames[i*2] + t('waiting_opp') + '<br>';
+                            }
+
+//* AJOUTER L' avancee du tournoi !
+                        }
                 //'Bienvenue dans le match opposant <span style="font-size: larger; color: red; text-transform: uppercase;">' 
                 //+ options.name_p1 + '</span> à <span style="font-size: larger; color: red; text-transform: uppercase;">' 
                 //+ options.name_p2 + "</span> !<br>" 
@@ -384,13 +403,13 @@ function Game() {
                 }
                 let angle = Math.atan2(options.ball_y_speed, options.ball_x_speed);
                 let impact = p1_weapon_mesh.position.y - options.ball_y;
-                let incidence = Math.PI - Math.PI / 2 * impact / (options.player_size / 2);
+                let incidence =  - Math.PI / 2 * impact / (options.player_size / 2);
                 console.log("P1 incidence " + incidence + " angle " + angle);
-                angle = normalize_angle(angle);
+                angle = normalize_angle(Math.PI -angle);
                 incidence = normalize_angle(incidence);
                 console.log("P1 incidence normalized " + incidence + " angle " + angle + "rebound angelle " + (Math.PI - angle) / 2);
                 //let reboundAngle = Math.PI  + (incidence - angle) /2
-                let reboundAngle = Math.PI - angle
+                let reboundAngle = (angle+ incidence)/2
                 
                 console.log("angle de rebond" + reboundAngle)
                 //let reboundAngle = -Math.PI - (incidence - angle) / 2;
@@ -534,7 +553,24 @@ function Game() {
                     }
                     else
                         message.innerHTML += "!";
-                    //dialogRenderer.domElement.style.zIndex = 1001
+                    if(options.is_tournament === 1)
+                        {
+                            let i = options.round_results.length +1;
+                            if ( i*2 + 1 <= options.usernames.length){
+                                message.innerHTML += '<br>' + t('next_matches') + '<br>';
+                                while(options.usernames.length > i*2 + 1)
+                                {
+                                    let next_p1 = options.usernames[i*2];
+                                    let next_p2 = options.usernames[i*2 + 1];
+                                    message.innerHTML += next_p1 + t('affrontera') + next_p2 + '<br>';
+                                    i++;
+                                }
+                                if(options.usernames.length === i*2 + 1)
+                                    message.innerHTML += options.usernames[i*2] + t('waiting_opp')+ '<br>';
+                            }
+
+//* AJOUTER L' avancee du tournoi !
+                        }
                     options.ball_pause = -1;
                 }
             }
@@ -615,7 +651,7 @@ function Game() {
     {
         const text = new Text();
         text.text = to_show;
-        text.font = 'https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxP.ttf';
+        text.font = 'KFOmCnqEu92Fr1Mu4mxP.ttf';
         //let size = Math.max(options.name_p1.length,options.name_p2.length);
         //console.log(size)
         //text.fontSize = 1*5/size;
@@ -662,6 +698,7 @@ function Game() {
                     options.winner = create_text(t('winner') + options.winner );
                     scene.add(options.winner);
                     options.winner.position.x = -3
+                    document.body.removeChild(renderer.domElement);
                     return(end_of_game(120));
                 }
             requestAnimationFrame(animate);
@@ -777,11 +814,9 @@ function Game() {
                                     Hall_of_Fame[i-1].position.z = 12
                                     Hall_of_Fame[i-1].fontSize *= 4;
                                     Hall_of_Fame[i-1].position.x = 25;
-                                    console.log("tout a ete place")
                                     end_of_game (options.room, options.usernames[options.usernames.length -1])
                                     return(end_of_tournament(-1));}
 //!                            navigate('/tournament_continues');
-                            document.body.removeChild(renderer.domElement);
                             renderer.dispose();
                             setOptions(prevOptions => ({ ...prevOptions, ...options }));
                             navigate('/game');
