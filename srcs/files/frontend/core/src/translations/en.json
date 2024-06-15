@@ -65,5 +65,9 @@
     "host": "You are the host, game is launching",
     "not_host" : "You are not the host, please go to ",
     "not_host2" : " computer to launch the game",
-    "over" : "The tournament is over"
+    "over" : "The tournament is over",
+    "language" : "Language",
+    "french" : "French",
+    "english" : "English",
+    "allemand" : "German"
 }

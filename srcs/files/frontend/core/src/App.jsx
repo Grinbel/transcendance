@@ -27,7 +27,7 @@ import Tournament from './main/tournament.jsx';
 import About from './main/About.jsx';
 import Chat from './main/Chat.jsx';
 import Profile from './main/Profile.jsx';
-import initializeI18n from './translations/i18n.js';
+import i18n from './translations/i18n';
 
 
 import { UserProvider, userContext } from "./contexts/userContext.jsx";
@@ -82,7 +82,6 @@ async function getProfile(user, setUser, error, setError){
 		// 	return user;
 		//   }, [user]);
 		//initializeI18n(userinfo.user.langage);
-		initializeI18n('en')
 		
 		useEffect(() => {
 			console.log('app: useEffect user start', user);
