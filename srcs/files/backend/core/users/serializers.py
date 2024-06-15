@@ -29,7 +29,8 @@ class UserSerializer(ModelSerializer):
 		'two_factor',
 		'avatar',
 		'is_active',
-		'tournament_name']
+		'tournament_name',
+		'language']
 		
 		extra_kwargs = {"password": {"write_only": True}}
 
@@ -70,4 +71,5 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 		token['is_active'] = user.is_active
 		token['uuid'] = uuid_ticket
 		token['tournament'] = user.tournament_name
+		token['language'] = user.language
 		return token

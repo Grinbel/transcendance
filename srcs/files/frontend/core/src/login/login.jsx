@@ -101,8 +101,10 @@ function Login() {
 							iat:decodedToken.iat,
 							is_staff:decodedToken.is_staff,
 							two_factor:decodedToken.two_factor,
-							uuid:decodedToken.uuid};  //SETUP REDIRECT TO HOME PAGE
+							uuid:decodedToken.uuid,
+                            language:decodedToken.language};  //SETUP REDIRECT TO HOME PAGE
                         localStorage.setItem('user', JSON.stringify(user));
+                        
                         userInfo.setUser(user);
                         navigate('/');
                     }

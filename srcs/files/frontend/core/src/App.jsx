@@ -81,8 +81,6 @@ async function getProfile(user, setUser, error, setError){
 			console.log('app: user', user);
 		// 	return user;
 		//   }, [user]);
-		//initializeI18n(userinfo.user.langage);
-		
 		useEffect(() => {
 			console.log('app: useEffect user start', user);
 			const fetchUserProfile = async () => {
@@ -91,6 +89,7 @@ async function getProfile(user, setUser, error, setError){
 					const userData = await getProfile();
 					console.log('app: useEffect getProfile userData', userData);
 					setUser(userData);
+					i18n.changeLanguage(userData.language);
 				} catch (error) {
 					setError(error);
 					localStorage.removeItem('token');
@@ -102,6 +101,7 @@ async function getProfile(user, setUser, error, setError){
 	
 			fetchUserProfile();
 		}, []);
+		
 
 	return (
 		<userContext.Provider value={{user, setUser}}>
