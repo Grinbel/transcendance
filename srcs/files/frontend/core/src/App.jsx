@@ -97,21 +97,12 @@ async function getProfile(user, setUser, error, setError){
 		//   }, [user]);
 		useEffect(() => {
 			console.log('app: useEffect user start', user);
-			if(!user)
-			{
-
-				const fetchUserProfile = async () => {
-					try {
-						console.log('app: useEffect tryblock');
-						const userData = await getProfile();
-						console.log('app: useEffect getProfile userData', userData);
-						setUser(userData);
-						i18n.changeLanguage(userData.language);
-						console.log('app: useEffect getProfile User log', { ...userData, isLogged: true });
-					let newuser = { ...userData, isLogged: true };
-					setUser(newuser);
-					console.log('app: useEffect getProfile User', user);
-					// setLoading(false);
+			const fetchUserProfile = async () => {
+				try {
+					console.log('app: useEffect tryblock');
+					const userData = await getProfile();
+					console.log('app: useEffect getProfile userData', userData);
+					setUser(userData);
 				} catch (error) {
 					// setUser(...user, isLogged = false);
 					
@@ -120,11 +111,10 @@ async function getProfile(user, setUser, error, setError){
 					localStorage.removeItem('refreshToken');
 					if (location.pathname !== '/login' && location.pathname !== '/signup')
 					navigate('/login');
-			}
-		};
-		
-		fetchUserProfile();
-	}, []);
+					}
+				};
+				fetchUserProfile();
+			}, []);
 	useEffect(() => {
 		if (user != undefined){
 			i18n.changeLanguage(user.language);
