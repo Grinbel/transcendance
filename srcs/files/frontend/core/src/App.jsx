@@ -1,4 +1,4 @@
-import { Routes, Route, Link, } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useState , createContext, useContext, useEffect, useMemo, } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -39,6 +39,19 @@ import MultiOptions from './MultiOptions.jsx';
 
 //make getProfile async function, show me syntax in comment
 
+const PrivateRoute = ({ component: Component, user, ...rest }) => (
+	<Route
+	  {...rest}
+	  render={props =>
+		user ? (
+		  <Component {...props} />
+		) : (
+		  <Redirect to="/login" />
+		)
+	  }
+	/>
+  );
+
 async function getProfile(user, setUser, error, setError){
 	localStorage.removeItem('user');
 	const userStringified = localStorage.getItem('user');
@@ -50,7 +63,7 @@ async function getProfile(user, setUser, error, setError){
 	{
 		console.log('getProfile: no user in local storage');
 		console.log(("axios headers token :"), axiosInstance.defaults.headers['Authorization']);
-		let userData = undefined;
+		let userData = {};
 		await axiosInstance.get('getprofile/')
 			.then((response) => {
 				console.log('app: GETPROFILE response.data', response.data, userData);
@@ -77,19 +90,31 @@ async function getProfile(user, setUser, error, setError){
 
 		const location = useLocation();
 		const navigate = useNavigate();
+		// const [loading, setLoading] = useState(true);
 		// const userMemo = useMemo(() => {
-			console.log('app: user', user);
+		// console.log('app: user', user);
 		// 	return user;
 		//   }, [user]);
 		useEffect(() => {
 			console.log('app: useEffect user start', user);
-			const fetchUserProfile = async () => {
-				try {
-					console.log('app: useEffect tryblock');
-					const userData = await getProfile();
-					console.log('app: useEffect getProfile userData', userData);
-					setUser(userData);
+			if(!user)
+			{
+
+				const fetchUserProfile = async () => {
+					try {
+						console.log('app: useEffect tryblock');
+						const userData = await getProfile();
+						console.log('app: useEffect getProfile userData', userData);
+						setUser(userData);
+						i18n.changeLanguage(userData.language);
+						console.log('app: useEffect getProfile User log', { ...userData, isLogged: true });
+					let newuser = { ...userData, isLogged: true };
+					setUser(newuser);
+					console.log('app: useEffect getProfile User', user);
+					// setLoading(false);
 				} catch (error) {
+					// setUser(...user, isLogged = false);
+					
 					setError(error);
 					localStorage.removeItem('token');
 					localStorage.removeItem('refreshToken');
@@ -114,10 +139,7 @@ async function getProfile(user, setUser, error, setError){
 				<MyNavbar/>
 					<Routes>
 						<Route path="/dashboard" element={<Dashboard />}>
-							<Route index element={<MyMain />} />
-							<Route path="history" element={<History />} />
-							<Route path="friends" element={<Friends />} />
-							<Route path="settings" element={<Settings />} />
+							<Route index element={<Settings />} />
 						</Route>
 						<Route path="/multi-options" element={<MultiOptions />} />
 						<Route path="/play" element={<Play />} />
@@ -134,7 +156,7 @@ async function getProfile(user, setUser, error, setError){
 						<Route path="/*" element={<Error404 />} />
 					</Routes>
 				{/* {showLoginForm && <Login />} */}
-				<Chat />
+				{/* <Chat /> */}
 			</div>
 		</userContext.Provider>
 	);

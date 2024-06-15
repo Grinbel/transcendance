@@ -30,20 +30,21 @@ class UserSerializer(ModelSerializer):
 		'avatar',
 		'is_active',
 		'tournament_name',
-		'language']
+		'language',
+		'alias',]
 		
 		extra_kwargs = {"password": {"write_only": True}}
 
 	def validate_email(self, value):
-		if User.objects.filter(email=value).exists():
+		print('value in validate_email', value)
+		user_id = self.instance.id if self.instance else None
+		if User.objects.filter(email=value).exclude(pk=user_id).exists():
 			raise ValidationError("Email is already in use.")
 		return value
 
 	def create(self, validated_data):
 		user = User(username=validated_data["username"],
 			  		email=validated_data["email"])
-
-
 		print('validated-data in serializerrrr', validated_data)
 		password = validated_data.pop('password', None)
 		user.email = validated_data.pop('email', None)
@@ -54,6 +55,26 @@ class UserSerializer(ModelSerializer):
 			user.set_password(password)
 		user.save()
 		return user
+	
+	def update(self, instance, validated_data):
+		print('instance in update', instance)
+		# Ensure the email is validated and unique
+		email = validated_data.get('email', instance.email)
+		if User.objects.filter(email=email).exclude(pk=instance.pk).exists():
+			raise ValidationError("Email is already in use.")
+		instance.email = email
+
+		# Handle password update if present
+		password = validated_data.pop('password', None)
+		if password:
+			instance.set_password(password)
+
+		# Update other fields
+		for attr, value in validated_data.items():
+			setattr(instance, attr, value)
+
+		instance.save()
+		return instance
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 	@classmethod
@@ -70,6 +91,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 		token['avatar'] = user.avatar.url if user.avatar else None
 		token['is_active'] = user.is_active
 		token['uuid'] = uuid_ticket
+		token['alias'] = user.alias
 		token['tournament'] = user.tournament_name
 		token['language'] = user.language
 		return token
