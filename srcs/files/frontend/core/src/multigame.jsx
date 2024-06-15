@@ -3,11 +3,15 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Text } from 'troika-three-text';
 import { useMultiGameContext } from './contexts/MultiGameContext.jsx';
+import { useNavigate } from 'react-router-dom';
 
 
 function MultiGame() {
         const { options } = useMultiGameContext();
+		const navigate = useNavigate();
         options.ball_speed = options.ball_starting_speed
+		if(options.nb_players === 7)
+			return(navigate('/'));
         useEffect(() => {
         
 		let loader = new THREE.TextureLoader();
@@ -24,7 +28,7 @@ function MultiGame() {
 				} 
 		let player_angle =options.players_size / (options.nb_players +1)
         let player_textures = ['/yoshi.jpg', '/princess.jpg', '/ponge.jpg', '/badboy.png', '/players.jpg', '/beaudibe.jpg' ];
-		let player_names = ['Yoshi', 'Princess', 'Bob', 'Bowser' , 'Mario', 'jmen fous']
+		let player_names = ['Yoshi', 'Princess', 'Bob', 'Bowser' , 'Mario', 'Benoit le BG']
 
         function create_player(text_to_use, which) {
 			if (which %2 == 1)
@@ -101,7 +105,11 @@ function MultiGame() {
 		const renderer = new THREE.WebGLRenderer();
 		camera.lookAt(new THREE.Vector3(0, 0, 0));
 		renderer.setSize(window.innerWidth, window.innerHeight);
-		document.body.appendChild(renderer.domElement);
+        renderer.domElement.style.position = 'absolute';
+        renderer.domElement.style.top = 0;
+        renderer.domElement.style.left = 0;
+        renderer.domElement.style.zIndex = 1000; // Make sure this is higher than the z-index of other elements
+        document.body.appendChild(renderer.domElement);
 		const ball_form = new THREE.SphereGeometry(options.ball_radius, 32, 32);
 
 
@@ -221,7 +229,7 @@ function MultiGame() {
 			let player_min_angle;
             console.log("Angle de la balle " + angle)
 			for(let i = 0; i<options.nb_players; i++){
-				player_real_angle = normalize_angle(players[i].mesh.rotation.z ) ;
+				player_real_angle = normalize_angle(Math.PI - players[i].mesh.rotation.z ) ;
 				player_max_angle = normalize_angle(player_real_angle + player_angle / 2);
 				player_min_angle = normalize_angle(player_real_angle - player_angle / 2);
                 console.log("angle du joueur " + i + " max " + player_max_angle + " min " + player_min_angle)

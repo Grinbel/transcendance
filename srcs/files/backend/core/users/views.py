@@ -144,14 +144,11 @@ def set2FA(request):
 
 @api_view(['POST'])
 def userlist(request):
-	print('userlist function')
 	otheruser = request.data.get('other')
 	self = request.data.get('self')
 	action = request.data.get('action')
 	user = User.objects.get(username=self)
 	other = User.objects.get(username=otheruser)
-
-
 	if (other is None):
 		return Response({'detail': 'Invalid user'})
 	if (action == 'addfriend'):
@@ -163,27 +160,39 @@ def userlist(request):
 	elif (action == 'unblock'):
 		user.removeBlacklist(otheruser)
 	# print('user black list : ',user.blacklist.all())
-
 	return Response({'detail': 'Done'})
+
+
+@api_view(['POST'])
+def userFriendList(request):
+	username = request.data.get('username')
+	user = User.objects.get(username=username)
+	friends = user.friends.all()
+	usernames = [friend.username for friend in friends]
+	return Response({'friends': usernames})
+
+
+
+@api_view(['POST'])
+def userExist(request):
+	username = request.data.get('username')
+	if User.objects.filter(username=username).exists():
+		return Response({'detail': 'User exists'})
+	return Response({'detail': 'User does not exist'})
 
 @api_view(['POST'])
 def userFriendBlock(request):
-	print('userFriendBlock function', request)
 	friend = request.data.get('friend')
 	self = request.data.get('self')
-	print("username =",friend)
-	print("self =",self)
 
 	# return Response({'detail': 'Invalid user'})
 	user = User.objects.get(username=self)
 	other = User.objects.get(username=friend)
-	print("user =", user)
-	print("friend =", other)
 
 	if (other is None or user is None):
-		return Response({'detail': 'Invalid user'})
+		return Response({'detail': 'Invalid user','friend': 0, 'block': 0})
 	elif (user == other):
-		return Response({'detail': 'You cannot block yourself'})
+		return Response({'detail': 'You cannot block yourself','friend': 0, 'block': 0})
 	isFriend = user.friends.filter(username=friend).exists()
 	isBlacklisted = user.blacklist.filter(username=friend).exists()
 	return Response({'friend': isFriend, 'block': isBlacklisted})
@@ -324,3 +333,12 @@ class UserList(APIView):
 		print('users', users)
 		serializer = UserSerializer(users, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
+	
+@api_view(['POST'])
+def language(request):
+	username = request.data.get('username')
+	language = request.data.get('language')
+	user = User.objects.get(username=username)
+	user.language = language
+	user.save()
+	return Response({'detail': 'Language updated successfully.'}, status=status.HTTP_200_OK)

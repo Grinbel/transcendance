@@ -26,9 +26,12 @@ import Error404 from './main/Error404.jsx';
 import Tournament from './main/tournament.jsx';
 import About from './main/About.jsx';
 import Chat from './main/Chat.jsx';
+import Profile from './main/Profile.jsx';
+import i18n from './translations/i18n';
+
 
 import { UserProvider, userContext } from "./contexts/userContext.jsx";
-
+import MultiOptions from './MultiOptions.jsx';
 
 //todo:
 // manage user loging with wrong credentials errors
@@ -92,8 +95,6 @@ async function getProfile(user, setUser, error, setError){
 		// console.log('app: user', user);
 		// 	return user;
 		//   }, [user]);
-
-		
 		useEffect(() => {
 			console.log('app: useEffect user start', user);
 			if(!user)
@@ -105,6 +106,7 @@ async function getProfile(user, setUser, error, setError){
 						const userData = await getProfile();
 						console.log('app: useEffect getProfile userData', userData);
 						setUser(userData);
+						i18n.changeLanguage(userData.language);
 						console.log('app: useEffect getProfile User log', { ...userData, isLogged: true });
 					let newuser = { ...userData, isLogged: true };
 					setUser(newuser);
@@ -122,18 +124,8 @@ async function getProfile(user, setUser, error, setError){
 				};
 				fetchUserProfile();
 			}
-	}, []);
-
-	// if (loading) {
-	// 	return <div>Loading...</div>;
-	// }
-
-		// useEffect(() => {
-		// 	console.log('app: user updated', user);
-		// 	if (user) {
-		// 	  console.log('User state after update:', user);
-		// 	}
-		//   }, [user]);
+		}, []);
+		
 
 	return (
 		<userContext.Provider value={{user, setUser}}>
@@ -143,12 +135,16 @@ async function getProfile(user, setUser, error, setError){
 						<Route path="/dashboard" element={<Dashboard />}>
 							<Route index element={<Settings />} />
 						</Route>
+						<Route path="/multi-options" element={<MultiOptions />} />
 						<Route path="/play" element={<Play />} />
 						<Route path="/login" element={<Login />} /> 
 						<Route path="/signup" element={<Signup />} />
 						<Route path="/tournament" element={<Tournament />} />
 						<Route path="/about" element={<About />} />
 						<Route path="/Game/" element={<Game />} />
+						<Route path="/profile" element={<Profile />} />
+
+						<Route path="/profile/:username" element={<Profile />} />
 						<Route path="/MultiGame/" element={<MultiGame />} />
 						<Route exact path="/" element={<Home />} />
 						<Route path="/*" element={<Error404 />} />

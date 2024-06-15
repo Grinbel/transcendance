@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { userContext } from "../contexts/userContext.jsx";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import '../forms/forms.css'
+import { useTranslation } from 'react-i18next';
 
 import { jwtDecode } from "jwt-decode";
 
@@ -23,6 +24,7 @@ async function getUuid(userInfo){
 }
 
 function Login() {
+    const { t } = useTranslation();
     console.log('Login:');
     const [step, setStep] = useState(1);
     const [code, setCode] = useState('');
@@ -42,7 +44,7 @@ function Login() {
     useEffect(() => {
         if (userInfo.user) {
             console.log('Login: user ', userInfo.user.username);
-            setLoggedinMessage('You are already logged in');
+            setLoggedinMessage(t('logged'));
         }
     }, [userInfo.user]);
 
@@ -110,8 +112,11 @@ function Login() {
 							uuid:decodedToken.uuid,
                             isLogged:true,
                             alias:decodedToken.alias,
+                            language:decodedToken.language,
                         };  //SETUP REDIRECT TO HOME PAGE
+
                         localStorage.setItem('user', JSON.stringify(user));
+                        
                         userInfo.setUser(user);
                         navigate('/');
                     }
@@ -123,20 +128,20 @@ function Login() {
                     // The request was made and the server responded with a status code
                     // that falls out of the range of 2xx
                     if (error.response.status === 400) {
-                      setError('Unauthorized access.');
+                      setError(t('unauthorized'));
                     } else if (error.response.status === 401) {
-                      setError('Incorrect username or password.');
+                      setError(t('incorrect'));
                     } else if (error.response.status >= 500) {
-                      setError('Server busy. Please try again later.');
+                      setError(t('busy'));
                     } else {
-                      setError('An unknown error occurred.');
+                      setError(t('unknown'));
                     }
                   } else if (error.request) {
                     // The request was made but no response was received
-                    setError('Network error. Please check your connection.');
+                    setError(t('network'));
                   } else {
                     // Something happened in setting up the request that triggered an Error
-                    setError('An unknown error occurred.');
+                    setError(t('unknown'));
                   }
             } finally {
                 // setLoading(false);
@@ -282,7 +287,7 @@ function Login() {
                                             </Form.Control.Feedback>
                                         </Form.Group>
                                     
-                                        <Button type='submit' role="button" className="buttonCustom"> Login </Button>
+                                        <Button type='submit' role="button" className="buttonCustom"> {t('Login')} </Button>
                                         {error && <p style={{ color: 'red' }}>{error}</p>}
                                     </Form>
                                 </Col>

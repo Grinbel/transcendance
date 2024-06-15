@@ -5,9 +5,9 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from .views import Signup, login, verify, Logout, UserList, getProfile,  set2FA, updateUser, userlist,userFriendBlock
-from chat.consumers import sendInvite
-from matchmaking.views import choice
+from .views import Signup, login, verify, Logout, UserList, getProfile, userlist, userFriendBlock, userExist, userFriendList, language, set2FA, updateUser
+from chat.consumers import sendInvite, NextGamePlayer
+from matchmaking.views import choice, EndOfGame, options
 from middle.views import AsgiValidateTokenView
 # from django_channels_jwt.views import AsgiValidateTokenView
 
@@ -26,4 +26,11 @@ urlpatterns = [
 	path('userlist/', userlist, name='userlist'),
 	path('userfriendblock/', userFriendBlock, name='userfriendblock'),
 	path('inviteTournament/',sendInvite,name='sendInvite'),
+	path('userexist/',userExist,name='userexist'),
+	path('userfriendlist/',userFriendList,name='userfriendlist'),
+	path('nextgameplayer/',NextGamePlayer,name='nextgameplayer'),
+	path('endofgame/',EndOfGame,name='endofgame'),
+	path('options/',options,name='options'),
+    path('setlanguage/', language, name='setlanguage'),
+
 ]

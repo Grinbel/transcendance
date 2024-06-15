@@ -1,9 +1,11 @@
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import React, { useState } from "react";
+import { useTranslation } from 'react-i18next';
 
 import './forms.css'
 
 function SignupForm() {
+	const { t } = useTranslation();
 		const [validated, set_Validated] = useState(false);
 		const [form_Data, set_Form_Data] = useState({
 			user: "",
@@ -38,7 +40,7 @@ function SignupForm() {
 					>
 						<Form className="" noValidate validated={validated} onSubmit={submitFn}>
 							<Form.Group controlId="username">
-								<Form.Label>Username</Form.Label>
+								<Form.Label>${t('username')}</Form.Label>
 								<Form.Control
 									type="text"
 									name="user"
@@ -52,12 +54,11 @@ function SignupForm() {
 									}
 								/>
 								<Form.Control.Feedback type="invalid">
-									Please enter a valid username (alphanumeric
-									characters only).
+									${t('valid')}
 								</Form.Control.Feedback>
 							</Form.Group>
 							<Form.Group controlId="password">
-								<Form.Label>Password</Form.Label>
+								<Form.Label>${t('mdp')}</Form.Label>
 								<Form.Control
 									type="password"
 									name="pass"
@@ -70,11 +71,11 @@ function SignupForm() {
 									}
 								/>
 								<Form.Control.Feedback type="invalid">
-									Password must be at least 6 characters long.
+									${t('len_error')}
 								</Form.Control.Feedback>
 							</Form.Group>
 							<Form.Group controlId="confirmPassword">
-								<Form.Label>Confirm Password</Form.Label>
+								<Form.Label>${t('confirm')}</Form.Label>
 								<Form.Control
 									type="password"
 									name="confimPass"
@@ -89,11 +90,11 @@ function SignupForm() {
 									}
 								/>
 								<Form.Control.Feedback type="invalid">
-									Passwords do not match.
+									${t('nomatch')}
 								</Form.Control.Feedback>
 							</Form.Group>
 							<Form.Group controlId="email">
-								<Form.Label>Email</Form.Label>
+								<Form.Label>${t(email)}</Form.Label>
 								<Form.Control
 									type="email"
 									name="email"
@@ -106,11 +107,11 @@ function SignupForm() {
 									}
 								/>
 								<Form.Control.Feedback type="invalid">
-									Please enter a valid email address.
+									${t('mail_novalid')}
 								</Form.Control.Feedback>
 							</Form.Group>
 							<Form.Group controlId="phoneNumber">
-								<Form.Label>Phone Number</Form.Label>
+								<Form.Label>${t('phone')}</Form.Label>
 								<Form.Control
 									type="number"
 									name="phoneNo"
@@ -124,10 +125,10 @@ function SignupForm() {
 									}
 								/>
 								<Form.Control.Feedback type="invalid">
-									Please enter a valid 10-digit phone number.
+									${t('invalid_phone')}
 								</Form.Control.Feedback>
 							</Form.Group>
-							<Button type="submit">Submit</Button>
+							<Button type="submit">${t('submit')}</Button>
 						</Form>
 					</Col>
 				</Row>
@@ -138,6 +139,7 @@ function SignupForm() {
 
 
 	function LoginForm() {
+		const { t } = useTranslation();
 		const [validated, set_Validated] = useState(false);
 		const [form_Data, set_Form_Data] = useState({
 			user: "",
@@ -170,7 +172,7 @@ function SignupForm() {
 					>
 						<Form noValidate validated={validated} onSubmit={submitFn}>
 							<Form.Group controlId="username">
-								<Form.Label>Username</Form.Label>
+								<Form.Label>${t('username')}</Form.Label>
 								<Form.Control
 									type="text"
 									name="user"
@@ -184,12 +186,11 @@ function SignupForm() {
 									}
 								/>
 								<Form.Control.Feedback type="invalid">
-									Please enter a valid username (alphanumeric
-									characters only).
+									${t('valid_user')}
 								</Form.Control.Feedback>
 							</Form.Group>
 							<Form.Group controlId="password">
-								<Form.Label>Password</Form.Label>
+								<Form.Label>${t('mdp')}</Form.Label>
 								<Form.Control
 									type="password"
 									name="pass"
@@ -202,11 +203,11 @@ function SignupForm() {
 									}
 								/>
 								<Form.Control.Feedback type="invalid">
-									Password must be at least 6 characters long.
+									${t('len_error')}
 								</Form.Control.Feedback>
 							</Form.Group>
 						
-							<Button type='submit' role="button" className="buttonCustom"> Login </Button>
+							<Button type='submit' role="button" className="buttonCustom"> ${t('login')}</Button>
 							{/* <Button type="" className="buttonTest"> Gooo ! </Button> */}
 						</Form>
 					</Col>
@@ -220,6 +221,7 @@ function SignupForm() {
 
 
 function VerifyForm() {
+	const { t } = useTranslation();
 		const [code, setCode] = useState("");
 		const handleVerify = (event) => {
 			event.preventDefault();
@@ -227,10 +229,10 @@ function VerifyForm() {
 		};
 		return (
 			<div>
-				<h2>Enter the code</h2>
+				<h2>${t('enter_code')}</h2>
 				<form onSubmit={handleVerify}>
 					<div>
-						<label htmlFor="code">Code:</label>
+						<label htmlFor="code">${t('ccode')}</label>
 						<input
 							type="text"
 							id="code"
@@ -239,7 +241,7 @@ function VerifyForm() {
 							onChange={(e) => setCode(e.target.value)}
 						/>
 					</div>
-					<button type="submit">Submit</button>
+					<button type="submit">${t('submit')}</button>
 				</form>
 			</div>
 		);

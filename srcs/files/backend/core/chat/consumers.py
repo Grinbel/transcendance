@@ -77,7 +77,6 @@ def sendInvite(request):
 	other = User.objects.get(username=receiver)
 	if (other is None or other.blacklist.all().filter(username=self).exists()):
 		return HttpResponse("You're blocked")
-	print("send invite!!!!!!!!!!!!!!!!!")
 	async_to_sync(channel_layer.group_send)(
 		'general',
 		{
@@ -89,6 +88,22 @@ def sendInvite(request):
 	)
 	return HttpResponse('Invite sent!')
 
+@api_view(['POST'])
+def NextGamePlayer(request):
+	p1 = request.data.get('p1')
+	p2 = request.data.get('p2')
+	room = request.data.get('room')
+	channel_layer = get_channel_layer()
+	async_to_sync(channel_layer.group_send)(
+		'general',
+		{
+			'type': 'send_next_game_player',
+			'p1':p1,
+			'p2':p2,
+			'room':room,
+		}
+	)
+	return HttpResponse('Player Ready!')
 
 
 
@@ -130,11 +145,9 @@ class ChatConsummer(WebsocketConsumer):
 		# print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",${SERVER_ADRESS})
 		text_data_json = json.loads(text_data)
 		user= self.scope['user']
-		print(text_data_json)
+		
+
 		username = user.username
-		games = Tournament.objects.all()
-		for game in games:
-			print("name:",game.name)
 		tipe= text_data_json['type']
 		if (tipe == 'connected'):
 			room_name = self.room_name
@@ -206,8 +219,7 @@ class ChatConsummer(WebsocketConsumer):
 		username = event['username']
 		if (other != self.scope['user'].username and self.scope['user'].username != username):
 			return
-		print("username :", username)
-		print("other :", other)
+
 		message = event['message']
 		date = event['date']
 		self.send(text_data=json.dumps({
@@ -227,5 +239,22 @@ class ChatConsummer(WebsocketConsumer):
 			'message':message,
 			'room':event['room'],
 			'username':event['self'],
+		}
+	))
+		
+	def send_next_game_player(self,event):
+		room =event['room']
+		usernames = Tournament.objects.get(name=room).players.all()
+		usernames = [user.username for user in usernames]
+		username = self.scope['user'].username
+		if ( username not in usernames):
+			return
+		message ="Le joueur "+event['p1']+" et le joueur "+event['p2']+" sont demande pour le prochain match"
+		self.send(text_data=json.dumps({
+			'type': 'next_game_player',
+			'message':message,
+			'room':event['room'],
+			'p1':event['p1'],
+			'p2':event['p2'],
 		}
 	))

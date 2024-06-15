@@ -3,13 +3,13 @@ import * as THREE from 'three';
 const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
-    const [options, setOptions] = useState({
+        const defaultOptions = {
 
 //! PLACEHOLDERS
 
+        real_game : 0,
         winner : '', //placeholder pour gagnant
 //! OPTIONS DES JOUEURS
-
         score_p1 : 0,
         name_p1 : "Tac",
         name_p2 : "La Vache",
@@ -52,9 +52,16 @@ export const GameProvider = ({ children }) => {
         stage_width : 15,
         ball_radius : 0.5,
 
+//!OPTIONS SPECIFIQUES TOURNOI
+        is_tournament : 0,
+        rounds_results : [],
+        avatar : [],
+        usernames : [],
+        texture_balls : [],
+
 //! OPTIONS DE GAMEPLAY
         easy_mode : 0,
-        ball_starting_speed : 0.03,
+        ball_starting_speed : 0.02,
         ball_speed : '',
         ball_x : 0,
         ball_y : 0,
@@ -63,9 +70,9 @@ export const GameProvider = ({ children }) => {
         ball_y_speed : 0,
         ball_pause : 0,
         ball_acc : 1.2,
-        score_to_get : 11, //Score a obtenir pour gagner
-        score_diff : 2, //ecart minimal pour gagner
-        score_max : 15, // score a atteindre pour gagner sans ecart
+        score_to_get : 15, //Score a obtenir pour gagner
+        score_diff : 3, //ecart minimal pour gagner
+        score_max : 25, // score a atteindre pour gagner sans ecart
             //! OPTIONS DE BUFFS / DEBUFFS
         p1_is_frozen : 0,
         p2_is_frozen : 0,
@@ -89,10 +96,14 @@ export const GameProvider = ({ children }) => {
         texture_p2_ball : 1,
 
 
-    });
+    };
+
+    const [options, setOptions] = useState(defaultOptions);
+
+    const resetOptions = () => setOptions(defaultOptions);
 
     return (
-        <GameContext.Provider value={{ options, setOptions }}>
+        <GameContext.Provider value={{ options, setOptions, resetOptions }}>
             {children}
         </GameContext.Provider>
     );

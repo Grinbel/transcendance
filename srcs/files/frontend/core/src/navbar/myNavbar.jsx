@@ -17,6 +17,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
+import { useTranslation } from 'react-i18next';
 
 import { userContext } from "../contexts/userContext.jsx";
 
@@ -24,6 +25,16 @@ import { userContext } from "../contexts/userContext.jsx";
 
 // Composant pour la barre de navigation lorsqu'un utilisateur est connecté
 const NavLoggedIn = () => {
+	const changeLanguage = async (lng) => {
+		i18n.changeLanguage(lng);
+		try {
+			await axiosInstance.post('/setlanguage/', { language: lng, username: userinfo.user.username});
+			userinfo.setUser({ ...userinfo.user, language: lng });
+		  } catch (error) {
+			console.log('Error updating language:', error);
+		  }
+	  };
+	const { t, i18n } = useTranslation();
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
 	const userinfo = useContext(userContext);
@@ -32,8 +43,8 @@ const NavLoggedIn = () => {
 
 	const UserMenu = (
 		<Image
-		  src={`http://localhost:8000${avatar}`}
-		  alt="UserName profile image"
+		  src={userinfo.user.avatar.replace("/media/", "")}
+		  alt={t('User avatar')}
 		  roundedCircle
 		  style={{ width: '40px' }}
 		/>
@@ -67,23 +78,22 @@ const NavLoggedIn = () => {
 		<Navbar  collapseOnSelect expand="sm" className="bg-body-tertiary">
 		  <Container >
 
-			<Navbar.Brand href="#home" className='logoName'>
+			<Navbar.Brand onClick={() => navigate(`/`)} className='logoName'>
 				Pong
 			</Navbar.Brand>
 			
 			<Nav  className="ms-auto">
 				<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={UserMenu}>
-									{/* //TODO texte brut */}
-
-					<NavDropdown.Item as={Link} to="/dashboard">profile</NavDropdown.Item>
-									{/* //TODO texte brut */}
-
-					<Nav.Link className="navCustom playButton me-3" as={Link} to="/play">play</Nav.Link>
+					<NavDropdown.Item as='Link' to={`/profile/${userinfo.user.username}`}>{t('profile')}</NavDropdown.Item>
+					<Nav.Link className="navCustom playButton me-3" as='Link' to="/play">{t('play')}</Nav.Link>
 					<NavDropdown.Divider />
-									{/* //TODO texte brut */}
-
-					<NavDropdown.Item onClick={handleLogout}>logout</NavDropdown.Item>
-            	</NavDropdown>
+					<NavDropdown.Item onClick={handleLogout}>{t('logout')}</NavDropdown.Item>
+				</NavDropdown>
+				<NavDropdown title={t('language')} id="language-dropdown">
+        			<NavDropdown.Item onClick={() => changeLanguage('en')}>{t('english')}</NavDropdown.Item>
+            		<NavDropdown.Item onClick={() => changeLanguage('fr')}>{t('french')}</NavDropdown.Item>
+            		<NavDropdown.Item onClick={() => changeLanguage('de')}>{t('allemand')}</NavDropdown.Item>
+          		</NavDropdown>
 			</Nav>
 		  </Container>
 		</Navbar>
@@ -96,6 +106,10 @@ const NavLoggedIn = () => {
 
   // Composant pour la barre de navigation lorsqu'aucun utilisateur n'est connecté
   const NavLoggedOut = () => {
+	const changeLanguage = (lng) => {
+		i18n.changeLanguage(lng);
+	  };
+	const { t } = useTranslation();
 
 	const navigate = useNavigate();
 	const userinfo = useContext(userContext);
@@ -109,8 +123,13 @@ const NavLoggedIn = () => {
 			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
 			<Navbar.Collapse id="responsive-navbar-nav">
 			  <Nav  className="ms-auto navbarCustom">
-				<Nav.Link className="navCustom me-3" as={Link} to="/signup">sign up</Nav.Link>
-				<Nav.Link className="navCustom me-3" as={Link} to="/login" >login</Nav.Link>
+				<Nav.Link className="navCustom me-3" as={Link} to="/signup">{t('sign_up')}</Nav.Link>
+				<Nav.Link className="navCustom me-3" as={Link} to="/login" >{t('login')}</Nav.Link>
+				<NavDropdown title={t('language')} id="language-dropdown">
+              		<NavDropdown.Item onClick={() => changeLanguage('en')}>{t('english')}</NavDropdown.Item>
+              		<NavDropdown.Item onClick={() => changeLanguage('fr')}>{t('french')}</NavDropdown.Item>
+              		<NavDropdown.Item onClick={() => changeLanguage('de')}>{t('allemand')}</NavDropdown.Item>
+            	</NavDropdown>
 			  </Nav>
 			</Navbar.Collapse>
 		  </Container>

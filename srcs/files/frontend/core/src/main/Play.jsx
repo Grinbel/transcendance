@@ -5,9 +5,11 @@ import  { axiosInstance } from "../axiosAPI.js";
 import { useContext } from "react";
 import { userContext } from "../contexts/userContext.jsx";
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import "./Home.css";
 
 function Play() {
+	const { t } = useTranslation();
 	const navigateTo = useNavigate();
 	const userInfo = useContext(userContext);
 	const [showSelect, setShowSelect] = useState(false);
@@ -15,7 +17,11 @@ function Play() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const [join, setJoin] = useState(false);
-	const [formData, setFormData] = useState({ tournamentId: "", playerCount: 2, isLocal: false });
+	const [ballSpeed, setBallSpeed] = useState(50);
+	const [score, setScore] = useState(5);
+	const [skin, setSkin]= useState(2);
+	const [formData, setFormData] = useState({ tournamentId: "", playerCount: 2, isEasy: false });
+	const [alias, setAlias] = useState("");
 	const [displayer, setDisplayer] = useState("");
 
 	const handleChange = (event) => {
@@ -28,6 +34,10 @@ function Play() {
 		console.log(value);
 	};
 
+	const handleChangeSpeed=(event)=>{
+		setBallSpeed(event.target.value);
+		console.log((event.target.value))
+	};
 	const handleSubmit = async (event) => {
 		
 		// if (join  && formData.tournamentId === ""){
@@ -40,22 +50,29 @@ function Play() {
 		setDisplayer("");
 		// setIsLoading(true);
 		event.preventDefault();
+		if (alias === ""){
+			setAlias(userInfo.user.username);
+		}
+
+
 		try {
 			const response = await axiosInstance.post('/choice/', {
 				tournamentId: formData.tournamentId,
 				playerCount: formData.playerCount,
-				isLocal: formData.isLocal,
+				isEasy: formData.isEasy,
 				username: userInfo.user.username,
 				join:join  && formData.tournamentId === "",
+				alias: alias === "" ? userInfo.user.username : alias,
+				speed:ballSpeed,
+				score:score,
+				skin:skin,
+				//! a finir l'envoi de skin et autre option de changement
 			});
-			console.log('response', response.data);
-			console.log('Room name', response.data.room_name);
-			console.log('error', response.data.Error);
 
 			//check if response.data contains the word error
 
 			if (response.data.Error != undefined){
-				setDisplayer(response.data.Error);
+				setDisplayer(t(response.data.Error));
 				console.log('Invalid tournament');
 			}
 			else {
@@ -63,8 +80,11 @@ function Play() {
 				//! tournament is not inside the cached data
 				userInfo.setUser({
 					...userInfo.user,
-					tournament: response.data.room_name
-				  });
+					tournament: response.data.room_name,
+					alias: alias === "" ? userInfo.user.username : alias,
+				});
+				const local = userInfo.user
+				localStorage.setItem('user', JSON.stringify(local));
 				navigateTo('/tournament/');
 			}
 		} catch (error) {
@@ -91,18 +111,18 @@ function Play() {
 			<button onClick={() => { 
 				setShowTextArea(true); 
 				setShowSelect(false); 
-				setFormData({ tournamentId: "", isLocal: false, playerCount: 2 });
+				setFormData({ tournamentId: "", isEasy: false, playerCount: 2 });
 				setJoin(true);
 									// TODO texte brut
-				}}>Join Tournament</button>
+				}}>{t('join_tournament')}</button>
 			<button onClick={() => { 
 				setShowSelect(true);
 				setShowTextArea(false);
-				setFormData({ tournamentId: "", isLocal: false, playerCount: 2 });
+				setFormData({ tournamentId: "", isEasy: false, playerCount: 2 });
 				setJoin(false);
 									// TODO texte brut
 
-				}}>Create Tournament</button>
+				}}>{t('create_tournament')}</button>
 			
 			{showTextArea && (
 				
@@ -112,46 +132,107 @@ function Play() {
 							type="text"
 							id="tournamentId"
 							name="tournamentId"
-							placeholder="Enter tournament ID"
+							placeholder={t('Enter tournament ID')}
 							value={formData.tournamentId}
 							onChange={handleChange}
+							maxLength="6"
 							/>
-									{/* //TODO texte brut */}
+					<label htmlFor="alias"></label>
+						<input
+							type="text"
+							id="alias"
+							name="alias"
+							placeholder={t('Enter alias')}
+							value={alias}
+							onChange={(e) => {
+								const re = /^[a-zA-Z0-9]+$/; // Regex for alphanumeric characters
+								if (e.target.value === '' || re.test(e.target.value)) {
+									setAlias(e.target.value);
+								}
+							}}
+							maxLength="7"
 
+							/>
 					<button onClick={handleSubmit}>Submit</button>
 				</div>
 			)}
 			
 			{showSelect && (
 				<div>
-				<select value={formData.playerCount} 
-					type="number"
-					id="playerCount"
-					name="playerCount"
-					onChange={handleChange}>
-				<option value="2">2</option>
-				<option value="4">4</option>
-				<option value="8">8</option>
-				</select>
+				<p>{t('Nb joueurs')}
+					<select value={formData.playerCount} 
+							type="number"
+							id="playerCount"
+							name="playerCount"
+							onChange={handleChange}>
+						<option value="2">2</option>
+						<option value="4">4</option>
+						<option value="8">8</option>
+					</select>
+				</p>
+				
 				<label>
-				{/* //TODO texte brut */}
-
-					Local
-					<input
-						type="checkbox"
-						id="isLocal"
-						name="isLocal"
-						checked={formData.isLocal}
-						onChange={handleChange}
-						/>
+					{t('Easy mode')}
+				<input
+					type="checkbox"
+					id="isEasy"
+					name="isEasy"
+					checked={formData.isEasy}
+					onChange={handleChange}
+					/>
 				</label>
-				{/* //TODO texte brut */}
+				<p />
+				<input
+					type="text"
+					id="alias"
+					name="alias"
+					placeholder={t('Enter alias')}
+					value={alias}
+					onChange={(e) => {
+						const re = /^[a-zA-Z0-9]+$/; // Regex for alphanumeric characters
+						if (e.target.value === '' || re.test(e.target.value)) {
+							setAlias(e.target.value);
+						}
+					}}
+					maxLength="7"
+					/>
+				<p />
+				<input
+					type="range"
+					min="1"
+					max="200"
+					step="1"
+					value={ballSpeed}
+					onChange={(e) => setBallSpeed(parseFloat(e.target.value))}
+				/>
+				<p>{t("ball_speed")}: {ballSpeed}</p>
+				<input
+					type="range"
+					min="1"
+					max="15"
+					step="1"
+					value={score}
+					onChange={(e) => setScore(parseFloat(e.target.value))}
+				/>
+				<p>{t("score_toget")}: {score}</p>
+				<p> {t('terrain')}:
+					<select
+						value={skin} 
+						type="number"
+						id="playerCount"
+						name="playerCount"
+						onChange={(e) => setSkin(e.target.value)}>
 
-				<button onClick={handleSubmit}>Submit</button>
+						<option value="1">{t('basketball')}</option>
+						<option value="2">{t('football')}</option>
+						<option value="3">{t('billard')}</option>
+						<option value="4">{t('tennis')}</option>
+					</select>
+				</p>
+				<button onClick={handleSubmit}>{t('submit')}</button>
 			</div>
 			)}
 			<div className="displayer-errors">
-			{/* //TODO texte brut */}
 
 				{displayer}
 			</div>
