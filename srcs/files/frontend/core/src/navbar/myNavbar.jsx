@@ -17,6 +17,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
+import i18n from '../translations/i18n.js';
 import { useTranslation } from 'react-i18next';
 
 import { userContext } from "../contexts/userContext.jsx";
