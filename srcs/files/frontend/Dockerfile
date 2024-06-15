@@ -3,6 +3,10 @@
 FROM node:21
 
 # Copy package.json and package-lock.json to the working directory
+# Set environment variables for HTTPS
+
+RUN apt-get update && apt-get install -y openssl
+
 RUN mkdir -p /app 
 WORKDIR /app
 
@@ -33,7 +37,18 @@ RUN npm install
 
 # Build the React application
 # RUN npm run build
+# Generate self-signed SSL certificates
+RUN mkdir -p /etc/ssl/private /etc/ssl/certs
+RUN openssl genrsa -out /etc/ssl/private/server.key 2048
+RUN openssl req -new -key /etc/ssl/private/server.key -out /etc/ssl/private/server.csr -subj "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=localhost"
+RUN openssl x509 -req -days 365 -in /etc/ssl/private/server.csr -signkey /etc/ssl/private/server.key -out /etc/ssl/certs/server.crt
 
+# Set environment variables for HTTPS
+ENV HTTPS=true
+ENV SSL_CRT_FILE=/etc/ssl/certs/server.crt
+ENV SSL_KEY_FILE=/etc/ssl/private/server.key
+
+ENV HTTPS=true
 # Expose the port on which your React app will run (default is 3000)
 EXPOSE 5173
 

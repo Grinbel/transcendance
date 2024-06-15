@@ -11,11 +11,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from datetime import timedelta
 from pathlib import Path
 from users.permissions import UserPermission
-import os
-
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -299,4 +298,16 @@ EMAIL_HOST_USER = os.environ.get('MAIL_USER') # replace with your actual email
 EMAIL_HOST_PASSWORD = os.environ.get('MAIL_PASS')  # replace with your actual email password
 
 
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_REFERRER_POLICY = "no-referrer"
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Ensure that your server is serving the static files over HTTPS
 

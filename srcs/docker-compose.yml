@@ -49,6 +49,8 @@ services:
       - "5173:5173"
     env_file:
       - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=project.settings
     volumes:
       - front:/app/
       - /app/node_modules
