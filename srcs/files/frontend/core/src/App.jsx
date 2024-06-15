@@ -146,7 +146,7 @@ async function getProfile(user, setUser, error, setError){
 						<Route path="/*" element={<Error404 />} />
 					</Routes>
 				{/* {showLoginForm && <Login />} */}
-				{/* <Chat /> */}
+				<Chat />
 			</div>
 		</userContext.Provider>
 	);

@@ -21,8 +21,8 @@ function Play() {
 	const [ballSpeed, setBallSpeed] = useState(50);
 	const [score, setScore] = useState(5);
 	const [skin, setSkin]= useState(2);
-	const [formData, setFormData] = useState({ tournamentId: "", playerCount: 2, isEasy: false });
 	const [alias, setAlias] = useState("");
+	const [formData, setFormData] = useState({ tournamentId: "", playerCount: 2, isEasy: false });
 	const [displayer, setDisplayer] = useState("");
 
 	const handleChange = (event) => {
