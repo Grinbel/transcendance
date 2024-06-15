@@ -18,6 +18,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
 import { useTranslation } from 'react-i18next';
+import i18n from '../translations/i18n.js';
 
 import { userContext } from "../contexts/userContext.jsx";
 
