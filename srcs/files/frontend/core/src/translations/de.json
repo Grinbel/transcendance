@@ -90,6 +90,9 @@
     "enter_code" : "Geben Sie den Code ein",
     "ccode" : "Code:",
     "verif_code" : "Verifizierungscode",
-    "verif_code_error" : "Bitte geben Sie einen gültigen Verifizierungscode an, der aus 6 Chiffren bestehen muss"
+    "verif_code_error" : "Bitte geben Sie einen gültigen Verifizierungscode an, der aus 6 Chiffren bestehen muss",
+    "next_matches" : "Nächste Spiele",
+    "affrontera" : " wird gegen ",
+    "waiting_opp" : " wartet auf einen Gegner"
 
 }

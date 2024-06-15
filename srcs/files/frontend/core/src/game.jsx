@@ -6,6 +6,7 @@ import { useGameContext } from './contexts/GameContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+
 function Game() {
     const { options ,resetOptions,setOptions} = useGameContext();
     const navigate = useNavigate();
@@ -201,6 +202,24 @@ function Game() {
                     message.innerHTML +="!"
                 else
                     message.innerHTML += t('controlsj2');
+                    if(options.is_tournament === 1)
+                        {
+                            let i = options.round_results.length +1;
+                            if ( i*2 + 1 <= options.usernames.length){
+                                message.innerHTML += '<br>' + t('next_matches') + '<br>';
+                                while(options.usernames.length > i*2 + 1)
+                                {
+                                    let next_p1 = options.usernames[i*2];
+                                    let next_p2 = options.usernames[i*2 + 1];
+                                    message.innerHTML += next_p1 + t('affrontera') + next_p2 + '<br>';
+                                    i++;
+                                }
+                                if(options.usernames.length === i*2 + 1)
+                                    message.innerHTML += options.usernames[i*2] + t('waiting_opp') + '<br>';
+                            }
+
+//* AJOUTER L' avancee du tournoi !
+                        }
                 //'Bienvenue dans le match opposant <span style="font-size: larger; color: red; text-transform: uppercase;">' 
                 //+ options.name_p1 + '</span> à <span style="font-size: larger; color: red; text-transform: uppercase;">' 
                 //+ options.name_p2 + "</span> !<br>" 
@@ -534,7 +553,24 @@ function Game() {
                     }
                     else
                         message.innerHTML += "!";
-                    //dialogRenderer.domElement.style.zIndex = 1001
+                    if(options.is_tournament === 1)
+                        {
+                            let i = options.round_results.length +1;
+                            if ( i*2 + 1 <= options.usernames.length){
+                                message.innerHTML += '<br>' + t('next_matches') + '<br>';
+                                while(options.usernames.length > i*2 + 1)
+                                {
+                                    let next_p1 = options.usernames[i*2];
+                                    let next_p2 = options.usernames[i*2 + 1];
+                                    message.innerHTML += next_p1 + t('affrontera') + next_p2 + '<br>';
+                                    i++;
+                                }
+                                if(options.usernames.length === i*2 + 1)
+                                    message.innerHTML += options.usernames[i*2] + t('waiting_opp')+ '<br>';
+                            }
+
+//* AJOUTER L' avancee du tournoi !
+                        }
                     options.ball_pause = -1;
                 }
             }
