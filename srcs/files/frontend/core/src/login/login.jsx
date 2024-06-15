@@ -251,7 +251,7 @@ function Login() {
                                 >
                                     <Form noValidate validated={validated} onSubmit={handleLogin}>
                                         <Form.Group controlId="username">
-                                            <Form.Label>Username</Form.Label>
+                                            <Form.Label>{t('username')}</Form.Label>
                                             <Form.Control
                                                 type="text"
                                                 name="username"
@@ -265,12 +265,11 @@ function Login() {
                                                 }
                                             />
                                             <Form.Control.Feedback type="invalid">
-                                                Please enter a valid username (alphanumeric
-                                                characters only).
+                                                {t('valid')}
                                             </Form.Control.Feedback>
                                         </Form.Group>
                                         <Form.Group controlId="password">
-                                            <Form.Label>Password</Form.Label>
+                                            <Form.Label>{t('mdp')} </Form.Label>
                                             <Form.Control
                                                 type="password"
                                                 name="password"
@@ -283,7 +282,7 @@ function Login() {
                                                 }
                                             />
                                             <Form.Control.Feedback type="invalid">
-                                                Password must be at least 6 characters long.
+                                                {t('len_error')}
                                             </Form.Control.Feedback>
                                         </Form.Group>
                                     
@@ -306,7 +305,7 @@ function Login() {
                         >
                             <Form noValidate validated={validated} onSubmit={handleVerify}>
                                 <Form.Group controlId="verificationCode">
-                                    <Form.Label>Verification Code</Form.Label>
+                                    <Form.Label>{t('verif_code')}</Form.Label>
                                     <Form.Control
                                         type="number"
                                         name="verificationCode"
@@ -317,10 +316,10 @@ function Login() {
                                         isInvalid={(code.length !== 6 || !/^[0-9]+$/.test(code))}                                      
                                     />
                                     <Form.Control.Feedback type="invalid">
-                                        Please enter a valid verification code. It should be 6 digits (only) long.
+                                        {t('verif_code_error')}
                                     </Form.Control.Feedback>
                                 </Form.Group>
-                                <Button type='submit' role="button" className="buttonCustom"> Login </Button>
+                                <Button type='submit' role="button" className="buttonCustom"> {t('login')}</Button>
                                 {error && <p style={{ color: 'red' }}>{error}</p>}
                             </Form>
                         </Col>

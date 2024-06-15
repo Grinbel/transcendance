@@ -17,7 +17,6 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
-import i18n from '../translations/i18n.js';
 import { useTranslation } from 'react-i18next';
 import i18n from '../translations/i18n.js';
 
@@ -86,8 +85,8 @@ const NavLoggedIn = () => {
 			
 			<Nav  className="ms-auto">
 				<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={UserMenu}>
-					<NavDropdown.Item as='Link' to={`/profile/${userinfo.user.username}`}>{t('profile')}</NavDropdown.Item>
-					<Nav.Link className="navCustom playButton me-3" as='Link' to="/play">{t('play')}</Nav.Link>
+					<NavDropdown.Item as={Link} to={`/profile/${userinfo.user.username}`}>{t('profile')}</NavDropdown.Item>
+					<Nav.Link className="navCustom playButton me-3" as={Link} to="/play">{t('play')}</Nav.Link>
 					<NavDropdown.Divider />
 					<NavDropdown.Item onClick={handleLogout}>{t('logout')}</NavDropdown.Item>
 				</NavDropdown>

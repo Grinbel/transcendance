@@ -40,7 +40,7 @@ function SignupForm() {
 					>
 						<Form className="" noValidate validated={validated} onSubmit={submitFn}>
 							<Form.Group controlId="username">
-								<Form.Label>${t('username')}</Form.Label>
+								<Form.Label>{t('username')}</Form.Label>
 								<Form.Control
 									type="text"
 									name="user"
@@ -54,11 +54,11 @@ function SignupForm() {
 									}
 								/>
 								<Form.Control.Feedback type="invalid">
-									${t('valid')}
+									{t('valid')}
 								</Form.Control.Feedback>
 							</Form.Group>
 							<Form.Group controlId="password">
-								<Form.Label>${t('mdp')}</Form.Label>
+								<Form.Label>{t('mdp')}</Form.Label>
 								<Form.Control
 									type="password"
 									name="pass"
@@ -71,11 +71,11 @@ function SignupForm() {
 									}
 								/>
 								<Form.Control.Feedback type="invalid">
-									${t('len_error')}
+									{t('len_error')}
 								</Form.Control.Feedback>
 							</Form.Group>
 							<Form.Group controlId="confirmPassword">
-								<Form.Label>${t('confirm')}</Form.Label>
+								<Form.Label>{t('confirm')}</Form.Label>
 								<Form.Control
 									type="password"
 									name="confimPass"
@@ -90,11 +90,11 @@ function SignupForm() {
 									}
 								/>
 								<Form.Control.Feedback type="invalid">
-									${t('nomatch')}
+									{t('nomatch')}
 								</Form.Control.Feedback>
 							</Form.Group>
 							<Form.Group controlId="email">
-								<Form.Label>${t(email)}</Form.Label>
+								<Form.Label>{t(email)}</Form.Label>
 								<Form.Control
 									type="email"
 									name="email"
@@ -107,11 +107,11 @@ function SignupForm() {
 									}
 								/>
 								<Form.Control.Feedback type="invalid">
-									${t('mail_novalid')}
+									{t('mail_novalid')}
 								</Form.Control.Feedback>
 							</Form.Group>
 							<Form.Group controlId="phoneNumber">
-								<Form.Label>${t('phone')}</Form.Label>
+								<Form.Label>{t('phone')}</Form.Label>
 								<Form.Control
 									type="number"
 									name="phoneNo"
@@ -125,10 +125,10 @@ function SignupForm() {
 									}
 								/>
 								<Form.Control.Feedback type="invalid">
-									${t('invalid_phone')}
+									{t('invalid_phone')}
 								</Form.Control.Feedback>
 							</Form.Group>
-							<Button type="submit">${t('submit')}</Button>
+							<Button type="submit">{t('submit')}</Button>
 						</Form>
 					</Col>
 				</Row>
@@ -172,7 +172,7 @@ function SignupForm() {
 					>
 						<Form noValidate validated={validated} onSubmit={submitFn}>
 							<Form.Group controlId="username">
-								<Form.Label>${t('username')}</Form.Label>
+								<Form.Label>{t('username')}</Form.Label>
 								<Form.Control
 									type="text"
 									name="user"
@@ -186,11 +186,11 @@ function SignupForm() {
 									}
 								/>
 								<Form.Control.Feedback type="invalid">
-									${t('valid_user')}
+									{t('valid_user')}
 								</Form.Control.Feedback>
 							</Form.Group>
 							<Form.Group controlId="password">
-								<Form.Label>${t('mdp')}</Form.Label>
+								<Form.Label>{t('mdp')}</Form.Label>
 								<Form.Control
 									type="password"
 									name="pass"
@@ -203,11 +203,11 @@ function SignupForm() {
 									}
 								/>
 								<Form.Control.Feedback type="invalid">
-									${t('len_error')}
+									{t('len_error')}
 								</Form.Control.Feedback>
 							</Form.Group>
 						
-							<Button type='submit' role="button" className="buttonCustom"> ${t('login')}</Button>
+							<Button type='submit' role="button" className="buttonCustom"> {t('login')}</Button>
 							{/* <Button type="" className="buttonTest"> Gooo ! </Button> */}
 						</Form>
 					</Col>
@@ -229,10 +229,10 @@ function VerifyForm() {
 		};
 		return (
 			<div>
-				<h2>${t('enter_code')}</h2>
+				<h2>{t('enter_code')}</h2>
 				<form onSubmit={handleVerify}>
 					<div>
-						<label htmlFor="code">${t('ccode')}</label>
+						<label htmlFor="code">{t('ccode')}</label>
 						<input
 							type="text"
 							id="code"
@@ -241,7 +241,7 @@ function VerifyForm() {
 							onChange={(e) => setCode(e.target.value)}
 						/>
 					</div>
-					<button type="submit">${t('submit')}</button>
+					<button type="submit">{t('submit')}</button>
 				</form>
 			</div>
 		);

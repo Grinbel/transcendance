@@ -89,5 +89,7 @@
     "invalid_phone" : "Veuillez entre un Numéro de téléphone valide",
     "valid_user" : "Veuillez entrer un nom d'utilisateur valide (caracteres alphanumeriques uniquement).",
     "enter_code" : "Entrez le code",
-    "ccode" : "Code:"
+    "ccode" : "Code:",
+    "verif_code" : "Code de vérification",
+    "verif_code_error" : "Merci de rentrer un code de vérification valide, il devrait être composé de 6 chiffres"
   }

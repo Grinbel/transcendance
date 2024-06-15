@@ -88,5 +88,7 @@
     "invalid_phone" : "Please enter a valid 10-digit phone number.",
     "valid_user" : "Please enter a valid username (alphanumeric characters only).",
     "enter_code" : "Enter the code",
-    "ccode" : "Code:"
+    "ccode" : "Code:",
+    "verif_code" : "Verification code",
+    "verif_code_error" : "Please enter a valid verification code. It should be 6 digits (only) long."
 }

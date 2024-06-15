@@ -88,6 +88,8 @@
     "invalid_phone" : "Bitte geben Sie eine gültige Telefonnummer ein.",
     "valid_user" : "Bitte geben Sie einen gültigen Benutzernamen ein (nur alphanumerische Zeichen).",
     "enter_code" : "Geben Sie den Code ein",
-    "ccode" : "Code:"
+    "ccode" : "Code:",
+    "verif_code" : "Verifizierungscode",
+    "verif_code_error" : "Bitte geben Sie einen gültigen Verifizierungscode an, der aus 6 Chiffren bestehen muss"
 
 }
