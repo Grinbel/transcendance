@@ -651,7 +651,7 @@ function Game() {
     {
         const text = new Text();
         text.text = to_show;
-        text.font = 'https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxP.ttf';
+        text.font = 'KFOmCnqEu92Fr1Mu4mxP.ttf';
         //let size = Math.max(options.name_p1.length,options.name_p2.length);
         //console.log(size)
         //text.fontSize = 1*5/size;
