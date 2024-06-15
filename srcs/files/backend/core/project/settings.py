@@ -21,8 +21,9 @@ from dotenv import load_dotenv
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+print('/////////////////////////////////////BASE_DIR:', BASE_DIR)
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1','*']
 AUTH_USER_MODEL = "users.User"
 # Quick-start development settings - unsuitable for production

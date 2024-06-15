@@ -2,6 +2,7 @@ import React from 'react';
 import './switch.scss';
 
 const Switch = ({name, status, handleSwitch, onColor}) => {
+	//console.log('Switch component');
   return (
 	<div className="switchContainer">
 		<span className="switchName">2FA Authentication: </span>

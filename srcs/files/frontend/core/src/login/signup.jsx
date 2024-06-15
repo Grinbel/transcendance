@@ -4,8 +4,10 @@ import  { axiosInstance, interceptor_response } from "../axiosAPI.js";
 
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import '../forms/forms.css'
+import { useTranslation } from 'react-i18next';
 
 function Signup() {
+	const { t } = useTranslation();
 	const [validated, set_validated] = useState(false);
 	const [errorMessages, setErrorMessages] = useState("");
 	const [successMessage, setSuccessMessage] = useState('');
@@ -142,7 +144,7 @@ function Signup() {
 				)}
 					<Form className="formCustom" noValidate validated={validated} onSubmit={submitFn}>
 						<Form.Group controlId="username">
-							<Form.Label>Username</Form.Label>
+							<Form.Label>{t('username')}</Form.Label>
 							<Form.Control
 								type="text"
 								name="username"
@@ -156,12 +158,11 @@ function Signup() {
 								}
 							/>
 							<Form.Control.Feedback type="invalid">
-								Please enter a valid username (alphanumeric
-								characters only).
+								{t('valid_user')}
 							</Form.Control.Feedback>
 						</Form.Group>
 						<Form.Group controlId="password">
-							<Form.Label>Password</Form.Label>
+							<Form.Label>{t('mdp')}</Form.Label>
 							<Form.Control
 								type="password"
 								name="pass"
@@ -174,11 +175,11 @@ function Signup() {
 								}
 							/>
 							<Form.Control.Feedback type="invalid">
-								Password must be at least 6 characters long.
+								{t('len_error')}
 							</Form.Control.Feedback>
 						</Form.Group>
 						<Form.Group controlId="confirmPassword">
-							<Form.Label>Confirm Password</Form.Label>
+							<Form.Label>{t('confirm')}</Form.Label>
 							<Form.Control
 								type="password"
 								name="confimPass"
@@ -193,11 +194,11 @@ function Signup() {
 								}
 							/>
 							<Form.Control.Feedback type="invalid">
-								Passwords do not match.
+								{t('nomatch')}
 							</Form.Control.Feedback>
 						</Form.Group>
 						<Form.Group controlId="email">
-							<Form.Label>Email</Form.Label>
+							<Form.Label>{t('email')}</Form.Label>
 							<Form.Control
 								type="email"
 								name="email"
@@ -210,10 +211,10 @@ function Signup() {
 								}
 							/>
 							<Form.Control.Feedback type="invalid">
-								Please enter a valid email address.
+								{t('mail_novalid')}
 							</Form.Control.Feedback>
 						</Form.Group>
-						<Button className="buttonCustom" type="submit">Submit</Button>
+						<Button className="buttonCustom" type="submit">{t('submit')}</Button>
 					</Form>
 				</Col>
 			</Row>

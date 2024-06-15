@@ -14,7 +14,7 @@ class User(AbstractUser):
 	otp_expiry_time = models.DateTimeField(blank=True, null=True)
 	two_factor = models.BooleanField(default=False)
 	avatar = models.ImageField(upload_to='avatars/', default='yoshi.jpg')
-	alias = models.CharField(max_length=255, null=True, blank=True)
+	alias = models.CharField(max_length=255, null=True, blank=True, default='Player')
 	tournament_name = models.CharField(max_length=7, blank=True)
 	language = models.CharField(max_length=255, blank=True,default='en')
 	name = models.CharField(max_length=255, null=True, blank=True)
