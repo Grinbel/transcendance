@@ -19,6 +19,7 @@ import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
 import i18n from '../translations/i18n.js';
 import { useTranslation } from 'react-i18next';
+import i18n from '../translations/i18n.js';
 
 import { userContext } from "../contexts/userContext.jsx";
 
@@ -39,7 +40,7 @@ const NavLoggedIn = () => {
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
 	const userinfo = useContext(userContext);
-	const avatar = userinfo.user.avatar ? userinfo.user.avatar : '../../public/yoshi.jpg';
+	const avatar = userinfo.user.avatar ? userinfo.user.avatar : '../../public/mario.jpg';
 	console.log('avatar', avatar);
 
 	const UserMenu = (
@@ -85,8 +86,8 @@ const NavLoggedIn = () => {
 			
 			<Nav  className="ms-auto">
 				<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={UserMenu}>
-					<NavDropdown.Item href={`/profile/${userinfo.user.username}`}>{t('profile')}</NavDropdown.Item>
-					<Nav.Link className="navCustom playButton me-3" href="/play">{t('play')}</Nav.Link>
+					<NavDropdown.Item as='Link' to={`/profile/${userinfo.user.username}`}>{t('profile')}</NavDropdown.Item>
+					<Nav.Link className="navCustom playButton me-3" as='Link' to="/play">{t('play')}</Nav.Link>
 					<NavDropdown.Divider />
 					<NavDropdown.Item onClick={handleLogout}>{t('logout')}</NavDropdown.Item>
 				</NavDropdown>
@@ -119,13 +120,6 @@ const NavLoggedIn = () => {
 		<Navbar collapseOnSelect expand="lg" className="bg-body-tertiary navbarCustom">
 		  <Container>
 			<Navbar.Brand as={Link} to="/" className='logoName'>
-				{/* <img
-					// src="../src/assets/pong.png" // Replace with the path to your logo
-					width="50"
-					height="50"
-					className="d-inline-block align-top me-2"
-					// alt="Pong"
-				/> */}
 				Pong
 			</Navbar.Brand>
 			<Navbar.Toggle aria-controls="responsive-navbar-nav" />

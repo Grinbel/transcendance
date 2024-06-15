@@ -27,26 +27,74 @@ from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from .helper import authenticate
 import random
 import os
+import logging
  
 ##remember to check USER_ID_FIELD and USER_ID_CLAIM in jwt settings in case picking the email adress as the user id
 
 
-# class Login(TokenObtainPairView):
-#     permission_classes = [permissions.AllowAny]
-#     serializer_class = MyTokenObtainPairSerializer
+# a  view that updates user data partially first approach
+# @api_view(['PATCH'])
+# def updateUser(request):
+# 	print("updateUser function")
+# 	# check authentication
+# 	if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
+# 		token = request.headers.get('Authorization').split(' ')[1]
+# 		try:
+# 			untyped_token = UntypedToken(token)
+# 		except (InvalidToken, TokenError) as e:
+# 			print('updateUser Invalid token')
+# 			return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+# 		# print('updateUser untyped_token', untyped_token)
+# 		id = untyped_token['user_id']
+# 		newpassword = request.data.get('password')
+# 		newusername = request.data.get('username')
+# 		newemail = request.data.get('email')
+# 		newalias = request.data.get('alias')
 
-#     def post(self, request, *args, **kwargs):
-#         print('request.data', request.data)
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         return Response(serializer.validated_data, status=status.HTTP_200_OK)
+# 		try:
+# 			user = User.objects.get(id=id)
+# 			if (newpassword is not None):
+# 				user.is_active = True
+# 				user.set_password(newpassword)
+# 			user.username = newusername
+# 			user.email = newemail
+# 			user.alias = newalias
+# 			user.save()
+# 			return Response({'detail': 'User updated successfully.'}, status=status.HTTP_200_OK)
+# 		except User.DoesNotExist:
+# 			return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+# 		except Exception as e:
+# 			print(f'Error updating user data: {e}')
+# 			return Response({'detail': 'An error occurred while updating user data.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['PATCH'])
+def updateUser(request, pk):
+    print('userUpdate function request DATA ////// >>>>>:', request.data)
+    try:
+        user = User.objects.get(pk=pk)
+        print('user found with his id in updateUser', user)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    # Check for email uniqueness if email is being updated
+    if 'email' in request.data:
+        email = request.data['email']
+        if User.objects.filter(email=email).exclude(pk=pk).exists():
+            return Response({'email': 'Email is already in use.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    serializer = UserSerializer(user, data=request.data, partial=True)
+    if serializer.is_valid():
+        print('serializer is valid, saving data:', serializer.validated_data)
+        serializer.save()
+        print('user updated successfully: >>', serializer.data)
+        return Response(serializer.data)
+    
+    print('user not updated successfully: >>', serializer.errors)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 def generate_random_digits(n=6):
 	return "".join(map(str, random.sample(range(0, 10), n)))
-
-# give me a function that gets me user informations when receiving the correspondent token
-
-
 
 @api_view(['GET'])
 def getProfile(request):
@@ -55,21 +103,44 @@ def getProfile(request):
 
 	if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
 		token = request.headers.get('Authorization').split(' ')[1]
-		print('token', token)
 		try:
 			untyped_token = UntypedToken(token)
-			print('untyped_token', untyped_token)
 		except (InvalidToken, TokenError) as e:
-			print('Invalid token')
 			return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
-		print('untyped_token', untyped_token)
 		id = untyped_token['user_id']
 		user = User.objects.get(id=id)
 		# Now you have the user instance and can return the necessary information
 		user_data = UserSerializer(user).data
-		print('user_data', user_data)
+		print('getprofile user_data', user_data)
 		return Response(user_data)
 	return Response({'detail': 'Invalid token format'}, status=status.HTTP_401_UNAUTHORIZED)
+
+# a  view that receives and sets  the 2FA preference of a user
+@api_view(['POST'])
+def set2FA(request):
+	print("set 2FA")
+	# check authentication
+	if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
+		token = request.headers.get('Authorization').split(' ')[1]
+		try:
+			untyped_token = UntypedToken(token)
+		except (InvalidToken, TokenError) as e:
+			return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+		id = untyped_token['user_id']
+		two_factor = request.data.get('two_factor')
+		if	two_factor is None:
+			return Response({'detail': 'two_factor field are required.'}, status=status.HTTP_400_BAD_REQUEST)
+		if not isinstance(two_factor, bool):
+			return Response({'detail': 'Invalid value for two_factor. It must be a boolean.'}, status=status.HTTP_400_BAD_REQUEST)
+		try:
+			user = User.objects.get(id=id)
+			user.two_factor = two_factor
+			user.save()
+			return Response({'detail': '2FA preference updated successfully.'}, status=status.HTTP_200_OK)
+		except User.DoesNotExist:
+			return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+		except Exception as e:
+			return Response({'detail': 'An error occurred while updating 2FA preference.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
 def userlist(request):
@@ -143,8 +214,8 @@ def login(request):
 	# User credentials are valid, proceed with code generation and email sending
 		user_obj = User.objects.get(id=user.id)
 		data = {'username': user_obj.username, 'password': password}
+		token_serializer = MyTokenObtainPairSerializer(data=data)
 		if user_obj.two_factor == False:
-			token_serializer = MyTokenObtainPairSerializer(data=data)
 			print('token_serializer without 2FA', token_serializer)
 			try:
 				if (token_serializer.is_valid(raise_exception=True)):
@@ -156,8 +227,7 @@ def login(request):
 				raise APIException("Internal server error. Please try again later.")
 			
 
-	###### 2FA implementation ######
-		
+		###### 2FA implementation ######
 		# Generate a 6-digit code and set the expiry time to 1 hour from now
 		verification_code = generate_random_digits(6)
 		print('verification_code', verification_code)
@@ -176,8 +246,8 @@ def login(request):
 			fail_silently=False,
 		)
 		print('email sent')
-		return Response({'detail': 'Verification code sent successfully.'}, status=status.HTTP_200_OK)
 
+		return Response({'detail': 'Verification code sent successfully.', 'two_factor': user_obj.two_factor}, status=status.HTTP_200_OK)
 	return Response({'detail': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['POST'])
@@ -190,6 +260,10 @@ def verify(request):
 
 	user_profile = User.objects.get(username=username)
 	print('user_profile', user_profile)
+	print('user_profile.otp', user_profile.otp)
+	print('received_otp', received_otp)
+	print('user_profile.otp_expiry_time', user_profile.otp_expiry_time)
+	print('timezone.now()', timezone.now())
 		# Check if the verification code is valid and not expired
 	if (
 		user_profile is not None and
@@ -204,6 +278,7 @@ def verify(request):
 		token_serializer = MyTokenObtainPairSerializer(data=data)
 		print('token_serializer', token_serializer)
 		try:
+			print('verify tryblock')
 			if (token_serializer.is_valid(raise_exception=True)):
 				print('token_serializer.validated_data', token_serializer.validated_data)
 				# Reset verification otp_code and expiry time
