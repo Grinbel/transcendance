@@ -3,7 +3,7 @@ import React from 'react';
 import  { useEffect, useState, useRef } from 'react';
 import { Link,useLocation } from 'react-router-dom';
 import "./Chat.css";
-import "./Home.css";
+// import "./Home.css";
 import { useContext } from "react";
 import { userContext } from "../contexts/userContext.jsx";
 import  { axiosInstance } from "../axiosAPI.js";
@@ -324,7 +324,7 @@ function Chat() {
 							</div>}
 							{message.type === 'send_invite' && <div className="invite">
 								{message.message}
-								<a href="#" onClick={(e) => {e.preventDefault(); goToTournament(message.room);}}>
+								<a href="#" classname="link" onClick={(e) => {e.preventDefault(); goToTournament(message.room);}}>
 									{t('join')}
 								</a>
 							</div>}

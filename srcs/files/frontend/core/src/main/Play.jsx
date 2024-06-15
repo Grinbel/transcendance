@@ -6,6 +6,7 @@ import { useContext } from "react";
 import { userContext } from "../contexts/userContext.jsx";
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import Button from 'react-bootstrap/Button';
 import "./Home.css";
 
 function Play() {
@@ -103,31 +104,28 @@ function Play() {
 	}
 	
 	return (
-	<div>
+	<div className="Play">
 		{isLoading ? (
 		<Loading />
 		) : (
 		<>
-			<button onClick={() => { 
+			<Button onClick={() => { 
 				setShowTextArea(true); 
 				setShowSelect(false); 
 				setFormData({ tournamentId: "", isEasy: false, playerCount: 2 });
 				setJoin(true);
-									// TODO texte brut
-				}}>{t('join_tournament')}</button>
-			<button onClick={() => { 
+				}}>{t('join_tournament')}</Button>
+			<Button onClick={() => { 
 				setShowSelect(true);
 				setShowTextArea(false);
 				setFormData({ tournamentId: "", isEasy: false, playerCount: 2 });
 				setJoin(false);
-									// TODO texte brut
-
-				}}>{t('create_tournament')}</button>
+				}}>{t('create_tournament')}</Button>
 			
 			{showTextArea && (
 				
 				<div>
-					<label htmlFor="tournamentId"></label>
+					{/* <label htmlFor="tournamentId"></label> */}
 						<input
 							type="text"
 							id="tournamentId"
@@ -137,7 +135,7 @@ function Play() {
 							onChange={handleChange}
 							maxLength="6"
 							/>
-					<label htmlFor="alias"></label>
+					{/* <label htmlFor="alias"></label> */}
 						<input
 							type="text"
 							id="alias"
@@ -153,7 +151,7 @@ function Play() {
 							maxLength="7"
 
 							/>
-					<button onClick={handleSubmit}>Submit</button>
+					<Button onClick={handleSubmit}>Submit</Button>
 				</div>
 			)}
 			
@@ -229,7 +227,7 @@ function Play() {
 						<option value="4">{t('tennis')}</option>
 					</select>
 				</p>
-				<button onClick={handleSubmit}>{t('submit')}</button>
+				<Button onClick={handleSubmit}>{t('submit')}</Button>
 			</div>
 			)}
 			<div className="displayer-errors">
