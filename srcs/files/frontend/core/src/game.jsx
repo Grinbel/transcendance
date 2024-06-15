@@ -12,6 +12,7 @@ function Game() {
     const { t } = useTranslation();
     let Hall_of_Fame = [];
 
+
     function normalize_angle(angle){
         angle = angle % (Math.PI*2);
         if (angle < -Math.PI)
@@ -51,6 +52,8 @@ function Game() {
     console.log("juste avant le use effect")
       useEffect(() => {
         console.log("on est rentres dans UseEffect")
+        if(options.real_game === 0)
+            return navigate('/');
         if(options.is_tournament === 1)
             {
                 console.log("TOURNOI")
@@ -385,7 +388,7 @@ function Game() {
                 console.log("P1 incidence " + incidence + " angle " + angle);
                 angle = normalize_angle(angle);
                 incidence = normalize_angle(incidence);
-                console.log("P1 incidence normalized " + incidence + " angle " + angle);
+                console.log("P1 incidence normalized " + incidence + " angle " + angle + "rebound angelle " + (Math.PI - angle) / 2);
                 //let reboundAngle = Math.PI  + (incidence - angle) /2
                 let reboundAngle = Math.PI - angle
                 

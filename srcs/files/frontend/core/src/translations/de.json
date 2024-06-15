@@ -75,5 +75,19 @@
     "incorrect" : "Falsche Benutzername oder Passwort.",
     "busy" : "Der Server ist beschäftigt, bitte versuchen Sie es später erneut",
     "unknown": "Ein unbekannter Fehler ist aufgetreten.",
-    "network": "Netzwerkfehler. Überprüfen Sie Ihre Verbindung."
+    "network": "Netzwerkfehler. Überprüfen Sie Ihre Verbindung.",
+    "valid" : "Bitte geben Sie einen gültigen Nutzungsnamen ein (eindeutige alphanumerische Zeichen).",
+    "username" : "Benutzer",
+    "mdp" : "Passwort",
+    "len_error" : "Das Passwort muss mindestens 6 Zeichen lang sein.",
+    "confirm" : "Passwort bestätigen",
+    "nomatch" : "Passwörter stimmen nicht übere",
+    "email" : "Email",
+    "mail_novalid" : "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+    "phone" : "Telefonnummer",
+    "invalid_phone" : "Bitte geben Sie eine gültige Telefonnummer ein.",
+    "valid_user" : "Bitte geben Sie einen gültigen Benutzernamen ein (nur alphanumerische Zeichen).",
+    "enter_code" : "Geben Sie den Code ein",
+    "ccode" : "Code:"
+
 }

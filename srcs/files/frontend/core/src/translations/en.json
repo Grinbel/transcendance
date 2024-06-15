@@ -75,5 +75,18 @@
     "incorrect" : "Incorrect username or password.",
     "busy" : "The server is busy, please try again later",
     "unknown": "An unknown error occurred.",
-    "network": "Network error. Please check your connection."
+    "network": "Network error. Please check your connection.",
+    "valid" : "Please enter a valid username (alphanumeric characters only).",
+    "username" : "Username",
+    "mdp" : "Password",
+    "len_error" : "Password must be at least 6 characters long.",
+    "confirm" : "Confirm Password",
+    "nomatch" : "Passwords do not match.",
+    "email" : "Email",
+    "mail_novalid" : "Please enter a valid email address.",
+    "phone" : "Phone number",
+    "invalid_phone" : "Please enter a valid 10-digit phone number.",
+    "valid_user" : "Please enter a valid username (alphanumeric characters only).",
+    "enter_code" : "Enter the code",
+    "ccode" : "Code:"
 }

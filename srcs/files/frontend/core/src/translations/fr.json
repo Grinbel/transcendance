@@ -76,5 +76,18 @@
     "incorrect" : "Nom d'utilisateur ou mot de passe incorrect.",
     "busy" : "Le serveur est occupe, veuillez reessayer plus tard",
     "unknown": "Une erreur inconnue s'est produite.",
-    "network": "Erreur reseau. Verifiez votre connexion."
+    "network": "Erreur reseau. Verifiez votre connexion.",
+    "valid" : "Veuillez entrer un nom d'utilisateur valide (caracteres alphanumeriques uniquement).",
+    "username" : "Nom d'utilisateur",
+    "mdp" : "Mot de passe",
+    "len_error" : "Le mot de passe doit contenir au moins 6 caracteres.",
+    "confirm" : "Confirmer le mot de passe",
+    "nomatch" : "Les mots de passe ne correspondent pas.",
+    "email" : "Email",
+    "mail_novalid" : "Veuillez entrer une adresse e-mail valide.",
+    "phone" : "Numéro de téléphone",
+    "invalid_phone" : "Veuillez entre un Numéro de téléphone valide",
+    "valid_user" : "Veuillez entrer un nom d'utilisateur valide (caracteres alphanumeriques uniquement).",
+    "enter_code" : "Entrez le code",
+    "ccode" : "Code:"
   }
