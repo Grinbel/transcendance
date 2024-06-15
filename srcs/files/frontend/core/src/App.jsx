@@ -89,7 +89,6 @@ async function getProfile(user, setUser, error, setError){
 					const userData = await getProfile();
 					console.log('app: useEffect getProfile userData', userData);
 					setUser(userData);
-					i18n.changeLanguage(userData.language);
 				} catch (error) {
 					setError(error);
 					localStorage.removeItem('token');
@@ -97,10 +96,16 @@ async function getProfile(user, setUser, error, setError){
 					if (location.pathname !== '/login' && location.pathname !== '/signup')
 					navigate('/login');
 			}
-			};
-	
-			fetchUserProfile();
-		}, []);
+		};
+		
+		fetchUserProfile();
+	}, []);
+	useEffect(() => {
+		if (user != undefined){
+			i18n.changeLanguage(user.language);
+			console.log("USER!!!!!!!!!",user.language);
+		}
+	}, [user]);
 		
 
 	return (

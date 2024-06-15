@@ -18,7 +18,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
 import { useTranslation } from 'react-i18next';
-
+import i18n from '../translations/i18n.js';
 import { userContext } from "../contexts/userContext.jsx";
 
 
@@ -133,7 +133,7 @@ const NavLoggedIn = () => {
 			  <Nav  className="ms-auto navbarCustom">
 				<Nav.Link className="navCustom me-3" as={Link} to="/signup">{t('sign_up')}</Nav.Link>
 				<Nav.Link className="navCustom me-3" as={Link} to="/login" >{t('login')}</Nav.Link>
-				<NavDropdown title={t('language')} id="language-dropdown">
+				<NavDropdown classname="dropCustom" title={t('language')} id="nav-dropdown-dark">
               		<NavDropdown.Item onClick={() => changeLanguage('en')}>{t('english')}</NavDropdown.Item>
               		<NavDropdown.Item onClick={() => changeLanguage('fr')}>{t('french')}</NavDropdown.Item>
               		<NavDropdown.Item onClick={() => changeLanguage('de')}>{t('allemand')}</NavDropdown.Item>

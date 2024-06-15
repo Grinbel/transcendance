@@ -3,6 +3,7 @@ import React from 'react';
 import  { useEffect, useState, useRef } from 'react';
 import { Link,useLocation } from 'react-router-dom';
 import "./Chat.css";
+import "./dropdown.css";
 // import "./Home.css";
 import { useContext } from "react";
 import { userContext } from "../contexts/userContext.jsx";
@@ -303,7 +304,7 @@ function Chat() {
 					{messages.filter((message, index) => index > 0 ).map((message, index) => (
 						<div key={index} className="chat-message" ref={messagesEndRef}>
 							{ message.username !== undefined &&<Nav className="ms-auto">
-								<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={message.username} onClick={() => info(message.username)}>
+								<NavDropdown className='chatdrop' id="chat-dropdown" title={message.username} onClick={() => info(message.username)}>
 									<NavDropdown.Item onClick={() => navigate(`/profile/${message.username}`)}>{t('profile')}</NavDropdown.Item>
 									{friend != undefined &&  <NavDropdown.Divider />}
 									{/* <NavDropdown.Item onClick={() => setFormData({message: `/whisper ${message.username}`,type : 'private'})}>Whisper</NavDropdown.Item> */}

@@ -2,7 +2,7 @@
 	position: fixed;
     bottom: 2px;
     right: 2px;
-    width: 30vh;
+    width: 50vh;
     height: 35vh;
     border: 1px solid #000;
 	background-color: lightgray;
@@ -30,12 +30,6 @@
     color: blue;
 }
 
-.dropdown-menu{
-	width:1000px;
-}
-.dropdown-item{
-	width:1000px;
-}
 
 .chat-header {
 	height: 10%;
