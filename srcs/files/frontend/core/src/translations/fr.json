@@ -66,5 +66,9 @@
     "host": "Vous etes l'hote, partie en cours de lancement",
     "not_host" : "Vous n'etes pas l'hote, veuillez allez a l'ordinateur de ",
     "not_host2" : " pour lancer la partie",
-    "over" : "Le Tournoi est terminé"
+    "over" : "Le Tournoi est terminé",
+    "language" : "Langue",
+    "french" : "Francais",
+    "english" : "Anglais",
+    "allemand" : "Allemand"
   }

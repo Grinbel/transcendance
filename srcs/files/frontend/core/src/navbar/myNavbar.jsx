@@ -25,7 +25,10 @@ import { userContext } from "../contexts/userContext.jsx";
 
 // Composant pour la barre de navigation lorsqu'un utilisateur est connecté
 const NavLoggedIn = () => {
-	const { t } = useTranslation();
+	const changeLanguage = (lng) => {
+		i18n.changeLanguage(lng);
+	  };
+	const { t, i18n } = useTranslation();
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
 	const userinfo = useContext(userContext);
@@ -80,6 +83,11 @@ const NavLoggedIn = () => {
 					<NavDropdown.Divider />
 					<NavDropdown.Item onClick={handleLogout}>{t('logout')}</NavDropdown.Item>
 				</NavDropdown>
+				<NavDropdown title={t('language')} id="language-dropdown">
+        			<NavDropdown.Item onClick={() => changeLanguage('en')}>{t('english')}</NavDropdown.Item>
+            		<NavDropdown.Item onClick={() => changeLanguage('fr')}>{t('french')}</NavDropdown.Item>
+            		<NavDropdown.Item onClick={() => changeLanguage('de')}>{t('allemand')}</NavDropdown.Item>
+          		</NavDropdown>
 			</Nav>
 		  </Container>
 		</Navbar>
@@ -92,6 +100,9 @@ const NavLoggedIn = () => {
 
   // Composant pour la barre de navigation lorsqu'aucun utilisateur n'est connecté
   const NavLoggedOut = () => {
+	const changeLanguage = (lng) => {
+		i18n.changeLanguage(lng);
+	  };
 	const { t } = useTranslation();
 
 	const navigate = useNavigate();
@@ -115,6 +126,11 @@ const NavLoggedIn = () => {
 			  <Nav  className="ms-auto navbarCustom">
 				<Nav.Link className="navCustom me-3" as={Link} to="/signup">{t('sign_up')}</Nav.Link>
 				<Nav.Link className="navCustom me-3" as={Link} to="/login" >{t('login')}</Nav.Link>
+				<NavDropdown title={t('language')} id="language-dropdown">
+              		<NavDropdown.Item onClick={() => changeLanguage('en')}>{t('english')}</NavDropdown.Item>
+              		<NavDropdown.Item onClick={() => changeLanguage('fr')}>{t('french')}</NavDropdown.Item>
+              		<NavDropdown.Item onClick={() => changeLanguage('de')}>{t('allemand')}</NavDropdown.Item>
+            	</NavDropdown>
 			  </Nav>
 			</Navbar.Collapse>
 		  </Container>

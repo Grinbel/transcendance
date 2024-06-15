@@ -65,5 +65,9 @@
     "host": "Sie sind der Gastgeber, das Spiel wird gestartet",
     "not_host" : "Sie sind nicht der Gastgeber, bitte gehen Sie zu ",
     "not_host2" : " Computer, um das Spiel zu starten",
-    "over" : "Das Turnier ist vorbei" 
+    "over" : "Das Turnier ist vorbei" ,
+    "language" : "Sprache",
+    "french" : "Französisch",
+    "english" : "Englisch",
+    "allemand" : "Deutsch"
 }
