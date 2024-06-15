@@ -133,6 +133,7 @@ const tournament = () => {
 					score_to_get: data.score,
 					score_max:data.score + 4,
 					easy_mode: data.easyMode,
+					real_game : 1,
 					texture_floor : data.texture_floor,
 					stage_height: data.stage_height,
 					stage_width: data.stage_width,

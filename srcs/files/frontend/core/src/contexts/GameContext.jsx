@@ -7,10 +7,9 @@ export const GameProvider = ({ children }) => {
 
 //! PLACEHOLDERS
 
-        language : 'en',
+        real_game : 0,
         winner : '', //placeholder pour gagnant
 //! OPTIONS DES JOUEURS
-
         score_p1 : 0,
         name_p1 : "Tac",
         name_p2 : "La Vache",

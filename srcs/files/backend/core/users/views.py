@@ -258,3 +258,12 @@ class UserList(APIView):
 		print('users', users)
 		serializer = UserSerializer(users, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
+	
+@api_view(['POST'])
+def language(request):
+	username = request.data.get('username')
+	language = request.data.get('language')
+	user = User.objects.get(username=username)
+	user.language = language
+	user.save()
+	return Response({'detail': 'Language updated successfully.'}, status=status.HTTP_200_OK)

@@ -25,8 +25,14 @@ import { userContext } from "../contexts/userContext.jsx";
 
 // Composant pour la barre de navigation lorsqu'un utilisateur est connecté
 const NavLoggedIn = () => {
-	const changeLanguage = (lng) => {
+	const changeLanguage = async (lng) => {
 		i18n.changeLanguage(lng);
+		try {
+			await axiosInstance.post('/setlanguage/', { language: lng, username: userinfo.user.username});
+			userinfo.setUser({ ...userinfo.user, language: lng });
+		  } catch (error) {
+			console.log('Error updating language:', error);
+		  }
 	  };
 	const { t, i18n } = useTranslation();
 	const [error, setError] = useState(null);
