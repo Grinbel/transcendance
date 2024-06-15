@@ -90,5 +90,8 @@
     "enter_code" : "Enter the code",
     "ccode" : "Code:",
     "verif_code" : "Verification code",
-    "verif_code_error" : "Please enter a valid verification code. It should be 6 digits (only) long."
+    "verif_code_error" : "Please enter a valid verification code. It should be 6 digits (only) long.",
+    "next_matches" : "Next matches",
+    "affrontera" : " will face ",
+    "waiting_opp" : " is waiting for an opponent"
 }
