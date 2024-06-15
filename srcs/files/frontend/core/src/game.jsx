@@ -698,7 +698,10 @@ function Game() {
                     options.winner = create_text(t('winner') + options.winner );
                     scene.add(options.winner);
                     options.winner.position.x = -3
-                    document.body.removeChild(renderer.domElement);
+                    dialogRenderer.dispose();
+                    if (dialogContainer.parentNode) {
+                        dialogContainer.parentNode.removeChild(dialogContainer);
+                      }
                     return(end_of_game(120));
                 }
             requestAnimationFrame(animate);

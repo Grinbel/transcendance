@@ -92,7 +92,7 @@
     "ccode" : "Code:",
     "verif_code" : "Code de vérification",
     "verif_code_error" : "Merci de rentrer un code de vérification valide, il devrait être composé de 6 chiffres",
-    "next_matches" : "Prochains matchs",
+    "next_matches" : "Prochain(s) match(s)",
     "affrontera" : " affrontera ",
     "waiting_opp" : " attend un adversaire"
   }
