@@ -126,7 +126,7 @@ const NavLoggedIn = () => {
 			  <Nav  className="ms-auto navbarCustom">
 				<Nav.Link className="navCustom me-3" as={Link} to="/signup">{t('sign_up')}</Nav.Link>
 				<Nav.Link className="navCustom me-3" as={Link} to="/login" >{t('login')}</Nav.Link>
-				<NavDropdown classname="dropCustom" title={t('language')} id="nav-dropdown-dark">
+				<NavDropdown className="dropCustom" title={t('language')} id="nav-dropdown-dark">
               		<NavDropdown.Item onClick={() => changeLanguage('en')}>{t('english')}</NavDropdown.Item>
               		<NavDropdown.Item onClick={() => changeLanguage('fr')}>{t('french')}</NavDropdown.Item>
               		<NavDropdown.Item onClick={() => changeLanguage('de')}>{t('allemand')}</NavDropdown.Item>
