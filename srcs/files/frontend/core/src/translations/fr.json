@@ -69,6 +69,12 @@
     "over" : "Le Tournoi est terminé",
     "language" : "Langue",
     "french" : "Francais",
-    "english" : "Anglais",
-    "allemand" : "Allemand"
+    "english" : "English",
+    "allemand" : "Deutsch",
+    "logged" : "Vous etes deja connecte",
+    "unauthorized" : "Acces non autorise.",
+    "incorrect" : "Nom d'utilisateur ou mot de passe incorrect.",
+    "busy" : "Le serveur est occupe, veuillez reessayer plus tard",
+    "unknown": "Une erreur inconnue s'est produite.",
+    "network": "Erreur reseau. Verifiez votre connexion."
   }

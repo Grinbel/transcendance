@@ -67,7 +67,13 @@
     "not_host2" : " Computer, um das Spiel zu starten",
     "over" : "Das Turnier ist vorbei" ,
     "language" : "Sprache",
-    "french" : "Französisch",
-    "english" : "Englisch",
-    "allemand" : "Deutsch"
+    "french" : "Français",
+    "english" : "English",
+    "allemand" : "Deutsch",
+    "logged" : "Sie sind bereits angemeldet",
+    "unauthorized" : "Unbefugter Zugriff.",
+    "incorrect" : "Falsche Benutzername oder Passwort.",
+    "busy" : "Der Server ist beschäftigt, bitte versuchen Sie es später erneut",
+    "unknown": "Ein unbekannter Fehler ist aufgetreten.",
+    "network": "Netzwerkfehler. Überprüfen Sie Ihre Verbindung."
 }

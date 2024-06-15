@@ -67,7 +67,13 @@
     "not_host2" : " computer to launch the game",
     "over" : "The tournament is over",
     "language" : "Language",
-    "french" : "French",
+    "french" : "Français",
     "english" : "English",
-    "allemand" : "German"
+    "allemand" : "Deutsch",
+    "logged" : "You are already logged in",
+    "unauthorized" : "Unauthorized access.",
+    "incorrect" : "Incorrect username or password.",
+    "busy" : "The server is busy, please try again later",
+    "unknown": "An unknown error occurred.",
+    "network": "Network error. Please check your connection."
 }

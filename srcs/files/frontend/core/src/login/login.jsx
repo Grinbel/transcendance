@@ -44,7 +44,7 @@ function Login() {
     useEffect(() => {
         if (userInfo.user) {
             console.log('Login: user ', userInfo.user.username);
-            setLoggedinMessage('You are already logged in');
+            setLoggedinMessage(t('logged'));
         }
     }, [userInfo.user]);
 
@@ -113,20 +113,20 @@ function Login() {
                     // The request was made and the server responded with a status code
                     // that falls out of the range of 2xx
                     if (error.response.status === 400) {
-                      setError('Unauthorized access.');
+                      setError(t('unauthorized'));
                     } else if (error.response.status === 401) {
-                      setError('Incorrect username or password.');
+                      setError(t('incorrect'));
                     } else if (error.response.status >= 500) {
-                      setError('Server busy. Please try again later.');
+                      setError(t('busy'));
                     } else {
-                      setError('An unknown error occurred.');
+                      setError(t('unknown'));
                     }
                   } else if (error.request) {
                     // The request was made but no response was received
-                    setError('Network error. Please check your connection.');
+                    setError(t('network'));
                   } else {
                     // Something happened in setting up the request that triggered an Error
-                    setError('An unknown error occurred.');
+                    setError(t('unknown'));
                   }
             } finally {
                 // setLoading(false);
