@@ -403,13 +403,13 @@ function Game() {
                 }
                 let angle = Math.atan2(options.ball_y_speed, options.ball_x_speed);
                 let impact = p1_weapon_mesh.position.y - options.ball_y;
-                let incidence = Math.PI - Math.PI / 2 * impact / (options.player_size / 2);
+                let incidence =  - Math.PI / 2 * impact / (options.player_size / 2);
                 console.log("P1 incidence " + incidence + " angle " + angle);
-                angle = normalize_angle(angle);
+                angle = normalize_angle(Math.PI -angle);
                 incidence = normalize_angle(incidence);
                 console.log("P1 incidence normalized " + incidence + " angle " + angle + "rebound angelle " + (Math.PI - angle) / 2);
                 //let reboundAngle = Math.PI  + (incidence - angle) /2
-                let reboundAngle = Math.PI - angle
+                let reboundAngle = (angle+ incidence)/2
                 
                 console.log("angle de rebond" + reboundAngle)
                 //let reboundAngle = -Math.PI - (incidence - angle) / 2;
@@ -698,6 +698,7 @@ function Game() {
                     options.winner = create_text(t('winner') + options.winner );
                     scene.add(options.winner);
                     options.winner.position.x = -3
+                    document.body.removeChild(renderer.domElement);
                     return(end_of_game(120));
                 }
             requestAnimationFrame(animate);
@@ -813,11 +814,9 @@ function Game() {
                                     Hall_of_Fame[i-1].position.z = 12
                                     Hall_of_Fame[i-1].fontSize *= 4;
                                     Hall_of_Fame[i-1].position.x = 25;
-                                    console.log("tout a ete place")
                                     end_of_game (options.room, options.usernames[options.usernames.length -1])
                                     return(end_of_tournament(-1));}
 //!                            navigate('/tournament_continues');
-                            document.body.removeChild(renderer.domElement);
                             renderer.dispose();
                             setOptions(prevOptions => ({ ...prevOptions, ...options }));
                             navigate('/game');
