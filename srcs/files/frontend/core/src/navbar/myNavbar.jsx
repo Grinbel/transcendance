@@ -64,22 +64,23 @@ const NavLoggedIn = () => {
 				setError("Session expired. Please log in again.");
 			}
 		}
-	  // Logique de déconnexion (par exemple, suppression des jetons d'authentification, etc.)
-	  // Ici, nous simulons juste la déconnexion en modifiant l'état
-	  	localStorage.removeItem('access_token');
+		// Logique de déconnexion (par exemple, suppression des jetons d'authentification, etc.)
+		// Ici, nous simulons juste la déconnexion en modifiant l'état
+		localStorage.removeItem('access_token');
 		localStorage.removeItem('refresh_token');
 		localStorage.removeItem('user');
 		axiosInstance.defaults.headers['Authorization'] = null;
 		userinfo.setUser();
 		console.log('NavLoggedIn: logout successful frontend');
-		navigate('/');
+		navigate('/login');
 	};
+
 
 	return (
 		<Navbar  collapseOnSelect expand="sm" className="bg-body-tertiary">
 		  <Container >
 
-			<Navbar.Brand onClick={() => navigate(`/`)} className='logoName'>
+			<Navbar.Brand onClick={() => navigate('/')} className='logoName'>
 				Pong
 			</Navbar.Brand>
 			

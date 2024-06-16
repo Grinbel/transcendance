@@ -213,6 +213,7 @@ def login(request):
 	if user is not None:
 	# User credentials are valid, proceed with code generation and email sending
 		user_obj = User.objects.get(id=user.id)
+
 		data = {'username': user_obj.username, 'password': password}
 		token_serializer = MyTokenObtainPairSerializer(data=data)
 		if user_obj.two_factor == False:
@@ -220,6 +221,8 @@ def login(request):
 			try:
 				if (token_serializer.is_valid(raise_exception=True)):
 					print('validated_data ok without 2FA', token_serializer.validated_data)
+					user_obj.status = 'available'
+					user_obj.save()
 					return Response(token_serializer.validated_data, status=status.HTTP_200_OK)
 				else:
 					return Response(token_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -264,6 +267,8 @@ def verify(request):
 	print('received_otp', received_otp)
 	print('user_profile.otp_expiry_time', user_profile.otp_expiry_time)
 	print('timezone.now()', timezone.now())
+	if (user_profile.status != 'away'):
+			return Response({'detail': 'User is not available'}, status=status.HTTP_401_UNAUTHORIZED)
 		# Check if the verification code is valid and not expired
 	if (
 		user_profile is not None and
@@ -284,6 +289,7 @@ def verify(request):
 				# Reset verification otp_code and expiry time
 				user_profile.otp = ''
 				user_profile.otp_expiry_time = None
+				user_profile.status = 'available'
 				user_profile.save()
 				return Response(token_serializer.validated_data, status=status.HTTP_200_OK)
 		except Exception as e:
@@ -316,10 +322,17 @@ class Logout(APIView):
 	permission_classes = [AllowAny]
 
 	def post(self, request, format='json'):
+		
+		print("username ", request.data)
+
 		try:
 			refresh_token = request.data["refresh_token"]
 			token = RefreshToken(refresh_token) # create a RefreshToken instance from the refresh token obtained to access the Class methods as blacklist()
 			token.blacklist()
+			user_id = token['user_id']  # Get the user ID from the token
+			user = User.objects.get(id=user_id)  # Get the user from the user ID
+			user.status = 'away'
+			user.save()
 			return Response(status=status.HTTP_205_RESET_CONTENT)
 		except Exception as e:
 			print('Exception', e)

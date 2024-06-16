@@ -18,12 +18,11 @@ from django.core import serializers
 from channels.layers import get_channel_layer
 from django.http import HttpResponse
 
-#//! put permisiion in login
+
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def choice(request):
 
-	print('value ' + str(request.data))
 	username = request.data.get('username')
 	join = request.data.get('join')
 	alias = request.data.get('alias')
@@ -32,46 +31,55 @@ def choice(request):
 	isEasy = request.data.get('isEasy')
 	skin = request.data.get('skin')
 
-
 	user = User.objects.get(username=username)
+
+	tournament = Tournament.objects.all()
 	user.alias = alias
 	user.save()
-	if (join):
-		name = Tournament.getNextTournament()
-		return Response({'room_name': name})
 	playerCount = request.data.get('playerCount')
 	tournamentId = request.data.get('tournamentId')
 
 
-	if (tournamentId == ''): #create a new room
-		# user = User.objects.get(username=username)
+	if (Tournament.objects.filter(players=user).exists()):
+		return Response({'Error':'inside'})
+
+	if (join and tournamentId == ''):
+		name = Tournament.getNextTournament(alias=alias)
+		tournament = Tournament.objects.filter(name=name).first()
+		if (tournament is not None):
+			players = tournament.players.all()
+			if (alias in [player.alias for player in players]):
+				return Response({'Error':'aliasiii'})
+		user.alias = alias
+		user.save()
+		return Response({'room_name': name})
+	elif (join is False):
+
 		name = Tournament.createRoomName()
 		tournament = Tournament.create(name=name,max_capacity=playerCount,ball_starting_speed=speed,score=score,easyMode=isEasy,skin=skin)
 		return Response({'room_name': name})
-	#check if tournamendid exist
-	tournament = Tournament.objects.filter(name=tournamentId)
-	tournament = tournament.first()
-	if (tournament is None):
-		return Response({'Error':'invalid'})
-	elif tournament.checkAddUser(user) is False:
-		return Response({'Error':'full'})
-	elif (Tournament.objects.filter(players=user).exists()):
-		return Response({'Error':'inside'})
-	elif (tournament.status == 'inprogress'):
-		return Response({'Error':'progress'})
 	else:
-		return Response({'room_name': tournament.name})
+		#check if tournamendid exist
+		tournament = Tournament.objects.filter(name=tournamentId).first()
+		if (tournament is None):
+			return Response({'Error':'invalid'})
+		players = tournament.players.all()
+		if (alias in [player.alias for player in players]):
+			return Response({'Error':'alias'})
+		user.alias = alias
+		user.save()
+		if tournament.checkAddUser(user) is False:
+			return Response({'Error':'full'})
+		elif (tournament.status == 'inprogress'):
+			return Response({'Error':'progress'})
+		else:
+			return Response({'room_name': tournament.name})
+
 
 @api_view(['POST'])
 def options(request):
-	print("OPTIONSSSSSSSSSSSSSSSSs")
 	name = request.data.get('room')
-	print("name",name)
 	tournament =Tournament.objects.filter(name=name).first()
-	print("tournament",tournament)
-	# texture_ball = tournament.texture_ball
-	# print("texture_ball", texture_ball)
-	# return Response('ok')
 	return Response({'texture_ball': tournament.texture_ball,'ball_starting_speed':tournament.ball_starting_speed,'score':tournament.score,'easyMode':tournament.easyMode,'skin':tournament.skin})
 
 @api_view(['POST'])

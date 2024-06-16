@@ -62,12 +62,12 @@ function Play() {
 				playerCount: formData.playerCount,
 				isEasy: formData.isEasy,
 				username: userInfo.user.username,
-				join:join  && formData.tournamentId === "",
+				join:join,
 				alias: alias === "" ? userInfo.user.username : alias,
 				speed:ballSpeed,
 				score:score,
 				skin:skin,
-				//! a finir l'envoi de skin et autre option de changement
+				
 			});
 
 			//check if response.data contains the word error
@@ -78,7 +78,7 @@ function Play() {
 			}
 			else {
 				console.log('Tournament name: ' + response.data.room_name);
-				//! tournament is not inside the cached data
+				
 				userInfo.setUser({
 					...userInfo.user,
 					tournament: response.data.room_name,
@@ -96,7 +96,7 @@ function Play() {
 			} else {
 				console.log('error OBSCURE', error.request);
 			}
-			setError(error.message);
+			// setError(error.message);
 			throw (error);
 		}
 		setIsLoading(false);

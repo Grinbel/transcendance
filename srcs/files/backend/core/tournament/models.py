@@ -20,7 +20,7 @@ class Tournament(models.Model):
 	max_capacity = models.IntegerField(default=2)
 	# admin = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='admin', blank=True, null=True)
 	ball_starting_speed = models.FloatField(default=0.05)
-	texture_ball = models.CharField(default="beaudibe.jpg")
+	texture_ball = models.CharField(default="basketball.jpg")
 	score = models.IntegerField(default=10)
 	easyMode = models.BooleanField(default=False)
 	skin = models.IntegerField(default=2)
@@ -35,7 +35,7 @@ class Tournament(models.Model):
 		return name
 
 	@classmethod
-	def create(self, max_capacity=2, user=None, name=None,ball_starting_speed=0.05,texture_ball="beaudibe.jpg",score=10,easyMode=False,skin=2):
+	def create(self, max_capacity=2, user=None, name=None,ball_starting_speed=0.05,texture_ball="basketball.jpg",score=10,easyMode=False,skin=2):
 		self = Tournament.objects.create(name=name)
 		self.max_capacity = max_capacity
 		self.ball_starting_speed = ball_starting_speed/1000
@@ -47,8 +47,6 @@ class Tournament(models.Model):
 			# tournament.admin = user
 			self.addUser (user)
 		self.save()
-		# print("TOURNAMENT!!!!!!!!!!!",self)
-		print("TEXTURE:",self.texture_ball)
 		return self
 	
 	def addUser(self,user):
@@ -83,27 +81,29 @@ class Tournament(models.Model):
 		return self.players.get(id=user.id)
 
 	def getAllUsername(self):
-		return [user.username for user in self.players.all()]
+		return [players.username for players in self.players.all()]
 	
 	def getAllAvatar(self):
-		return [user.avatar.url for user in self.players.all()]
+		return [players.avatar.url for players in self.players.all()]
 
+	def getAllAlias(self):
+		return [players.alias for players in self.players.all()]
+	
 	@classmethod
-	def getNextTournament(self):
+	def getNextTournament(self,alias):
 		tournaments = Tournament.objects.filter(status='pending')
 		buff = 8
 		name = ''
-		print("Tournament")
 		if tournaments.count() == 0:
 			return Tournament.createRoomName()
 		for tournament in tournaments:
+			aliass = tournament.getAllAlias()
 			j = tournament.max_capacity - tournament.players.count()
-			print ("Tournament name:%s ",tournament.name)
-			print ("Tournament player count:",j)
-			print("buff:",buff)
-			if  j < buff:
+			if j < buff and not (aliass is not None and alias in aliass):
 				buff = j
 				name = tournament.name
+		if name == '':
+			return Tournament.createRoomName()
 		return name
 
 	def __str__(self):
