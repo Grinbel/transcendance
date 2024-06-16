@@ -22,21 +22,21 @@ class User(AbstractUser):
 	blacklist = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='user_blacklist')
 
 	def log(self, name):
-		print("username ", name)
+		#print("username ", name)
 		user = User.objects.get(username=name)
 		user.name = name
 		user.save()
-		print("user ", user.name)
+		#print("user ", user.name)
 		self = user
 		self.save()
-		print("set username to", self.name)
+		#print("set username to", self.name)
 
 	def addBlacklist(self, name):
 		other = User.objects.get(username=name)
 		myself = User.objects.get(username=self.username)
 		if (other):
 			myself.blacklist.add(other)
-			print("added")
+			#print("added")
 		myself.save()
 	
 	def removeBlacklist(self, name):
@@ -44,7 +44,7 @@ class User(AbstractUser):
 		myself = User.objects.get(username=self.username)
 		if (other and other in myself.blacklist.all()):
 			myself.blacklist.remove(other)
-			print("removed")
+			#print("removed")
 		myself.save()
 		
 	def addFriend(self, name):

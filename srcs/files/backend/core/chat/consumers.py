@@ -16,7 +16,7 @@ from tournament.models import Tournament
 
 def checkCommand(self, message, user):
 	if (message[0] == '/'):
-		print('commande :',message)
+		##print('commande :',message)
 
 		split = message.split(' ')
 		#check if splis size is bigger than 2
@@ -24,12 +24,12 @@ def checkCommand(self, message, user):
 			return True
 		elif (split[0] == '/whisper'):
 			#send a private message
-			print("whisper")
+			##print("whisper")
 			if (User.objects.filter(username=split[1]).exists() == False):
-				print('user not found')
+				#print('user not found')
 				return True
 			elif (user.blacklist.all().filter(username=split[1]).exists()):
-				print('blocked')
+				#print('blocked')
 				return True
 			async_to_sync(self.channel_layer.group_send)(
 				self.room_name,
@@ -46,16 +46,16 @@ def checkCommand(self, message, user):
 	return False
 
 def sendPrivate(self, message, user,receiver):
-	print("whisper")
+	#print("whisper")
 	if (User.objects.filter(username=receiver).exists() == False):
-		print('user not found')
+		#print('user not found')
 		return
 	receiver= User.objects.get(username=receiver)
 	if (receiver.blacklist.all().filter(username=user.username).exists() == True):
-		print('blocked')
+		#print('blocked')
 		return
-	print("receiver block: ",receiver.blacklist.all())
-	print("user block: ",user.blacklist.all())
+	#print("receiver block: ",receiver.blacklist.all())
+	#print("user block: ",user.blacklist.all())
 
 	async_to_sync(self.channel_layer.group_send)(
 		self.room_name,
@@ -112,14 +112,14 @@ class ChatConsummer(WebsocketConsumer):
 	def connect(self):
 		room_name = self.scope['url_route']['kwargs']['room_name']
 
-		# print('user : ',self.scope['user'])
-		print("User.scope :", self.scope['user'])
+		# #print('user : ',self.scope['user'])
+		#print("User.scope :", self.scope['user'])
 
 		group, created = Group.objects.get_or_create(groupName=room_name)
 		#group = Group.objects.get_or_create(groupName=room_name
 		# self.groups.append(group)
 		self.room_name = room_name
-		print("room name", room_name)
+		#print("room name", room_name)
 		self.room_group_name = room_name
 		async_to_sync(self.channel_layer.group_add)(
 			self.room_group_name,
@@ -127,13 +127,13 @@ class ChatConsummer(WebsocketConsumer):
 		)
 		self.accept()
 		channel_layer = get_channel_layer()
-		print("channel layer ",channel_layer)
-		print('Connected')
+		#print("channel layer ",channel_layer)
+		#print('Connected')
 	
 	def disconnect(self, close_code):
-		print('Disconnected')
+		#print('Disconnected')
 		user= self.scope['user']
-		print('user:',user)
+		#print('user:',user)
 		async_to_sync(self.channel_layer.group_discard)(
 			self.room_name, self.channel_name
 		)
@@ -142,7 +142,7 @@ class ChatConsummer(WebsocketConsumer):
 
 	def receive(self, text_data):
 		# pop = ${SERVER_ADRESS}
-		# print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",${SERVER_ADRESS})
+		# #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",${SERVER_ADRESS})
 		text_data_json = json.loads(text_data)
 		user= self.scope['user']
 		
@@ -155,9 +155,9 @@ class ChatConsummer(WebsocketConsumer):
 			if (messages is None):
 				return
 			for message in messages:
-				# print('message : ',message.username)
+				# #print('message : ',message.username)
 				if (user.blacklist.all().filter(username=message.username).exists()):
-					print('blocked')
+					#print('blocked')
 					continue
 				#want to add 2 hour to date
 				date = message.date + timedelta(hours=2)
@@ -169,7 +169,7 @@ class ChatConsummer(WebsocketConsumer):
 				}))
 			return
 		elif(tipe == 'private'):
-			print('private')
+			#print('private')
 			sendPrivate(self,text_data_json['message'],user,text_data_json['receiver'])
 			return
 		elif (tipe =='chat'):
@@ -184,7 +184,7 @@ class ChatConsummer(WebsocketConsumer):
 			)
 			# print date
 			data.save()
-			print(data.date)
+			#print(data.date)
 			async_to_sync(self.channel_layer.group_send)(
 				self.room_name,
 				{
@@ -200,10 +200,10 @@ class ChatConsummer(WebsocketConsumer):
 		message = event['message']
 		username = event['username']
 		date = event['date']
-		# print('in chat message')
+		# #print('in chat message')
 		user= self.scope['user']
 		if (user.blacklist.all().filter(username=username).exists()):
-			print('blocked')
+			#print('blocked')
 			return
 		self.send(text_data=json.dumps({
 			'type':'chat',

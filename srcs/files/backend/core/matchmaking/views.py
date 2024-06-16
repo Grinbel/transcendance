@@ -219,7 +219,7 @@ class Matchmaking(WebsocketConsumer):
 		}))
 	
 	def end_of_game(self,event):
-		print('end of game')
+		##print('end of game')
 		self.send(text_data=json.dumps({
 			'type':'end',
 			'winner': event['winner'],
