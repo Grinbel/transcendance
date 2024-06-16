@@ -21,7 +21,7 @@ const MultiOptions = () => {
 	const [height, setHeight] = useState(9);
 	const [width, setWidth] = useState(9);
 	const [launch,setLaunch] = useState(false);
-	const [skinObject, setSkinObject] = useState({texture_ball: "basketball.jpg", texture_floor: "basket.jpg",stage_height: 9,stage_width: 9});
+	const [skinObject, setSkinObject] = useState({texture_ball: "https://thumbs.dreamstime.com/b/bille-de-football-de-texture-13533294.jpg", texture_floor: "https://t2.uc.ltmcdn.com/fr/posts/8/4/8/quelle_est_la_taille_d_un_terrain_de_football_12848_600.webp",stage_radius: 5,ball_radius: 0.5});
 
 const handleChange = (event) => {
 	const newSkinObject = JSON.parse(event.target.value);
@@ -30,7 +30,7 @@ const handleChange = (event) => {
   const handleStartGame = () => {
 
 
-	console.log("BOB",skinObject.stage_width,skinObject.stage_height);
+	console.log("BOB",skinObject.ball_radius,skinObject.stage_radius);
     setMultiGameOptions(prevOptions => ({
       ...prevOptions,
       nb_players : playerCount,
@@ -40,15 +40,15 @@ const handleChange = (event) => {
 	  score_max:score + 4,
 	  texture_ball: skinObject.texture_ball,
 	texture_floor : skinObject.texture_floor,
-	stage_radius: skinObject.stage_height,
-	stage_width: skinObject.stage_width,
+	stage_radius: skinObject.stage_radius,
+	ball_radius: skinObject.ball_radius,
     }));
     navigate('/multigame');
   };
 
 
   return (
-    <div>
+    <div className="Play">
       <Dropdown onSelect={(e) => setPlayerCount(Number(e))}>
         <Dropdown.Toggle variant="primary">
           {`Player Count: ${playerCount}`}
@@ -100,10 +100,10 @@ const handleChange = (event) => {
 				id="playerCount"
 				name="playerCount"
 				onChange={handleChange}>
-				<option value={JSON.stringify({texture_ball: "basketball.jpg", texture_floor: "basket.jpg",stage_height: 9,stage_width: 9})}>{t('basketball')}</option>
-				<option value={JSON.stringify({texture_ball: "https://thumbs.dreamstime.com/b/bille-de-football-de-texture-13533294.jpg", texture_floor: "https://t2.uc.ltmcdn.com/fr/posts/8/4/8/quelle_est_la_taille_d_un_terrain_de_football_12848_600.webp",stage_height: 8,stage_width: 15})}>{t('football')}</option>
-				<option value={JSON.stringify({texture_ball: "billardball.png", texture_floor: "billardtable.png",stage_height: 12,stage_width: 20})}>{t('billard')}</option>
-				<option value={JSON.stringify({texture_ball: "tennisball.jpg", texture_floor: "tennisfield.jpg",stage_height: 30,stage_width: 16})}>{t('tennis')}</option>
+				<option value={JSON.stringify({texture_ball: "https://thumbs.dreamstime.com/b/bille-de-football-de-texture-13533294.jpg", texture_floor: "https://t2.uc.ltmcdn.com/fr/posts/8/4/8/quelle_est_la_taille_d_un_terrain_de_football_12848_600.webp",stage_radius: 5,ball_radius: 0.5})}>{t('football')}</option>
+				<option value={JSON.stringify({texture_ball: "basketball.jpg", texture_floor: "basket.jpg",stage_radius: 4,ball_radius: 0.7})}>{t('basketball')}</option>
+				<option value={JSON.stringify({texture_ball: "billardball.png", texture_floor: "billardtable.png",stage_radius: 6,ball_radius: 0.3})}>{t('billard')}</option>
+				<option value={JSON.stringify({texture_ball: "tennisball.jpg", texture_floor: "tennisfield.jpg",stage_radius: 7,ball_radius: 0.2})}>{t('tennis')}</option>
 			</select>
 		</p>
       <Button variant="primary" onClick={handleStartGame}>Start Game</Button>
