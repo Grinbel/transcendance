@@ -568,8 +568,6 @@ function Game() {
                                 if(options.usernames.length === i*2 + 1)
                                     message.innerHTML += options.usernames[i*2] + t('waiting_opp')+ '<br>';
                             }
-
-//* AJOUTER L' avancee du tournoi !
                         }
                     options.ball_pause = -1;
                 }
@@ -693,6 +691,7 @@ function Game() {
                     clear_components(powerup_render1);
                     clear_components(first_wall);
                     clear_components(second_wall);
+                    clear_components(ground);
                     options.winner = options.score_p1>options.score_p2?options.name_p1:options.name_p2;
                     console.log(options.winner);
                     options.winner = create_text(t('winner') + options.winner );
@@ -866,6 +865,7 @@ function Game() {
                         }
                     document.body.removeChild(renderer.domElement);
                     renderer.dispose();
+                    
                     resetOptions();
                     navigate('/');}}
             
