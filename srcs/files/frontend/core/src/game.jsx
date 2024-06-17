@@ -7,7 +7,9 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 
+
 function Game() {
+    
     const { options ,resetOptions,setOptions} = useGameContext();
     const navigate = useNavigate();
     const { t } = useTranslation();
@@ -22,6 +24,11 @@ function Game() {
             angle -= Math.PI*2;
         return angle;
     }
+
+
+function getCurrentLocation () {
+    return window.location.href
+  }
     const end_of_game = async (name,winner) => {
 			
 		try {
@@ -53,6 +60,7 @@ function Game() {
     console.log("juste avant le use effect")
       useEffect(() => {
         console.log("on est rentres dans UseEffect")
+        let starting_location = getCurrentLocation();
         if(options.real_game === 0)
             return navigate('/');
         if(options.is_tournament === 1)
@@ -218,8 +226,29 @@ function Game() {
                                     message.innerHTML += options.usernames[i*2] + t('waiting_opp') + '<br>';
                             }
 
-//* AJOUTER L' avancee du tournoi !
                         }
+
+                function clear_everything(){
+                    scene.clear();
+                    scene.remove(text_p1);
+                    scene.remove(text_p2);
+                    text_p1.dispose();
+                    text_p2.dispose();
+                    clear_components(p1_weapon_mesh);
+                    clear_components(p2_weapon_mesh);
+                    clear_components(ball_render);
+                    clear_components(ia_eye);
+//*                    clear_components(ia_spotlight);
+                    clear_components(target_mesh);
+                    clear_components(powerup_render1);
+                    clear_components(first_wall);
+                    clear_components(second_wall);
+                    clear_components(ground);
+                    dialogRenderer.dispose();
+                    if (dialogContainer.parentNode) {
+                        dialogContainer.parentNode.removeChild(dialogContainer);
+                      }
+                }
                 //'Bienvenue dans le match opposant <span style="font-size: larger; color: red; text-transform: uppercase;">' 
                 //+ options.name_p1 + '</span> à <span style="font-size: larger; color: red; text-transform: uppercase;">' 
                 //+ options.name_p2 + "</span> !<br>" 
@@ -675,32 +704,29 @@ function Game() {
         text_p2.position.z+=  options.ball_radius*2 +2
         server_ball_reset()
         function animate() {
+            if (starting_location != getCurrentLocation())
+                {
+                    console.log("start " +starting_location + " fin")
+                    console.log("actual " + getCurrentLocation()+ " fin")
+                    clear_everything()
+                    window.removeEventListener('keydown', local_handleKeyDown, false);
+                    window.removeEventListener('keyup', local_handleKeyUp, false);
+                    window.removeEventListener('mousemove', handleMouseMove);
+                    document.body.removeChild(renderer.domElement);
+                    //document.body.removeChild(dialogContainer);
+                    renderer.dispose();
+                    resetOptions();
+                    return navigate('/')
+                }
             if(((options.score_p1 >= options.score_to_get || options.score_p2 >= options.score_to_get) && Math.abs(options.score_p1-options.score_p2) >= options.score_diff) || options.score_p1>options.score_max || options.score_p2>options.score_max)
                 {
-                    scene.clear();
-                    scene.remove(text_p1);
-                    scene.remove(text_p2);
-                    text_p1.dispose();
-                    text_p2.dispose();
-                    clear_components(p1_weapon_mesh);
-                    clear_components(p2_weapon_mesh);
-                    clear_components(ball_render);
-                    clear_components(ia_eye);
-//*                    clear_components(ia_spotlight);
-                    clear_components(target_mesh);
-                    clear_components(powerup_render1);
-                    clear_components(first_wall);
-                    clear_components(second_wall);
-                    clear_components(ground);
+                    clear_everything()
                     options.winner = options.score_p1>options.score_p2?options.name_p1:options.name_p2;
                     console.log(options.winner);
                     options.winner = create_text(t('winner') + options.winner );
                     scene.add(options.winner);
                     options.winner.position.x = -3
-                    dialogRenderer.dispose();
-                    if (dialogContainer.parentNode) {
-                        dialogContainer.parentNode.removeChild(dialogContainer);
-                      }
+
                     return(end_of_game(120));
                 }
             requestAnimationFrame(animate);
@@ -828,7 +854,7 @@ function Game() {
                         scene.remove(options.winner)
                         clear_components(options.winner);
                         document.body.removeChild(renderer.domElement);
-                        document.body.removeChild(dialogContainer);
+                        //document.body.removeChild(dialogContainer);
                         renderer.dispose();
                         resetOptions();
                         navigate('/');
@@ -876,6 +902,7 @@ function Game() {
             // Nettoyez les ressources Three.js et arrêtez les écoutes d'événements si nécessaire
         };
     }, [options]);
+    
 
     return ; // Car le rendu est géré par Three.js et non par React
 }

@@ -6,15 +6,19 @@ import { useMultiGameContext } from './contexts/MultiGameContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+function getCurrentLocation () {
+    return window.location.href
+  }
 
 function MultiGame() {
 	const { t } = useTranslation();
         const { options } = useMultiGameContext();
 		const navigate = useNavigate();
         options.ball_speed = options.ball_starting_speed
-		if(options.nb_players === 7)
-			return(navigate('/'));
         useEffect(() => {
+			if(options.nb_players === 7)
+			return(navigate('/'));
+			let starting_location = getCurrentLocation();
         
 		let loader = new THREE.TextureLoader();
 		let texture_floor = loader.load(options.texture_floor);
@@ -508,6 +512,7 @@ function MultiGame() {
 
 		window.addEventListener('keydown', handleKeyDown, false);
 		window.addEventListener('keyup', handleKeyUp, false);
+
 		function player_move() {
             for(let i =0; i<options.nb_players ; i++)
             {
@@ -544,6 +549,31 @@ function MultiGame() {
 		
 		
 		function animate() {
+			if (starting_location != getCurrentLocation()){
+				console.log("COCOU ")
+				options.ball_pause = -1
+				scene.clear();
+				for(let i = 0; i<options.nb_players; i++)
+				{
+					scene.remove(players[i].mesh);
+					clear_components(players[i].mesh);
+					scene.remove(players_text[i]);
+					players_text[i].dispose();
+				}
+				clear_components(ball_render);
+				clear_components(ground);
+				window.removeEventListener('keydown', handleKeyDown, false);
+				window.removeEventListener('keyup', handleKeyUp, false);
+				window.removeEventListener('mousemove', handleMouseMove);
+				dialogRenderer.dispose();
+				if (dialogContainer.parentNode) {
+					dialogContainer.parentNode.removeChild(dialogContainer);
+				  }
+				  document.body.removeChild(renderer.domElement);
+				renderer.domElement.style.filter = 'none';
+				renderer.dispose();
+				return navigate('/')
+			}
 			requestAnimationFrame(animate);
 		//	ball_render.rotation.z += (Math.abs(ball_y_speed) + Math.abs(ball_x_speed))* ball_rotation_z ;
 	//		ball_render.rotation.y += ball_x_speed * 2;
