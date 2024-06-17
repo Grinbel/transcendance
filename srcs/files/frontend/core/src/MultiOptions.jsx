@@ -7,7 +7,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import { useTranslation } from 'react-i18next';
 
 const MultiOptions = () => {
-	const { t } = useTranslation();
+  const { t } = useTranslation();
   const { setOptions: setMultiGameOptions } = useMultiGameContext();
   const navigate = useNavigate();
   const [playerCount, setPlayerCount] = useState(2);
@@ -51,26 +51,26 @@ const handleChange = (event) => {
     <div className="Play">
       <Dropdown onSelect={(e) => setPlayerCount(Number(e))}>
         <Dropdown.Toggle variant="primary">
-          {`Player Count: ${playerCount}`}
+          {`${t('nb_joueurs')}: ${playerCount}`}
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          <Dropdown.Item eventKey="2">2 Players</Dropdown.Item>
-          <Dropdown.Item eventKey="3">3 Players</Dropdown.Item>
-          <Dropdown.Item eventKey="4">4 Players</Dropdown.Item>
-          <Dropdown.Item eventKey="5">5 Players</Dropdown.Item>
-          <Dropdown.Item eventKey="6">6 Players</Dropdown.Item>
+          <Dropdown.Item eventKey="2">2 {t('players')}</Dropdown.Item>
+          <Dropdown.Item eventKey="3">3 {t('players')}</Dropdown.Item>
+          <Dropdown.Item eventKey="4">4 {t('players')}</Dropdown.Item>
+          <Dropdown.Item eventKey="5">5 {t('players')}</Dropdown.Item>
+          <Dropdown.Item eventKey="6">6 {t('players')}</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
       {(playerCount === 2 || playerCount === 3) && (
         <Dropdown onSelect={(e) => setButtonCount(Number(e))}>
           <Dropdown.Toggle variant="primary">
-            {`Button Count: ${buttonCount}`}
+            {`${t('nb_buttons')}: ${buttonCount}`}
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            <Dropdown.Item eventKey="1">1 Button</Dropdown.Item>
-            <Dropdown.Item eventKey="2">2 Buttons</Dropdown.Item>
+            <Dropdown.Item eventKey="1">1 {t('button')}</Dropdown.Item>
+            <Dropdown.Item eventKey="2">2 {t('buttons')}</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       )}
