@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 print('/////////////////////////////////////BASE_DIR:', BASE_DIR)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1','*']
+
 AUTH_USER_MODEL = "users.User"
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -40,14 +40,6 @@ CHANNEL_LAYERS = {
 	},
 }
 
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": [("localhost", 8000)],
-#         },
-#     },
-# }
 
 # Application definition
 
@@ -74,16 +66,23 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
 	'corsheaders.middleware.CorsMiddleware',
 
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'project.middleware.SSLRedirectMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     # 'channels.middleware.AuthMiddlewareStack',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
 ]
+
+
+#security settings
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
 
 ASGI_APPLICATION = 'project.asgi.application'
 
@@ -192,43 +191,41 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, STATIC_URL),
+]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#security settings
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = True
-# CORS_ALLOWED_ORIGINS = [
-#     'http://0.0.0.0:5173',
-#     'http://localhost:5173',
-#     'http://0.0.0.0:8000',
-# 	'*:5173',
-# 	'*:8000',
-# 	'*'
-# 	'c1r2p6:5173',
-# 	'c1r2p6:8000',
 
-#     # 'http://your-production-url.com',
+
+# CORS_ALLOW_METHODS = [
+#     'DELETE',
+#     'GET',
+#     'OPTIONS',
+#     'PATCH',
+#     'POST',
+#     'PUT',
 # ]
-CORS_ALLOW_METHODS = [
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-]
 
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost:5173/',
-                        'http://0.0.0.0:8000/',
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://localhost:8443/',
+    'https://0.0.0.0:8443/',
+    'https://127.0.0.1:8443/',
+    '',
+    'null',
 
 ]
-CSRF_COOKIE_SAMESITE = 'None'
-CSRF_COOKIE_SECURE = 'True'
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', '0.0.0.0']
+# CSRF_COOKIE_SAMESITE = 'None'
+# CSRF_COOKIE_SECURE = 'True'
 
 # CSRF_COOKIE_HTTPONLY = False
 # SESSION_COOKIE_HTTPONLY = True
@@ -299,15 +296,12 @@ EMAIL_HOST_PASSWORD = os.environ.get('MAIL_PASS')  # replace with your actual em
 
 
 SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SECURE_REFERRER_POLICY = "no-referrer"
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# SECURE_BROWSER_XSS_FILTER = True
+# SECURE_CONTENT_TYPE_NOSNIFF = True
+# SECURE_HSTS_SECONDS = 31536000
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
+# SECURE_REFERRER_POLICY = "no-referrer"
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-# Ensure that your server is serving the static files over HTTPS
-

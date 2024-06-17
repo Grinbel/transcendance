@@ -99,6 +99,7 @@ async function getProfile(user, setUser, error, setError){
 			console.log('app: useEffect user start', user);
 			if(!user)
 			{
+				console.log('axiosInstance: baseURL', `${import.meta.env.VITE_API_SERVER_ADDRESS}`);
 
 				const fetchUserProfile = async () => {
 					try {

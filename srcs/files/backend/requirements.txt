@@ -8,5 +8,8 @@ pillow
 djangorestframework-simplejwt
 channels
 daphne
+twisted[tls,http2]
+pyopenssl
+whitenoise
 websockets
 django-channels-jwt

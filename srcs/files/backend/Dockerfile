@@ -15,7 +15,9 @@ RUN openssl x509 -req -days 365 -in AAAserver.csr -signkey ./etc/ssl/private/AAA
 
 # Copy and install the requirements.txt file into the working directory
 COPY requirements.txt .
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
+
 RUN echo "REQUIREMENTS INSTALLED SUCCESSFULLY =====>> "
 WORKDIR /app
 # Set the working directory to /backend
@@ -29,5 +31,5 @@ RUN echo "Apply database migrations"
 COPY ./core/launcher.sh .
 RUN chmod 777 ./launcher.sh
 RUN ls -la
-# Run the django app on port 8000 on every interface
+
 ENTRYPOINT [ "sh",  "./launcher.sh" ]

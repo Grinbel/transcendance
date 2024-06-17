@@ -11,5 +11,6 @@ echo "Database server is reachable. Starting Django..."
 
 # Apply the migrations
 #python3 manage.py migrate
-# python3 manage.py runserver 0.0.0.0:8000
-daphne -b localhost -e ssl:8443:privateKey=/etc/ssl/private/AAAserver.key:certKey=/etc/ssl/certs/AAAserver.crt project.asgi:application
+python manage.py collectstatic --noinput
+daphne -e ssl:8443:privateKey=/etc/ssl/private/AAAserver.key:certKey=/etc/ssl/certs/AAAserver.crt project.asgi:application
+# daphne -e ssl:443:privateKey=key.pem:certKey=crt.pem django_project.asgi:application
