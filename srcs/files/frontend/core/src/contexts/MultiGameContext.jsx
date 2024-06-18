@@ -36,8 +36,8 @@ export const MultiGameProvider = ({ children }) => {
         ball_pause : 0,
         ball_acc : 1.3,
         ball_bounces : 0,
-        score_to_get : 15, //Score a obtenir pour gagner
-        score_diff : 3, //ecart minimal pour gagner
+        score_to_get : 30, //Score a obtenir pour gagner
+        score_diff : 5, //ecart minimal pour gagner
         score_max : 100000000, // score a atteindre pour gagner sans ecart
             //! OPTIONS DE BUFFS / DEBUFFS
     

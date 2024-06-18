@@ -716,7 +716,8 @@ function getCurrentLocation () {
                     //document.body.removeChild(dialogContainer);
                     renderer.dispose();
                     resetOptions();
-                    return navigate('/')
+                    //return navigate('/')
+                    return
                 }
             if(((options.score_p1 >= options.score_to_get || options.score_p2 >= options.score_to_get) && Math.abs(options.score_p1-options.score_p2) >= options.score_diff) || options.score_p1>options.score_max || options.score_p2>options.score_max)
                 {
