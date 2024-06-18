@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Lire le contenu du fichier /etc/hostname
-new_address=$(cat /etc/hostname)
+new_address_home=$(cat /etc/hostname)
 # new_address_home='localhost'
 
 # Assigner le contenu du fichier /etc/hostname à la variable VITE_API_SERVER_ADDRESS
