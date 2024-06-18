@@ -8,10 +8,16 @@ RUN sh -c "python3 -m venv /venv && . /venv/bin/activate"
 RUN apt-get update && apt-get install -y netcat openssl
 RUN    pip install --upgrade pip
 
-RUN echo "OPENSSL CERTIFS =====>> "
-RUN openssl genrsa -out  ./etc/ssl/private/AAAserver.key 2048
-RUN openssl req -new -key ./etc/ssl/private/AAAserver.key -out AAAserver.csr -subj '/CN=transcendance'
-RUN openssl x509 -req -days 365 -in AAAserver.csr -signkey ./etc/ssl/private/AAAserver.key -out ./etc/ssl/certs/AAAserver.crt
+
+# to generate the SSL certificates:
+# openssl genrsa -out ./files/ssl/private/server.key 2048
+# openssl req -new -key ./files/ssl/private/server.key -out ./files/ssl/private/server.csr -subj "/CN=transcendance"
+# openssl x509 -req -days 365 -in ./files/ssl/private/server.csr -signkey ./files/ssl/private/server.key -out ./files/ssl/certs/server.crt
+
+# Use the shared SSL certificates
+RUN mkdir -p /etc/ssl/private /etc/ssl/certs
+COPY ../ssl/private/server.key /etc/ssl/private/server.key
+COPY ../ssl/certs/server.crt /etc/ssl/certs/server.crt
 
 # Copy and install the requirements.txt file into the working directory
 COPY requirements.txt .

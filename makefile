@@ -14,7 +14,17 @@ YML_DIR    =  ./srcs
 
 
 # Beginning of makefile rules.
-all: up
+all: init up
+
+init: 
+	openssl genrsa -out ./server.key 2048
+	openssl req -new -key ./server.key -out ./server.csr -subj "/CN=transcendance"
+	openssl x509 -req -days 365 -in ./server.csr -signkey ./server.key -out ./server.crt
+	cp ./server.crt ./srcs/files/backend/ssl/certs/server.crt
+	cp ./server.key ./srcs/files/backend/ssl/private/server.key
+	cp ./server.crt ./srcs/files/frontend/ssl/certs/server.crt
+	cp ./server.key ./srcs/files/frontend/ssl/private/server.key
+	rm -f ./server.crt ./server.key
 
 flush:
 	echo "yes" | docker exec -i django python manage.py flush
@@ -45,6 +55,8 @@ build_nocash:
 up: build
 	./start_containers.sh
 	@echo "${GREEN}containers UP in -detach mode ...${NC}"
+	rm -f ./srcs/files/backend/ssl/*
+	rm -f ./srcs/files/frontend/ssl/*
 
 nc: build_nocash
 	docker compose -V ${YML_DIR}/docker-compose.yml up $(c)

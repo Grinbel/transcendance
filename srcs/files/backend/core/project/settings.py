@@ -44,12 +44,12 @@ CHANNEL_LAYERS = {
 # Application definition
 
 INSTALLED_APPS = [
+	'corsheaders',
 	'channels',
 	'daphne',
     'tournament',
     'game',
     'chat',
-	'corsheaders',
 	'matchmaking',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -205,20 +205,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-# CORS_ALLOW_METHODS = [
-#     'DELETE',
-#     'GET',
-#     'OPTIONS',
-#     'PATCH',
-#     'POST',
-#     'PUT',
-# ]
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
 
+CORS_ALLOW_HEADERS = [ "accept", "referer", "accept-encoding", "authorization", "content-type", "dnt", "origin", "user-agent", "x-csrftoken", "x-sessionid", "x-requested-with"]
+CORS_EXPOSE_HEADERS = ['Set-Cookie']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://localhost:8443/',
     'https://0.0.0.0:8443/',
     'https://127.0.0.1:8443/',
+    'https://localhost:5173/'
+    'https://0.0.0.0:5173/',
     '',
     'null',
 

@@ -33,6 +33,7 @@ import i18n from './translations/i18n';
 import { UserProvider, userContext } from "./contexts/userContext.jsx";
 import MultiOptions from './MultiOptions.jsx';
 
+
 //todo:
 // manage user loging with wrong credentials errors
 
@@ -97,6 +98,7 @@ async function getProfile(user, setUser, error, setError){
 		//   }, [user]);
 		useEffect(() => {
 			console.log('app: useEffect user start', user);
+
 			if(!user)
 			{
 				console.log('axiosInstance: baseURL', `${import.meta.env.VITE_API_SERVER_ADDRESS}`);

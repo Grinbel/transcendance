@@ -37,11 +37,11 @@ RUN npm install
 
 # Build the React application
 # RUN npm run build
-# Generate self-signed SSL certificates
+
+# Use the shared SSL certificates
 RUN mkdir -p /etc/ssl/private /etc/ssl/certs
-RUN openssl genrsa -out /etc/ssl/private/server.key 2048
-RUN openssl req -new -key /etc/ssl/private/server.key -out /etc/ssl/private/server.csr -subj "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=localhost"
-RUN openssl x509 -req -days 365 -in /etc/ssl/private/server.csr -signkey /etc/ssl/private/server.key -out /etc/ssl/certs/server.crt
+COPY ../ssl/private/server.key /etc/ssl/private/server.key
+# COPY ../ssl/certs/server.crt /etc/ssl/certs/server.crt
 
 # Set environment variables for HTTPS
 ENV HTTPS=true
