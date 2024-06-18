@@ -33,7 +33,7 @@ def choice(request):
 
 	user = User.objects.get(username=username)
 
-	tournament = Tournament.objects.all()
+
 	user.alias = alias
 	user.save()
 	playerCount = request.data.get('playerCount')
@@ -49,9 +49,10 @@ def choice(request):
 		if (tournament is not None):
 			players = tournament.players.all()
 			if (alias in [player.alias for player in players]):
-				return Response({'Error':'aliasiii'})
+				return Response({'Error':'alias'})
 		user.alias = alias
 		user.save()
+
 		return Response({'room_name': name})
 	elif (join is False):
 
@@ -141,15 +142,18 @@ class Matchmaking(WebsocketConsumer):
 			self.room_name,
 			self.channel_name
 		)
+		tournament = Tournament.objects.filter(name=self.room_name).first()
+		if (not tournament):
+			return
 		tournament = Tournament.objects.get(name=self.room_name)
 		# return
 		usernames = tournament.getAllUsername()
 		if (tournament.players.count() <= 1):
+			tournament.players.clear()
 			tournament.delete()
 		else:
 			tournament.removeUser(self.scope['user'])
-			for username in usernames:
-				tournament.removeUser(User.objects.get(username=username))
+			tournament.save()
 
 			async_to_sync(self.channel_layer.group_send)(
 				self.tournament_name,
@@ -169,6 +173,8 @@ class Matchmaking(WebsocketConsumer):
 		user = User.objects.get(username=username)
 		tournament = Tournament.objects.get(name=name)
 		tournament.addUser(user)
+		tournament.save()
+		players = tournament.players.all()
 
 		async_to_sync(self.channel_layer.group_send)(
 			self.tournament_name,

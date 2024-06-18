@@ -5,6 +5,7 @@ import { Text } from 'troika-three-text';
 import { useGameContext } from './contexts/GameContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import  { axiosInstance } from "./axiosAPI.js";
 
 
 
@@ -43,7 +44,6 @@ function getCurrentLocation () {
 	}
 
     const nextgameplayer = async (name,p1,p2) => {
-		
 		try {
 			const response = await axiosInstance.post('/nextgameplayer/', {
 				p1: p1,

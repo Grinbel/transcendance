@@ -21,6 +21,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import MyTokenObtainPairSerializer
 from .serializers import UserSerializer
 from .permissions import UserPermission
+from tournament.models import Tournament
 from .models import User
 from rest_framework_simplejwt.tokens import UntypedToken
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
@@ -333,6 +334,10 @@ class Logout(APIView):
 			user_id = token['user_id']  # Get the user ID from the token
 			user = User.objects.get(id=user_id)  # Get the user from the user ID
 			user.status = 'away'
+			#remove user from tournament
+			if (Tournament.objects.filter(players=user).exists()):
+				tournament = Tournament.objects.get(players=user)
+				tournament.removeUser(user)
 			user.save()
 			return Response(status=status.HTTP_205_RESET_CONTENT)
 		except Exception as e:
