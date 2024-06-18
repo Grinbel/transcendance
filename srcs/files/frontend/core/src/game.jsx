@@ -360,6 +360,7 @@ function getCurrentLocation () {
                 options.ball_pause--;
                 return;
             }
+            updateTrail();
             if (options.time_before_powerup >= 0 && options.powerups === 1)
                 options.time_before_powerup--;
             if (options.time_before_powerup < 0 && !options.power_up_on_screen && !options.ball_is_powerup){
@@ -370,7 +371,6 @@ function getCurrentLocation () {
                 options.power_up_on_screen = 1;
                 
             }
-            console.log("PUTAIN DE Y SPEED : " + options.ball_y_speed + " ET X SPEED : " + options.ball_x_speed)
 
             options.ball_x += options.ball_x_speed;
             options.ball_y += options.ball_y_speed;
@@ -400,11 +400,9 @@ function getCurrentLocation () {
                     p2_weapon_mesh.material.color.setHex(0x0000ff);
                     options.time_before_powerup = Math.random() * (options.max_time_before_powerup - options.min_time_before_powerup) + options.min_time_before_powerup;
                 }
-            //calculate ball angle
                 let angle = Math.atan2(options.ball_y_speed, options.ball_x_speed);
                 let impact = p2_weapon_mesh.position.y - options.ball_y;
                 let incidence = Math.PI / 2 * impact / (options.player_size / 2);
-                console.log("P2 incidence " + incidence + " angle " + angle)
                 angle = Math.PI + (incidence -angle)/2
                 options.ball_speed *= options.ball_acc;
                 options.ball_x_speed = options.ball_speed * Math.cos(angle);
@@ -433,15 +431,9 @@ function getCurrentLocation () {
                 let angle = Math.atan2(options.ball_y_speed, options.ball_x_speed);
                 let impact = p1_weapon_mesh.position.y - options.ball_y;
                 let incidence =  - Math.PI / 2 * impact / (options.player_size / 2);
-                console.log("P1 incidence " + incidence + " angle " + angle);
                 angle = normalize_angle(Math.PI -angle);
                 incidence = normalize_angle(incidence);
-                console.log("P1 incidence normalized " + incidence + " angle " + angle + "rebound angelle " + (Math.PI - angle) / 2);
-                //let reboundAngle = Math.PI  + (incidence - angle) /2
                 let reboundAngle = (angle+ incidence)/2
-                
-                console.log("angle de rebond" + reboundAngle)
-                //let reboundAngle = -Math.PI - (incidence - angle) / 2;
  
                 options.ball_speed *= options.ball_acc;
  
@@ -476,7 +468,6 @@ function getCurrentLocation () {
                     options.ia_direction = -1;
                 }
             }
-            //console.log(ia_ball_estimated_impact_y);
         }
 
         function server_estimate_ball_speeds(){
@@ -565,7 +556,6 @@ function getCurrentLocation () {
                     {
                         renderer.domElement.style.filter = 'none';
                         dialogContainer.style.zIndex = 999; 
-                        //dialogRenderer.domElement.style.zIndex = 999
                         options.ball_pause = 0;
                     }
                 else
@@ -673,6 +663,20 @@ function getCurrentLocation () {
                 server_estimate_ball_speeds()
                 server_player_move(received_direction);
 }
+const trailLength = 20; // Nombre de segments dans la traînée
+let trail = [];
+let trailGeometry = new THREE.BufferGeometry().setFromPoints(new Array(trailLength).fill(new THREE.Vector3()));
+let trailMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: false, opacity: 0.5 });
+let trailLine = new THREE.Line(trailGeometry, trailMaterial);
+scene.add(trailLine);
+
+function updateTrail() {
+    if (trail.length >= trailLength) {
+        trail.shift();
+    }
+    trail.push(ball_render.position.clone());
+    trailGeometry.setFromPoints(trail);
+}
 
     function create_text(to_show)
     {
@@ -733,9 +737,12 @@ function getCurrentLocation () {
             requestAnimationFrame(animate);
             if(!options.ball_pause)
                 {
-//            ball_render.rotation.z += (Math.abs(options.ball_y_speed) + Math.abs(options.ball_x_speed))* options.ball_rotation_z;
-    		ball_render.rotation.y += options.ball_x_speed * 2;
-    		ball_render.rotation.x += options.ball_y_speed //* 2;
+                    let speed = Math.sqrt(options.ball_x_speed ** 2 + options.ball_y_speed ** 2);
+                    let angle = Math.atan2(options.ball_y_speed, options.ball_x_speed);
+                
+                    ball_render.rotation.x -= options.ball_y_speed * 1;
+                    ball_render.rotation.y -= options.ball_x_speed * 1.5;
+                    ball_render.rotation.z -= angle *0.01 ;
                 }
     server_side_work(options.player1_direction);
             renderer.render(scene, camera);

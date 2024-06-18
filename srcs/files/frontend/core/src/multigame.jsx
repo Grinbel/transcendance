@@ -543,10 +543,15 @@ function MultiGame() {
 		
 		function handleKeyDown_2(event)
 		{
-
-			if(event.keyCode === 32)
-				{
+			if(event === 32)
 				options.ball_pause = 0
+		}
+		
+		
+		function animate() {
+			if (starting_location != getCurrentLocation()){
+				console.log("COCOU ")
+				options.ball_pause = -1
 				scene.clear();
 				for(let i = 0; i<options.nb_players; i++)
 				{
@@ -568,34 +573,6 @@ function MultiGame() {
 				renderer.domElement.style.filter = 'none';
 				renderer.dispose();
 				return navigate('/')
-				}
-		}
-		
-		
-		function animate() {
-			if (starting_location != getCurrentLocation()){
-				options.ball_pause = -1
-				scene.clear();
-				for(let i = 0; i<options.nb_players; i++)
-				{
-					scene.remove(players[i].mesh);
-					clear_components(players[i].mesh);
-					scene.remove(players_text[i]);
-					players_text[i].dispose();
-				}
-				clear_components(ball_render);
-				clear_components(ground);
-				window.removeEventListener('keydown', handleKeyDown, false);
-				window.removeEventListener('keyup', handleKeyUp, false);
-				window.removeEventListener('mousemove', handleMouseMove);
-				dialogRenderer.dispose();
-				if (dialogContainer.parentNode) {
-					dialogContainer.parentNode.removeChild(dialogContainer);
-				  }
-				//  document.body.removeChild(renderer.domElement);
-				renderer.domElement.style.filter = 'none';
-				renderer.dispose();
-				return
 			}
 			requestAnimationFrame(animate);
 		//	ball_render.rotation.z += (Math.abs(ball_y_speed) + Math.abs(ball_x_speed))* ball_rotation_z ;
@@ -611,7 +588,6 @@ function MultiGame() {
 
 
 		function endgame(){
-			if(options.ball_pause === -1){
 			renderer.domElement.style.filter = 'blur(5px)';
 			dialogContainer.style.zIndex = 1001;
 			dialogContainer.style.top = '35%';
@@ -628,9 +604,7 @@ function MultiGame() {
 				
 			}
 			message.innerHTML += t('restart_button')
-			options.ball_pause = -2;
-		}
-		
+
 			if(options.ball_pause === 0){
 				dialogRenderer.dispose();
 				if (dialogContainer.parentNode) {
@@ -638,10 +612,10 @@ function MultiGame() {
 				  }
 				renderer.domElement.style.filter = 'none';
 				renderer.dispose();
-				window.removeEventListener('keydown', handleKeyDown_2, false);
-				  return
+				window.removeEventListener('keydown', handleKeyDown, false);
+				  navigate('/')
 			}
-			requestAnimationFrame(endgame);		
+				
 			
 		}
 		
