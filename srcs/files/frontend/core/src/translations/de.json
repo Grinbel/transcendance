@@ -121,7 +121,7 @@
       "start_button" : "Zum Starten drücken Sie die Leertaste. <br>",
       "resume_button" : "Um das Spiel fortzusetzen, drücken Sie die Leertaste.",
       "end_game_multi" : "Das Spiel ist vorbei",
-      "winner_multi" : "GEWINNT",
+      "winner_multi" : "DER GEWINNER IST: ",
       "restart_button" : "Drücken Sie die LEERTASTE, um zum Hauptmenü zurückzukehren"
 
 }

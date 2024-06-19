@@ -121,6 +121,6 @@
       "start_button" : "To start, press space. <br>",
       "resume_button" : "To resume the match, press space.",
       "end_game_multi" : "The game is over",
-      "winner_multi" : "WINS",
+      "winner_multi" : "THE WINNER IS: ",
       "restart_button" : "Press the SPACE key to return to the main menu"
 }
