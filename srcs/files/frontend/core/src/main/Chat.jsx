@@ -37,9 +37,9 @@ function Chat() {
 	let location = useLocation();
 
 
-	useEffect(() => {
-		  messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-	  }, [messages]);
+	// useEffect(() => {
+	// 	  messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+	//   }, [messages]);
 
 	function getWebSocket(roomName) {
 		
@@ -298,7 +298,7 @@ function Chat() {
 			<button className="hide-chat" onClick={() => setHideChat(!hideChat)}>{hideChat ? 'Show Chat' : 'Hide Chat'}</button>
 			<div id="chatWindow" className={`chat-window ${hideChat ? 'hidden' : ''}`}>
 				<div id="chatHeader" className="chat-header">
-					<div id="chatTitle" className="chat-title">{t('Chat')}</div>
+					<div id="chatTitle" className="chat-title">{t(hideChat ? '' : 'Chat')}</div>
 				</div>
 				{!hideChat && (
 				<div id="chatBody" className="chat-body">

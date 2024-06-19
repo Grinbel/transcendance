@@ -28,12 +28,12 @@ const Home = () => {
 	const { t } = useTranslation();
 
 	
-	useEffect(() => {
-		console.log('Home: userinfo', userinfo);
-		if (!userinfo.user) {
-			navigate('/login');
-		}
-	}, [userinfo]);
+	// useEffect(() => {
+	// 	console.log('Home: userinfo', userinfo);
+	// 	if (!userinfo.user) {
+	// 		navigate('/login');
+	// 	}
+	// }, [userinfo]);
 	const handleVsVacheClick = () => {
 		setOptions(prevOptions => ({
 			...prevOptions, // Gardez les options précédentes
