@@ -49,7 +49,6 @@ const Home = () => {
 			setOptions(prevOptions => ({
 				...prevOptions,
 				name_p1: userinfo.user.username,
-				powerups : 1,
 				stage_height : 10,
 				stage_width : 15,
 				ia_time_between_checks : 60,

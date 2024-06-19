@@ -150,8 +150,8 @@ function getCurrentLocation () {
         document.body.appendChild(renderer.domElement);
         //document.body.insertBefore(renderer.domElement, document.body.firstChild);
         const ball_form = new THREE.SphereGeometry(options.ball_radius, 32, 32);
-        const p1_weapon = new THREE.BoxGeometry(options.player_width, options.player_size, options.player_height);
-        const p2_weapon = new THREE.BoxGeometry(options.player_width, options.player_size, options.player_height);
+        const p1_weapon = new THREE.BoxGeometry(options.player_width, options.player_height, options.player_size);
+        const p2_weapon = new THREE.BoxGeometry(options.player_width, options.player_height, options.player_size);
         const p1_material = new THREE.MeshBasicMaterial({ map: texturep1 });
         const p2_material = new THREE.MeshBasicMaterial({ map: texturep2 });
         const ball_material = new THREE.MeshBasicMaterial({ map: texture });
@@ -160,7 +160,9 @@ function getCurrentLocation () {
         //const ball_material = new THREE.MeshBasicMaterial({ color : 0xFF5020 });
         const ball_render = new THREE.Mesh(ball_form, ball_material);
         const p1_weapon_mesh = new THREE.Mesh(p1_weapon, p1_material);
+        p1_weapon_mesh.rotation.x = Math.PI/2
         const p2_weapon_mesh = new THREE.Mesh(p2_weapon, p2_material);
+        p2_weapon_mesh.rotation.x = Math.PI/2
         //! ajout Balle et joueurs
         scene.add(p1_weapon_mesh);
         scene.add(p2_weapon_mesh);
@@ -176,12 +178,6 @@ function getCurrentLocation () {
 //!        ia_spotlight.target = ball_render;
         //const light = new THREE.AmbientLight(0xffcccc, 1);
         //scene.add(light);
-        const powerup_form = new THREE.SphereGeometry(options.ball_radius, 32, 32);
-        //const powerup_material1 = new THREE.MeshBasicMaterial({ map: powerup_texture1 });
-        const powerup_material1 = new THREE.MeshBasicMaterial({ color : 0xffffff , transparent: true, opacity: 0.5});
-        //const powerup_material2 = new THREE.MeshBasicMaterial({ map: powerup_texture2 });
-        const powerup_render1 = new THREE.Mesh(powerup_form, powerup_material1);
-    //    const powerup_render2 = new THREE.Mesh(powerup_form, powerup_material2);
 
         p1_weapon_mesh.position.x = -options.stage_width / 2 + options.distance_from_wall ;
         p2_weapon_mesh.position.x = options.stage_width / 2 - options.distance_from_wall;
@@ -241,7 +237,6 @@ function getCurrentLocation () {
                     clear_components(ia_eye);
 //*                    clear_components(ia_spotlight);
                     clear_components(target_mesh);
-                    clear_components(powerup_render1);
                     clear_components(first_wall);
                     clear_components(second_wall);
                     clear_components(ground);
@@ -293,8 +288,8 @@ function getCurrentLocation () {
         
         }
         function server_ball_reset() {
-            options.time_before_powerup = Math.random() * (options.max_time_before_powerup -options.min_time_before_powerup) + options.min_time_before_powerup;
             options.ball_x = 0;
+            resetTrail()
             text_p1.text = options.name_p1 + " : " + options.score_p1;
             text_p2.text = options.name_p2 + " : " + options.score_p2;
             if (options.score_p1 > options.score_p2)
@@ -315,23 +310,15 @@ function getCurrentLocation () {
             text_p2.sync();
             p2_weapon_mesh.material.color.setHex(0xffffff);
             p1_weapon_mesh.material.color.setHex(0xffffff);
-            options.ball_is_powerup = 0;
-            options.power_up_on_screen = 0;
-            options.p1_is_frozen = 0;
-            options.p2_is_frozen = 0;
             ball_render.material.color.setHex(0xFFFFFF);
             options.ball_y = Math.random() * (options.stage_height - options.ball_radius*2) - options.stage_height / 2 + options.ball_radius;
             options.ball_speed = options.ball_starting_speed;
-            scene.remove(powerup_render1);
             let ball_angle = Math.random() * (Math.PI / 4);
             if (ball_angle < Math.PI / 8)
                 ball_angle = Math.PI / 8;
             if (ball_angle > 6 * Math.PI / 8)
                 ball_angle = 6 * Math.PI / 8;
             ball_angle += (Math.PI / 2) * Math.floor(Math.random() * 4);
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            ball_angle = Math.PI *7/8;
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             options.ball_x_speed = options.ball_speed * Math.cos(ball_angle);
             options.ball_y_speed = options.ball_speed * Math.sin(ball_angle);
             if(options.ball_x_speed > 0)
@@ -362,29 +349,9 @@ function getCurrentLocation () {
                 return;
             }
             updateTrail();
-            if (options.time_before_powerup >= 0 && options.powerups === 1)
-                options.time_before_powerup--;
-            if (options.time_before_powerup < 0 && !options.power_up_on_screen && !options.ball_is_powerup){
-                powerup_render1.position.x = Math.random() * (options.stage_width - options.ball_radius*2) - options.stage_width / 2 + options.ball_radius;
-                powerup_render1.position.y = Math.random() * (options.stage_height - options.ball_radius*2) - options.stage_height / 2 + options.ball_radius;
-                powerup_render1.position.z = options.ball_radius;
-                scene.add(powerup_render1);
-                options.power_up_on_screen = 1;
-                
-            }
 
             options.ball_x += options.ball_x_speed;
             options.ball_y += options.ball_y_speed;
-            if(options.power_up_on_screen){
-                if (options.ball_x > powerup_render1.position.x - options.ball_radius && options.ball_x < powerup_render1.position.x + options.ball_radius && options.ball_y > powerup_render1.position.y - options.ball_radius && options.ball_y < powerup_render1.position.y + options.ball_radius){
-                    scene.remove(powerup_render1);
-                    options.power_up_on_screen = 0;
-                    options.ball_is_powerup = 1;
-                    ball_render.material.color.setHex(0x2050ff);
-                    
-                }
-            
-            }
 
             if (options.ball_x > options.stage_width /2 -options.distance_from_wall - options.player_width ) {
                 if (options.ball_y > p2_weapon_mesh.position.y + options.player_size / 2 || options.ball_y < p2_weapon_mesh.position.y - options.player_size / 2) {
@@ -393,14 +360,6 @@ function getCurrentLocation () {
                     return;
                 }
                 ball_render.material = ball_material_2
-                if (options.ball_is_powerup)
-                {
-                    options.ball_is_powerup = 0;
-                    ball_render.material.color.setHex(0xFFFFFF);
-                    options.p2_is_frozen = options.frost_time;
-                    p2_weapon_mesh.material.color.setHex(0x0000ff);
-                    options.time_before_powerup = Math.random() * (options.max_time_before_powerup - options.min_time_before_powerup) + options.min_time_before_powerup;
-                }
                 let angle = Math.atan2(options.ball_y_speed, options.ball_x_speed);
                 let impact = p2_weapon_mesh.position.y - options.ball_y;
                 let incidence = Math.PI / 2 * impact / (options.player_size / 2);
@@ -409,10 +368,7 @@ function getCurrentLocation () {
                 options.ball_x_speed = options.ball_speed * Math.cos(angle);
                 options.ball_y_speed = options.ball_speed * Math.sin(angle);
                 options.ball_rotation_z *= -1;
-                if (options.p2_is_frozen)
-                    {options.p2_is_frozen --;
-                    if(options.p2_is_frozen == 0)
-                        p2_weapon_mesh.material.color.setHex(0xffffff);}
+
             }
             if (options.ball_x < -options.stage_width /2 +options.distance_from_wall + options.player_width) {
                 if (options.ball_y > p1_weapon_mesh.position.y + options.player_size / 2 || options.ball_y < p1_weapon_mesh.position.y - options.player_size / 2) {
@@ -421,14 +377,7 @@ function getCurrentLocation () {
                     return;
                 }
                 ball_render.material = ball_material_1
-                if (options.ball_is_powerup)
-                {
-                    options.ball_is_powerup = 0;
-                    ball_render.material.color.setHex(0xFFFFFF);
-                    options.p1_is_frozen = options.frost_time;
-                    p1_weapon_mesh.material.color.setHex(0x0000ff);
-                    options.time_before_powerup = Math.random() * (options.max_time_before_powerup - options.min_time_before_powerup) + options.min_time_before_powerup;
-                }
+
                 let angle = Math.atan2(options.ball_y_speed, options.ball_x_speed);
                 let impact = p1_weapon_mesh.position.y - options.ball_y;
                 let incidence =  - Math.PI / 2 * impact / (options.player_size / 2);
@@ -441,10 +390,6 @@ function getCurrentLocation () {
                 options.ball_x_speed = options.ball_speed * Math.cos(reboundAngle);
                 options.ball_y_speed = options.ball_speed * Math.sin(reboundAngle);
                 options.ball_rotation_z *=-1;
-                if (options.p1_is_frozen)
-                {options.p1_is_frozen --;
-                    if(options.p1_is_frozen == 0)
-                        p1_weapon_mesh.material.color.setHex(0xffffff);}
             }
             if (options.ball_y > options.stage_height/2 - options.ball_radius || options.ball_y < -options.stage_height/2 + options.ball_radius) {
                 options.ball_y_speed = -options.ball_y_speed;
@@ -624,10 +569,6 @@ function getCurrentLocation () {
             if(options.ball_pause)
                 return;
             options.player1_direction = received_direction;
-            if (options.p1_is_frozen)
-                options.player1_direction = options.player1_direction/3*2;
-            if (options.p2_is_frozen)
-                options.player2_direction = options.player2_direction/3*2;
             p1_weapon_mesh.position.y += options.player_speed *options.player1_direction;
             p2_weapon_mesh.position.y -= options.player_speed *options.player2_direction;
             if (p1_weapon_mesh.position.y > options.stage_height / 2 - options.player_size / 2) {
@@ -664,49 +605,55 @@ function getCurrentLocation () {
                 server_estimate_ball_speeds()
                 server_player_move(received_direction);
 }
+const trailSpheres = [];
 const trailFactor = 20; // Facteur pour ajuster la longueur de la traînée en fonction du rayon de la balle
-let trail = [];
-let trailWidths = [];
-let trailMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true });
-let trailLine = new THREE.Line(new THREE.BufferGeometry(), trailMaterial);
-scene.add(trailLine);
+
+function createTrailSphere(position, rotation, texture) {
+    const geometry = new THREE.SphereGeometry(options.ball_radius, 32, 32);
+    const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 1.0 });
+    const sphere = new THREE.Mesh(geometry, material);
+    sphere.position.copy(position);
+    sphere.rotation.copy(rotation); // Copier la rotation de la balle
+    scene.add(sphere);
+    return sphere;
+}
 
 function updateTrail() {
     const trailLength = Math.floor(options.ball_radius * trailFactor);
 
-    if (trail.length >= trailLength) {
-        trail.shift();
-        trailWidths.shift();
+    if (trailSpheres.length >= trailLength) {
+        const oldestSphere = trailSpheres.shift();
+        scene.remove(oldestSphere);
+        if (oldestSphere.geometry) oldestSphere.geometry.dispose();
+        if (oldestSphere.material) oldestSphere.material.dispose();
     }
 
-    trail.push(ball_render.position.clone());
-    trailWidths.push(options.ball_radius);
+    const newSphere = createTrailSphere(ball_render.position, ball_render.rotation, ball_render.material.map);
+    trailSpheres.push(newSphere);
 
-    let positions = [];
-    let opacities = [];
-    let widths = [];
-
-    trail.forEach((point, index) => {
-        positions.push(point.x, point.y, point.z);
-        opacities.push(1 - (index / trail.length)); // Opacité décroissante
-        widths.push(options.ball_radius * (1 - (index / trail.length))); // Largeur décroissante
+    trailSpheres.forEach((sphere, index) => {
+        const factor = (index + 1) / trailSpheres.length;
+        sphere.scale.setScalar(factor);
+        sphere.material.opacity = factor;
     });
-
-    let trailGeometry = new THREE.BufferGeometry();
-    trailGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    trailGeometry.setAttribute('opacity', new THREE.Float32BufferAttribute(opacities, 1));
-    trailGeometry.setAttribute('width', new THREE.Float32BufferAttribute(widths, 1));
-
-    trailMaterial.vertexColors = true;
-    trailLine.geometry = trailGeometry;
-    trailLine.material = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1.0 });
 }
+
 
 function resetTrail() {
-    trail = [];
-    trailWidths = [];
-    trailLine.geometry = new THREE.BufferGeometry();
+    while (trailSpheres.length > 0) {
+        const sphere = trailSpheres.pop();
+        scene.remove(sphere);
+    }
 }
+function disposeTrail() {
+    while (trailSpheres.length > 0) {
+        const sphere = trailSpheres.pop();
+        scene.remove(sphere);
+        if (sphere.geometry) sphere.geometry.dispose();
+        if (sphere.material) sphere.material.dispose();
+    }
+}
+
 
 
     function create_text(to_show)
@@ -751,6 +698,7 @@ function resetTrail() {
                     //document.body.removeChild(dialogContainer);
                     renderer.dispose();
                     resetOptions();
+                    disposeTrail()
                     //return navigate('/')
                     return
                 }
@@ -762,7 +710,7 @@ function resetTrail() {
                     options.winner = create_text(t('winner') + options.winner );
                     scene.add(options.winner);
                     options.winner.position.x = -3
-
+                    disposeTrail()
                     return(end_of_game(120));
                 }
             requestAnimationFrame(animate);
@@ -807,7 +755,6 @@ function resetTrail() {
                             if (options.usernames.length === 7 || options.usernames.length === 15 || options.usernames.length === 3)
                                 {
                                     console.log("FIN DU TOURNOI")
-                                    scene.remove(options.winner)
                                     //options.winner = create_text( options.score_p1>options.score_p2?options.name_p1:options.name_p2 + " REMPORTE LE TOURNOI");
                                     //setShouldRunEffect(false);
                                     for (let i = 0; i < options.usernames.length; i=i+2)

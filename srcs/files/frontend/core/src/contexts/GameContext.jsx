@@ -61,7 +61,7 @@ export const GameProvider = ({ children }) => {
 
 //! OPTIONS DE GAMEPLAY
         easy_mode : 0,
-        ball_starting_speed : 0.02,
+        ball_starting_speed : 0.05,
         ball_speed : '',
         ball_x : 0,
         ball_y : 0,
@@ -74,14 +74,8 @@ export const GameProvider = ({ children }) => {
         score_diff : 3, //ecart minimal pour gagner
         score_max : 25, // score a atteindre pour gagner sans ecart
             //! OPTIONS DE BUFFS / DEBUFFS
-        p1_is_frozen : 0,
-        p2_is_frozen : 0,
         frost_time : 2,
-        min_time_before_powerup : 10,
-        max_time_before_powerup : 50,
-        ball_is_powerup : 0,
-        power_up_on_screen : 0,
-        powerups : 1,
+
     
 
 
