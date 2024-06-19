@@ -8,7 +8,7 @@ import "./Home.css";
 import { Button } from "react-bootstrap";
 import { useTranslation } from 'react-i18next';
 function Image({changeAvatar }) {
-	const images = ['/badboy.png', '/princess.jpg', '/yoshi.jpg'];
+	const images = ['/badboy.png', '/princess.jpg', '/yoshi.jpg','/players.jpg', '/ponge.jpg', '/beaudibe.jpg',];
 	return (
 	  <div>
 		{images.map((image, index) => (
@@ -17,14 +17,13 @@ function Image({changeAvatar }) {
 			src={image}
 			alt={`Avatar ${index}`}
 			onClick={() => changeAvatar(image)}
-			style={{ cursor: 'pointer' }} // Change le curseur en main lors du survol
-		  />
+			style={{ cursor: 'pointer', borderRadius: '100px', width: '100px', height:'100px' }} // Seule la largeur est définie ici
+/>
 		))}
 	  </div>
 	);
   }
 const Profile = () => {
-	const images = ['sauron.jpg', 'princess.jpg', 'yoshi.jpg'];
 	const { t } = useTranslation();
 	let { username } = useParams();
 	const userInfo = useContext(userContext);
@@ -119,6 +118,7 @@ const Profile = () => {
 		try {
 			const response = await axiosInstance.post('/changeavatar/', {
 				avatar: avatar,
+				username: userInfo.user.username,
 			});
 			userInfo.setUser({ ...userInfo.user, avatar: avatar });
 		} catch (error) {
