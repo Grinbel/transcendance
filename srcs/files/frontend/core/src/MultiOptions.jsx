@@ -106,7 +106,7 @@ const handleChange = (event) => {
 				<option value={JSON.stringify({texture_ball: "tennisball.jpg", texture_floor: "tennisfield.jpg",stage_radius: 7,ball_radius: 0.2})}>{t('tennis')}</option>
 			</select>
 		</p>
-      <Button variant="primary" onClick={handleStartGame}>Start Game</Button>
+      <Button variant="primary" onClick={handleStartGame}>{t('start game')}</Button>
     </div>
   );
 };
