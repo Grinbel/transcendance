@@ -90,7 +90,7 @@ class Tournament(models.Model):
 		return [players.alias for players in self.players.all()]
 	
 	@classmethod
-	def getNextTournament(self,alias):
+	def getNextTournament(self,alias,name):
 		tournaments = Tournament.objects.filter(status='pending')
 		buff = 8
 		name = ''
@@ -98,8 +98,9 @@ class Tournament(models.Model):
 			return Tournament.createRoomName()
 		for tournament in tournaments:
 			aliass = tournament.getAllAlias()
+			usernames = tournament.getAllUsername()
 			j = tournament.max_capacity - tournament.players.count()
-			if j < buff and not (aliass is not None and alias in aliass):
+			if j < buff and not (aliass is not None and alias in aliass and usernames is not None and name not in usernames):
 				buff = j
 				name = tournament.name
 		if name == '':

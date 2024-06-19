@@ -258,3 +258,12 @@ class ChatConsummer(WebsocketConsumer):
 			'p2':event['p2'],
 		}
 	))
+
+	def logoutWeb(self,event):
+		if (self.scope['user'].username != event['username']):
+			return
+		self.send(text_data=json.dumps({
+			'type': 'logout',
+			'message': 'logout!!!',
+			'username': event['username'],
+		}))

@@ -37,9 +37,9 @@ function Chat() {
 	let location = useLocation();
 
 
-	useEffect(() => {
-		  messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-	  }, [messages]);
+	// useEffect(() => {
+	// 	  messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+	//   }, [messages]);
 
 	function getWebSocket(roomName) {
 		
@@ -85,6 +85,15 @@ function Chat() {
 			else if (message.type === 'next_game_player'){
 				newmessage = {...message, message: `${message.p1} ${t('next_game1')} ${message.p2} ${t('next_game2')}`};
 				setMessages(prevMessages => [...prevMessages, newmessage]);
+			}
+			else if(message.type === 'logout'){
+				navigate('/login');
+				localStorage.removeItem('access_token');
+				localStorage.removeItem('refresh_token');
+				localStorage.removeItem('user');
+				axiosInstance.defaults.headers['Authorization'] = null;
+				userInfo.setUser();
+				console.log('NavLoggedIn: logout successful frontend');
 			}
 			else
 				setMessages(prevMessages => [...prevMessages, message]);
@@ -241,8 +250,11 @@ function Chat() {
 				isLocal: "",
 				username: userInfo.user.username,
 				alias: userInfo.user.username,
-
-				join:true  && room === "",
+				join:true ,
+				isEasy: "",
+				speed:"",
+				score:"",
+				skin:"",
 			});
 			// console.log('response', response.data);
 			// console.log('Room name', response.data.room_name);
@@ -298,7 +310,7 @@ function Chat() {
 			<button className="hide-chat" onClick={() => setHideChat(!hideChat)}>{hideChat ? 'Show Chat' : 'Hide Chat'}</button>
 			<div id="chatWindow" className={`chat-window ${hideChat ? 'hidden' : ''}`}>
 				<div id="chatHeader" className="chat-header">
-					<div id="chatTitle" className="chat-title">{t('Chat')}</div>
+					<div id="chatTitle" className="chat-title">{t(hideChat ? '' : 'Chat')}</div>
 				</div>
 				{!hideChat && (
 				<div id="chatBody" className="chat-body">
@@ -335,6 +347,7 @@ function Chat() {
 								{message.type === 'next_game_player' && <div className="private">
 									{message.message}
 								</div>}
+								
 							</div>
 						))}
 					</div>

@@ -40,11 +40,11 @@ def choice(request):
 	tournamentId = request.data.get('tournamentId')
 
 
-	if (Tournament.objects.filter(players=user).exists()):
-		return Response({'Error':'inside'})
+	# if (Tournament.objects.filter(players=user).exists()):
+	# 	return Response({'Error':'inside'})
 
 	if (join and tournamentId == ''):
-		name = Tournament.getNextTournament(alias=alias)
+		name = Tournament.getNextTournament(alias=alias,name=user.username)
 		tournament = Tournament.objects.filter(name=name).first()
 		if (tournament is not None):
 			players = tournament.players.all()
@@ -55,7 +55,6 @@ def choice(request):
 
 		return Response({'room_name': name})
 	elif (join is False):
-
 		name = Tournament.createRoomName()
 		tournament = Tournament.create(name=name,max_capacity=playerCount,ball_starting_speed=speed,score=score,easyMode=isEasy,skin=skin)
 		return Response({'room_name': name})
@@ -145,16 +144,12 @@ class Matchmaking(WebsocketConsumer):
 		tournament = Tournament.objects.filter(name=self.room_name).first()
 		if (not tournament):
 			return
-		tournament = Tournament.objects.get(name=self.room_name)
-		# return
-		usernames = tournament.getAllUsername()
-		if (tournament.players.count() <= 1):
+		tournament.removeUser(self.scope['user'])
+		tournament.save()
+		if (tournament.players.count() <= 0):
 			tournament.players.clear()
 			tournament.delete()
 		else:
-			tournament.removeUser(self.scope['user'])
-			tournament.save()
-
 			async_to_sync(self.channel_layer.group_send)(
 				self.tournament_name,
 				{
@@ -189,7 +184,6 @@ class Matchmaking(WebsocketConsumer):
 		)
 		if (tournament.max_capacity == tournament.players.count()):
 			timer = 3
-			# return
 			async_to_sync(self.channel_layer.group_send)(
 				self.tournament_name,
 				{
