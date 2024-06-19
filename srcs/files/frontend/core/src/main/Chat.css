@@ -1,5 +1,5 @@
 .chat-window {
-	position: fixed;
+	position: absolute;
     bottom: 2px;
     right: 2px;
     width: 50vh;
@@ -7,10 +7,26 @@
     border: 1px solid #000;
 	background-color: lightgray;
 	color:#000;
-    transition: width 0.3s ease-in-out;
+	transition: width 0.5 ease-in-out;
+	opacity: 1;
 	border-radius: 10px;
+	z-index: 0;
 }
-
+.hide-chat {
+	position: absolute;
+	top: 65vh; /* Ajustez cette valeur en fonction de la taille de votre bouton */
+	right: 6px;
+	border-radius: 9px;
+	background-color: #ce2b2b83;
+	height: 30px;
+	z-index: 1;
+}
+.hidden{
+	width: 0;
+	transition-property: width;
+	transition-duration: 0.5s;
+	transition-timing-function: ease-in-out;
+}
 
 .message {
 	padding: 5px;

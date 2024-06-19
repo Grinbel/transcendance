@@ -22,7 +22,15 @@ import i18n from '../translations/i18n.js';
 
 import { userContext } from "../contexts/userContext.jsx";
 
-
+function Language({ t, changeLanguage }) {
+	return (
+	  <NavDropdown title={t('language')} id="language-dropdown">
+		<NavDropdown.Item onClick={() => changeLanguage('en')}>{t('english')}</NavDropdown.Item>
+		<NavDropdown.Item onClick={() => changeLanguage('fr')}>{t('french')}</NavDropdown.Item>
+		<NavDropdown.Item onClick={() => changeLanguage('de')}>{t('allemand')}</NavDropdown.Item>
+	  </NavDropdown>
+	);
+  }
 
 // Composant pour la barre de navigation lorsqu'un utilisateur est connecté
 const NavLoggedIn = () => {
@@ -49,6 +57,7 @@ const NavLoggedIn = () => {
 		  roundedCircle
 		  style={{ width: '40px' }}
 		/>
+		
 	)
 
 	const handleLogout = async () => {
@@ -64,37 +73,36 @@ const NavLoggedIn = () => {
 				setError("Session expired. Please log in again.");
 			}
 		}
-	  // Logique de déconnexion (par exemple, suppression des jetons d'authentification, etc.)
-	  // Ici, nous simulons juste la déconnexion en modifiant l'état
-	  	localStorage.removeItem('access_token');
+		// Logique de déconnexion (par exemple, suppression des jetons d'authentification, etc.)
+		// Ici, nous simulons juste la déconnexion en modifiant l'état
+		localStorage.removeItem('access_token');
 		localStorage.removeItem('refresh_token');
 		localStorage.removeItem('user');
 		axiosInstance.defaults.headers['Authorization'] = null;
 		userinfo.setUser();
 		console.log('NavLoggedIn: logout successful frontend');
-		navigate('/');
+		navigate('/login');
 	};
 
+
+	
 	return (
 		<Navbar  collapseOnSelect expand="sm" className="bg-body-tertiary">
 		  <Container >
 
-			<Navbar.Brand onClick={() => navigate(`/`)} className='logoName'>
+			<Navbar.Brand onClick={() => navigate('/')} className='logoName'>
 				Pong
-			</Navbar.Brand>
+			</Navbar.Brand> 
 			
 			<Nav  className="ms-auto">
+				{userinfo.user.username}
 				<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={UserMenu}>
 					<NavDropdown.Item as={Link} to={`/profile/${userinfo.user.username}`}>{t('profile')}</NavDropdown.Item>
 					<Nav.Link className="navCustom playButton me-3" as={Link} to="/play">{t('play')}</Nav.Link>
 					<NavDropdown.Divider />
 					<NavDropdown.Item onClick={handleLogout}>{t('logout')}</NavDropdown.Item>
 				</NavDropdown>
-				<NavDropdown title={t('language')} id="language-dropdown">
-        			<NavDropdown.Item onClick={() => changeLanguage('en')}>{t('english')}</NavDropdown.Item>
-            		<NavDropdown.Item onClick={() => changeLanguage('fr')}>{t('french')}</NavDropdown.Item>
-            		<NavDropdown.Item onClick={() => changeLanguage('de')}>{t('allemand')}</NavDropdown.Item>
-          		</NavDropdown>
+				<Language t={t} changeLanguage={changeLanguage} />
 			</Nav>
 		  </Container>
 		</Navbar>
@@ -114,7 +122,6 @@ const NavLoggedIn = () => {
 
 	const navigate = useNavigate();
 	const userinfo = useContext(userContext);
-
 	  return (
 		<Navbar collapseOnSelect expand="lg" className="bg-body-tertiary navbarCustom">
 		  <Container>
@@ -126,11 +133,8 @@ const NavLoggedIn = () => {
 			  <Nav  className="ms-auto navbarCustom">
 				<Nav.Link className="navCustom me-3" as={Link} to="/signup">{t('sign_up')}</Nav.Link>
 				<Nav.Link className="navCustom me-3" as={Link} to="/login" >{t('login')}</Nav.Link>
-				<NavDropdown className="dropCustom" title={t('language')} id="nav-dropdown-dark">
-              		<NavDropdown.Item onClick={() => changeLanguage('en')}>{t('english')}</NavDropdown.Item>
-              		<NavDropdown.Item onClick={() => changeLanguage('fr')}>{t('french')}</NavDropdown.Item>
-              		<NavDropdown.Item onClick={() => changeLanguage('de')}>{t('allemand')}</NavDropdown.Item>
-            	</NavDropdown>
+				{/* add the funciton language */}
+				<Language t={t} changeLanguage={changeLanguage} />
 			  </Nav>
 			</Navbar.Collapse>
 		  </Container>

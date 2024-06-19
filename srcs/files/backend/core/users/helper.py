@@ -9,16 +9,16 @@ def authenticate(request=None, username=None, password=None, verify=None):
 	#	if request is not None:
 	# 	username = request.data.get('username')
 	# 	password = request.data.get('password')
-	print('username in authenticate custom function', username)
-	print('password in authenticate custom function', password)
+	#print('username in authenticate custom function', username)
+	#print('password in authenticate custom function', password)
 	try:
 		# Get the corresponding user.
 		user = User.objects.get(username=username)
-		print('user in authenticate custom function', user)
+		#print('user in authenticate custom function', user)
 		#  If password, matches just return the user. Otherwise, return None.
 		check_result = check_password(password, user.password)
 		if check_result:
-			print('check password ok in authenticate', password)
+			#print('check password ok in authenticate', password)
 			return user
 		return None
 	except User.DoesNotExist:

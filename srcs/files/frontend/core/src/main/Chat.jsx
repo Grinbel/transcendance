@@ -31,14 +31,15 @@ function Chat() {
 	const [roomName,setRoomName] = useState("general");
 	const [friend,setFriend] = useState("");
 	const [block,setBlock] = useState("");
+	const [hideChat, setHideChat] = useState(false);
 	const navigate = useNavigate();
 	const websockets = {};
 	let location = useLocation();
 
 
-	useEffect(() => {
-		  messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-	  }, [messages]);
+	// useEffect(() => {
+	// 	  messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+	//   }, [messages]);
 
 	function getWebSocket(roomName) {
 		
@@ -84,6 +85,15 @@ function Chat() {
 			else if (message.type === 'next_game_player'){
 				newmessage = {...message, message: `${message.p1} ${t('next_game1')} ${message.p2} ${t('next_game2')}`};
 				setMessages(prevMessages => [...prevMessages, newmessage]);
+			}
+			else if(message.type === 'logout'){
+				navigate('/login');
+				localStorage.removeItem('access_token');
+				localStorage.removeItem('refresh_token');
+				localStorage.removeItem('user');
+				axiosInstance.defaults.headers['Authorization'] = null;
+				userInfo.setUser();
+				console.log('NavLoggedIn: logout successful frontend');
 			}
 			else
 				setMessages(prevMessages => [...prevMessages, message]);
@@ -240,8 +250,11 @@ function Chat() {
 				isLocal: "",
 				username: userInfo.user.username,
 				alias: userInfo.user.username,
-
-				join:true  && room === "",
+				join:true ,
+				isEasy: "",
+				speed:"",
+				score:"",
+				skin:"",
 			});
 			// console.log('response', response.data);
 			// console.log('Room name', response.data.room_name);
@@ -292,73 +305,77 @@ function Chat() {
 		return (<div></div>);
 	}
 
-
 	return (
-		<div id="chatWindow" className="chat-window">
-			<div id="chatHeader" className="chat-header">
-				<div id="chatTitle" className="chat-title">{t('Chat')}</div>
-			</div>
-			<div id="chatBody" className="chat-body">
-				
-				<div id="chatContent" className="chat-content">
-					{messages.filter((message, index) => index > 0 ).map((message, index) => (
-						<div key={index} className="chat-message" ref={messagesEndRef}>
-							{ message.username !== undefined &&<Nav className="ms-auto">
-								<NavDropdown className='chatdrop' id="chat-dropdown" title={message.username} onClick={() => info(message.username)}>
-									<NavDropdown.Item onClick={() => navigate(`/profile/${message.username}`)}>{t('profile')}</NavDropdown.Item>
-									{friend != undefined &&  <NavDropdown.Divider />}
-									{/* <NavDropdown.Item onClick={() => setFormData({message: `/whisper ${message.username}`,type : 'private'})}>Whisper</NavDropdown.Item> */}
-									{friend != undefined && friend === false && <NavDropdown.Item onClick={() => action(message.username,"addfriend")}>{t('addfriend')}</NavDropdown.Item>}
-									{friend != undefined && friend === true && <NavDropdown.Item onClick={() => action(message.username,"unfriend")}>{t('unfriend')}</NavDropdown.Item>}
-									{block != undefined && block === false && <NavDropdown.Item onClick={() => action(message.username,"block")}>{t('block')}</NavDropdown.Item>}
-									{block != undefined && block === true && <NavDropdown.Item onClick={() => action(message.username,"unblock")}>{t('unblock')}</NavDropdown.Item>}
-									{userInfo.user.tournament != ""&&message.username != userInfo.user.username && <NavDropdown.Item onClick={() => sendInvite(message.username)}>Invite</NavDropdown.Item>}
-									{privateChat(message.username)}
-								</NavDropdown>
-							</Nav>}
-							
-							{message.type === 'chat' && <div className="message">
-								{message.message} <span className="message-time">{message.date}</span>
-							</div>}
-							{message.type === 'private_message' && <div className="private">
-								{message.message} <span className="message-time">{message.date}</span>
-							</div>}
-							{message.type === 'send_invite' && <div className="invite">
-								{message.message}
-								<a href="#" className="link" onClick={(e) => {e.preventDefault(); goToTournament(message.room);}}>
-									{t('join')}
-								</a>
-							</div>}
-							{message.type === 'next_game_player' && <div className="private">
-								{message.message}
-							</div>}
-						</div>
-					))}
+		<div>
+			<button className="hide-chat" onClick={() => setHideChat(!hideChat)}>{hideChat ? 'Show Chat' : 'Hide Chat'}</button>
+			<div id="chatWindow" className={`chat-window ${hideChat ? 'hidden' : ''}`}>
+				<div id="chatHeader" className="chat-header">
+					<div id="chatTitle" className="chat-title">{t(hideChat ? '' : 'Chat')}</div>
 				</div>
-				<div className="displayer-errors">
-					{displayer}
-				</div>
-				
-				<div className="chat-chat">
-					<input
-						type="text"
-						id="chatInputField"
-						className="chat-input-field"
-						placeholder={`${t('send')}`}
-						value={formData.message}
-						onChange={(e) =>setFormData({ message: e.target.value })}
-						onKeyDown={handleKeyPress}
-						maxLength={90}
-					/>
-				</div>
-				{/* <div className="room_chat">
-					<input type="text"
-						id="roomName"
-						className="room-name"
-						value={roomName}
-						onChange={(e) => setRoomName(e.target.value)}
-					/>
-				</div> */}
+				{!hideChat && (
+				<div id="chatBody" className="chat-body">
+					
+					<div id="chatContent" className="chat-content">
+						{messages.filter((message, index) => index > 0 ).map((message, index) => (
+							<div key={index} className="chat-message" ref={messagesEndRef}>
+								{ message.username !== undefined &&<Nav className="ms-auto">
+									<NavDropdown className='chatdrop' id="chat-dropdown" title={message.username} onClick={() => info(message.username)}>
+										<NavDropdown.Item onClick={() => navigate(`/profile/${message.username}`)}>{t('profile')}</NavDropdown.Item>
+										{friend != undefined &&  <NavDropdown.Divider />}
+										{/* <NavDropdown.Item onClick={() => setFormData({message: `/whisper ${message.username}`,type : 'private'})}>Whisper</NavDropdown.Item> */}
+										{friend != undefined && friend === false && <NavDropdown.Item onClick={() => action(message.username,"addfriend")}>{t('addfriend')}</NavDropdown.Item>}
+										{friend != undefined && friend === true && <NavDropdown.Item onClick={() => action(message.username,"unfriend")}>{t('unfriend')}</NavDropdown.Item>}
+										{block != undefined && block === false && <NavDropdown.Item onClick={() => action(message.username,"block")}>{t('block')}</NavDropdown.Item>}
+										{block != undefined && block === true && <NavDropdown.Item onClick={() => action(message.username,"unblock")}>{t('unblock')}</NavDropdown.Item>}
+										{userInfo.user.tournament != ""&&message.username != userInfo.user.username && <NavDropdown.Item onClick={() => sendInvite(message.username)}>Invite</NavDropdown.Item>}
+										{privateChat(message.username)}
+									</NavDropdown>
+								</Nav>}
+								
+								{message.type === 'chat' && <div className="message">
+									{message.message} <span className="message-time">{message.date}</span>
+								</div>}
+								{message.type === 'private_message' && <div className="private">
+									{message.message} <span className="message-time">{message.date}</span>
+								</div>}
+								{message.type === 'send_invite' && <div className="invite">
+									{message.message}
+									<a href="#" className="link" onClick={(e) => {e.preventDefault(); goToTournament(message.room);}}>
+										{t('join')}
+									</a>
+								</div>}
+								{message.type === 'next_game_player' && <div className="private">
+									{message.message}
+								</div>}
+								
+							</div>
+						))}
+					</div>
+					<div className="displayer-errors">
+						{displayer}
+					</div>
+					
+					<div className="chat-chat">
+						<input
+							type="text"
+							id="chatInputField"
+							className="chat-input-field"
+							placeholder={`${t('send')}`}
+							value={formData.message}
+							onChange={(e) =>setFormData({ message: e.target.value })}
+							onKeyDown={handleKeyPress}
+							maxLength={90}
+						/>
+					</div>
+					{/* <div className="room_chat">
+						<input type="text"
+							id="roomName"
+							className="room-name"
+							value={roomName}
+							onChange={(e) => setRoomName(e.target.value)}
+						/>
+					</div> */}
+				</div>)}
 			</div>
 		</div>
 	  );

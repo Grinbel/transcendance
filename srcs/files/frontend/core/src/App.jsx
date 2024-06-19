@@ -121,12 +121,22 @@ async function getProfile(user, setUser, error, setError){
 			console.log("USER!!!!!!!!!",user.language);
 		}
 	}, [user]);
-		
+	useEffect(() => {
+		// Désactiver le défilement lors du montage du composant
+		document.body.style.overflow = 'hidden';
+		window.scrollTo(0, 0);
+	
+		return () => {
+		  // Réactiver le défilement lors du démontage du composant
+		  document.body.style.overflow = 'unset';
+		};
+	  }, []);
 
 	return (
 		<userContext.Provider value={{user, setUser}}>
 			<div className="app">
 				<MyNavbar/>
+				<Chat />
 					<Routes>
 						<Route path="/dashboard" element={<Dashboard />}>
 							<Route index element={<Settings />} />
@@ -146,7 +156,6 @@ async function getProfile(user, setUser, error, setError){
 						<Route path="/*" element={<Error404 />} />
 					</Routes>
 				{/* {showLoginForm && <Login />} */}
-				<Chat />
 			</div>
 		</userContext.Provider>
 	);

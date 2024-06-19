@@ -1,4 +1,5 @@
 import React from "react";
+
 import { Link, useNavigate } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
@@ -10,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 
 
-import { useContext, useState } from "react";
+import { useContext, useState ,useEffect} from "react";
 import { userContext } from "../contexts/userContext.jsx";
 import { useGameContext } from "../contexts/GameContext.jsx";
 import { useMultiGameContext } from "../contexts/MultiGameContext.jsx";
@@ -19,22 +20,28 @@ import './Home.css';
 const Home = () => {
 
 	const userinfo = useContext(userContext);
+	const navigate = useNavigate();
 	console.log('HOME userinfo.user', userinfo.user);
+
 	const { setOptions } = useGameContext();
 	const { setOptions: setMultiGameOptions } = useMultiGameContext();
-    const navigate = useNavigate();
 	const { t } = useTranslation();
 
 	
-
-		const handleVsVacheClick = () => {
-			setOptions(prevOptions => ({
-				...prevOptions, // Gardez les options précédentes
-				name_p1: userinfo.user.username,
-				real_game : 1,
-			}));
-			navigate('/game');
-		};
+	// useEffect(() => {
+	// 	console.log('Home: userinfo', userinfo);
+	// 	if (!userinfo.user) {
+	// 		navigate('/login');
+	// 	}
+	// }, [userinfo]);
+	const handleVsVacheClick = () => {
+		setOptions(prevOptions => ({
+			...prevOptions, // Gardez les options précédentes
+			name_p1: userinfo.user.username,
+			real_game : 1,
+		}));
+		navigate('/game');
+	};
 
 		const handle2P= () => {
 			setOptions(prevOptions => ({
@@ -72,9 +79,9 @@ const Home = () => {
 				//avatar : ["/badboy.png","/players.jpg"],
 				avatar : ["/badboy.png","/players.jpg","/princess.jpg","/ponge.jpg","/yoshi.jpg","/xrenoux.jpg","/abelhadi.jpg","/beaudibe.jpg"],
 
-			}));
-			navigate('/game');
-		};
+		}));
+		navigate('/game');
+	};
 	return (
 		<Container fluid className="homeContainer">
 			<Row className="mb-3">

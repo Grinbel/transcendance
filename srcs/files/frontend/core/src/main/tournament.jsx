@@ -106,7 +106,7 @@ const tournament = () => {
 				
 				switch(data.skin){
 					case 1:
-						data = {...data, texture_ball: "basketball.jpg", texture_floor: "basket.jpg",stage_height: 6,stage_width: 9};
+						data = {...data, texture_ball: "basketball.jpg", texture_floor: "basket.jpg",stage_height: 9,stage_width: 9};
 						break;
 					case 2:
 						data = {...data, texture_ball: "https://thumbs.dreamstime.com/b/bille-de-football-de-texture-13533294.jpg", texture_floor: "https://t2.uc.ltmcdn.com/fr/posts/8/4/8/quelle_est_la_taille_d_un_terrain_de_football_12848_600.webp",stage_height: 8,stage_width: 15};
@@ -115,12 +115,11 @@ const tournament = () => {
 						data = {...data, texture_ball: "billardball.png", texture_floor: "billardtable.png",stage_height: 12,stage_width: 20};
 						break;
 					case 4:
-						data = {...data, texture_ball: "tennisball.jpg", texture_floor: "tennisfield.jpg",stage_height: 16,stage_width: 30};
+						data = {...data, texture_ball: "tennisball.jpg", texture_floor: "tennisfield.jpg",stage_height: 30,stage_width: 16};
 						break;
 					default:
 						break;
 				}
-				console.log("DATA!!!!!!!!",data);
 				setOptions(prevOptions => ({
 					...prevOptions, // Gardez les options précédentes
 					is_tournament : 1,
@@ -138,7 +137,7 @@ const tournament = () => {
 					stage_height: data.stage_height,
 					stage_width: data.stage_width,
 				}));
-				delay(1000).then(() => navigate('/game'));
+				// delay(1000).then(() => navigate('/game'));
 			});
 			setIsTrue(false);
 			// nextgameplayer(name);
@@ -178,16 +177,18 @@ const tournament = () => {
 				return;
 			}
 			else if (message.type === 'disconnected') {
+				console.log("disconnected!!!!!!!!!!!!!!!!");
 				setMessages(prevMessages => []);
 				ws.send(JSON.stringify({ type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament, alias:userInfo.user.alias }));
 				return;
 			}
 			else if (message.type === 'username') {
+				console.log("username!!!!!!!!!");
 				if (message && message.username)
 				{
 					setMessages(prevMessages => [...prevMessages, message]);
 					setName(message.name);
-					setMaxCapacity(message.max_capacity)					
+					setMaxCapacity(message.max_capacity)
 				}
 			}
 			else if (message.type === 'launch_tournament'){
@@ -198,7 +199,7 @@ const tournament = () => {
 			}
 			else if(message.type === "friends")
 			{
-				setFriend(prevFriend => [...prevFriend,message])
+				setFriend(prevFriend => [message])
 			}
 			else if (message.type === 'end')
 			{
