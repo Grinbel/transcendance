@@ -7,7 +7,24 @@ import  { axiosInstance } from "../axiosAPI.js";
 import "./Home.css";
 import { Button } from "react-bootstrap";
 import { useTranslation } from 'react-i18next';
+function Image({changeAvatar }) {
+	const images = ['/badboy.png', '/princess.jpg', '/yoshi.jpg'];
+	return (
+	  <div>
+		{images.map((image, index) => (
+		  <img
+			key={index}
+			src={image}
+			alt={`Avatar ${index}`}
+			onClick={() => changeAvatar(image)}
+			style={{ cursor: 'pointer' }} // Change le curseur en main lors du survol
+		  />
+		))}
+	  </div>
+	);
+  }
 const Profile = () => {
+	const images = ['sauron.jpg', 'princess.jpg', 'yoshi.jpg'];
 	const { t } = useTranslation();
 	let { username } = useParams();
 	const userInfo = useContext(userContext);
@@ -98,6 +115,19 @@ const Profile = () => {
 			throw (error);
 		}
 	}
+	const changeAvatar = async (avatar) => {
+		try {
+			const response = await axiosInstance.post('/changeavatar/', {
+				avatar: avatar,
+			});
+			userInfo.setUser({ ...userInfo.user, avatar: avatar });
+		} catch (error) {
+			setError(error.message);
+			throw (error);
+		}
+	}
+
+
 	return (
 		<div>
 			<h1>{username}</h1>
@@ -116,6 +146,8 @@ const Profile = () => {
 								{friend}
 							</a>
 						</div>
+						{/* <Image changeAvatar={changeAvatar} /> */}
+						<Image changeAvatar={changeAvatar} />
 					</div>
 				))}
 			</div>
