@@ -16,8 +16,8 @@ RUN    pip install --upgrade pip
 
 # Use the shared SSL certificates
 RUN mkdir -p /etc/ssl/private /etc/ssl/certs
-COPY ../ssl/private/server.key /etc/ssl/private/server.key
-COPY ../ssl/certs/server.crt /etc/ssl/certs/server.crt
+COPY ./ssl/private/server.key /etc/ssl/private/server.key
+COPY ./ssl/certs/server.crt /etc/ssl/certs/server.crt
 
 # Copy and install the requirements.txt file into the working directory
 COPY requirements.txt .

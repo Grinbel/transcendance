@@ -39,9 +39,9 @@ RUN npm install
 # RUN npm run build
 
 # Use the shared SSL certificates
-RUN mkdir -p /etc/ssl/private /etc/ssl/certs
-COPY ../ssl/private/server.key /etc/ssl/private/server.key
-# COPY ../ssl/certs/server.crt /etc/ssl/certs/server.crt
+RUN mkdir -p /etc/ssl/private /etc/ssl/certs/
+COPY ./ssl/private/server.key /etc/ssl/private/server.key
+COPY ./ssl/certs/server.crt /etc/ssl/certs/server.crt
 
 # Set environment variables for HTTPS
 ENV HTTPS=true

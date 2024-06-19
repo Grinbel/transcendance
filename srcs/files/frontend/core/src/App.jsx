@@ -54,7 +54,7 @@ const PrivateRoute = ({ component: Component, user, ...rest }) => (
   );
 
 async function getProfile(user, setUser, error, setError){
-	localStorage.removeItem('user');
+	// localStorage.removeItem('user');
 	const userStringified = localStorage.getItem('user');
 	if (userStringified) {
 		const userData = JSON.parse(userStringified);
