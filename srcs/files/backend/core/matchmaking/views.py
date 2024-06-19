@@ -40,11 +40,11 @@ def choice(request):
 	tournamentId = request.data.get('tournamentId')
 
 
-	if (Tournament.objects.filter(players=user).exists()):
-		return Response({'Error':'inside'})
+	# if (Tournament.objects.filter(players=user).exists()):
+	# 	return Response({'Error':'inside'})
 
 	if (join and tournamentId == ''):
-		name = Tournament.getNextTournament(alias=alias)
+		name = Tournament.getNextTournament(alias=alias,name=user.username)
 		tournament = Tournament.objects.filter(name=name).first()
 		if (tournament is not None):
 			players = tournament.players.all()
@@ -55,7 +55,6 @@ def choice(request):
 
 		return Response({'room_name': name})
 	elif (join is False):
-
 		name = Tournament.createRoomName()
 		tournament = Tournament.create(name=name,max_capacity=playerCount,ball_starting_speed=speed,score=score,easyMode=isEasy,skin=skin)
 		return Response({'room_name': name})

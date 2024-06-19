@@ -120,7 +120,6 @@ const tournament = () => {
 					default:
 						break;
 				}
-				console.log("DATA!!!!!!!!",data);
 				setOptions(prevOptions => ({
 					...prevOptions, // Gardez les options précédentes
 					is_tournament : 1,
@@ -198,7 +197,7 @@ const tournament = () => {
 			}
 			else if(message.type === "friends")
 			{
-				setFriend(prevFriend => [...prevFriend,message])
+				setFriend(prevFriend => [message])
 			}
 			else if (message.type === 'end')
 			{

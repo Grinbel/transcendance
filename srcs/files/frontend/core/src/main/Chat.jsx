@@ -241,8 +241,11 @@ function Chat() {
 				isLocal: "",
 				username: userInfo.user.username,
 				alias: userInfo.user.username,
-
-				join:true  && room === "",
+				join:true ,
+				isEasy: "",
+				speed:"",
+				score:"",
+				skin:"",
 			});
 			// console.log('response', response.data);
 			// console.log('Room name', response.data.room_name);
