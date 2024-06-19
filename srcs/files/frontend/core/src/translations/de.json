@@ -62,6 +62,7 @@
     "full" : "Das Turnier ist voll",
     "inside" : "Sie sind bereits in einem Turnier",
     "progress" : "Das Turnier läuft",
+	"alias" : "Der Alias ist bereits vergeben",
     "host": "Sie sind der Gastgeber, das Spiel wird gestartet",
     "not_host" : "Sie sind nicht der Gastgeber, bitte gehen Sie zu ",
     "not_host2" : " Computer, um das Spiel zu starten",
