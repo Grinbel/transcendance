@@ -8,6 +8,8 @@
 from django.views.decorators.csrf import csrf_exempt
 from datetime import timedelta
 from django.utils import timezone
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 from django.core.mail import send_mail
 
 from rest_framework.views import APIView
@@ -334,6 +336,14 @@ class Logout(APIView):
 			user_id = token['user_id']  # Get the user ID from the token
 			user = User.objects.get(id=user_id)  # Get the user from the user ID
 			user.status = 'away'
+			channel_layer = get_channel_layer()
+			async_to_sync(channel_layer.group_send)(
+				'general',
+				{
+					'type': 'logoutWeb',
+					'username': user.username,
+				}
+			)
 			#remove user from tournament
 			if (Tournament.objects.filter(players=user).exists()):
 				tournament = Tournament.objects.get(players=user)

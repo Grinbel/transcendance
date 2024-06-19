@@ -144,16 +144,12 @@ class Matchmaking(WebsocketConsumer):
 		tournament = Tournament.objects.filter(name=self.room_name).first()
 		if (not tournament):
 			return
-		tournament = Tournament.objects.get(name=self.room_name)
-		# return
-		usernames = tournament.getAllUsername()
-		if (tournament.players.count() <= 1):
+		tournament.removeUser(self.scope['user'])
+		tournament.save()
+		if (tournament.players.count() <= 0):
 			tournament.players.clear()
 			tournament.delete()
 		else:
-			tournament.removeUser(self.scope['user'])
-			tournament.save()
-
 			async_to_sync(self.channel_layer.group_send)(
 				self.tournament_name,
 				{
@@ -188,7 +184,6 @@ class Matchmaking(WebsocketConsumer):
 		)
 		if (tournament.max_capacity == tournament.players.count()):
 			timer = 3
-			# return
 			async_to_sync(self.channel_layer.group_send)(
 				self.tournament_name,
 				{

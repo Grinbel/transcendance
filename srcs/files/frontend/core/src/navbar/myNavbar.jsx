@@ -57,6 +57,7 @@ const NavLoggedIn = () => {
 		  roundedCircle
 		  style={{ width: '40px' }}
 		/>
+		
 	)
 
 	const handleLogout = async () => {
@@ -94,6 +95,7 @@ const NavLoggedIn = () => {
 			</Navbar.Brand> 
 			
 			<Nav  className="ms-auto">
+				{userinfo.user.username}
 				<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={UserMenu}>
 					<NavDropdown.Item as={Link} to={`/profile/${userinfo.user.username}`}>{t('profile')}</NavDropdown.Item>
 					<Nav.Link className="navCustom playButton me-3" as={Link} to="/play">{t('play')}</Nav.Link>

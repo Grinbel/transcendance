@@ -86,6 +86,15 @@ function Chat() {
 				newmessage = {...message, message: `${message.p1} ${t('next_game1')} ${message.p2} ${t('next_game2')}`};
 				setMessages(prevMessages => [...prevMessages, newmessage]);
 			}
+			else if(message.type === 'logout'){
+				navigate('/login');
+				localStorage.removeItem('access_token');
+				localStorage.removeItem('refresh_token');
+				localStorage.removeItem('user');
+				axiosInstance.defaults.headers['Authorization'] = null;
+				userInfo.setUser();
+				console.log('NavLoggedIn: logout successful frontend');
+			}
 			else
 				setMessages(prevMessages => [...prevMessages, message]);
 			console.log('ws chat message', message, message.username);
@@ -338,6 +347,7 @@ function Chat() {
 								{message.type === 'next_game_player' && <div className="private">
 									{message.message}
 								</div>}
+								
 							</div>
 						))}
 					</div>

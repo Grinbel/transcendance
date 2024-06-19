@@ -137,7 +137,7 @@ const tournament = () => {
 					stage_height: data.stage_height,
 					stage_width: data.stage_width,
 				}));
-				delay(1000).then(() => navigate('/game'));
+				// delay(1000).then(() => navigate('/game'));
 			});
 			setIsTrue(false);
 			// nextgameplayer(name);
@@ -177,16 +177,18 @@ const tournament = () => {
 				return;
 			}
 			else if (message.type === 'disconnected') {
+				console.log("disconnected!!!!!!!!!!!!!!!!");
 				setMessages(prevMessages => []);
 				ws.send(JSON.stringify({ type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament, alias:userInfo.user.alias }));
 				return;
 			}
 			else if (message.type === 'username') {
+				console.log("username!!!!!!!!!");
 				if (message && message.username)
 				{
 					setMessages(prevMessages => [...prevMessages, message]);
 					setName(message.name);
-					setMaxCapacity(message.max_capacity)					
+					setMaxCapacity(message.max_capacity)
 				}
 			}
 			else if (message.type === 'launch_tournament'){
