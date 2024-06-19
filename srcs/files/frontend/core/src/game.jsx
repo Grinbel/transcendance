@@ -24,6 +24,7 @@ function Game() {
             angle -= Math.PI*2;
         return angle;
     }
+//    options.ball_radius = 0.1
 
 
 function getCurrentLocation () {
@@ -663,20 +664,50 @@ function getCurrentLocation () {
                 server_estimate_ball_speeds()
                 server_player_move(received_direction);
 }
-const trailLength = 20; // Nombre de segments dans la traînée
+const trailFactor = 20; // Facteur pour ajuster la longueur de la traînée en fonction du rayon de la balle
 let trail = [];
-let trailGeometry = new THREE.BufferGeometry().setFromPoints(new Array(trailLength).fill(new THREE.Vector3()));
-let trailMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: false, opacity: 0.5 });
-let trailLine = new THREE.Line(trailGeometry, trailMaterial);
+let trailWidths = [];
+let trailMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true });
+let trailLine = new THREE.Line(new THREE.BufferGeometry(), trailMaterial);
 scene.add(trailLine);
 
 function updateTrail() {
+    const trailLength = Math.floor(options.ball_radius * trailFactor);
+
     if (trail.length >= trailLength) {
         trail.shift();
+        trailWidths.shift();
     }
+
     trail.push(ball_render.position.clone());
-    trailGeometry.setFromPoints(trail);
+    trailWidths.push(options.ball_radius);
+
+    let positions = [];
+    let opacities = [];
+    let widths = [];
+
+    trail.forEach((point, index) => {
+        positions.push(point.x, point.y, point.z);
+        opacities.push(1 - (index / trail.length)); // Opacité décroissante
+        widths.push(options.ball_radius * (1 - (index / trail.length))); // Largeur décroissante
+    });
+
+    let trailGeometry = new THREE.BufferGeometry();
+    trailGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    trailGeometry.setAttribute('opacity', new THREE.Float32BufferAttribute(opacities, 1));
+    trailGeometry.setAttribute('width', new THREE.Float32BufferAttribute(widths, 1));
+
+    trailMaterial.vertexColors = true;
+    trailLine.geometry = trailGeometry;
+    trailLine.material = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1.0 });
 }
+
+function resetTrail() {
+    trail = [];
+    trailWidths = [];
+    trailLine.geometry = new THREE.BufferGeometry();
+}
+
 
     function create_text(to_show)
     {
