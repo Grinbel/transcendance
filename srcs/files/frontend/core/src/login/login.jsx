@@ -46,6 +46,10 @@ function Login() {
             // console.log('Login: user ', userInfo.user.username);
             setLoggedinMessage(t('logged'));
         }
+		else 
+		{
+			setLoggedinMessage('');
+		}
     }, [userInfo.user]);
 
 

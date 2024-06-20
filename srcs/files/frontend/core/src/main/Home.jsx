@@ -60,6 +60,7 @@ const Home = () => {
 				stage_height : 10,
 				stage_width : 15,
 				ia_time_between_checks : 60,
+				ball_starting_speed: 0.1,
 				easy_mode : 0,
 				real_game : 1,
 				texture_p1 : avatar,
