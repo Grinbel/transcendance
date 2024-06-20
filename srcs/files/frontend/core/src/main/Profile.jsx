@@ -148,10 +148,10 @@ const Profile = () => {
 							</a>
 						</div>
 						{/* <Image changeAvatar={changeAvatar} /> */}
-						<h4>{t("change_avatar")}</h4>
-						<Image changeAvatar={changeAvatar} />
 					</div>
 				))}
+				<h4>{t("change_avatar")}</h4>
+				<Image changeAvatar={changeAvatar} />
 			</div>
 		</div>
 	  );
