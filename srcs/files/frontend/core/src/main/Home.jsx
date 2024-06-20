@@ -101,13 +101,13 @@ const Home = () => {
 				<Col className="columnStyle ">
   					<Button variant="primary" as={Link} to="/multi-options" className="homeButtons">{t('Multi')}</Button>
 				</Col>
-				<Col className="columnStyle ">
+				{/* <Col className="columnStyle ">
 					
 				<Button variant="primary" onClick={handleVsVacheClick} className="homeButtons">{t('Tac vs Vache')}</Button>
-				</Col>
-				<Col className="columnStyle ">
+				</Col> */}
+				{/* <Col className="columnStyle ">
 					<Button variant="primary" as={Link} to="/play" className="homeButtons">{t('TOURNAMENT')}</Button>
-				</Col>
+				</Col> */}
 			</Row>
 		</Container>
 	);

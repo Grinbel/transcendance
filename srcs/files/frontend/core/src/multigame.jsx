@@ -136,6 +136,8 @@ function MultiGame() {
 		renderer.domElement.style.top = 0;
 		renderer.domElement.style.left = 0;
 		renderer.domElement.style.zIndex = 1000; 
+		renderer.domElement.style.width = '100%';
+		renderer.domElement.style.height = '100%';
 		document.body.appendChild(renderer.domElement);
 		const ball_form = new THREE.SphereGeometry(options.ball_radius, 32, 32);
 
@@ -190,8 +192,12 @@ function MultiGame() {
 		dialogContainer.style.width = '50%';
 		dialogContainer.style.height = '50%';
 		dialogContainer.style.zIndex = 1001;
-		dialogContainer.style.backgroundColor = 'transparent';
-		dialogContainer.style.color = 'grey';
+		dialogContainer.style.color = 'white';
+
+		dialogContainer.style.backgroundColor = `rgba(1,1,0, 0.2)`;
+		dialogContainer.style.borderRadius =  '25%';
+
+		// dialogContainer.style.opacity= '30%';
 		dialogContainer.style.display = 'flex';
 		dialogContainer.style.justifyContent = 'center';
 		dialogContainer.style.alignItems = 'center';

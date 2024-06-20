@@ -14,7 +14,7 @@
 }
 .hide-chat {
 	position: absolute;
-	top: 65vh; /* Ajustez cette valeur en fonction de la taille de votre bouton */
+	top: 64.8vh; /* Ajustez cette valeur en fonction de la taille de votre bouton */
 	right: 6px;
 	border-radius: 9px;
 	background-color: #ce2b2b83;
