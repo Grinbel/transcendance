@@ -154,7 +154,6 @@ function Game() {
 		renderer.domElement.style.height = '100%';
 		renderer.domElement.style.backgroundColor = 'transparent';
 		document.body.appendChild(renderer.domElement);
-		//document.body.insertBefore(renderer.domElement, document.body.firstChild);
 		const ball_form = new THREE.SphereGeometry(options.ball_radius, 32, 32);
 		const p1_weapon = new THREE.BoxGeometry(
 			options.player_width,
