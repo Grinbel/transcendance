@@ -33,9 +33,6 @@ def choice(request):
 
 	user = User.objects.get(username=username)
 
-
-	user.alias = alias
-	user.save()
 	playerCount = request.data.get('playerCount')
 	tournamentId = request.data.get('tournamentId')
 
