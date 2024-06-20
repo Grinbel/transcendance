@@ -209,17 +209,17 @@ function Login() {
                     // } else {
                     //     setError('An error occurred. Please try again.');
                     // }
-                    setError(error.response.data.detail);
+                    setError(t(error.response.data.detail));
                 }
                 else if (error.request)
                 {
                     // The request was made but no response was received
                     // console.log('error REQUEST', error.request);
-                    setError('Network error. Please check your connection.');
+                    setError(t('NetError'));
                 } else {
                     // Something happened in setting up the request that triggered an Error
                     // console.log('error OBSCURE', error.message);
-                    setError('An unknown error occurred.');
+                    setError(t('UnknownError'));
                 }
             }
         }
