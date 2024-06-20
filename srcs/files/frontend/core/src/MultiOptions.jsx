@@ -33,7 +33,6 @@ const MultiOptions = () => {
 		setSkinObject(newSkinObject);
 	};
 	const handleStartGame = () => {
-		console.log('BOB', skinObject.ball_radius, skinObject.stage_radius);
 		setMultiGameOptions((prevOptions) => ({
 			...prevOptions,
 			nb_players: playerCount,

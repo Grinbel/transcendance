@@ -680,7 +680,11 @@ function Game() {
 		const trailFactor = 20; // Facteur pour ajuster la longueur de la traînée en fonction du rayon de la balle
 
 		function createTrailSphere(position, rotation, texture) {
-			const geometry = new THREE.SphereGeometry(options.ball_radius, 32, 32);
+			const geometry = new THREE.SphereGeometry(
+				options.ball_radius * 0.8,
+				32,
+				32
+			);
 			const material = new THREE.MeshBasicMaterial({
 				map: texture,
 				transparent: true,
@@ -694,7 +698,7 @@ function Game() {
 		}
 
 		function updateTrail() {
-			const trailLength = Math.floor(options.ball_radius*.8 * trailFactor);
+			const trailLength = Math.floor(options.ball_radius * 0.8 * trailFactor);
 
 			if (trailSpheres.length >= trailLength) {
 				const oldestSphere = trailSpheres.shift();
@@ -781,6 +785,7 @@ function Game() {
 					options.score_p1 > options.score_p2
 						? options.name_p1
 						: options.name_p2;
+
 				options.winner = create_text(t('winner') + options.winner);
 				scene.add(options.winner);
 				options.winner.position.x = -3;
@@ -838,6 +843,7 @@ function Game() {
 						options.usernames.length === 15 ||
 						options.usernames.length === 3
 					) {
+						console.log('FIN DU TOURNOI');
 						//options.winner = create_text( options.score_p1>options.score_p2?options.name_p1:options.name_p2 + " REMPORTE LE TOURNOI");
 						//setShouldRunEffect(false);
 						for (let i = 0; i < options.usernames.length; i = i + 2) {
@@ -916,8 +922,7 @@ function Game() {
 					resetOptions();
 					navigate('/');
 				}
-				return () => {
-				};
+				return () => {};
 			}
 		}
 		function end_of_tournament(counter) {
