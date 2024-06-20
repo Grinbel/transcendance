@@ -91,8 +91,8 @@ function Login() {
                     {
                         const token = response.data.access;
                         const refresh = response.data.refresh;
-                        axiosInstance.defaults.headers.common['Authorization'] = "JWT " + token;
-                        axiosInstance.defaults.headers['Authorization'] = "JWT " + refresh;
+                        axiosInstance.defaults.headers.common['Authorization'] = "Baerer " + token;
+                        axiosInstance.defaults.headers['Authorization'] = "Baerer " + refresh;
                         localStorage.setItem('access_token', token);
                         localStorage.setItem('refresh_token', refresh);
 
@@ -166,7 +166,7 @@ function Login() {
                 });
                 const token = response.data.access;
                 const refresh = response.data.refresh;
-                axiosInstance.defaults.headers['Authorization'] = "JWT " + token;
+                axiosInstance.defaults.headers['Authorization'] = "Baerer " + token;
                 localStorage.setItem('access_token', token);
                 localStorage.setItem('refresh_token', refresh);
 

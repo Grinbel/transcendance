@@ -65,17 +65,16 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
 	'corsheaders.middleware.CorsMiddleware',
-
     'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'project.middleware.SSLRedirectMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    # 'channels.middleware.AuthMiddlewareStack',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'channels.middleware.AuthMiddlewareStack',
     
 ]
 
@@ -83,6 +82,15 @@ MIDDLEWARE = [
 #security settings
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
 
 ASGI_APPLICATION = 'project.asgi.application'
 
@@ -96,9 +104,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
     ),
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'users.permissions.UserPermission',
-    # ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
@@ -205,28 +210,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-CORS_ALLOW_METHODS = [
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-]
+
 
 CORS_ALLOW_HEADERS = [ "accept", "referer", "accept-encoding", "authorization", "content-type", "dnt", "origin", "user-agent", "x-csrftoken", "x-sessionid", "x-requested-with"]
 CORS_EXPOSE_HEADERS = ['Set-Cookie']
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://localhost:8443/',
-    'https://0.0.0.0:8443/',
-    'https://127.0.0.1:8443/',
-    'https://localhost:5173/'
-    'https://0.0.0.0:5173/',
-    '',
-    'null',
+# CSRF_TRUSTED_ORIGINS = [
+#     'https://localhost:8443/',
+#     'https://0.0.0.0:8443/',
+#     'https://127.0.0.1:8443/',
+#     'https://localhost:5173/'
+#     'https://0.0.0.0:5173/',
+#     '',
+#     'null',
+# ]
 
-]
+
+CSRF_TRUSTED_ORIGINS = ['*']
+
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', '0.0.0.0', ]
 ALLOWED_HOSTS = ['*']
 # CSRF_COOKIE_SAMESITE = 'None'
@@ -236,8 +237,8 @@ ALLOWED_HOSTS = ['*']
 # SESSION_COOKIE_HTTPONLY = True
 
 #for production
-#CSRF_COOKIE_HTTPONLY = True
-#SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_HTTPONLY = True
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),
@@ -301,6 +302,7 @@ EMAIL_HOST_PASSWORD = os.environ.get('MAIL_PASS')  # replace with your actual em
 
 
 SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # SESSION_COOKIE_SECURE = True
 # CSRF_COOKIE_SECURE = True
 # SECURE_BROWSER_XSS_FILTER = True
@@ -309,4 +311,3 @@ SECURE_SSL_REDIRECT = True
 # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 # SECURE_HSTS_PRELOAD = True
 # SECURE_REFERRER_POLICY = "no-referrer"
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

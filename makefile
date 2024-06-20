@@ -20,6 +20,7 @@ init:
 	openssl genrsa -out ./server.key 2048
 	openssl req -new -key ./server.key -out ./server.csr -subj "/CN=transcendance"
 	openssl x509 -req -days 365 -in ./server.csr -signkey ./server.key -out ./server.crt
+	@echo "${GREEN}SSL certificates generated ...${NC}"
 	cp ./server.crt ./srcs/files/backend/ssl/certs/server.crt
 	cp ./server.key ./srcs/files/backend/ssl/private/server.key
 	cp ./server.crt ./srcs/files/frontend/ssl/certs/server.crt

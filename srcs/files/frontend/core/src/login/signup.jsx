@@ -19,7 +19,7 @@ function Signup() {
 
 
 	const axiosSignup = axios.create({
-		baseURL: 'http://localhost:8443/users/',
+		baseURL: `https://${import.meta.env.VITE_API_SERVER_ADDRESS}:8443/users/`,
 		timeout: 0,
 		headers: {
 			'Content-Type': 'application/json',

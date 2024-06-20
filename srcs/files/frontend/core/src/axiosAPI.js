@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 export const loginInstance = axios.create({
     baseURL: `https://${import.meta.env.VITE_API_SERVER_ADDRESS}:8443/users/`,
+    // baseURL: `https://localhost:8443/users/`,
+
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
@@ -13,6 +15,7 @@ export const loginInstance = axios.create({
 export const axiosInstance = axios.create({
 	 
     baseURL: `https://${import.meta.env.VITE_API_SERVER_ADDRESS}:8443/users/`,
+    // baseURL: `https://localhost:8443/users/`,
     timeout: 10000,
     headers: {
         'Authorization': "Baerer " + localStorage.getItem('access_token'),
@@ -24,6 +27,7 @@ export const axiosInstance = axios.create({
 
 export const refreshInstance = axios.create({
   baseURL: `https://${import.meta.env.VITE_API_SERVER_ADDRESS}:8443/users/`,
+  // baseURL: `https://localhost:8443/users/`,
   timeout: 0,
   headers: {
       'Content-Type': 'application/json',
@@ -34,6 +38,7 @@ export const refreshInstance = axios.create({
 
 export const updateInstance = axios.create({
   baseURL: `https://${import.meta.env.VITE_API_SERVER_ADDRESS}:8443/users/`,
+  // baseURL: `https://localhost:8443/users/`,
   timeout: 0,
   headers: {
       'Content-Type': 'application/json',
@@ -75,8 +80,8 @@ export const interceptor_response = axiosInstance.interceptors.response.use(
               console.log('interceptor_response: token refreshed');
               localStorage.setItem('access_token', response.data.access);
               localStorage.setItem('refresh_token', response.data.refresh);
-              axiosInstance.defaults.headers['Authorization'] = 'JWT ' + response.data.access;
-              originalRequest.headers['Authorization'] = 'JWT ' + response.data.access;
+              axiosInstance.defaults.headers['Authorization'] = 'Baerer ' + response.data.access;
+              originalRequest.headers['Authorization'] = 'Baerer ' + response.data.access;
 
               onTokenRefreshed(response.data.access);
               return axiosInstance(originalRequest);
@@ -97,7 +102,7 @@ export const interceptor_response = axiosInstance.interceptors.response.use(
 
       const retryOriginalRequest = new Promise((resolve) => {
         addRefreshSubscriber((token) => {
-          originalRequest.headers['Authorization'] = 'JWT ' + token;
+          originalRequest.headers['Authorization'] = 'Baerer ' + token;
           resolve(axiosInstance(originalRequest));
         });
       });
@@ -115,6 +120,7 @@ export const interceptor_response = axiosInstance.interceptors.response.use(
 
     if (!status) {
       console.log('Network or server error, no response:', error.message);
+
     }
 
     return Promise.reject(error);
