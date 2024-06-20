@@ -123,5 +123,6 @@
       "end_game_multi" : "The game is over",
       "winner_multi" : "THE WINNER IS: ",
       "restart_button" : "Press the SPACE key to return to the main menu",
-	  "change_avatar" : "Change avatar:"
+	  "change_avatar" : "Change avatar:",
+	  "options": "Options"
 }

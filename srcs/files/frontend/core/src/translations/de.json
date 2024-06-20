@@ -123,5 +123,7 @@
       "end_game_multi" : "Das Spiel ist vorbei",
       "winner_multi" : "DER GEWINNER IST: ",
       "restart_button" : "Drücken Sie die LEERTASTE, um zum Hauptmenü zurückzukehren",
-	  "change_avatar" : "Avatar ändern:"
+	  "change_avatar" : "Avatar ändern:",
+	  "options": "Optionen"
+	  
 }
