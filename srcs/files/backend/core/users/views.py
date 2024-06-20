@@ -371,3 +371,13 @@ def language(request):
 	user.language = language
 	user.save()
 	return Response({'detail': 'Language updated successfully.'}, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def avatar(request):
+	print('avatar function')
+	username = request.data.get('username')
+	avatar = request.data.get('avatar')
+	user = User.objects.get(username=username)
+	user.avatar = avatar
+	user.save()
+	return Response({'detail': 'Avatar updated successfully.'}, status=status.HTTP_200_OK)

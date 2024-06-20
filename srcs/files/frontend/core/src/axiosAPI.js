@@ -60,11 +60,11 @@ export const interceptor_response = axiosInstance.interceptors.response.use(
   (error) => {
     const status = error.response ? error.response.status : null;
     const originalRequest = error.config;
-    console.log('interceptor_response: error status and retry', status, originalRequest._retry);
+    // console.log('interceptor_response: error status and retry', status, originalRequest._retry);
     if (status === 401 && !originalRequest._retry) {
-      console.log('interceptor_response: 401 and not retried yet. refreshing ?', refreshing);
+    //   console.log('interceptor_response: 401 and not retried yet. refreshing ?', refreshing);
       if (!refreshing) {
-        console.log('interceptor_response: refreshing token');
+        // console.log('interceptor_response: refreshing token');
         refreshing = true;
         originalRequest._retry = true;
 
@@ -72,7 +72,7 @@ export const interceptor_response = axiosInstance.interceptors.response.use(
           .post('/token/refresh/', { refresh: localStorage.getItem('refresh_token') })
           .then((response) => {
             if (response.status === 200) {
-              console.log('interceptor_response: token refreshed');
+            //   console.log('interceptor_response: token refreshed');
               localStorage.setItem('access_token', response.data.access);
               localStorage.setItem('refresh_token', response.data.refresh);
               axiosInstance.defaults.headers['Authorization'] = 'JWT ' + response.data.access;
@@ -83,14 +83,14 @@ export const interceptor_response = axiosInstance.interceptors.response.use(
             }
           })
           .catch((err) => {
-            console.log('Refresh token is expired, user needs to login again:', err.response.status);
+            // console.log('Refresh token is expired, user needs to login again:', err.response.status);
             localStorage.removeItem('user');
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
             return Promise.reject(err);
           })
           .finally(() => {
-            console.log('interceptor_response: refreshing done in finally');
+            // console.log('interceptor_response: refreshing done in finally');
             refreshing = false;
           }));
       }
@@ -101,12 +101,12 @@ export const interceptor_response = axiosInstance.interceptors.response.use(
           resolve(axiosInstance(originalRequest));
         });
       });
-      console.log('interceptor_response: retryOriginalRequest', retryOriginalRequest);
+    //   console.log('interceptor_response: retryOriginalRequest', retryOriginalRequest);
       return retryOriginalRequest;
     }
 
     if (status === 401 && originalRequest._retry) {
-      console.log('Refresh token expired. Redirecting to login.');
+    //   console.log('Refresh token expired. Redirecting to login.');
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
       navigate('/login');
@@ -114,7 +114,7 @@ export const interceptor_response = axiosInstance.interceptors.response.use(
     }
 
     if (!status) {
-      console.log('Network or server error, no response:', error.message);
+    //   console.log('Network or server error, no response:', error.message);
     }
 
     return Promise.reject(error);

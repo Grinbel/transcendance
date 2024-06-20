@@ -21,7 +21,7 @@ const Home = () => {
 
 	const userinfo = useContext(userContext);
 	const navigate = useNavigate();
-	console.log('HOME userinfo.user', userinfo.user);
+	// console.log('HOME userinfo.user', userinfo.user);
 
 	const { setOptions } = useGameContext();
 	const { setOptions: setMultiGameOptions } = useMultiGameContext();
@@ -53,6 +53,7 @@ const Home = () => {
 			navigate('/game');
 		};
 		const handleIA_Custom= () => {
+			const avatar = userinfo.user.avatar ? userinfo.user.avatar.replace("/media", "") : '/yoshi.jpg';
 			setOptions(prevOptions => ({
 				...prevOptions,
 				name_p1: userinfo.user.username,
@@ -61,7 +62,7 @@ const Home = () => {
 				ia_time_between_checks : 60,
 				easy_mode : 0,
 				real_game : 1,
-				texture_p1 : userinfo.user.avatar.replace("/media/", ""),
+				texture_p1 : avatar,
 				texture_p1_ball : "yoshi_egg.jpg",
 				texture_p2 : "princess.jpg"
 			}));

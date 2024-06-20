@@ -31,13 +31,13 @@ function Play() {
 			...formData,
 			[event.target.name]: value
 		});
-		console.log('Login: handleChange event.target.name', event.target.name);
-		console.log(value);
+		// console.log('Login: handleChange event.target.name', event.target.name);
+		// console.log(value);
 	};
 
 	const handleChangeSpeed=(event)=>{
 		setBallSpeed(event.target.value);
-		console.log((event.target.value))
+		// console.log((event.target.value))
 	};
 	const handleSubmit = async (event) => {
 		
@@ -74,10 +74,10 @@ function Play() {
 
 			if (response.data.Error != undefined){
 				setDisplayer(t(response.data.Error));
-				console.log('Invalid tournament');
+				// console.log('Invalid tournament');
 			}
 			else {
-				console.log('Tournament name: ' + response.data.room_name);
+				// console.log('Tournament name: ' + response.data.room_name);
 				
 				userInfo.setUser({
 					...userInfo.user,
@@ -92,9 +92,9 @@ function Play() {
 			if (error.response) {
 	
 			} else if (error.request) {
-				console.log('error REQUEST', error.request);
+				// console.log('error REQUEST', error.request);
 			} else {
-				console.log('error OBSCURE', error.request);
+				// console.log('error OBSCURE', error.request);
 			}
 			// setError(error.message);
 			throw (error);
@@ -138,7 +138,7 @@ function Play() {
 					{/* <label htmlFor="alias"></label> */}
 						<input
 							type="text"
-							id="alias"
+							id="alias1"
 							name="alias"
 							placeholder={t('Enter alias')}
 							value={alias}
@@ -160,7 +160,7 @@ function Play() {
 				<p>{t('Nb joueurs')}
 					<select value={formData.playerCount} 
 							type="number"
-							id="playerCount"
+							id="playerCount1"
 							name="playerCount"
 							onChange={handleChange}>
 						<option value="2">2</option>

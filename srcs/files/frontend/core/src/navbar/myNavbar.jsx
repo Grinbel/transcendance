@@ -40,35 +40,36 @@ const NavLoggedIn = () => {
 			await axiosInstance.post('/setlanguage/', { language: lng, username: userinfo.user.username});
 			userinfo.setUser({ ...userinfo.user, language: lng });
 		  } catch (error) {
-			console.log('Error updating language:', error);
+			// console.log('Error updating language:', error);
 		  }
 	  };
 	const { t, i18n } = useTranslation();
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
 	const userinfo = useContext(userContext);
-	const avatar = userinfo.user.avatar ? userinfo.user.avatar : '../../public/mario.jpg';
-	console.log('avatar', avatar);
+	const avatar = userinfo.user.avatar ? userinfo.user.avatar.replace("/media", "") : '/yoshi.jpg';
+	// console.log('avatar', avatar);
 
 	const UserMenu = (
 		<Image
-		  src={userinfo.user.avatar.replace("/media/", "")}
+		  src={avatar}
 		  alt={t('User avatar')}
 		  roundedCircle
 		  style={{ width: '40px' }}
 		/>
 		
+		
 	)
 
 	const handleLogout = async () => {
-		console.log('NavLoggedIn: logout');
+		// console.log('NavLoggedIn: logout');
 		try {
 			const response = await axiosInstance.post('/logout/', {
 				"refresh_token": localStorage.getItem("refresh_token")
 			});
 		}
 		catch (e) {
-			console.log(e);
+			// console.log(e);
 			if (e.response.status === 400 || e.response.status === 401) {
 				setError("Session expired. Please log in again.");
 			}
@@ -80,7 +81,7 @@ const NavLoggedIn = () => {
 		localStorage.removeItem('user');
 		axiosInstance.defaults.headers['Authorization'] = null;
 		userinfo.setUser();
-		console.log('NavLoggedIn: logout successful frontend');
+		// console.log('NavLoggedIn: logout successful frontend');
 		navigate('/login');
 	};
 
@@ -94,14 +95,16 @@ const NavLoggedIn = () => {
 				Pong
 			</Navbar.Brand> 
 			
+			{/* <h3 className="text-right" >{userinfo.user.username}</h3> */}
 			<Nav  className="ms-auto">
-				{userinfo.user.username}
+				<h5 >{userinfo.user.username}</h5>
 				<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={UserMenu}>
 					<NavDropdown.Item as={Link} to={`/profile/${userinfo.user.username}`}>{t('profile')}</NavDropdown.Item>
 					<Nav.Link className="navCustom playButton me-3" as={Link} to="/play">{t('play')}</Nav.Link>
 					<NavDropdown.Divider />
 					<NavDropdown.Item onClick={handleLogout}>{t('logout')}</NavDropdown.Item>
 				</NavDropdown>
+
 				<Language t={t} changeLanguage={changeLanguage} />
 			</Nav>
 		  </Container>
@@ -148,11 +151,11 @@ const NavLoggedIn = () => {
 	const userinfo = useContext(userContext);
 
 	if (userinfo.user) {
-		console.log('MyNavbar: user logged in');
-		console.log('MyNavbar: user', userinfo.user);
+		// console.log('MyNavbar: user logged in');
+		// console.log('MyNavbar: user', userinfo.user);
 	}
 	else {
-		console.log('MyNavbar: user not logged in');
+		// console.log('MyNavbar: user not logged in');
 	}
 	// Fonction pour gérer la connexion de l'utilisateur
   

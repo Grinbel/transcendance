@@ -73,8 +73,13 @@ function Chat() {
 			ws.send(JSON.stringify({type:"connected",username: userInfo.user.username}));
 			// console.log('ws chat opened', userInfo.user)
 		};
-		ws.onclose = () => console.log('ws chat closed');
-		ws.onerror = e => console.log('ws chat error', e);
+		ws.onclose = () => {
+			// console.log('ws chat closed')
+		};
+		ws.onerror = e =>{
+
+			//  console.log('ws chat error', e);
+		}
 		ws.onmessage = e => {
 			const message = JSON.parse(e.data);
 			let newmessage;
@@ -93,11 +98,11 @@ function Chat() {
 				localStorage.removeItem('user');
 				axiosInstance.defaults.headers['Authorization'] = null;
 				userInfo.setUser();
-				console.log('NavLoggedIn: logout successful frontend');
+				// console.log('NavLoggedIn: logout successful frontend');
 			}
 			else
 				setMessages(prevMessages => [...prevMessages, message]);
-			console.log('ws chat message', message, message.username);
+			// console.log('ws chat message', message, message.username);
 		};
 
 		setWs(ws);
@@ -264,10 +269,10 @@ function Chat() {
 
 			if (response.data.Error != undefined){
 				setdisplayer(t(response.data.Error));
-				console.log('Invalid tournament');
+				// console.log('Invalid tournament');
 			}
 			else {
-				console.log('Tournament name: ' + response.data.room_name);
+				// console.log('Tournament name: ' + response.data.room_name);
 				//! tournament is not inside the cached data
 				userInfo.setUser({
 					...userInfo.user,
@@ -276,20 +281,20 @@ function Chat() {
 				navigate('/tournament/');
 			}
 		} catch (error) {
-			if (error.response) {
+			// if (error.response) {
 	
-			} else if (error.request) {
-				console.log('error REQUEST', error.request);
-			} else {
-				console.log('error OBSCURE', error.request);
-			}
+			// } else if (error.request) {
+				// console.log('error REQUEST', error.request);
+			// } else {
+				// console.log('error OBSCURE', error.request);
+			// }
 			setError(error.message);
 			throw (error);
 		}
 	}
 	const sendInvite = async(username)=>
 		{
-			console.log("INVITE ",username)
+			// console.log("INVITE ",username)
 			try {
 				const response = await axiosInstance.post('/inviteTournament/', {
 					receiver: username,
