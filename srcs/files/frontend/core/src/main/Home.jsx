@@ -62,7 +62,7 @@ const Home = () => {
 				easy_mode : 0,
 				real_game : 1,
 				texture_p1 : userinfo.user.avatar.replace("/media/", ""),
-				texture_p1_ball : "https://pbs.twimg.com/profile_images/1335272544451112960/YO2w8LHO_400x400.jpg",
+				texture_p1_ball : "yoshi_egg.jpg",
 				texture_p2 : "princess.jpg"
 			}));
 			navigate('/game');

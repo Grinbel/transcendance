@@ -45,8 +45,8 @@ export const MultiGameProvider = ({ children }) => {
 
 //! OPTIONS DE SKINS)
         texture_ball : '/opacity.png',
-        texture_floor : 'https://threejsfundamentals.org/threejs/resources/images/wall.jpg',
-        wall_texture : 'https://png.pngtree.com/element_origin_min_pic/17/09/10/92d43f628122927e219612df377cc4a0.jpg',
+        texture_floor : 'wall.jpg',
+        wall_texture : 'grille.jpg',
 
 
 

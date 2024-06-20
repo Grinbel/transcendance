@@ -3,13 +3,14 @@ import * as React from "react";
 import TwoFactorEnable from "../components/twoFactorEnable.jsx";
 import { userContext } from "../../contexts/userContext.jsx";
 import  { updateInstance } from "../../axiosAPI.js";
-
+import { useTranslation } from 'react-i18next';
 
 
  
 
 
 const Settings = () => {
+	const { t } = useTranslation();
 	const [isEditing, setIsEditing] = React.useState(false);
 
 	const [errors, setErrors] = React.useState(null);
@@ -173,7 +174,7 @@ const Settings = () => {
 		<div className="settings">
 				<div className="settingsContainer">
 					<div className="settingsHeader">
-						<span className="settingsTitle">Options</span>
+						<span className="settingsTitle">t('options')</span>
 					</div>
 					<TwoFactorEnable/>
 				</div>
