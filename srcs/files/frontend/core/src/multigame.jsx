@@ -134,7 +134,7 @@ function MultiGame() {
 		renderer.domElement.style.position = 'absolute';
 		renderer.domElement.style.top = 0;
 		renderer.domElement.style.left = 0;
-		renderer.domElement.style.zIndex = 1000; 
+		renderer.domElement.style.zIndex = 1000;
 		document.body.appendChild(renderer.domElement);
 		const ball_form = new THREE.SphereGeometry(options.ball_radius, 32, 32);
 
