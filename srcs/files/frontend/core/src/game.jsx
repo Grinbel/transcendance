@@ -49,19 +49,13 @@ function Game() {
 		}
 	};
 	options.ball_speed = options.ball_starting_speed;
-	console.log('juste avant le use effect');
 	useEffect(() => {
-		console.log('on est rentres dans UseEffect');
 		let starting_location = getCurrentLocation();
 		if (options.real_game === 0) return navigate('/');
 		if (options.is_tournament === 1) {
-			console.log('TOURNOI');
 			options.round_results = options.round_results || [];
-			console.log(options.round_results);
 			options.usernames = options.usernames || [];
-			console.log(options.usernames);
 			options.avatar = options.avatar || [];
-			console.log(options.avatar);
 			options.texture_balls = options.texture_balls || [];
 			let i = options.round_results.length;
 			options.name_p1 = options.usernames[i * 2];
@@ -88,7 +82,6 @@ function Game() {
 		let texturep2 = loader.load(options.texture_p2);
 		let eye_texture = loader.load(options.texture_eye);
 		let wall_texture = loader.load(options.wall_texture);
-		console.log(options);
 		// Our Javascript will go here.
 		const scene = new THREE.Scene();
 		const ground_geometry = new THREE.BoxGeometry(
@@ -743,12 +736,8 @@ function Game() {
 			const text = new Text();
 			text.text = to_show;
 			text.font = 'KFOmCnqEu92Fr1Mu4mxP.ttf';
-			//let size = Math.max(options.name_p1.length,options.name_p2.length);
-			//console.log(size)
-			//text.fontSize = 1*5/size;
 			text.fontSize = (1 * 5) / 6;
 			text.color = 0x0000ff;
-			console.log('creation de text : ' + to_show);
 			text.rotation.x = Math.PI / 2;
 			text.position.y = options.stage_height / 2;
 			// Après avoir changé des propriétés, vous devez toujours appeler sync()
@@ -768,8 +757,6 @@ function Game() {
 		server_ball_reset();
 		function animate() {
 			if (starting_location != getCurrentLocation()) {
-				console.log('start ' + starting_location + ' fin');
-				console.log('actual ' + getCurrentLocation() + ' fin');
 				clear_everything();
 				window.removeEventListener('keydown', local_handleKeyDown, false);
 				window.removeEventListener('keyup', local_handleKeyUp, false);
@@ -794,7 +781,6 @@ function Game() {
 					options.score_p1 > options.score_p2
 						? options.name_p1
 						: options.name_p2;
-				console.log(options.winner);
 				options.winner = create_text(t('winner') + options.winner);
 				scene.add(options.winner);
 				options.winner.position.x = -3;
@@ -852,7 +838,6 @@ function Game() {
 						options.usernames.length === 15 ||
 						options.usernames.length === 3
 					) {
-						console.log('FIN DU TOURNOI');
 						//options.winner = create_text( options.score_p1>options.score_p2?options.name_p1:options.name_p2 + " REMPORTE LE TOURNOI");
 						//setShouldRunEffect(false);
 						for (let i = 0; i < options.usernames.length; i = i + 2) {
