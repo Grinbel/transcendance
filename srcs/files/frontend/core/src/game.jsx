@@ -24,7 +24,7 @@ function Game() {
 	function getCurrentLocation() {
 		return window.location.href;
 	}
-	const end_of_game = async (name, winner) => {
+	const message_end_of_game = async (name, winner) => {
 		try {
 			const response = await axiosInstance.post('/endofgame/', {
 				room: name,
@@ -848,8 +848,6 @@ function Game() {
 							? options.texture_p1_ball
 							: options.texture_p2_ball
 					);
-
-					console.log('taille usernames' + options.usernames.length);
 					if (
 						options.usernames.length === 7 ||
 						options.usernames.length === 15 ||
@@ -867,9 +865,9 @@ function Game() {
 									parseInt(options.usernames[i].split(':')[1])
 								) {
 									Hall_of_Fame[i].color = 0x0000ff;
-									Hall_of_Fame[i + 1].color = 0xff0000;
+									Hall_of_Fame[i + 1].color = 0x00ff00;
 								} else {
-									Hall_of_Fame[i].color = 0xff0000;
+									Hall_of_Fame[i].color = 0x00ff00;
 									Hall_of_Fame[i + 1].color = 0x0000ff;
 								}
 							} else {
@@ -877,8 +875,6 @@ function Game() {
 								Hall_of_Fame[i].fontSize *= 2;
 							}
 						}
-						console.log('tout a ete cree');
-						console.log(Hall_of_Fame);
 						let i = options.usernames.length;
 						let saved = 0;
 						if (i > 14) {
@@ -916,7 +912,7 @@ function Game() {
 						Hall_of_Fame[i - 1].position.z = 12;
 						Hall_of_Fame[i - 1].fontSize *= 4;
 						Hall_of_Fame[i - 1].position.x = 25;
-						end_of_game(
+						message_end_of_game(
 							options.room,
 							options.usernames[options.usernames.length - 1]
 						);
@@ -933,36 +929,34 @@ function Game() {
 					scene.remove(options.winner);
 					clear_components(options.winner);
 					document.body.removeChild(renderer.domElement);
-					//document.body.removeChild(dialogContainer);
 					renderer.dispose();
 					resetOptions();
 					navigate('/');
 				}
 				return () => {
-					console.log('GAME FINIE - WINNER : ' + options.winner);
-					// Nettoyez les ressources Three.js et arrêtez les écoutes d'événements si nécessaire
 				};
 			}
 		}
 		function end_of_tournament(counter) {
-			end_of_game(options.room, options.usernames[options.usernames.length-1]) 
 			renderer.render(scene, camera);
 			camera.position.z = 0;
 			camera.position.x = 0;
 			camera.position.y = -40;
 			camera.lookAt(new THREE.Vector3(0, 0, 0));
 			if (counter / 60 < options.usernames.length - 1) {
-				// options.usernames[15]
 				counter++;
 				if (counter % 60 === 0) {
 					scene.add(Hall_of_Fame[counter / 60]);
 				}
+				console.log("normal_counter " + counter)
 				requestAnimationFrame(() => end_of_tournament(counter));
 			} else {
 				counter++;
+				console.log("counter dtc " + counter)
 				if (counter < options.usernames.length * 60 + 1800)
 					requestAnimationFrame(() => end_of_tournament(counter));
 				else {
+					console.log("putain de fin " + counter)
 					for (let i = 0; i < options.usernames.length; i++) {
 						scene.remove(Hall_of_Fame[i]);
 						Hall_of_Fame[i].dispose();
