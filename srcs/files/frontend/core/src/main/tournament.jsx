@@ -45,7 +45,7 @@ const tournament = () => {
 			const response = await axiosInstance.post('/options/', {
 				room: name,
 			});
-			console.log("RESPONSE",response.data)
+			// console.log("RESPONSE",response.data)
 			const data = response.data
 			return data
 		} catch (error) {
@@ -77,12 +77,12 @@ const tournament = () => {
 	  }
 	
 	const launch = (messages) => {
-		console.log("launching",messages);
+		// console.log("launching",messages);
 		messages.sort(() => Math.random() - 0.5);
 		const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
 		  const avatars = messages.map(message => message ? message.avatar : undefined).filter(Boolean);
-		  console.log("username:",usernames);
-		  console.log("avatar:",avatars);
+		//   console.log("username:",usernames);
+		//   console.log("avatar:",avatars);
 	}
 	const delay = ms => new Promise(res => setTimeout(res, ms));
 	  useEffect(() => {
@@ -97,7 +97,7 @@ const tournament = () => {
 			setDisplayer(t("Launching"));
 
 			messages.sort(() => Math.random() - 0.5);
-			console.log("Message messages ", messages);
+			// console.log("Message messages ", messages);
 			const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
 			const avatars = messages.map(message => message ? message.avatar.replace("/media", "") : undefined).filter(Boolean);
 			const alias = messages.map(message => message ? message.alias : undefined).filter(Boolean);
@@ -169,20 +169,20 @@ const tournament = () => {
 		}
 		ws.onclose = () => {
 		}
-		ws.onerror = e => console.log('ws tournament error', e);
+		// ws.onerror = e => console.log('ws tournament error', e);
 		ws.onmessage = e => {
 			const message = JSON.parse(e.data);
 			if (message.type === 'connected') {
 				return;
 			}
 			else if (message.type === 'disconnected') {
-				console.log("disconnected!!!!!!!!!!!!!!!!");
+				// console.log("disconnected!!!!!!!!!!!!!!!!");
 				setMessages(prevMessages => []);
 				ws.send(JSON.stringify({ type: 'connected', username: userInfo.user.username, tournament:userInfo.user.tournament, alias:userInfo.user.alias }));
 				return;
 			}
 			else if (message.type === 'username') {
-				console.log("username!!!!!!!!!");
+				// console.log("username!!!!!!!!!");
 				if (message && message.username)
 				{
 					setMessages(prevMessages => [...prevMessages, message]);
@@ -192,7 +192,7 @@ const tournament = () => {
 			}
 			else if (message.type === 'launch_tournament'){
 				// setDisplayer("Launching in " + message.timer + " seconds");
-				console.log("set tournamentIsLaunching")
+				// console.log("set tournamentIsLaunching")
 				// userInfo.setUser({...userInfo.user,tournamentIsLaunching:true});
 				setIsTrue(true);
 			}
@@ -212,14 +212,14 @@ const tournament = () => {
 		setWs(ws);
 
 		return () => {
-			console.error('ws tournament closed');
+			// console.error('ws tournament closed');
 			ws.close();
 		};
 	}, [userInfo.user]);
 
 	const sendInvite = async(username)=>
 	{
-		console.log("INVITE ",username)
+		// console.log("INVITE ",username)
 		try {
 			const response = await axiosInstance.post('/inviteTournament/', {
 				receiver: username,
