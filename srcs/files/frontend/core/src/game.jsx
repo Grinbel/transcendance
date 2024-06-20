@@ -701,7 +701,7 @@ function Game() {
 		}
 
 		function updateTrail() {
-			const trailLength = Math.floor(options.ball_radius * trailFactor);
+			const trailLength = Math.floor(options.ball_radius*.8 * trailFactor);
 
 			if (trailSpheres.length >= trailLength) {
 				const oldestSphere = trailSpheres.shift();
@@ -779,7 +779,6 @@ function Game() {
 				renderer.dispose();
 				resetOptions();
 				disposeTrail();
-				//return navigate('/')
 				return;
 			}
 			if (
@@ -918,7 +917,6 @@ function Game() {
 						);
 						return end_of_tournament(-1);
 					}
-					//!                            navigate('/tournament_continues');
 					renderer.dispose();
 					setOptions((prevOptions) => ({
 						...prevOptions,
@@ -948,15 +946,12 @@ function Game() {
 				if (counter % 60 === 0) {
 					scene.add(Hall_of_Fame[counter / 60]);
 				}
-				console.log("normal_counter " + counter)
 				requestAnimationFrame(() => end_of_tournament(counter));
 			} else {
 				counter++;
-				console.log("counter dtc " + counter)
 				if (counter < options.usernames.length * 60 + 1800)
 					requestAnimationFrame(() => end_of_tournament(counter));
 				else {
-					console.log("putain de fin " + counter)
 					for (let i = 0; i < options.usernames.length; i++) {
 						scene.remove(Hall_of_Fame[i]);
 						Hall_of_Fame[i].dispose();
