@@ -92,7 +92,6 @@ const tournament = () => {
 		// console.log("messages",messages);
 		const user = messages.map(message => message ? message.username : undefined).filter(Boolean);
 		const sortedMessages = [...user].sort((a, b) => a.localeCompare(b));
-		const avatar = userInfo.user.avatar ? userInfo.user.avatar.replace("/media", "") : '/yoshi.jpg';
 		if (userInfo.user.username === sortedMessages[0])
 			{
 			setDisplayer(t("Launching"));

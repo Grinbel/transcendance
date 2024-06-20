@@ -62,7 +62,7 @@
     "full" : "The tournament is full",
     "inside" : "You are already in a tournament",
     "progress" : "The tournament is in progress",
-	"alias": "The Alias is already taken",
+	"alias": "The Alias is already taken or you're already inside this tournament",
     "host": "You are the host, game is launching",
     "not_host" : "You are not the host, please go to ",
     "not_host2" : " computer to launch the game",
