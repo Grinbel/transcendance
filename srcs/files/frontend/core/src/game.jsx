@@ -950,11 +950,11 @@ function Game() {
 			}
 		}
 		return () => {
-			// Nettoyez les ressources Three.js et arrêtez les écoutes d'événements si nécessaire
+			
 		};
 	}, [options]);
 
-	return; // Car le rendu est géré par Three.js et non par React
+	return; 
 }
 
 export default Game;

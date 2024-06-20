@@ -25,7 +25,6 @@ function MultiGame() {
 		let scores = [options.nb_players];
 		let players_text = [options.nb_players];
 		let player_depth = options.ball_radius * 2;
-		console.log('NB ' + options.nb_players);
 		let directions = [options.nb_players];
 		for (let i = 0; i < options.nb_players; i++) {
 			directions[i] = 0;
@@ -224,7 +223,6 @@ function MultiGame() {
 			text.text = to_show;
 			text.font = 'KFOmCnqEu92Fr1Mu4mxP.ttf';
 			let size = 8;
-			console.log(size);
 			text.fontSize = (1 * 5) / size;
 			text.color = 0x0000ff;
 
@@ -234,7 +232,6 @@ function MultiGame() {
 			text.sync();
 
 			// Ajouter le texte à la scène
-			console.log('player ' + to_show + ' added');
 			scene.add(text);
 			return text;
 		}
@@ -244,7 +241,6 @@ function MultiGame() {
 			players_text[i].position.x = (i % 3) * 5 - options.stage_radius;
 			players_text[i].position.z =
 				Math.floor(i / 3) * 2 * options.ball_radius + 2;
-			console.log('position ' + 2 * options.ball_radius + 2 * i);
 		}
 
 		const ball_material = new THREE.MeshBasicMaterial({ map: texture });
