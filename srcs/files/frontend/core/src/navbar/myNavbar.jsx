@@ -47,12 +47,12 @@ const NavLoggedIn = () => {
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
 	const userinfo = useContext(userContext);
-	const avatar = userinfo.user.avatar ? userinfo.user.avatar : '../../public/mario.jpg';
+	const avatar = userinfo.user.avatar ? userinfo.user.avatar.replace("/media", "") : '/yoshi.jpg';
 	console.log('avatar', avatar);
 
 	const UserMenu = (
 		<Image
-		  src={userinfo.user.avatar.replace("/media/", "")}
+		  src={avatar}
 		  alt={t('User avatar')}
 		  roundedCircle
 		  style={{ width: '40px' }}

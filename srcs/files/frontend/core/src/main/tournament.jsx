@@ -92,7 +92,7 @@ const tournament = () => {
 		// console.log("messages",messages);
 		const user = messages.map(message => message ? message.username : undefined).filter(Boolean);
 		const sortedMessages = [...user].sort((a, b) => a.localeCompare(b));
-
+		const avatar = userInfo.user.avatar ? userInfo.user.avatar.replace("/media", "") : '/yoshi.jpg';
 		if (userInfo.user.username === sortedMessages[0])
 			{
 			setDisplayer(t("Launching"));
@@ -100,7 +100,7 @@ const tournament = () => {
 			messages.sort(() => Math.random() - 0.5);
 			console.log("Message messages ", messages);
 			const usernames = messages.map(message => message ? message.username : undefined).filter(Boolean);
-			const avatars = messages.map(message => message ? message.avatar.replace("/media/", "") : undefined).filter(Boolean);
+			const avatars = messages.map(message => message ? message.avatar.replace("/media", "") : undefined).filter(Boolean);
 			const alias = messages.map(message => message ? message.alias : undefined).filter(Boolean);
 			const option = options(name).then(data =>{
 				

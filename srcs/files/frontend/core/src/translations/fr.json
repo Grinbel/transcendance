@@ -123,5 +123,6 @@
       "resume_button" : "Pour reprendre le match, appuyez sur espace.",
       "end_game_multi" : "La Partie est terminee",
       "winner_multi" : "LE GAGNANT EST : ",
-      "restart_button" : "Appuyez sur la touche ESPACE pour retourner au menu principal"
+      "restart_button" : "Appuyez sur la touche ESPACE pour retourner au menu principal",
+	  "change_avatar" : "Changement d'avatar:"
   }
