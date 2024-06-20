@@ -37,9 +37,9 @@ function Chat() {
 	let location = useLocation();
 
 
-	// useEffect(() => {
-	// 	  messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-	//   }, [messages]);
+	useEffect(() => {
+		  messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+	  }, [messages]);
 
 	function getWebSocket(roomName) {
 		

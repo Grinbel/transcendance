@@ -121,16 +121,16 @@ async function getProfile(user, setUser, error, setError){
 			// console.log("USER!!!!!!!!!",user.language);
 		}
 	}, [user]);
-	useEffect(() => {
-		// Désactiver le défilement lors du montage du composant
-		document.body.style.overflow = 'hidden';
-		window.scrollTo(0, 0);
+	// useEffect(() => {
+	// 	// Désactiver le défilement lors du montage du composant
+	// 	document.body.style.overflow = 'hidden';
+	// 	window.scrollTo(0, 0);
 	
-		return () => {
-		  // Réactiver le défilement lors du démontage du composant
-		  document.body.style.overflow = 'unset';
-		};
-	  }, []);
+	// 	return () => {
+	// 	  // Réactiver le défilement lors du démontage du composant
+	// 	  document.body.style.overflow = 'unset';
+	// 	};
+	//   }, []);
 
 	return (
 		<userContext.Provider value={{user, setUser}}>

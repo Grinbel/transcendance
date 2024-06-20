@@ -84,7 +84,7 @@ const Home = () => {
 		navigate('/game');
 	};
 	return (
-		<Container fluid className="homeContainer">
+		<Container fluid className="homeContainer" style={{height: '92vh'}}>
 			<Row className="mb-3">
 				<Col className="columnStyle">
 					<Button variant="primary" as={Link} to="/play" className="homeButtons">{t('1V1')}</Button>
