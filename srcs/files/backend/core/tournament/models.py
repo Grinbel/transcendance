@@ -98,9 +98,8 @@ class Tournament(models.Model):
 			return Tournament.createRoomName()
 		for tournament in tournaments:
 			aliass = tournament.getAllAlias()
-			usernames = tournament.getAllUsername()
 			j = tournament.max_capacity - tournament.players.count()
-			if j < buff and not ((aliass is not None and alias in aliass )or (usernames is not None and name not in usernames)):
+			if j < buff and not ((aliass is not None and alias in aliass )):
 				buff = j
 				name = tournament.name
 		if name == '':

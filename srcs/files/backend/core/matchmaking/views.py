@@ -48,8 +48,7 @@ def choice(request):
 		tournament = Tournament.objects.filter(name=name).first()
 		if (tournament is not None):
 			players = tournament.players.all()
-			usernames = tournament.getAllUsername()
-			if ((alias in [player.alias for player in players]) or username not in usernames):
+			if (alias in [player.alias for player in players]):
 				return Response({'Error':'alias'})
 		user.alias = alias
 		user.save()
@@ -65,8 +64,7 @@ def choice(request):
 		if (tournament is None):
 			return Response({'Error':'invalid'})
 		players = tournament.players.all()
-		usernames = tournament.getAllUsername()
-		if ((alias in [player.alias for player in players]) or username not in usernames):
+		if ((alias in [player.alias for player in players])):
 			return Response({'Error':'alias'})
 		user.alias = alias
 		user.save()
