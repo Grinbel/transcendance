@@ -277,13 +277,6 @@ function Game() {
 				dialogContainer.parentNode.removeChild(dialogContainer);
 			}
 		}
-		//'Bienvenue dans le match opposant <span style="font-size: larger; color: red; text-transform: uppercase;">'
-		//+ options.name_p1 + '</span> à <span style="font-size: larger; color: red; text-transform: uppercase;">'
-		//+ options.name_p2 + "</span> !<br>"
-		// + 'Le premier joueur à atteindre ' + options.score_to_get + ' points avec une différence de '
-		//+ options.score_diff + ' remporte la partie !<br>'
-		//  + 'Appuyez sur la touche ESPACE pour commencer !'
-		//    + '<br>Appuyez sur les touches W et S pour déplacer le joueur 1 et les touches HAUT et BAS pour déplacer le joueur 2 !';
 		dialogContainer.appendChild(message);
 		const dialogRenderer = new THREE.WebGLRenderer();
 		dialogRenderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
@@ -952,6 +945,7 @@ function Game() {
 			}
 		}
 		function end_of_tournament(counter) {
+			end_of_game(options.room, options.usernames[options.usernames.length-1]) 
 			renderer.render(scene, camera);
 			camera.position.z = 0;
 			camera.position.x = 0;
