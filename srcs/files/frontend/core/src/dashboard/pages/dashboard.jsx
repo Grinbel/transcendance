@@ -26,7 +26,7 @@ import { userContext } from "../../contexts/userContext.jsx";
 const Dashboard = () => {
 	const userinfo = useContext(userContext);
 	if (userinfo.user) {
-		console.log('Dashboard component userinfo.user', userinfo.user);
+		// console.log('Dashboard component userinfo.user', userinfo.user);
 	}
 	return (
 		<div>

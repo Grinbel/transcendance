@@ -21,7 +21,7 @@ const Home = () => {
 
 	const userinfo = useContext(userContext);
 	const navigate = useNavigate();
-	console.log('HOME userinfo.user', userinfo.user);
+	// console.log('HOME userinfo.user', userinfo.user);
 
 	const { setOptions } = useGameContext();
 	const { setOptions: setMultiGameOptions } = useMultiGameContext();

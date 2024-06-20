@@ -40,19 +40,19 @@ function Signup() {
 	const submitFn = async (event) => {
 		// i want to eject interceptors here
 		axiosSignup.interceptors.response.eject(interceptor_response);
-		console.log("submitFn event currentTarget: ", event.currentTarget);
+		// console.log("submitFn event currentTarget: ", event.currentTarget);
 		const form = event.currentTarget;
 		event.preventDefault();
 		if (form.checkValidity() === false) {
-			console.log('form.checkValidity() === false');
+			// console.log('form.checkValidity() === false');
 			event.stopPropagation();
 			set_validated(true);
 		}
 		else {
-			console.log('Form data to submit:', form_Data);
+			// console.log('Form data to submit:', form_Data);
 			// signup the user to backend
-			console.log('UserList before duplicate verification', userList);
-			console.log('username before duplicate verification', form_Data.username);
+			// console.log('UserList before duplicate verification', userList);
+			// console.log('username before duplicate verification', form_Data.username);
 			// if (userList.includes(form_Data.username)) {
 			//     setError('Username already exists, try another one');
 			//     return;
@@ -69,7 +69,7 @@ function Signup() {
 				});
 				if (response && (response.status === 201)) 
 				{
-					console.log('user registred successfully response.data', response.data);
+					// console.log('user registred successfully response.data', response.data);
 					set_Form_Data({ username: '', email: '', pass: '', confimPass: '' });
 					setSuccessMessage('User registered successfully!');
 					setErrorMessages({});
@@ -77,7 +77,7 @@ function Signup() {
 
 			} catch (error) 
 			{
-				console.error('Error catched in signup.jsx ', error.response);
+				// console.error('Error catched in signup.jsx ', error.response);
 				if (error.response) {
 					if (error.response.status === 400) {
 						//bad request user already exists
@@ -90,9 +90,9 @@ function Signup() {
 					}
 				} else if (error.request) {
 					updateErrorMessages('Network', "Network error. Please try again later.");
-					// console.error('error REQUEST', error.request);
+					console.error('error REQUEST', error.request);
 				} else {
-					console.error('error ', error);
+					// console.error('error ', error);
 					updateErrorMessages('Client', "An unexpected error occurred. Please try again.");
 				}
 				// throw (error);
@@ -101,7 +101,7 @@ function Signup() {
 	};
 
 	const chngFn = (event) => {
-		console.log('chngFn event.target', event.target);
+		// console.log('chngFn event.target', event.target);
 		const { name, value } = event.target;
 		set_Form_Data({
 			...form_Data,
@@ -110,19 +110,19 @@ function Signup() {
 	};
 
 	useEffect(() => {
-		console.log('////////////// USEEFFECT FUNCTION /////////////');
+		// console.log('////////////// USEEFFECT FUNCTION /////////////');
 		const fetchUsersList = async () => {
 			try {
 				const response = await axiosSignup.get('/list/');
-				console.log('fetch list response.data', response.data);
+				// console.log('fetch list response.data', response.data);
 				setUserList (response.data);
 			} catch (error) {
-				console.log('Error fetching users list: ', error.message);
+				// console.log('Error fetching users list: ', error.message);
 			}
 		};
 
 		fetchUsersList();
-		console.log('UserList: ', userList);
+		// console.log('UserList: ', userList);
 	}, []);
 
 	return (

@@ -225,7 +225,7 @@ function VerifyForm() {
 		const [code, setCode] = useState("");
 		const handleVerify = (event) => {
 			event.preventDefault();
-			console.log("Code:", code);
+			// console.log("Code:", code);
 		};
 		return (
 			<div>

@@ -40,7 +40,7 @@ const NavLoggedIn = () => {
 			await axiosInstance.post('/setlanguage/', { language: lng, username: userinfo.user.username});
 			userinfo.setUser({ ...userinfo.user, language: lng });
 		  } catch (error) {
-			console.log('Error updating language:', error);
+			// console.log('Error updating language:', error);
 		  }
 	  };
 	const { t, i18n } = useTranslation();
@@ -48,7 +48,7 @@ const NavLoggedIn = () => {
 	const navigate = useNavigate();
 	const userinfo = useContext(userContext);
 	const avatar = userinfo.user.avatar ? userinfo.user.avatar.replace("/media", "") : '/yoshi.jpg';
-	console.log('avatar', avatar);
+	// console.log('avatar', avatar);
 
 	const UserMenu = (
 		<Image
@@ -62,14 +62,14 @@ const NavLoggedIn = () => {
 	)
 
 	const handleLogout = async () => {
-		console.log('NavLoggedIn: logout');
+		// console.log('NavLoggedIn: logout');
 		try {
 			const response = await axiosInstance.post('/logout/', {
 				"refresh_token": localStorage.getItem("refresh_token")
 			});
 		}
 		catch (e) {
-			console.log(e);
+			// console.log(e);
 			if (e.response.status === 400 || e.response.status === 401) {
 				setError("Session expired. Please log in again.");
 			}
@@ -81,7 +81,7 @@ const NavLoggedIn = () => {
 		localStorage.removeItem('user');
 		axiosInstance.defaults.headers['Authorization'] = null;
 		userinfo.setUser();
-		console.log('NavLoggedIn: logout successful frontend');
+		// console.log('NavLoggedIn: logout successful frontend');
 		navigate('/login');
 	};
 
@@ -151,11 +151,11 @@ const NavLoggedIn = () => {
 	const userinfo = useContext(userContext);
 
 	if (userinfo.user) {
-		console.log('MyNavbar: user logged in');
-		console.log('MyNavbar: user', userinfo.user);
+		// console.log('MyNavbar: user logged in');
+		// console.log('MyNavbar: user', userinfo.user);
 	}
 	else {
-		console.log('MyNavbar: user not logged in');
+		// console.log('MyNavbar: user not logged in');
 	}
 	// Fonction pour gérer la connexion de l'utilisateur
   

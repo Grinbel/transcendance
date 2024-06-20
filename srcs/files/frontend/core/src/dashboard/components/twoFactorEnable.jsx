@@ -15,7 +15,7 @@ function TwoFactorEnable() {
    // console.log(' in TWOFACTORENABLE /////////////// twoFaStatus', twoFaStatus);
 
     const custom_fetch = async () => {
-        console.log('TwoFactorEnable: custom_fetch');
+        // console.log('TwoFactorEnable: custom_fetch');
         try 
         {
             const response = await axiosInstance.get('/getprofile/');

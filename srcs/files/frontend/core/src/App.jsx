@@ -61,18 +61,18 @@ async function getProfile(user, setUser, error, setError){
 
 	} else
 	{
-		console.log('getProfile: no user in local storage');
-		console.log(("axios headers token :"), axiosInstance.defaults.headers['Authorization']);
+		// console.log('getProfile: no user in local storage');
+		// console.log(("axios headers token :"), axiosInstance.defaults.headers['Authorization']);
 		let userData = {};
 		await axiosInstance.get('getprofile/')
 			.then((response) => {
-				console.log('app: GETPROFILE response.data', response.data, userData);
+				// console.log('app: GETPROFILE response.data', response.data, userData);
 				userData =  response.data;
-				console.log('app: GETPROFILE userData', userData);
+				// console.log('app: GETPROFILE userData', userData);
 				return userData;
 			})
 			.catch((error) => {
-				console.log('axios getprofile failure, catched here in getProfile: ', error.response.status)
+				// console.log('axios getprofile failure, catched here in getProfile: ', error.response.status)
 				throw error;
 			});
 		return userData;
@@ -96,12 +96,12 @@ async function getProfile(user, setUser, error, setError){
 		// 	return user;
 		//   }, [user]);
 		useEffect(() => {
-			console.log('app: useEffect user start', user);
+			// console.log('app: useEffect user start', user);
 			const fetchUserProfile = async () => {
 				try {
-					console.log('app: useEffect tryblock');
+					// console.log('app: useEffect tryblock');
 					const userData = await getProfile();
-					console.log('app: useEffect getProfile userData', userData);
+					// console.log('app: useEffect getProfile userData', userData);
 					setUser(userData);
 				} catch (error) {
 					// setUser(...user, isLogged = false);
@@ -118,7 +118,7 @@ async function getProfile(user, setUser, error, setError){
 	useEffect(() => {
 		if (user != undefined){
 			i18n.changeLanguage(user.language);
-			console.log("USER!!!!!!!!!",user.language);
+			// console.log("USER!!!!!!!!!",user.language);
 		}
 	}, [user]);
 	useEffect(() => {
