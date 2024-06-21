@@ -7,6 +7,8 @@ import  { axiosInstance } from "../axiosAPI.js";
 import "./Home.css";
 import { Button } from "react-bootstrap";
 import { useTranslation } from 'react-i18next';
+
+
 function Image({changeAvatar }) {
 	const images = ['/badboy.png', '/princess.jpg', '/yoshi.jpg','/players.jpg', '/ponge.jpg', '/beaudibe.jpg',];
 	return (
@@ -23,6 +25,8 @@ function Image({changeAvatar }) {
 	  </div>
 	);
   }
+
+
 const Profile = () => {
 	const { t } = useTranslation();
 	let { username } = useParams();
@@ -130,28 +134,29 @@ const Profile = () => {
 
 
 	return (
-		<div>
-			<h1>{username}</h1>
-			<header className="add">
-				{friend != undefined && friend === false && <Button onClick={() => { action(username,"addfriend"); setFriend(true); }}>AddFriend</Button>}
-				{friend != undefined && friend === true && <Button onClick={() => { action(username,"unfriend"); setFriend(false);}}>Unfriend</Button>}
-				{block != undefined && block === false && <Button onClick={() => { action(username,"block"); setBlock(true);}}>Block</Button>}
-				{block != undefined && block === true && <Button onClick={() => { action(username,"unblock"); setBlock(false);}}>Unblock</Button>}
+		<div className="Profile">
+			<h1 className="profileName">{username}</h1>
+			<header className="addButtons">
+			{friend != undefined && friend === false && <Button onClick={() => { action(username,"addfriend"); setFriend(true); }}>{t('addfriend')}</Button>}
+            {friend != undefined && friend === true && <Button onClick={() => { action(username,"unfriend"); setFriend(false);}}>{t('unfriend')}</Button>}
+            {block != undefined && block === false && <Button onClick={() => { action(username,"block"); setBlock(true);}}>{t('block')}</Button>}
+            {block != undefined && block === true && <Button onClick={() => { action(username,"unblock"); setBlock(false);}}>{t('unblock')}</Button>}
+			{friend != undefined && friend === 0 && (
+				<div className="changeAvatar"> 
+					<h4 className="changeAvatarTitle">{t("change_avatar")}</h4>
+					<Image changeAvatar={changeAvatar} />
+				</div>
+				)}
 			</header>
-			<div className="friend">
-				<h6>{t('friend_list')}</h6>
+			<div className="friendList">
+				<h6 className="friendListTitle">{t('friend_list')}</h6>
 				{Array.isArray(friends.friends) && friends.friends.map((friend, index) => (
-					<div key={index} className="chat-message">
-						<div className="chat-username">
-							<a href="#" onClick={(e) => {e.preventDefault(); navigate(`/profile/${friend}`);}}>
-								{friend}
-							</a>
-						</div>
-						{/* <Image changeAvatar={changeAvatar} /> */}
+					<div key={index} className="friendItem">
+						
+							<a className="itemLink" href="#" onClick={(e) => {e.preventDefault(); navigate(`/profile/${friend}`);}}> {friend} </a>
 					</div>
 				))}
-				<h4>{t("change_avatar")}</h4>
-				<Image changeAvatar={changeAvatar} />
+				
 			</div>
 		</div>
 	  );

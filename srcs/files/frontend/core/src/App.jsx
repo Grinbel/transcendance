@@ -34,11 +34,6 @@ import { UserProvider, userContext } from "./contexts/userContext.jsx";
 import MultiOptions from './MultiOptions.jsx';
 
 
-//todo:
-// manage user loging with wrong credentials errors
-
-
-//make getProfile async function, show me syntax in comment
 
 const PrivateRoute = ({ component: Component, user, ...rest }) => (
 	<Route
@@ -69,7 +64,8 @@ async function getProfile(user, setUser, error, setError){
 			.catch((error) => {
 				// console.log('axios getprofile failure, catched here in getProfile: ', error.response.status)
 				throw error;
-			});
+			});				// console.log('app: GETPROFILE userData', userData);
+
 		return userData;
 }
 
@@ -101,8 +97,7 @@ async function getProfile(user, setUser, error, setError){
 					const userData = await getProfile();
 					// console.log('app: useEffect getProfile userData', userData);
 					setUser(userData);
-					i18n.changeLanguage(userData.language);
-					// console.log('app: useEffect getProfile User log', { ...userData, isLogged: true });
+					i18n.changeLanguage(userData.language);  
 					let newuser = { ...userData, isLogged: true };
 					setUser(newuser);
 					// console.log('app: useEffect getProfile User', user);
