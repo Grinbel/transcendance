@@ -1,0 +1,62 @@
+@import "../dashboard/pages/variables.scss";
+
+.profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    // background-color: whitesmoke;
+    // border-radius: 10px;
+    // box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    // width: 100%;
+    // max-width: 500px;
+    // margin: 0 auto;
+
+    .profileImage {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .profileInfo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+
+        .profileInfoItem {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: $textColor;
+
+            .profileInfoIcon {
+                font-size: 1.5rem;
+                color: $primaryColor;
+            }
+        }
+    }
+
+    .profileActions {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        align-items: center;
+
+        .profileActionButton {
+            cursor: pointer;
+            background-color: transparent;
+            border: none;
+            transition: transform 0.3s;
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+    }
+}
