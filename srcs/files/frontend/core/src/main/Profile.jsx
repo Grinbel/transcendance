@@ -156,7 +156,6 @@ const Profile = () => {
 							<a className="itemLink" href="#" onClick={(e) => {e.preventDefault(); navigate(`/profile/${friend}`);}}> {friend} </a>
 					</div>
 				))}
-				
 			</div>
 		</div>
 	  );
