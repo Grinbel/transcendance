@@ -134,7 +134,7 @@ function MultiGame() {
 		renderer.domElement.style.position = 'absolute';
 		renderer.domElement.style.top = 0;
 		renderer.domElement.style.left = 0;
-		renderer.domElement.style.zIndex = 1000; 
+		renderer.domElement.style.zIndex = 1000;
 		renderer.domElement.style.width = '100%';
 		renderer.domElement.style.height = '100%';
 		document.body.appendChild(renderer.domElement);
@@ -192,10 +192,8 @@ function MultiGame() {
 		dialogContainer.style.height = '50%';
 		dialogContainer.style.zIndex = 1001;
 		dialogContainer.style.color = 'white';
-
 		dialogContainer.style.backgroundColor = `rgba(1,1,0, 0.2)`;
-		dialogContainer.style.borderRadius =  '25%';
-
+		dialogContainer.style.borderRadius = '25%';
 		// dialogContainer.style.opacity= '30%';
 		dialogContainer.style.display = 'flex';
 		dialogContainer.style.justifyContent = 'center';
@@ -231,13 +229,9 @@ function MultiGame() {
 			let size = 8;
 			text.fontSize = (1 * 5) / size;
 			text.color = 0x0000ff;
-
 			text.rotation.x = Math.PI / 2;
 			text.position.y = options.stage_radius;
-			// Après avoir changé des propriétés, vous devez toujours appeler sync()
 			text.sync();
-
-			// Ajouter le texte à la scène
 			scene.add(text);
 			return text;
 		}
@@ -255,7 +249,6 @@ function MultiGame() {
 		ball_render.position.z = options.ball_radius;
 		options.ball_angle = Math.random() * Math.PI;
 
-		//	controls = new OrbitControls( camera, renderer.domElement );
 		const players = [];
 		for (let i = 0; i < options.nb_players; i++) {
 			players.push(new Player(i));
@@ -322,7 +315,7 @@ function MultiGame() {
 			}
 		}
 		const trailSpheres = [];
-		const trailFactor = 20; // Facteur pour ajuster la longueur de la traînée en fonction du rayon de la balle
+		const trailFactor = 20; // longueur de la traînée
 
 		function createTrailSphere(position, rotation, texture) {
 			const geometry = new THREE.SphereGeometry(
@@ -461,7 +454,6 @@ function MultiGame() {
 					ball_reset();
 				}
 			}
-			//ball_reset();
 		}
 
 		//* https://keyevents.netlify.app/
@@ -594,8 +586,6 @@ function MultiGame() {
 					players[i].mesh.rotation.z += directions[i] * options.player_speed;
 			}
 		}
-		//camera.position.x = 5;
-		//camera.position.y = 5;
 		camera.position.z = 10;
 		camera.lookAt(new THREE.Vector3(0, 0, 0));
 		const controls = new OrbitControls(camera, renderer.domElement);
@@ -679,7 +669,7 @@ function MultiGame() {
 				}
 				renderer.domElement.style.filter = 'none';
 				renderer.dispose();
-				window.removeEventListener('keydown', handleKeyDown, false);
+				window.removeEventListener('keydown', handleKeyDown_2, false);
 				disposeTrail();
 				navigate('/');
 			}

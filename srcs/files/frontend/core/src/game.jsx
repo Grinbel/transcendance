@@ -146,6 +146,7 @@ function Game() {
 		renderer.domElement.style.width = '100%';
 		renderer.domElement.style.height = '100%';
 		renderer.domElement.style.backgroundColor = 'transparent';
+		
 		document.body.appendChild(renderer.domElement);
 		const ball_form = new THREE.SphereGeometry(options.ball_radius, 32, 32);
 		const p1_weapon = new THREE.BoxGeometry(
@@ -210,6 +211,9 @@ function Game() {
 		dialogContainer.style.display = 'flex';
 		dialogContainer.style.justifyContent = 'center';
 		dialogContainer.style.alignItems = 'center';
+		dialogContainer.style.color = 'white';
+		dialogContainer.style.backgroundColor = `rgba(1,1,0, 0.2)`;
+		dialogContainer.style.borderRadius =  '25%';
 		document.body.appendChild(dialogContainer);
 		const message = document.createElement('p');
 		message.style.textAlign = 'center';
@@ -843,7 +847,6 @@ function Game() {
 						options.usernames.length === 15 ||
 						options.usernames.length === 3
 					) {
-						console.log('FIN DU TOURNOI');
 						//options.winner = create_text( options.score_p1>options.score_p2?options.name_p1:options.name_p2 + " REMPORTE LE TOURNOI");
 						//setShouldRunEffect(false);
 						for (let i = 0; i < options.usernames.length; i = i + 2) {
