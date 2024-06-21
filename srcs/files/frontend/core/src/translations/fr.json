@@ -124,5 +124,6 @@
 	"winner_multi": "LE GAGNANT EST : ",
 	"restart_button": "Appuyez sur la touche ESPACE pour retourner au menu principal",
 	"change_avatar": "Changement d'avatar:",
-	"options": "Options"
+	"options": "Options",
+	"please_login": "Veuillez vous connecter pour accéder à cette fonctionnalité"
 }

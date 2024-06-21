@@ -124,5 +124,6 @@
 	"winner_multi": "THE WINNER IS: ",
 	"restart_button": "Press the SPACE key to return to the main menu",
 	"change_avatar": "Change avatar:",
-	"options": "Options"
+	"options": "Options",
+	"please_login": "Please log in to access this feature"
 }
