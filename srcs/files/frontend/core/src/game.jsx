@@ -121,7 +121,7 @@ function Game() {
 			map: eye_texture,
 		});
 		const ia_eye = new THREE.Mesh(ia_eye_geometry, ia_eye_material);
-		scene.add(ia_eye);
+		if (options.player_is_ia) scene.add(ia_eye);
 		const target = new THREE.CircleGeometry(0.1, 32);
 		const target_material = new THREE.MeshBasicMaterial({
 			color: 0x00ff00,
@@ -146,7 +146,7 @@ function Game() {
 		renderer.domElement.style.width = '100%';
 		renderer.domElement.style.height = '100%';
 		renderer.domElement.style.backgroundColor = 'transparent';
-		
+
 		document.body.appendChild(renderer.domElement);
 		const ball_form = new THREE.SphereGeometry(options.ball_radius, 32, 32);
 		const p1_weapon = new THREE.BoxGeometry(
@@ -213,7 +213,7 @@ function Game() {
 		dialogContainer.style.alignItems = 'center';
 		dialogContainer.style.color = 'white';
 		dialogContainer.style.backgroundColor = `rgba(1,1,0, 0.2)`;
-		dialogContainer.style.borderRadius =  '25%';
+		dialogContainer.style.borderRadius = '25%';
 		document.body.appendChild(dialogContainer);
 		const message = document.createElement('p');
 		message.style.textAlign = 'center';
@@ -774,6 +774,12 @@ function Game() {
 				renderer.dispose();
 				resetOptions();
 				disposeTrail();
+				if (options.is_tournament) {
+					message_end_of_game(
+						options.room,
+						options.usernames[options.usernames.length - 1]
+					);
+				}
 				return;
 			}
 			if (
