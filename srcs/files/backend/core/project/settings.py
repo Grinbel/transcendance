@@ -222,14 +222,13 @@ CORS_EXPOSE_HEADERS = ['Set-Cookie']
 #     'https://localhost:5173/'
 #     'https://0.0.0.0:5173/',
 #     '',
-#     'null',
 # ]
 
 
+ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = ['*']
 
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', '0.0.0.0', ]
-ALLOWED_HOSTS = ['*']
 # CSRF_COOKIE_SAMESITE = 'None'
 # CSRF_COOKIE_SECURE = 'True'
 

@@ -144,6 +144,10 @@ async function getProfile(user, setUser, error, setError){
 		<userContext.Provider value={{user, setUser}}>
 			<div className="app">
 				<MyNavbar/>
+
+				{loading ? (
+          			<div>Loading...</div> // You can add a spinner or any loading indicator here
+        		) : (
 					<Routes>
 						<Route path="/dashboard" element={<Dashboard />}>
 							<Route index element={<Settings />} />
@@ -162,7 +166,8 @@ async function getProfile(user, setUser, error, setError){
 						<Route exact path="/" element={<Home />} />
 						<Route path="/*" element={<Error404 />} />
 					</Routes>
-				<Chat /> 
+				// {/* <Chat /> */}
+				)}
 			</div>
 		</userContext.Provider>
 	);

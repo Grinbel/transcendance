@@ -45,7 +45,7 @@ function Chat() {
 		
 		if (!websockets[roomName]) {
 			// console.log('user uuid', userInfo.user.id);
-		  websockets[roomName] = new WebSocket(`ws://${import.meta.env.VITE_API_SERVER_ADDRESS}:8000/users/ws/chat/${roomName}/?uuid=${userInfo.user.id}`);
+		  websockets[roomName] = new WebSocket(`wss://${import.meta.env.VITE_API_SERVER_ADDRESS}:8443/users/ws/chat/${roomName}/?uuid=${userInfo.user.id}`);
 		}
 		setMessages(prevMessages => [""]);
 		return websockets[roomName];
