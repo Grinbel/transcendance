@@ -15,6 +15,7 @@ function MultiGame() {
 	const { options } = useMultiGameContext();
 	const navigate = useNavigate();
 	options.ball_speed = options.ball_starting_speed;
+	let fontSize = window.innerWidth * 0.01 * window.innerHeight;
 	useEffect(() => {
 		if (options.nb_players === 7) return navigate('/');
 		let starting_location = getCurrentLocation();
@@ -297,6 +298,20 @@ function MultiGame() {
 					window.removeEventListener('keyup', handleKeyUp, false);
 					window.removeEventListener('mousemove', handleMouseMove);
 					window.addEventListener('keydown', handleKeyDown_2, false);
+					renderer.domElement.style.filter = 'blur(5px)';
+					dialogContainer.style.zIndex = 1001;
+					dialogContainer.style.top = '35%';
+					dialogContainer.style.left = '35%';
+					dialogContainer.style.width = '30%';
+					dialogContainer.style.height = '30%';
+					message.innerHTML = t('end_game_multi') + '<br>';
+					dialogContainer.style.color = 'white';
+					for (let i = 0; i < options.nb_players; i++) {
+						if (scores[i] === Math.max(...scores))
+							message.innerHTML += t('winner_multi') + ' ';
+						message.innerHTML += player_names[i] + ' : ' + scores[i] + '<br>';
+					}
+					message.innerHTML += t('restart_button');
 					return endgame();
 				}
 			}
@@ -455,6 +470,11 @@ function MultiGame() {
 				}
 			}
 		}
+		function handleResize() {
+			fontSize = (window.innerWidth + window.innerHeight) * 0.005;
+			message.style.fontSize = fontSize + 'px';
+		}
+		window.addEventListener('resize', handleResize);
 
 		//* https://keyevents.netlify.app/
 		function handleKeyDown(event) {
@@ -472,6 +492,7 @@ function MultiGame() {
 					dialogContainer.style.width = '30%';
 					dialogContainer.style.height = '30%';
 					message.innerHTML = player_buttons();
+					message.innerHTML += t('to_show_rules') + '<br>';
 					message.innerHTML += t('resume_button');
 					options.ball_pause = -1;
 				}
@@ -606,7 +627,7 @@ function MultiGame() {
 		options.ball_pause = -1;
 
 		function handleKeyDown_2(event) {
-			if (event === 32) options.ball_pause = 0;
+			if (event.keyCode === 32) options.ball_pause = 0;
 		}
 
 		function animate() {
@@ -647,22 +668,8 @@ function MultiGame() {
 		animate();
 
 		function endgame() {
-			renderer.domElement.style.filter = 'blur(5px)';
-			dialogContainer.style.zIndex = 1001;
-			dialogContainer.style.top = '35%';
-			dialogContainer.style.left = '35%';
-			dialogContainer.style.width = '30%';
-			dialogContainer.style.height = '30%';
-			message.innerHTML = t('end_game_multi') + '<br>';
-			dialogContainer.style.color = 'white';
-			for (let i = 0; i < options.nb_players; i++) {
-				if (scores[i] === Math.max(...scores))
-					message.innerHTML += t('winner_multi') + ' ';
-				message.innerHTML += player_names[i] + ' : ' + scores[i] + '<br>';
-			}
-			message.innerHTML += t('restart_button');
-
 			if (options.ball_pause === 0) {
+				scene.clear();
 				dialogRenderer.dispose();
 				if (dialogContainer.parentNode) {
 					dialogContainer.parentNode.removeChild(dialogContainer);
@@ -673,6 +680,7 @@ function MultiGame() {
 				disposeTrail();
 				navigate('/');
 			}
+			requestAnimationFrame(endgame);
 		}
 
 		return () => {
