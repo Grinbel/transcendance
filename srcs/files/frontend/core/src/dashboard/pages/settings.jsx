@@ -87,7 +87,7 @@ const Settings = () => {
 	return alias.trim() !== '' && /^[a-zA-Z0-9_]+$/.test(alias);
 	};
 
-	const handleChange = (e) => {
+/*	const handleChange = (e) => {
 		
 		const { name, value } = e.target;
 		// console.log('handleChange event target', name, value);
@@ -129,10 +129,10 @@ const Settings = () => {
 			break;
 		};
 
-	};
+	};*/
 	
 
-	const handleSave = async () => {
+/*	const handleSave = async () => {
 		// console.log('///////////////handleSave  "\\\\\\\\\\\"')
 		const { username, email, password, alias } = formData;
 		if (validateUsername(username) && validateEmail(email) && validatePassword(password) && validateAlias(alias)) 
@@ -168,7 +168,7 @@ const Settings = () => {
 			alias: validateAlias(alias) ? '' : 'Invalid alias.',
 		  });
 		}
-	};
+	};*/
 
 	return (
 		<div className="settings">

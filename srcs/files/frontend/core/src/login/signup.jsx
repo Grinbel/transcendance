@@ -89,7 +89,7 @@ function Signup() {
 						}
 					}
 				} else if (error.request) {
-					updateErrorMessages('Network', "Network error. Please try again later.");
+					updateErrorMessages('Network', "NetError");
 					console.error('error REQUEST', error.request);
 				} else {
 					// console.error('error ', error);
@@ -138,7 +138,7 @@ function Signup() {
 				{Object.entries(errorMessages).length > 0 && (
 					<div style={{ color: 'red' }}>
 						{Object.entries(errorMessages).map(([field, message]) => (
-							<p key={field}>{field}: {message}</p>
+							<p key={field}>{t(field)}: {t(message)}</p>
 						))}
 					</div>
 				)}
