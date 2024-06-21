@@ -39,6 +39,11 @@ def choice(request):
 
 	# if (Tournament.objects.filter(players=user).exists()):
 	# 	return Response({'Error':'inside'})
+	tournaments = Tournament.objects.all()
+	for tournament in tournaments:
+		usernames = tournament.getAllUsername()
+		if (usernames == []):
+			tournament.delete()
 
 	if (join and tournamentId == ''):
 		name = Tournament.getNextTournament(alias=alias,name=user.username)
@@ -154,6 +159,7 @@ class Matchmaking(WebsocketConsumer):
 					'username': 'all',
 				}
 			)
+			players = tournament.players.all()
 
 	def receive(self, text_data):
 		# Tournament.objects.all().delete()
@@ -167,7 +173,6 @@ class Matchmaking(WebsocketConsumer):
 		tournament.addUser(user)
 		tournament.save()
 		players = tournament.players.all()
-
 		async_to_sync(self.channel_layer.group_send)(
 			self.tournament_name,
 			{
