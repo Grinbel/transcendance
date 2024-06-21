@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Container from 'react-bootstrap/Container';
@@ -77,32 +77,39 @@ const Home = () => {
 			navigate('/game');
 		};
 	return (
-		<Container fluid className="homeContainer">
-			<Row className="mb-3">
-				<Col className="columnStyle">
-					<Button variant="primary" as={Link} to="/play" className="homeButtons">{t('1V1')}</Button>
-				</Col>
-				<Col className="columnStyle">
-					<Button variant="primary" onClick={handle2P} className="homeButtons">{t('Local 2 Players')}</Button>
-				</Col>
-				<Col className="columnStyle">
-					<Button variant="primary" onClick={handleIA_Custom} className="homeButtons">{t('Local Vs better Ia')}</Button>
-				</Col>
-				<Col className="columnStyle">
-					<Button variant="primary" onClick={tournoitest} className="homeButtons"> {t('Test Tournoi')}</Button>
-				</Col>
-				<Col className="columnStyle ">
-  					<Button variant="primary" as={Link} to="/multi-options" className="homeButtons">{t('Multi')}</Button>
-				</Col>
-				<Col className="columnStyle ">
-					
-				<Button variant="primary" onClick={handleVsVacheClick} className="homeButtons">{t('Tac vs Vache')}</Button>
-				</Col>
-				<Col className="columnStyle ">
-					<Button variant="primary" as={Link} to="/play" className="homeButtons">{t('TOURNAMENT')}</Button>
-				</Col>
-			</Row>
-		</Container>
-	);
+		<div>
+			{userinfo.user ? (
+				<Container fluid className="homeContainer">
+					<Row className="mb-3">
+						<Col className="columnStyle">
+							<Button variant="primary" as={Link} to="/play" className="homeButtons">{t('1V1')}</Button>
+						</Col>
+						<Col className="columnStyle">
+							<Button variant="primary" onClick={handle2P} className="homeButtons">{t('Local 2 Players')}</Button>
+						</Col>
+						<Col className="columnStyle">
+							<Button variant="primary" onClick={handleIA_Custom} className="homeButtons">{t('Local Vs better Ia')}</Button>
+						</Col>
+						<Col className="columnStyle">
+							<Button variant="primary" onClick={tournoitest} className="homeButtons"> {t('Test Tournoi')}</Button>
+						</Col>
+						<Col className="columnStyle ">
+							<Button variant="primary" as={Link} to="/multi-options" className="homeButtons">{t('Multi')}</Button>
+						</Col>
+						<Col className="columnStyle ">
+							
+						<Button variant="primary" onClick={handleVsVacheClick} className="homeButtons">{t('Tac vs Vache')}</Button>
+						</Col>
+						<Col className="columnStyle ">
+							<Button variant="primary" as={Link} to="/play" className="homeButtons">{t('TOURNAMENT')}</Button>
+						</Col>
+					</Row>
+				</Container>
+			) : (
+				<Navigate to='/login'/>
+			)};
+		</div>
+	)
 }
+
 export default Home;

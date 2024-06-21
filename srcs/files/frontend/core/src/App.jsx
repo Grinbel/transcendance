@@ -55,13 +55,7 @@ const PrivateRoute = ({ component: Component, user, ...rest }) => (
 
 async function getProfile(user, setUser, error, setError){
 	// localStorage.removeItem('user');
-	const userStringified = localStorage.getItem('user');
-	if (userStringified) {
-		const userData = JSON.parse(userStringified);
-		return (userData);
 
-	} else
-	{
 		console.log('getProfile: no user in local storage');
 		console.log(("axios headers token :"), axiosInstance.defaults.headers['Authorization']);
 		let userData = {};
@@ -77,8 +71,6 @@ async function getProfile(user, setUser, error, setError){
 				throw error;
 			});
 		return userData;
-	}
-
 }
 
 	// const  appContext = createContext(null);
@@ -88,9 +80,11 @@ async function getProfile(user, setUser, error, setError){
 		
 		const [user, setUser] = useState();
 		const [error, setError] = useState();
+		const [loading, setLoading] = useState(true);
 
 		const location = useLocation();
 		const navigate = useNavigate();
+
 		// const [loading, setLoading] = useState(true);
 		// const userMemo = useMemo(() => {
 		// console.log('app: user', user);
@@ -99,18 +93,16 @@ async function getProfile(user, setUser, error, setError){
 		useEffect(() => {
 			console.log('app: useEffect user start', user);
 
-			if(!user)
-			{
-				console.log('axiosInstance: baseURL', `${import.meta.env.VITE_API_SERVER_ADDRESS}`);
-
-				const fetchUserProfile = async () => {
-					try {
-						console.log('app: useEffect tryblock');
-						const userData = await getProfile();
-						console.log('app: useEffect getProfile userData', userData);
-						setUser(userData);
-						i18n.changeLanguage(userData.language);
-						console.log('app: useEffect getProfile User log', { ...userData, isLogged: true });
+			console.log('axiosInstance: baseURL', `${import.meta.env.VITE_API_SERVER_ADDRESS}`);
+			
+			const fetchUserProfile = async () => {
+				try {
+					console.log('app: useEffect tryblock');
+					const userData = await getProfile();
+					console.log('app: useEffect getProfile userData', userData);
+					setUser(userData);
+					i18n.changeLanguage(userData.language);
+					console.log('app: useEffect getProfile User log', { ...userData, isLogged: true });
 					let newuser = { ...userData, isLogged: true };
 					setUser(newuser);
 					console.log('app: useEffect getProfile User', user);
@@ -123,17 +115,33 @@ async function getProfile(user, setUser, error, setError){
 					localStorage.removeItem('refreshToken');
 					if (location.pathname !== '/login' && location.pathname !== '/signup')
 					navigate('/login');
-					}
-				};
-				fetchUserProfile();
+				}
+				finally {
+					setLoading(false);
+				}
+			};
+
+
+			const userStringified = localStorage.getItem('user');
+			if (userStringified) {
+				const userData = JSON.parse(userStringified);
+				setUser(userData);
 			}
+			if (!user) {
+				fetchUserProfile();
+			  } else {
+				setLoading(false);
+			  }
 		}, []);
 		
-
 	return (
 		<userContext.Provider value={{user, setUser}}>
 			<div className="app">
 				<MyNavbar/>
+
+				{loading ? (
+          			<div>Loading...</div> // You can add a spinner or any loading indicator here
+        		) : (
 					<Routes>
 						<Route path="/dashboard" element={<Dashboard />}>
 							<Route index element={<Settings />} />
@@ -152,8 +160,8 @@ async function getProfile(user, setUser, error, setError){
 						<Route exact path="/" element={<Home />} />
 						<Route path="/*" element={<Error404 />} />
 					</Routes>
-				{/* {showLoginForm && <Login />} */}
-				{/* <Chat /> */}
+				// {/* <Chat /> */}
+				)}
 			</div>
 		</userContext.Provider>
 	);
