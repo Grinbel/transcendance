@@ -18,7 +18,7 @@ import { useMultiGameContext } from "../contexts/MultiGameContext.jsx";
 import './Home.css';
 
 const Home = () => {
-
+	const [displayer, setDisplayer] = useState("");
 	const userinfo = useContext(userContext);
 	const navigate = useNavigate();
 	// console.log('HOME userinfo.user', userinfo.user);
@@ -44,6 +44,11 @@ const Home = () => {
 	};
 
 		const handle2P= () => {
+			if (userinfo.user === undefined){
+				setDisplayer(t("please_login"));
+				return;
+			}
+			setDisplayer("");
 			setOptions(prevOptions => ({
 				...prevOptions, // Gardez les options précédentes
 				name_p1: userinfo.user.username,
@@ -53,6 +58,11 @@ const Home = () => {
 			navigate('/game');
 		};
 		const handleIA_Custom= () => {
+			if (userinfo.user === undefined){
+				setDisplayer(t("please_login"));
+				return;
+			}
+			setDisplayer("");
 			const avatar = userinfo.user.avatar ? userinfo.user.avatar.replace("/media", "") : '/yoshi.jpg';
 			setOptions(prevOptions => ({
 				...prevOptions,
@@ -60,6 +70,7 @@ const Home = () => {
 				stage_height : 10,
 				stage_width : 15,
 				ia_time_between_checks : 60,
+				ball_starting_speed: 0.1,
 				easy_mode : 0,
 				real_game : 1,
 				texture_p1 : avatar,
@@ -69,6 +80,11 @@ const Home = () => {
 			navigate('/game');
 		};
 		const tournoitest = () => {
+			if (userinfo.user === undefined){
+				setDisplayer(t("please_login"));
+				return;
+			}
+			setDisplayer("");
 			setOptions(prevOptions => ({
 				...prevOptions, 
 				is_tournament : 1,
@@ -79,9 +95,8 @@ const Home = () => {
 				//usernames : ["Alaide", "Besouin"],
 				//avatar : ["/badboy.png","/players.jpg"],
 				avatar : ["/badboy.png","/players.jpg","/princess.jpg","/ponge.jpg","/yoshi.jpg","/xrenoux.jpg","/abelhadi.jpg","/beaudibe.jpg"],
-
-		}));
-		navigate('/game');
+			}));
+			navigate('/game');
 	};
 	return (
 		<Container fluid className="homeContainer" style={{height: '92vh'}}>
@@ -108,6 +123,9 @@ const Home = () => {
 				{/* <Col className="columnStyle ">
 					<Button variant="primary" as={Link} to="/play" className="homeButtons">{t('TOURNAMENT')}</Button>
 				</Col> */}
+				<div className="displayer-errors">
+					{displayer}
+				</div>
 			</Row>
 		</Container>
 	);

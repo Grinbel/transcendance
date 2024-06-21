@@ -44,8 +44,8 @@ function Play() {
 		// if (join  && formData.tournamentId === ""){
 		// 	return;
 		// }
-		if (userInfo.user.isLogged ===  false){
-			setDisplayer("Please login to play");
+		if (userInfo.user === undefined){
+			setDisplayer(t("please_login"));
 			return;
 		}
 		setDisplayer("");

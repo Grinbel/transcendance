@@ -125,6 +125,7 @@
 	"restart_button": "Appuyez sur la touche ESPACE pour retourner au menu principal",
 	"change_avatar": "Changement d'avatar:",
 	"options": "Options",
+	"please_login": "Veuillez vous connecter pour accéder à cette fonctionnalité",
 	"NetError": "Erreur réseau. Vérifiez votre connexion.",
 	"UnknownError": "Une erreur inconnue est survenue.",
 	"Invalid token": "Jeton invalide",

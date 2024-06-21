@@ -125,6 +125,7 @@
 	"restart_button": "Drücken Sie die LEERTASTE, um zum Hauptmenü zurückzukehren",
 	"change_avatar": "Avatar ändern:",
 	"options": "Optionen",
+	"please_login": "Bitte melden Sie sich an, um fortzufahren",
 	"NetError": "Netzwerkfehler. Überprüfen Sie Ihre Verbindung.",
 	"UnknownError": "Ein unbekannter Fehler ist aufgetreten.",
 	"Invalid token": "Ungültiges Token",

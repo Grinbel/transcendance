@@ -34,6 +34,7 @@ function Language({ t, changeLanguage }) {
 
 // Composant pour la barre de navigation lorsqu'un utilisateur est connecté
 const NavLoggedIn = () => {
+
 	const changeLanguage = async (lng) => {
 		i18n.changeLanguage(lng);
 		try {
@@ -91,7 +92,7 @@ const NavLoggedIn = () => {
 		<Navbar  collapseOnSelect expand="sm" className="bg-body-tertiary">
 		  <Container >
 
-			<Navbar.Brand onClick={() => navigate('/')} className='logoName'>
+			<Navbar.Brand as={Link} to='/' className='logoName'>
 				Pong
 			</Navbar.Brand> 
 			

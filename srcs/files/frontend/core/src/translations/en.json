@@ -125,6 +125,7 @@
 	"restart_button": "Press the SPACE key to return to the main menu",
 	"change_avatar": "Change avatar:",
 	"options": "Options",
+	"please_login": "Please log in to access this feature",
 	"NetError": "Network error. Please check your connection.",
 	"UnknownError": "An unknown error occurred.",
 	"Invalid token": "Invalid token",
