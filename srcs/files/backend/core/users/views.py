@@ -344,10 +344,25 @@ class Logout(APIView):
 					'username': user.username,
 				}
 			)
+			tournaments = Tournament.objects.all()
+			for tournament in tournaments:
+				if (tournament.players.filter(id=user.id).exists()):
+					tournament.removeUser(user)
+					tournament.save()
+					if (tournament.players.count() <= 0):
+						tournament.players.clear()
+						tournament.delete()
+					tournament.save()
+			user.save()
+
 			#remove user from tournament
 			if (Tournament.objects.filter(players=user).exists()):
 				tournament = Tournament.objects.get(players=user)
 				tournament.removeUser(user)
+				tournament.save()
+				
+				if (tournament.players.count() <= 0):
+					tournament.delete()
 			user.save()
 			return Response(status=status.HTTP_205_RESET_CONTENT)
 		except Exception as e:
