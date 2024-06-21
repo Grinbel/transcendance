@@ -1,6 +1,6 @@
 {
 	"welcome": "Willkommen in unserer App!",
-	"1V1": "Spiel mit Matchmaking",
+	"1V1": "Benutzerdefiniertes Spiel / Turnier",
 	"Local 2 Players": "Schnelles Spiel",
 	"Local Vs better Ia": "Schnelles Spiel mit KI",
 	"Test Tournoi": "Turniertester",
@@ -152,5 +152,8 @@
 	"Email is already in use.": "E-Mail wird bereits verwendet.",
 	"A user with that username already exists.": "Ein Benutzer mit diesem Benutzernamen existiert bereits.",
 	"Enter a valid email address.": "Geben Sie eine gültige E-Mail-Adresse ein.",
-	"to_show_rules": "Drücken Sie die ESC-Taste, um die Regeln anzuzeigen"
+	"to_show_rules": "Drücken Sie die ESC-Taste, um die Regeln anzuzeigen",
+	"invite_2" : "Einladen",
+	"Hide Chat" : "Chat ausblenden",
+	"Show Chat" : "Chat anzeigen"
 }

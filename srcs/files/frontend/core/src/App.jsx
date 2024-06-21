@@ -56,8 +56,8 @@ const PrivateRoute = ({ component: Component, user, ...rest }) => (
 async function getProfile(user, setUser, error, setError){
 	// localStorage.removeItem('user');
 
-		console.log('getProfile: no user in local storage');
-		console.log(("axios headers token :"), axiosInstance.defaults.headers['Authorization']);
+		// console.log('getProfile: no user in local storage');
+		// console.log(("axios headers token :"), axiosInstance.defaults.headers['Authorization']);
 		let userData = {};
 		await axiosInstance.get('getprofile/')
 			.then((response) => {
@@ -90,10 +90,11 @@ async function getProfile(user, setUser, error, setError){
 		// console.log('app: user', user);
 		// 	return user;
 		//   }, [user]);
+		
 		useEffect(() => {
-			console.log('app: useEffect user start', user);
+			// console.log('app: useEffect user start', user);
 
-			console.log('axiosInstance: baseURL', `${import.meta.env.VITE_API_SERVER_ADDRESS}`);
+			// console.log('axiosInstance: baseURL', `${import.meta.env.VITE_API_SERVER_ADDRESS}`);
 			
 			const fetchUserProfile = async () => {
 				try {
@@ -141,32 +142,34 @@ async function getProfile(user, setUser, error, setError){
 		}
 	}, [user]);
 	return (
-		<userContext.Provider value={{user, setUser}}>
+		<userContext.Provider value={{user, setUser}}> 
 			<div className="app">
 				<MyNavbar/>
-
+	
 				{loading ? (
-          			<div>Loading...</div> // You can add a spinner or any loading indicator here
-        		) : (
-					<Routes>
-						<Route path="/dashboard" element={<Dashboard />}>
-							<Route index element={<Settings />} />
-						</Route>
-						<Route path="/multi-options" element={<MultiOptions />} />
-						<Route path="/play" element={<Play />} />
-						<Route path="/login" element={<Login />} /> 
-						<Route path="/signup" element={<Signup />} />
-						<Route path="/tournament" element={<Tournament />} />
-						<Route path="/about" element={<About />} />
-						<Route path="/Game/" element={<Game />} />
-						<Route path="/profile" element={<Profile />} />
-
-						<Route path="/profile/:username" element={<Profile />} />
-						<Route path="/MultiGame/" element={<MultiGame />} />
-						<Route exact path="/" element={<Home />} />
-						<Route path="/*" element={<Error404 />} />
-					</Routes>
-				// {/* <Chat /> */}
+					<div>Loading...</div> // You can add a spinner or any loading indicator here
+				) : (
+					<>
+						<Routes>
+							<Route path="/dashboard" element={<Dashboard />}>
+							<Route index path="/dashboard/settings" element={<Settings />} />
+							</Route>
+							<Route path="/multi-options" element={<MultiOptions />} />
+							<Route path="/play" element={<Play />} />
+							<Route path="/login" element={<Login />} /> 
+							<Route path="/signup" element={<Signup />} />
+							<Route path="/tournament" element={<Tournament />} />
+							<Route path="/about" element={<About />} />
+							<Route path="/Game/" element={<Game />} />
+							<Route path="/profile" element={<Profile />} />
+	
+							<Route path="/profile/:username" element={<Profile />} />
+							<Route path="/MultiGame/" element={<MultiGame />} />
+							<Route exact path="/" element={<Home />} />
+							<Route path="/*" element={<Error404 />} />
+						</Routes>
+						<Chat />
+					</>
 				)}
 			</div>
 		</userContext.Provider>

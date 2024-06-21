@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 
 
 function Chat() {
+	const [messages, setMessages] = useState([]);
 	const { t } = useTranslation();
 	const userInfo = useContext(userContext);
 	// console.log('CHAT //// userInfo', userInfo.user);
@@ -24,7 +25,6 @@ function Chat() {
 	const [formData, setFormData] = useState({ message: '', date: '', username: '', type: "chat"});
 	const [privateMessage,setPrivate]= useState({message:'', receiver:''});
 	const [error, setError] = useState(null);
-	const [messages, setMessages] = useState([]);
 	const [ws, setWs] = useState(null);
 	const messagesEndRef = React.createRef()
 	const [displayer, setdisplayer] = useState("");
@@ -44,10 +44,8 @@ function Chat() {
 	function getWebSocket(roomName) {
 		
 		if (!websockets[roomName]) {
-			// console.log('user uuid', userInfo.user.id);
 		  websockets[roomName] = new WebSocket(`wss://${import.meta.env.VITE_API_SERVER_ADDRESS}:8443/users/ws/chat/${roomName}/?uuid=${userInfo.user.id}`);
 		}
-		setMessages(prevMessages => [""]);
 		return websockets[roomName];
 	  }
 
@@ -69,14 +67,14 @@ function Chat() {
 		setFormData(prevState => ({...prevState, username: userInfo.user.username}));
 		const ws = getWebSocket(roomName);
 		ws.onopen = () => {
+			if (userInfo.user === undefined || messages.length > 0)
+				return ;
 			ws.send(JSON.stringify({type:"connected",username: userInfo.user.username}));
-			// console.log('ws chat opened', userInfo.user)
 		};
 		ws.onclose = () => {
 			// console.log('ws chat closed')
 		};
 		ws.onerror = e =>{
-
 			//  console.log('ws chat error', e);
 		}
 		ws.onmessage = e => {
@@ -149,6 +147,7 @@ function Chat() {
 
 	const handlePrivate = async (event) =>{
 		event.preventDefault();
+
 		if (userInfo.user.isLogged ===  false) {
 			setdisplayer(t('need_login'));
 			// console.log("Need to be logged in   ", displayer);
@@ -161,6 +160,7 @@ function Chat() {
 			const clean =xss(privateMessage.message);
 
 			const sent = JSON.stringify({type:'private', message: clean ,username: userInfo.user.username, receiver:privateMessage.receiver})
+
 			ws.send(sent);
 		} catch (error) {
 			setError(error.message);
@@ -305,13 +305,13 @@ function Chat() {
 				throw (error);
 			}
 		}
-	if (userInfo.user === undefined || location.pathname === '/game' ){
+	if (userInfo.user === undefined || location.pathname === '/game' || location.pathname === '/multigame'){
 		return (<div></div>);
 	}
 
 	return (
 		<div>
-			<button className="hide-chat" onClick={() => setHideChat(!hideChat)}>{hideChat ? 'Show Chat' : 'Hide Chat'}</button>
+			<button className="hide-chat" onClick={() => setHideChat(!hideChat)}>{hideChat ? t('Show Chat') : t('Hide Chat')}</button>
 			<div id="chatWindow" className={`chat-window ${hideChat ? 'hidden' : ''}`}>
 				<div id="chatHeader" className="chat-header">
 					<div id="chatTitle" className="chat-title">{t(hideChat ? '' : 'Chat')}</div>
@@ -331,7 +331,7 @@ function Chat() {
 										{friend != undefined && friend === true && <NavDropdown.Item onClick={() => action(message.username,"unfriend")}>{t('unfriend')}</NavDropdown.Item>}
 										{block != undefined && block === false && <NavDropdown.Item onClick={() => action(message.username,"block")}>{t('block')}</NavDropdown.Item>}
 										{block != undefined && block === true && <NavDropdown.Item onClick={() => action(message.username,"unblock")}>{t('unblock')}</NavDropdown.Item>}
-										{userInfo.user.tournament != ""&&message.username != userInfo.user.username && <NavDropdown.Item onClick={() => sendInvite(message.username)}>Invite</NavDropdown.Item>}
+										{window.location.pathname === "/tournament/"&&message.username != userInfo.user.username && <NavDropdown.Item onClick={() => sendInvite(message.username)}>{t('invite_2')}</NavDropdown.Item>}
 										{privateChat(message.username)}
 									</NavDropdown>
 								</Nav>}

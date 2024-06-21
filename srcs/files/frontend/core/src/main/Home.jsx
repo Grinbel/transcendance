@@ -33,26 +33,21 @@ const Home = () => {
 	// 		navigate('/login');
 	// 	}
 	// }, [userinfo]);
-	const handleVsVacheClick = () => {
-		setOptions(prevOptions => ({
-			...prevOptions, // Gardez les options précédentes
-			name_p1: userinfo.user.username,
-			real_game : 1,
-		}));
-		navigate('/game');
-	};
-
 		const handle2P= () => {
 			if (userinfo.user === undefined){
 				setDisplayer(t("please_login"));
 				return;
 			}
+			const avatar = userinfo.user.avatar ? userinfo.user.avatar.replace("/media", "") : '/yoshi.jpg';
 			setDisplayer("");
 			setOptions(prevOptions => ({
-				...prevOptions, // Gardez les options précédentes
+				...prevOptions, 
 				name_p1: userinfo.user.username,
+				texture_p1 : avatar,
 				real_game : 1,
-				player_is_ia : 0, 
+				player_is_ia : 0,
+				name_p2 : 'Peach',
+				texture_p2 : "princess.jpg"
 			}));
 			navigate('/game');
 		};
@@ -66,6 +61,7 @@ const Home = () => {
 			setOptions(prevOptions => ({
 				...prevOptions,
 				name_p1: userinfo.user.username,
+				name_p2 : 'Bowser',
 				stage_height : 10,
 				stage_width : 15,
 				ia_time_between_checks : 60,
@@ -73,34 +69,14 @@ const Home = () => {
 				easy_mode : 0,
 				real_game : 1,
 				texture_p1 : avatar,
-				texture_p1_ball : "yoshi_egg.jpg",
-				texture_p2 : "princess.jpg"
+				texture_p2 : "badboy.png"
 			}));
 			navigate('/game');
 		};
-		const tournoitest = () => {
-			if (userinfo.user === undefined){
-				setDisplayer(t("please_login"));
-				return;
-			}
-			setDisplayer("");
-			setOptions(prevOptions => ({
-				...prevOptions, 
-				is_tournament : 1,
-				score_to_get : 1, 
-        		score_diff : 0,
-				real_game : 1,
-				usernames : ["Alaide", "Besouin", "Crame", "Dorothée", "Eugène", "Félicie", "Gaston", "Huguette" ],
-				//usernames : ["Alaide", "Besouin"],
-				//avatar : ["/badboy.png","/players.jpg"],
-				avatar : ["/badboy.png","/players.jpg","/princess.jpg","/ponge.jpg","/yoshi.jpg","/xrenoux.jpg","/abelhadi.jpg","/beaudibe.jpg"],
-			}));
-			navigate('/game');
-	};
 	return (
 		<div>
 			{userinfo.user ? (
-				<Container fluid className="homeContainer" style={{height: '92vh'}}>
+				<Container fluid className="homeContainer" style={{height: '89vh'}}>
 					<Row className="mb-3">
 						<Col className="columnStyle">
 							<Button variant="primary" as={Link} to="/play" className="homeButtons">{t('1V1')}</Button>
@@ -111,9 +87,9 @@ const Home = () => {
 						<Col className="columnStyle">
 							<Button variant="primary" onClick={handleIA_Custom} className="homeButtons">{t('Local Vs better Ia')}</Button>
 						</Col>
-						<Col className="columnStyle">
+						{/* <Col className="columnStyle">
 							<Button variant="primary" onClick={tournoitest} className="homeButtons"> {t('Test Tournoi')}</Button>
-						</Col>
+						</Col> */}
 						<Col className="columnStyle ">
 							<Button variant="primary" as={Link} to="/multi-options" className="homeButtons">{t('Multi')}</Button>
 						</Col>

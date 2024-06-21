@@ -26,7 +26,7 @@ export const MultiGameProvider = ({ children }) => {
         ball_radius : 0.5,
 
 //! OPTIONS DE GAMEPLAY
-        ball_starting_speed : 0.03,
+        ball_starting_speed : 0.02,
         ball_speed : '',
         ball_x : 0,
         ball_y : 0,
@@ -34,7 +34,7 @@ export const MultiGameProvider = ({ children }) => {
         ball_x_speed : 0,
         ball_y_speed : 0,
         ball_pause : 0,
-        ball_acc : 1.3,
+        ball_acc : 1.1,
         ball_bounces : 0,
         score_to_get : 30, //Score a obtenir pour gagner
         score_diff : 5, //ecart minimal pour gagner

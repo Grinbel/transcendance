@@ -1,6 +1,6 @@
 {
 	"welcome": "Welcome to our app!",
-	"1V1": "Matchmaking Game",
+	"1V1": "Custom Game / Tournament",
 	"Local 2 Players": "Quick Game",
 	"Local Vs better Ia": "Quick game with AI",
 	"Test Tournoi": "Tournament tester",
@@ -152,5 +152,8 @@
 	"Email is already in use.": "Email is already in use.",
 	"A user with that username already exists.": "A user with that username already exists.",
 	"Enter a valid email address." : "Enter a valid email address.",
-	"to_show_rules" : "To display the rules, press the ESC key"
+	"to_show_rules" : "To display the rules, press the ESC key",
+	"invite_2" : "Invite",
+	"Hide Chat" : "Hide Chat",
+	"Show Chat" : "Show Chat"
 }

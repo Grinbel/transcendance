@@ -1,6 +1,6 @@
 {
 	"welcome": "Bienvenue dans notre application!",
-	"1V1": "Partie avec Matchmaking",
+	"1V1": "Partie Customisee / Tournoi",
 	"Local 2 Players": "Partie Rapide",
 	"Local Vs better Ia": "Partie rapide avec IA",
 	"Test Tournoi": "testeur de tournoi",
@@ -152,5 +152,8 @@
 	"Email is already in use.": "L'email est déjà utilisé.",
 	"A user with that username already exists.": "Un utilisateur avec ce nom d'utilisateur existe déjà.",
 	"Enter a valid email address." : "Entrez une adresse e-mail valide.",
-	"to_show_rules" : "Pour afficher les règles, appuyez sur la touche ESC"
+	"to_show_rules" : "Pour afficher les règles, appuyez sur la touche ESC",
+	"invite_2" : "Inviter",
+	"Hide Chat" : "Cacher le chat",
+	"Show Chat" : "Afficher le chat"
 }

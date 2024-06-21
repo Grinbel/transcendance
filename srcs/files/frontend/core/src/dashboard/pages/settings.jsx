@@ -174,7 +174,7 @@ const Settings = () => {
 		<div className="settings">
 				<div className="settingsContainer">
 					<div className="settingsHeader">
-						<span className="settingsTitle">t('options')</span>
+						<span className="settingsTitle">{t('options')}</span>
 					</div>
 					<TwoFactorEnable/>
 				</div>

@@ -133,10 +133,16 @@ const Profile = () => {
 		<div>
 			<h1>{username}</h1>
 			<header className="add">
-				{friend != undefined && friend === false && <Button onClick={() => { action(username,"addfriend"); setFriend(true); }}>AddFriend</Button>}
-				{friend != undefined && friend === true && <Button onClick={() => { action(username,"unfriend"); setFriend(false);}}>Unfriend</Button>}
-				{block != undefined && block === false && <Button onClick={() => { action(username,"block"); setBlock(true);}}>Block</Button>}
-				{block != undefined && block === true && <Button onClick={() => { action(username,"unblock"); setBlock(false);}}>Unblock</Button>}
+				{friend != undefined && friend === false && <Button onClick={() => { action(username,"addfriend"); setFriend(true); }}>{t('addfriend')}</Button>}
+				{friend != undefined && friend === true && <Button onClick={() => { action(username,"unfriend"); setFriend(false);}}>{t('unfriend')}</Button>}
+				{block != undefined && block === false && <Button onClick={() => { action(username,"block"); setBlock(true);}}>{t('block')}</Button>}
+				{block != undefined && block === true && <Button onClick={() => { action(username,"unblock"); setBlock(false);}}>{t('unblock')}</Button>}
+				{friend != undefined && friend === 0 &&(
+					<>
+						<h4>{t("change_avatar")}</h4>
+						<Image changeAvatar={changeAvatar} />
+					</>
+				)}
 			</header>
 			<div className="friend">
 				<h6>{t('friend_list')}</h6>
@@ -150,8 +156,6 @@ const Profile = () => {
 						{/* <Image changeAvatar={changeAvatar} /> */}
 					</div>
 				))}
-				<h4>{t("change_avatar")}</h4>
-				<Image changeAvatar={changeAvatar} />
 			</div>
 		</div>
 	  );

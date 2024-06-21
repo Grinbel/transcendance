@@ -60,7 +60,7 @@ export const GameProvider = ({ children }) => {
 
 		//! OPTIONS DE GAMEPLAY
 		easy_mode: 0,
-		ball_starting_speed: 0.05,
+		ball_starting_speed: 0.04,
 		ball_speed: '',
 		ball_x: 0,
 		ball_y: 0,
@@ -68,7 +68,7 @@ export const GameProvider = ({ children }) => {
 		ball_x_speed: 0,
 		ball_y_speed: 0,
 		ball_pause: 0,
-		ball_acc: 1.2,
+		ball_acc: 1.1,
 		score_to_get: 15, //Score a obtenir pour gagner
 		score_diff: 3, //ecart minimal pour gagner
 		score_max: 25, // score a atteindre pour gagner sans ecart
