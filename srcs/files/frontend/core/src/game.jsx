@@ -29,11 +29,16 @@ function Game() {
 			const response = await axiosInstance.post('/endofgame/', {
 				room: name,
 				winner: winner,
-			});
+			})
+			// .then(() => {
+			// 	navigate('/');});
+		
 		} catch (error) {
 			// setError(error.message);
 			// throw (error);
 		}
+		//une fois que j ai recu la reponse, je veux  navigate('/')
+		
 	};
 
 	const nextgameplayer = async (name, p1, p2) => {
@@ -784,11 +789,13 @@ function Game() {
 				resetOptions();
 				disposeTrail();
 				if (options.is_tournament) {
+					console.log('end of game')
 					message_end_of_game(
 						options.room,
 						options.usernames[options.usernames.length - 1]
 					);
 				}
+				navigate('/');
 				return;
 			}
 			if (

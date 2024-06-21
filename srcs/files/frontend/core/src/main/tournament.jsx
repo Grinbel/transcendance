@@ -22,6 +22,7 @@ const tournament = () => {
 	const websockets = {};
 	const { setOptions } = useGameContext();
 	const [isTrue, setIsTrue] = useState(false);
+	const [stop,setStop] = useState(false);
 
 	const nextgameplayer = async (name) => {
 		try {
@@ -89,7 +90,9 @@ const tournament = () => {
 		const user = messages
 			.map((message) => (message ? message.username : undefined))
 			.filter(Boolean);
+		setIsTrue(false);
 		const sortedMessages = [...user].sort((a, b) => a.localeCompare(b));
+		console.log('User id:', userInfo.user.id);
 		if (userInfo.user.username === sortedMessages[0])
 			{
 			setDisplayer(t("Launching"));
@@ -160,13 +163,13 @@ const tournament = () => {
 				}));
 				// delay(1000).then(() => navigate('/game'));
 			});
-			setIsTrue(false);
 			// nextgameplayer(name);
 			// end_of_game(name,userInfo.user.username);
 			setDisplayer(t('host'));
+			setStop(true);
+
 			delay(3000).then(() => navigate('/game'));
 		} else {
-			setIsTrue(false);
 			setDisplayer(t('not_host') + user[0] + t('not_host2'));
 			// delay(5000).then(() => navigate('/'));
 		}
@@ -185,6 +188,11 @@ const tournament = () => {
 			navigate('/play');
 			return;
 		}
+		if (stop === true){
+			// ws.close();
+			return;
+		}
+		console.log('tournament', userInfo.user.tournament);
 		const ws = getWebSocket(userInfo.user.tournament);
 		ws.onopen = () => {
 			ws.send(
@@ -233,6 +241,7 @@ const tournament = () => {
 			} else if (message.type === 'friends') {
 				setFriend((prevFriend) => [message]);
 			} else if (message.type === 'end') {
+				
 				setDisplayer(t('over'));
 				delay(5000).then(() => navigate('/'));
 				// ws.close();
@@ -246,7 +255,7 @@ const tournament = () => {
 			// console.error('ws tournament closed');
 			ws.close();
 		};
-	}, [userInfo.user]);
+	}, [userInfo.user,stop]);
 
 	const sendInvite = async(username)=>
 	{
