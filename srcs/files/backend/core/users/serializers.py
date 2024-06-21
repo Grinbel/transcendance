@@ -8,11 +8,11 @@ from uuid import uuid4
 
 
 def getUuid(id):
-  print('id in getUuid', id)
+  #print('id in getUuid', id)
   ticket_uuid = uuid4()
-  print('ticket_uuid in getUuid', ticket_uuid)
+  #print('ticket_uuid in getUuid', ticket_uuid)
   cache.set(ticket_uuid, id, 600)
-  print('cache.get(ticket_uuid)', cache.get(str(ticket_uuid)))
+  #print('cache.get(ticket_uuid)', cache.get(str(ticket_uuid)))
   return str(ticket_uuid)
  
 class UserSerializer(ModelSerializer):
@@ -36,7 +36,7 @@ class UserSerializer(ModelSerializer):
 		extra_kwargs = {"password": {"write_only": True}}
 
 	def validate_email(self, value):
-		print('value in validate_email', value)
+		#print('value in validate_email', value)
 		user_id = self.instance.id if self.instance else None
 		if User.objects.filter(email=value).exclude(pk=user_id).exists():
 			raise ValidationError("Email is already in use.")
@@ -45,19 +45,19 @@ class UserSerializer(ModelSerializer):
 	def create(self, validated_data):
 		user = User(username=validated_data["username"],
 			  		email=validated_data["email"])
-		print('validated-data in serializerrrr', validated_data)
+		#print('validated-data in serializerrrr', validated_data)
 		password = validated_data.pop('password', None)
 		user.email = validated_data.pop('email', None)
 		
 		if password is not None:
-			print('password in serializer before hashing', password)
+			#print('password in serializer before hashing', password)
 			user.is_active = True
 			user.set_password(password)
 		user.save()
 		return user
 	
 	def update(self, instance, validated_data):
-		print('instance in update', instance)
+		#print('instance in update', instance)
 		# Ensure the email is validated and unique
 		email = validated_data.get('email', instance.email)
 		if User.objects.filter(email=email).exclude(pk=instance.pk).exists():
@@ -80,8 +80,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 	@classmethod
 	def get_token(cls, user):
 		token = super(MyTokenObtainPairSerializer, cls).get_token(user)
-		print('User in get_token', user)
-		uuid_ticket = getUuid(user.id)
+		#print('User in get_token', user)
+		uuid_ticket = 4
 
 		# Add custom claims
 		token['username'] = user.username

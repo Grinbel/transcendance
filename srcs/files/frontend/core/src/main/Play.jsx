@@ -6,6 +6,7 @@ import { useContext } from "react";
 import { userContext } from "../contexts/userContext.jsx";
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import Button from 'react-bootstrap/Button';
 import "./Home.css";
 
 function Play() {
@@ -20,8 +21,8 @@ function Play() {
 	const [ballSpeed, setBallSpeed] = useState(50);
 	const [score, setScore] = useState(5);
 	const [skin, setSkin]= useState(2);
-	const [formData, setFormData] = useState({ tournamentId: "", playerCount: 2, isEasy: false });
 	const [alias, setAlias] = useState("");
+	const [formData, setFormData] = useState({ tournamentId: "", playerCount: 2, isEasy: false });
 	const [displayer, setDisplayer] = useState("");
 
 	const handleChange = (event) => {
@@ -30,21 +31,21 @@ function Play() {
 			...formData,
 			[event.target.name]: value
 		});
-		console.log('Login: handleChange event.target.name', event.target.name);
-		console.log(value);
+		// console.log('Login: handleChange event.target.name', event.target.name);
+		// console.log(value);
 	};
 
 	const handleChangeSpeed=(event)=>{
 		setBallSpeed(event.target.value);
-		console.log((event.target.value))
+		// console.log((event.target.value))
 	};
 	const handleSubmit = async (event) => {
 		
 		// if (join  && formData.tournamentId === ""){
 		// 	return;
 		// }
-		if (userInfo.user.isLogged ===  false){
-			setDisplayer("Please login to play");
+		if (userInfo.user === undefined){
+			setDisplayer(t("please_login"));
 			return;
 		}
 		setDisplayer("");
@@ -61,23 +62,23 @@ function Play() {
 				playerCount: formData.playerCount,
 				isEasy: formData.isEasy,
 				username: userInfo.user.username,
-				join:join  && formData.tournamentId === "",
+				join:join,
 				alias: alias === "" ? userInfo.user.username : alias,
 				speed:ballSpeed,
 				score:score,
 				skin:skin,
-				//! a finir l'envoi de skin et autre option de changement
+				
 			});
 
 			//check if response.data contains the word error
 
 			if (response.data.Error != undefined){
 				setDisplayer(t(response.data.Error));
-				console.log('Invalid tournament');
+				// console.log('Invalid tournament');
 			}
 			else {
-				console.log('Tournament name: ' + response.data.room_name);
-				//! tournament is not inside the cached data
+				// console.log('Tournament name: ' + response.data.room_name);
+				
 				userInfo.setUser({
 					...userInfo.user,
 					tournament: response.data.room_name,
@@ -91,11 +92,11 @@ function Play() {
 			if (error.response) {
 	
 			} else if (error.request) {
-				console.log('error REQUEST', error.request);
+				// console.log('error REQUEST', error.request);
 			} else {
-				console.log('error OBSCURE', error.request);
+				// console.log('error OBSCURE', error.request);
 			}
-			setError(error.message);
+			// setError(error.message);
 			throw (error);
 		}
 		setIsLoading(false);
@@ -103,31 +104,28 @@ function Play() {
 	}
 	
 	return (
-	<div>
+	<div className="Play">
 		{isLoading ? (
 		<Loading />
 		) : (
 		<>
-			<button onClick={() => { 
+			<Button onClick={() => { 
 				setShowTextArea(true); 
 				setShowSelect(false); 
 				setFormData({ tournamentId: "", isEasy: false, playerCount: 2 });
 				setJoin(true);
-									// TODO texte brut
-				}}>{t('join_tournament')}</button>
-			<button onClick={() => { 
+				}}>{t('join_tournament')}</Button>
+			<Button onClick={() => { 
 				setShowSelect(true);
 				setShowTextArea(false);
 				setFormData({ tournamentId: "", isEasy: false, playerCount: 2 });
 				setJoin(false);
-									// TODO texte brut
-
-				}}>{t('create_tournament')}</button>
+				}}>{t('create_tournament')}</Button>
 			
 			{showTextArea && (
 				
 				<div>
-					<label htmlFor="tournamentId"></label>
+					{/* <label htmlFor="tournamentId"></label> */}
 						<input
 							type="text"
 							id="tournamentId"
@@ -137,10 +135,10 @@ function Play() {
 							onChange={handleChange}
 							maxLength="6"
 							/>
-					<label htmlFor="alias"></label>
+					{/* <label htmlFor="alias"></label> */}
 						<input
 							type="text"
-							id="alias"
+							id="alias1"
 							name="alias"
 							placeholder={t('Enter alias')}
 							value={alias}
@@ -153,7 +151,7 @@ function Play() {
 							maxLength="7"
 
 							/>
-					<button onClick={handleSubmit}>Submit</button>
+					<Button onClick={handleSubmit}>Submit</Button>
 				</div>
 			)}
 			
@@ -162,7 +160,7 @@ function Play() {
 				<p>{t('Nb joueurs')}
 					<select value={formData.playerCount} 
 							type="number"
-							id="playerCount"
+							id="playerCount1"
 							name="playerCount"
 							onChange={handleChange}>
 						<option value="2">2</option>
@@ -229,7 +227,7 @@ function Play() {
 						<option value="4">{t('tennis')}</option>
 					</select>
 				</p>
-				<button onClick={handleSubmit}>{t('submit')}</button>
+				<Button onClick={handleSubmit}>{t('submit')}</Button>
 			</div>
 			)}
 			<div className="displayer-errors">

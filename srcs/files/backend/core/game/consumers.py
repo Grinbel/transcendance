@@ -6,9 +6,9 @@ from users.helper import listUsers
 from users.models import User
 class GameConsumer(WebsocketConsumer):
 	async def connect(self):
-		print('connected to game consumer')
+		#print('connected to game consumer')
 		self.room_name = self.scope['url_route']['kwargs']['room_name']
-		print('user POOOPA',self.scope['user'], room_name)
+		#print('user POOOPA',self.scope['user'], room_name)
 		self.room_group_name = f"pong_{self.room_name}"
 
 		await self.channel_layer.group_add(
@@ -26,8 +26,8 @@ class GameConsumer(WebsocketConsumer):
 	async def receive(self, text_data):
 		data = json.loads(text_data)
 		message = data['message']
-		print('received message',data)
-		print(' real message :',message)
+		#print('received message',data)
+		#print(' real message :',message)
 		await self.channel_layer.group_send(
 			self.room_group_name,
 			{

@@ -7,6 +7,22 @@ import  { axiosInstance } from "../axiosAPI.js";
 import "./Home.css";
 import { Button } from "react-bootstrap";
 import { useTranslation } from 'react-i18next';
+function Image({changeAvatar }) {
+	const images = ['/badboy.png', '/princess.jpg', '/yoshi.jpg','/players.jpg', '/ponge.jpg', '/beaudibe.jpg',];
+	return (
+	  <div>
+		{images.map((image, index) => (
+		  <img
+			key={index}
+			src={image}
+			alt={`Avatar ${index}`}
+			onClick={() => changeAvatar(image)}
+			style={{ cursor: 'pointer', borderRadius: '100px', width: '100px', height:'100px' }} // Seule la largeur est définie ici
+/>
+		))}
+	  </div>
+	);
+  }
 const Profile = () => {
 	const { t } = useTranslation();
 	let { username } = useParams();
@@ -35,6 +51,7 @@ const Profile = () => {
 			setError(error.message);
 			throw (error);
 		}
+		
 	}
 
 	const info = async (username) => {
@@ -98,6 +115,20 @@ const Profile = () => {
 			throw (error);
 		}
 	}
+	const changeAvatar = async (avatar) => {
+		try {
+			const response = await axiosInstance.post('/changeavatar/', {
+				avatar: avatar,
+				username: userInfo.user.username,
+			});
+			userInfo.setUser({ ...userInfo.user, avatar: avatar });
+		} catch (error) {
+			setError(error.message);
+			throw (error);
+		}
+	}
+
+
 	return (
 		<div>
 			<h1>{username}</h1>
@@ -116,8 +147,11 @@ const Profile = () => {
 								{friend}
 							</a>
 						</div>
+						{/* <Image changeAvatar={changeAvatar} /> */}
 					</div>
 				))}
+				<h4>{t("change_avatar")}</h4>
+				<Image changeAvatar={changeAvatar} />
 			</div>
 		</div>
 	  );

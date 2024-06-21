@@ -1,4 +1,4 @@
-import { Routes, Route, Link, } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useState , createContext, useContext, useEffect, useMemo, } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -61,13 +61,13 @@ async function getProfile(user, setUser, error, setError){
 		let userData = {};
 		await axiosInstance.get('getprofile/')
 			.then((response) => {
-				console.log('app: GETPROFILE response.data', response.data, userData);
+				// console.log('app: GETPROFILE response.data', response.data, userData);
 				userData =  response.data;
-				console.log('app: GETPROFILE userData', userData);
+				// console.log('app: GETPROFILE userData', userData);
 				return userData;
 			})
 			.catch((error) => {
-				console.log('axios getprofile failure, catched here in getProfile: ', error.response.status)
+				// console.log('axios getprofile failure, catched here in getProfile: ', error.response.status)
 				throw error;
 			});
 		return userData;
@@ -97,15 +97,15 @@ async function getProfile(user, setUser, error, setError){
 			
 			const fetchUserProfile = async () => {
 				try {
-					console.log('app: useEffect tryblock');
+					// console.log('app: useEffect tryblock');
 					const userData = await getProfile();
-					console.log('app: useEffect getProfile userData', userData);
+					// console.log('app: useEffect getProfile userData', userData);
 					setUser(userData);
 					i18n.changeLanguage(userData.language);
-					console.log('app: useEffect getProfile User log', { ...userData, isLogged: true });
+					// console.log('app: useEffect getProfile User log', { ...userData, isLogged: true });
 					let newuser = { ...userData, isLogged: true };
 					setUser(newuser);
-					console.log('app: useEffect getProfile User', user);
+					// console.log('app: useEffect getProfile User', user);
 					// setLoading(false);
 				} catch (error) {
 					// setUser(...user, isLogged = false);
@@ -134,14 +134,16 @@ async function getProfile(user, setUser, error, setError){
 			  }
 		}, []);
 		
+	useEffect(() => {
+		if (user != undefined){
+			i18n.changeLanguage(user.language);
+			// console.log("USER!!!!!!!!!",user.language);
+		}
+	}, [user]);
 	return (
 		<userContext.Provider value={{user, setUser}}>
 			<div className="app">
 				<MyNavbar/>
-
-				{loading ? (
-          			<div>Loading...</div> // You can add a spinner or any loading indicator here
-        		) : (
 					<Routes>
 						<Route path="/dashboard" element={<Dashboard />}>
 							<Route index element={<Settings />} />
@@ -160,8 +162,7 @@ async function getProfile(user, setUser, error, setError){
 						<Route exact path="/" element={<Home />} />
 						<Route path="/*" element={<Error404 />} />
 					</Routes>
-				// {/* <Chat /> */}
-				)}
+				<Chat /> 
 			</div>
 		</userContext.Provider>
 	);

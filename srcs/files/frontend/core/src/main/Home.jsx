@@ -10,33 +10,44 @@ import { useTranslation } from 'react-i18next';
 
 
 
-import { useContext, useState } from "react";
+import { useContext, useState ,useEffect} from "react";
 import { userContext } from "../contexts/userContext.jsx";
 import { useGameContext } from "../contexts/GameContext.jsx";
 import { useMultiGameContext } from "../contexts/MultiGameContext.jsx";
 import './Home.css';
 
 const Home = () => {
-
+	const [displayer, setDisplayer] = useState("");
 	const userinfo = useContext(userContext);
-	console.log('HOME userinfo.user', userinfo.user);
+	const navigate = useNavigate();
+	// console.log('HOME userinfo.user', userinfo.user);
+
 	const { setOptions } = useGameContext();
 	const { setOptions: setMultiGameOptions } = useMultiGameContext();
-    const navigate = useNavigate();
 	const { t } = useTranslation();
 
 	
-
-		const handleVsVacheClick = () => {
-			setOptions(prevOptions => ({
-				...prevOptions, // Gardez les options précédentes
-				name_p1: userinfo.user.username,
-				real_game : 1,
-			}));
-			navigate('/game');
-		};
+	// useEffect(() => {
+	// 	console.log('Home: userinfo', userinfo);
+	// 	if (!userinfo.user) {
+	// 		navigate('/login');
+	// 	}
+	// }, [userinfo]);
+	const handleVsVacheClick = () => {
+		setOptions(prevOptions => ({
+			...prevOptions, // Gardez les options précédentes
+			name_p1: userinfo.user.username,
+			real_game : 1,
+		}));
+		navigate('/game');
+	};
 
 		const handle2P= () => {
+			if (userinfo.user === undefined){
+				setDisplayer(t("please_login"));
+				return;
+			}
+			setDisplayer("");
 			setOptions(prevOptions => ({
 				...prevOptions, // Gardez les options précédentes
 				name_p1: userinfo.user.username,
@@ -46,22 +57,33 @@ const Home = () => {
 			navigate('/game');
 		};
 		const handleIA_Custom= () => {
+			if (userinfo.user === undefined){
+				setDisplayer(t("please_login"));
+				return;
+			}
+			setDisplayer("");
+			const avatar = userinfo.user.avatar ? userinfo.user.avatar.replace("/media", "") : '/yoshi.jpg';
 			setOptions(prevOptions => ({
 				...prevOptions,
 				name_p1: userinfo.user.username,
-				powerups : 1,
 				stage_height : 10,
 				stage_width : 15,
 				ia_time_between_checks : 60,
+				ball_starting_speed: 0.1,
 				easy_mode : 0,
 				real_game : 1,
-				texture_p1 : userinfo.user.avatar.replace("/media/", ""),
-				texture_p1_ball : "https://pbs.twimg.com/profile_images/1335272544451112960/YO2w8LHO_400x400.jpg",
+				texture_p1 : avatar,
+				texture_p1_ball : "yoshi_egg.jpg",
 				texture_p2 : "princess.jpg"
 			}));
 			navigate('/game');
 		};
 		const tournoitest = () => {
+			if (userinfo.user === undefined){
+				setDisplayer(t("please_login"));
+				return;
+			}
+			setDisplayer("");
 			setOptions(prevOptions => ({
 				...prevOptions, 
 				is_tournament : 1,
@@ -72,14 +94,13 @@ const Home = () => {
 				//usernames : ["Alaide", "Besouin"],
 				//avatar : ["/badboy.png","/players.jpg"],
 				avatar : ["/badboy.png","/players.jpg","/princess.jpg","/ponge.jpg","/yoshi.jpg","/xrenoux.jpg","/abelhadi.jpg","/beaudibe.jpg"],
-
 			}));
 			navigate('/game');
-		};
+	};
 	return (
 		<div>
 			{userinfo.user ? (
-				<Container fluid className="homeContainer">
+				<Container fluid className="homeContainer" style={{height: '92vh'}}>
 					<Row className="mb-3">
 						<Col className="columnStyle">
 							<Button variant="primary" as={Link} to="/play" className="homeButtons">{t('1V1')}</Button>
@@ -96,13 +117,16 @@ const Home = () => {
 						<Col className="columnStyle ">
 							<Button variant="primary" as={Link} to="/multi-options" className="homeButtons">{t('Multi')}</Button>
 						</Col>
-						<Col className="columnStyle ">
+						{/* <Col className="columnStyle ">
 							
 						<Button variant="primary" onClick={handleVsVacheClick} className="homeButtons">{t('Tac vs Vache')}</Button>
-						</Col>
-						<Col className="columnStyle ">
+						</Col> */}
+						{/* <Col className="columnStyle ">
 							<Button variant="primary" as={Link} to="/play" className="homeButtons">{t('TOURNAMENT')}</Button>
-						</Col>
+						</Col> */}
+				<div className="displayer-errors">
+					{displayer}
+				</div>
 					</Row>
 				</Container>
 			) : (

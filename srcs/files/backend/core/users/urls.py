@@ -5,7 +5,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from .views import Signup, login, verify, Logout, UserList, getProfile, userlist, userFriendBlock, userExist, userFriendList, language, set2FA, updateUser
+from .views import Signup, login, verify, Logout, UserList, getProfile, userlist, userFriendBlock, userExist, userFriendList, language, set2FA, updateUser, avatar
 from chat.consumers import sendInvite, NextGamePlayer
 from matchmaking.views import choice, EndOfGame, options
 from middle.views import AsgiValidateTokenView
@@ -32,5 +32,6 @@ urlpatterns = [
 	path('endofgame/',EndOfGame,name='endofgame'),
 	path('options/',options,name='options'),
     path('setlanguage/', language, name='setlanguage'),
+	path('changeavatar/',avatar,name='changeavatar')
 
 ]

@@ -20,12 +20,12 @@ async function getUuid(userInfo){
 		...userInfo.user,
 		id:Uuid,
 	  });
-	  console.log(userInfo.user.id);
+	//   console.log(userInfo.user.id);
 }
 
 function Login() {
     const { t } = useTranslation();
-    console.log('Login:');
+    // console.log('Login:');
     const [step, setStep] = useState(1);
     const [code, setCode] = useState('');
     const [error, setError] = useState(null);
@@ -43,9 +43,13 @@ function Login() {
     
     useEffect(() => {
         if (userInfo.user) {
-            console.log('Login: user ', userInfo.user.username);
+            // console.log('Login: user ', userInfo.user.username);
             setLoggedinMessage(t('logged'));
         }
+		else 
+		{
+			setLoggedinMessage('');
+		}
     }, [userInfo.user]);
 
 
@@ -62,7 +66,7 @@ function Login() {
         const form = event.currentTarget;
         event.preventDefault();
         if (form.checkValidity() === false) {
-			console.log('form.checkValidity() === false');
+			// console.log('form.checkValidity() === false');
 			event.stopPropagation();
 			set_validated(true);
 		}
@@ -74,8 +78,8 @@ function Login() {
                 password: formData.password
                 });
                 if (response) {
-                    console.log('response.status', response.status);
-                    console.log('response.data.2fa', response.data.two_factor);
+                    // console.log('response.status', response.status);
+                    // console.log('response.data.2fa', response.data.two_factor);
                 }
                 if (response && response.status === 200) 
                 {
@@ -83,7 +87,7 @@ function Login() {
                     setError();
                     if (response.data.two_factor)
                     {
-                        console.log('Login successful 2FA: i go to code page', response);  //SETUP REDIRECT TO HOME PAGE
+                        // console.log('Login successful 2FA: i go to code page', response);  //SETUP REDIRECT TO HOME PAGE
                         setStep(2);
                         set_validated(false);
                     }
@@ -97,9 +101,9 @@ function Login() {
                         localStorage.setItem('refresh_token', refresh);
 
                         // passing  info to userContext
-                        console.log('Login successful no 2FA: navigate to "/"');
+                        // console.log('Login successful no 2FA: navigate to "/"');
                         const decodedToken = jwtDecode(token);
-                        console.log('decoded token', decodedToken);
+                        // console.log('decoded token', decodedToken);
                         const user = {username: decodedToken.username,
 							id: decodedToken.user_id,
 							avatar: decodedToken.avatar,
@@ -123,7 +127,7 @@ function Login() {
                 }
             } catch (error) 
             {
-                console.log('LOGIN CATCH ERROR', error);
+                // console.log('LOGIN CATCH ERROR', error);
                 if (error.response) {
                     // The request was made and the server responded with a status code
                     // that falls out of the range of 2xx
@@ -170,9 +174,9 @@ function Login() {
                 localStorage.setItem('access_token', token);
                 localStorage.setItem('refresh_token', refresh);
 
-                console.log('Login successful with 2FA: navigate to "/"');
+                // console.log('Login successful with 2FA: navigate to "/"');
                 const decodedToken = jwtDecode(token);
-                console.log('decoded token', decodedToken);
+                // console.log('decoded token', decodedToken);
                 const user = {username: decodedToken.username, 
                     id: decodedToken.user_id,
                     avatar: decodedToken.avatar,
@@ -192,7 +196,7 @@ function Login() {
                 setFormData({ username: "", password: "" });
                 setCode('');
                 navigate('/');
-                console.log('Login successful with 2fa: i go to home page', response);  //SETUP REDIRECT TO HOME PAGE
+                // console.log('Login successful with 2fa: i go to home page', response);  //SETUP REDIRECT TO HOME PAGE
             } catch (error)
             {
                 // The request was made and the server responded with a status code
@@ -209,17 +213,17 @@ function Login() {
                     // } else {
                     //     setError('An error occurred. Please try again.');
                     // }
-                    setError(error.response.data.detail);
+                    setError(t(error.response.data.detail));
                 }
                 else if (error.request)
                 {
                     // The request was made but no response was received
-                    console.log('error REQUEST', error.request);
-                    setError('Network error. Please check your connection.');
+                    // console.log('error REQUEST', error.request);
+                    setError(t('NetError'));
                 } else {
                     // Something happened in setting up the request that triggered an Error
-                    console.log('error OBSCURE', error.message);
-                    setError('An unknown error occurred.');
+                    // console.log('error OBSCURE', error.message);
+                    setError(t('UnknownError'));
                 }
             }
         }
@@ -251,7 +255,7 @@ function Login() {
                                 >
                                     <Form noValidate validated={validated} onSubmit={handleLogin}>
                                         <Form.Group controlId="username">
-                                            <Form.Label>Username</Form.Label>
+                                            <Form.Label>{t('username')}</Form.Label>
                                             <Form.Control
                                                 type="text"
                                                 name="username"
@@ -265,12 +269,11 @@ function Login() {
                                                 }
                                             />
                                             <Form.Control.Feedback type="invalid">
-                                                Please enter a valid username (alphanumeric
-                                                characters only).
+                                                {t('valid')}
                                             </Form.Control.Feedback>
                                         </Form.Group>
                                         <Form.Group controlId="password">
-                                            <Form.Label>Password</Form.Label>
+                                            <Form.Label>{t('mdp')} </Form.Label>
                                             <Form.Control
                                                 type="password"
                                                 name="password"
@@ -283,7 +286,7 @@ function Login() {
                                                 }
                                             />
                                             <Form.Control.Feedback type="invalid">
-                                                Password must be at least 6 characters long.
+                                                {t('len_error')}
                                             </Form.Control.Feedback>
                                         </Form.Group>
                                     
@@ -306,7 +309,7 @@ function Login() {
                         >
                             <Form noValidate validated={validated} onSubmit={handleVerify}>
                                 <Form.Group controlId="verificationCode">
-                                    <Form.Label>Verification Code</Form.Label>
+                                    <Form.Label>{t('verif_code')}</Form.Label>
                                     <Form.Control
                                         type="number"
                                         name="verificationCode"
@@ -317,10 +320,10 @@ function Login() {
                                         isInvalid={(code.length !== 6 || !/^[0-9]+$/.test(code))}                                      
                                     />
                                     <Form.Control.Feedback type="invalid">
-                                        Please enter a valid verification code. It should be 6 digits (only) long.
+                                        {t('verif_code_error')}
                                     </Form.Control.Feedback>
                                 </Form.Group>
-                                <Button type='submit' role="button" className="buttonCustom"> Login </Button>
+                                <Button type='submit' role="button" className="buttonCustom"> {t('login')}</Button>
                                 {error && <p style={{ color: 'red' }}>{error}</p>}
                             </Form>
                         </Col>

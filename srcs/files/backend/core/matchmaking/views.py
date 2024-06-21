@@ -18,12 +18,11 @@ from django.core import serializers
 from channels.layers import get_channel_layer
 from django.http import HttpResponse
 
-#//! put permisiion in login
+
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def choice(request):
 
-	print('value ' + str(request.data))
 	username = request.data.get('username')
 	join = request.data.get('join')
 	alias = request.data.get('alias')
@@ -32,46 +31,57 @@ def choice(request):
 	isEasy = request.data.get('isEasy')
 	skin = request.data.get('skin')
 
-
 	user = User.objects.get(username=username)
-	user.alias = alias
-	user.save()
-	if (join):
-		name = Tournament.getNextTournament()
-		return Response({'room_name': name})
+
 	playerCount = request.data.get('playerCount')
 	tournamentId = request.data.get('tournamentId')
 
 
-	if (tournamentId == ''): #create a new room
-		# user = User.objects.get(username=username)
+	# if (Tournament.objects.filter(players=user).exists()):
+	# 	return Response({'Error':'inside'})
+	tournaments = Tournament.objects.all()
+	for tournament in tournaments:
+		usernames = tournament.getAllUsername()
+		if (usernames == []):
+			tournament.delete()
+
+	if (join and tournamentId == ''):
+		name = Tournament.getNextTournament(alias=alias,name=user.username)
+		tournament = Tournament.objects.filter(name=name).first()
+		if (tournament is not None):
+			players = tournament.players.all()
+			if (alias in [player.alias for player in players]):
+				return Response({'Error':'alias'})
+		user.alias = alias
+		user.save()
+
+		return Response({'room_name': name})
+	elif (join is False):
 		name = Tournament.createRoomName()
 		tournament = Tournament.create(name=name,max_capacity=playerCount,ball_starting_speed=speed,score=score,easyMode=isEasy,skin=skin)
 		return Response({'room_name': name})
-	#check if tournamendid exist
-	tournament = Tournament.objects.filter(name=tournamentId)
-	tournament = tournament.first()
-	if (tournament is None):
-		return Response({'Error':'invalid'})
-	elif tournament.checkAddUser(user) is False:
-		return Response({'Error':'full'})
-	elif (Tournament.objects.filter(players=user).exists()):
-		return Response({'Error':'inside'})
-	elif (tournament.status == 'inprogress'):
-		return Response({'Error':'progress'})
 	else:
-		return Response({'room_name': tournament.name})
+		#check if tournamendid exist
+		tournament = Tournament.objects.filter(name=tournamentId).first()
+		if (tournament is None):
+			return Response({'Error':'invalid'})
+		players = tournament.players.all()
+		if ((alias in [player.alias for player in players])):
+			return Response({'Error':'alias'})
+		user.alias = alias
+		user.save()
+		if tournament.checkAddUser(user) is False:
+			return Response({'Error':'full'})
+		elif (tournament.status == 'inprogress'):
+			return Response({'Error':'progress'})
+		else:
+			return Response({'room_name': tournament.name})
+
 
 @api_view(['POST'])
 def options(request):
-	print("OPTIONSSSSSSSSSSSSSSSSs")
 	name = request.data.get('room')
-	print("name",name)
 	tournament =Tournament.objects.filter(name=name).first()
-	print("tournament",tournament)
-	# texture_ball = tournament.texture_ball
-	# print("texture_ball", texture_ball)
-	# return Response('ok')
 	return Response({'texture_ball': tournament.texture_ball,'ball_starting_speed':tournament.ball_starting_speed,'score':tournament.score,'easyMode':tournament.easyMode,'skin':tournament.skin})
 
 @api_view(['POST'])
@@ -133,16 +143,15 @@ class Matchmaking(WebsocketConsumer):
 			self.room_name,
 			self.channel_name
 		)
-		tournament = Tournament.objects.get(name=self.room_name)
-		# return
-		usernames = tournament.getAllUsername()
-		if (tournament.players.count() <= 1):
+		tournament = Tournament.objects.filter(name=self.room_name).first()
+		if (not tournament):
+			return
+		tournament.removeUser(self.scope['user'])
+		tournament.save()
+		if (tournament.players.count() <= 0):
+			tournament.players.clear()
 			tournament.delete()
 		else:
-			tournament.removeUser(self.scope['user'])
-			for username in usernames:
-				tournament.removeUser(User.objects.get(username=username))
-
 			async_to_sync(self.channel_layer.group_send)(
 				self.tournament_name,
 				{
@@ -150,6 +159,7 @@ class Matchmaking(WebsocketConsumer):
 					'username': 'all',
 				}
 			)
+			players = tournament.players.all()
 
 	def receive(self, text_data):
 		# Tournament.objects.all().delete()
@@ -161,7 +171,8 @@ class Matchmaking(WebsocketConsumer):
 		user = User.objects.get(username=username)
 		tournament = Tournament.objects.get(name=name)
 		tournament.addUser(user)
-
+		tournament.save()
+		players = tournament.players.all()
 		async_to_sync(self.channel_layer.group_send)(
 			self.tournament_name,
 			{
@@ -175,7 +186,6 @@ class Matchmaking(WebsocketConsumer):
 		)
 		if (tournament.max_capacity == tournament.players.count()):
 			timer = 3
-			# return
 			async_to_sync(self.channel_layer.group_send)(
 				self.tournament_name,
 				{
@@ -211,7 +221,7 @@ class Matchmaking(WebsocketConsumer):
 		}))
 	
 	def end_of_game(self,event):
-		print('end of game')
+		##print('end of game')
 		self.send(text_data=json.dumps({
 			'type':'end',
 			'winner': event['winner'],

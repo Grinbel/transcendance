@@ -38,18 +38,18 @@ class JwtAuthMiddleware(BaseMiddleware):
 		"""
 		query_params = dict(parse_qsl(query_string))
 		uuid = query_params.get('uuid')
-		print("uuid:", uuid)
+		#print("uuid:", uuid)
 		user = await get_user(uuid)
 		#//! uuid doesn't work after some time so i change it to id
-		print("user :", user)
+		#print("user :", user)
 		return user
-		print("uuid:", uuid)
+		#print("uuid:", uuid)
 		user_id = cache.get(uuid)
 		# I destroyed uuid for performance and security purposes
 		if not cache.delete(uuid):
 			print ("uuid not found")
 			raise Exception('uuid not found')
-		print("user_id POOOOOOOOOOP:", user_id)
+		#print("user_id POOOOOOOOOOP:", user_id)
 
 	async def __call__(self, scope, receive, send):
 	# Close old database connections to prevent usage of timed out connections

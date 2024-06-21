@@ -4,8 +4,10 @@ import  { axiosInstance, interceptor_response } from "../axiosAPI.js";
 
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import '../forms/forms.css'
+import { useTranslation } from 'react-i18next';
 
 function Signup() {
+	const { t } = useTranslation();
 	const [validated, set_validated] = useState(false);
 	const [errorMessages, setErrorMessages] = useState("");
 	const [successMessage, setSuccessMessage] = useState('');
@@ -38,19 +40,19 @@ function Signup() {
 	const submitFn = async (event) => {
 		// i want to eject interceptors here
 		axiosSignup.interceptors.response.eject(interceptor_response);
-		console.log("submitFn event currentTarget: ", event.currentTarget);
+		// console.log("submitFn event currentTarget: ", event.currentTarget);
 		const form = event.currentTarget;
 		event.preventDefault();
 		if (form.checkValidity() === false) {
-			console.log('form.checkValidity() === false');
+			// console.log('form.checkValidity() === false');
 			event.stopPropagation();
 			set_validated(true);
 		}
 		else {
-			console.log('Form data to submit:', form_Data);
+			// console.log('Form data to submit:', form_Data);
 			// signup the user to backend
-			console.log('UserList before duplicate verification', userList);
-			console.log('username before duplicate verification', form_Data.username);
+			// console.log('UserList before duplicate verification', userList);
+			// console.log('username before duplicate verification', form_Data.username);
 			// if (userList.includes(form_Data.username)) {
 			//     setError('Username already exists, try another one');
 			//     return;
@@ -67,7 +69,7 @@ function Signup() {
 				});
 				if (response && (response.status === 201)) 
 				{
-					console.log('user registred successfully response.data', response.data);
+					// console.log('user registred successfully response.data', response.data);
 					set_Form_Data({ username: '', email: '', pass: '', confimPass: '' });
 					setSuccessMessage('User registered successfully!');
 					setErrorMessages({});
@@ -75,7 +77,7 @@ function Signup() {
 
 			} catch (error) 
 			{
-				console.error('Error catched in signup.jsx ', error.response);
+				// console.error('Error catched in signup.jsx ', error.response);
 				if (error.response) {
 					if (error.response.status === 400) {
 						//bad request user already exists
@@ -87,10 +89,10 @@ function Signup() {
 						}
 					}
 				} else if (error.request) {
-					updateErrorMessages('Network', "Network error. Please try again later.");
-					// console.error('error REQUEST', error.request);
+					updateErrorMessages('Network', "NetError");
+					console.error('error REQUEST', error.request);
 				} else {
-					console.error('error ', error);
+					// console.error('error ', error);
 					updateErrorMessages('Client', "An unexpected error occurred. Please try again.");
 				}
 				// throw (error);
@@ -99,7 +101,7 @@ function Signup() {
 	};
 
 	const chngFn = (event) => {
-		console.log('chngFn event.target', event.target);
+		// console.log('chngFn event.target', event.target);
 		const { name, value } = event.target;
 		set_Form_Data({
 			...form_Data,
@@ -108,19 +110,19 @@ function Signup() {
 	};
 
 	useEffect(() => {
-		console.log('////////////// USEEFFECT FUNCTION /////////////');
+		// console.log('////////////// USEEFFECT FUNCTION /////////////');
 		const fetchUsersList = async () => {
 			try {
 				const response = await axiosSignup.get('/list/');
-				console.log('fetch list response.data', response.data);
+				// console.log('fetch list response.data', response.data);
 				setUserList (response.data);
 			} catch (error) {
-				console.log('Error fetching users list: ', error.message);
+				// console.log('Error fetching users list: ', error.message);
 			}
 		};
 
 		fetchUsersList();
-		console.log('UserList: ', userList);
+		// console.log('UserList: ', userList);
 	}, []);
 
 	return (
@@ -136,13 +138,13 @@ function Signup() {
 				{Object.entries(errorMessages).length > 0 && (
 					<div style={{ color: 'red' }}>
 						{Object.entries(errorMessages).map(([field, message]) => (
-							<p key={field}>{field}: {message}</p>
+							<p key={field}>{t(field)}: {t(message)}</p>
 						))}
 					</div>
 				)}
 					<Form className="formCustom" noValidate validated={validated} onSubmit={submitFn}>
 						<Form.Group controlId="username">
-							<Form.Label>Username</Form.Label>
+							<Form.Label>{t('username')}</Form.Label>
 							<Form.Control
 								type="text"
 								name="username"
@@ -156,12 +158,11 @@ function Signup() {
 								}
 							/>
 							<Form.Control.Feedback type="invalid">
-								Please enter a valid username (alphanumeric
-								characters only).
+								{t('valid_user')}
 							</Form.Control.Feedback>
 						</Form.Group>
 						<Form.Group controlId="password">
-							<Form.Label>Password</Form.Label>
+							<Form.Label>{t('mdp')}</Form.Label>
 							<Form.Control
 								type="password"
 								name="pass"
@@ -174,11 +175,11 @@ function Signup() {
 								}
 							/>
 							<Form.Control.Feedback type="invalid">
-								Password must be at least 6 characters long.
+								{t('len_error')}
 							</Form.Control.Feedback>
 						</Form.Group>
 						<Form.Group controlId="confirmPassword">
-							<Form.Label>Confirm Password</Form.Label>
+							<Form.Label>{t('confirm')}</Form.Label>
 							<Form.Control
 								type="password"
 								name="confimPass"
@@ -193,11 +194,11 @@ function Signup() {
 								}
 							/>
 							<Form.Control.Feedback type="invalid">
-								Passwords do not match.
+								{t('nomatch')}
 							</Form.Control.Feedback>
 						</Form.Group>
 						<Form.Group controlId="email">
-							<Form.Label>Email</Form.Label>
+							<Form.Label>{t('email')}</Form.Label>
 							<Form.Control
 								type="email"
 								name="email"
@@ -210,10 +211,10 @@ function Signup() {
 								}
 							/>
 							<Form.Control.Feedback type="invalid">
-								Please enter a valid email address.
+								{t('mail_novalid')}
 							</Form.Control.Feedback>
 						</Form.Group>
-						<Button className="buttonCustom" type="submit">Submit</Button>
+						<Button className="buttonCustom" type="submit">{t('submit')}</Button>
 					</Form>
 				</Col>
 			</Row>
