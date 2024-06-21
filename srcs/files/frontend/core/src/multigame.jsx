@@ -15,6 +15,7 @@ function MultiGame() {
 	const { options } = useMultiGameContext();
 	const navigate = useNavigate();
 	options.ball_speed = options.ball_starting_speed;
+	let fontSize = window.innerWidth * 0.01 * window.innerHeight;
 	useEffect(() => {
 		if (options.nb_players === 7) return navigate('/');
 		let starting_location = getCurrentLocation();
@@ -455,6 +456,11 @@ function MultiGame() {
 				}
 			}
 		}
+		function handleResize() {
+			fontSize = (window.innerWidth + window.innerHeight) * 0.005;
+			message.style.fontSize = fontSize + 'px';
+		}
+		window.addEventListener('resize', handleResize);
 
 		//* https://keyevents.netlify.app/
 		function handleKeyDown(event) {
@@ -472,6 +478,7 @@ function MultiGame() {
 					dialogContainer.style.width = '30%';
 					dialogContainer.style.height = '30%';
 					message.innerHTML = player_buttons();
+					message.innerHTML += t('to_show_rules') + '<br>';
 					message.innerHTML += t('resume_button');
 					options.ball_pause = -1;
 				}

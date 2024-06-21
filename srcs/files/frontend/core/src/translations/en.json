@@ -151,5 +151,6 @@
 	"User registered successfully!": "User registered successfully!",
 	"Email is already in use.": "Email is already in use.",
 	"A user with that username already exists.": "A user with that username already exists.",
-	"Enter a valid email address." : "Enter a valid email address."
+	"Enter a valid email address." : "Enter a valid email address.",
+	"to_show_rules" : "To display the rules, press the ESC key"
 }
