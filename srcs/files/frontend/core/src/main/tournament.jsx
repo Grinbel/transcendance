@@ -87,6 +87,7 @@ const tournament = () => {
 			return;
 		}
 		// console.log("messages",messages);
+		// setStop(true);
 		const user = messages
 			.map((message) => (message ? message.username : undefined))
 			.filter(Boolean);
@@ -165,12 +166,14 @@ const tournament = () => {
 			});
 			// nextgameplayer(name);
 			// end_of_game(name,userInfo.user.username);
+			
 			setDisplayer(t('host'));
-			setStop(true);
-
-			delay(3000).then(() => navigate('/game'));
+			delay(300).then(() => 
+				navigate('/game')
+			);
+			
 		} else {
-			setDisplayer(t('not_host') + user[0] + t('not_host2'));
+			setDisplayer(t('not_host') + sortedMessages[0] + t('not_host2'));
 			// delay(5000).then(() => navigate('/'));
 		}
 	}, [messages, isTrue, name]);
@@ -186,10 +189,6 @@ const tournament = () => {
 			userInfo.user.tournament === 'default'
 		) {
 			navigate('/play');
-			return;
-		}
-		if (stop === true){
-			// ws.close();
 			return;
 		}
 		console.log('tournament', userInfo.user.tournament);
@@ -227,7 +226,7 @@ const tournament = () => {
 			}
 			else if (message.type === 'username') {
 				// console.log("username!!!!!!!!!");
-				if (message && message.username)
+				if (message && message.username )
 				{
 					setMessages(prevMessages => [...prevMessages, message]);
 					setName(message.name);
@@ -243,7 +242,8 @@ const tournament = () => {
 			} else if (message.type === 'end') {
 				
 				setDisplayer(t('over'));
-				delay(5000).then(() => navigate('/'));
+				navigate('/');
+				// delay(5000).then(() => navigate('/'));
 				// ws.close();
 			}
 			// console.info('received', message);
@@ -253,7 +253,10 @@ const tournament = () => {
 
 		return () => {
 			// console.error('ws tournament closed');
-			ws.close();
+			if (ws && ws.readyState === WebSocket.OPEN) {
+				ws.close(); 
+				// WebSocket is open
+			}
 		};
 	}, [userInfo.user,stop]);
 

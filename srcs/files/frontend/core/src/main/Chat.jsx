@@ -43,7 +43,7 @@ function Chat() {
 
 	function getWebSocket(roomName) {
 		
-		if (!websockets[roomName]) {
+		if (!websockets[roomName] && userInfo.user !== undefined && userInfo.user.id !== undefined) {
 		  websockets[roomName] = new WebSocket(`wss://${import.meta.env.VITE_API_SERVER_ADDRESS}:8443/users/ws/chat/${roomName}/?uuid=${userInfo.user.id}`);
 		}
 		return websockets[roomName];
@@ -58,7 +58,7 @@ function Chat() {
 		// console.log('serverAddress', serverAddress);
 		setdisplayer("");
 
-		if (userInfo.user === undefined )
+		if (userInfo.user === undefined || userInfo.user.id === undefined)
 			return ;
 		else if (userInfo.user.tournamentIsLaunching===true){
 			setdisplayer(t('game_begins'));

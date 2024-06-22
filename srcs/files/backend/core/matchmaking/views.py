@@ -143,6 +143,7 @@ class Matchmaking(WebsocketConsumer):
 			self.room_name,
 			self.channel_name
 		)
+		
 		tournament = Tournament.objects.filter(name=self.room_name).first()
 		if (not tournament):
 			return
@@ -159,10 +160,10 @@ class Matchmaking(WebsocketConsumer):
 					'username': 'all',
 				}
 			)
-			players = tournament.players.all()
 
 	def receive(self, text_data):
 		# Tournament.objects.all().delete()
+		
 		text_data_json = json.loads(text_data)
 		tipe = text_data_json['type']
 		name = text_data_json['tournament']
