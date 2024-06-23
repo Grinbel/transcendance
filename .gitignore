@@ -6,3 +6,5 @@ srcs/files/backend/core/project/__pycache__/*
 srcs/docker-compose.yml__pycache__/
 __pycache__/
 .env
+*.crt
+*.key
