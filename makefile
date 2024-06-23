@@ -56,8 +56,8 @@ build_nocash:
 up: build
 	./start_containers.sh
 	@echo "${GREEN}containers UP in -detach mode ...${NC}"
-	# rm -f ./srcs/files/backend/ssl/*
-	# rm -f ./srcs/files/frontend/ssl/*
+	rm -f ./srcs/files/backend/ssl/*
+	rm -f ./srcs/files/frontend/ssl/*
 
 nc: build_nocash
 	docker compose -V ${YML_DIR}/docker-compose.yml up $(c)

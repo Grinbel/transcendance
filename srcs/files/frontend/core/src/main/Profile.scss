@@ -1,62 +1,120 @@
 @import "../dashboard/pages/variables.scss";
 
-.profile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    padding: 20px;
-    // background-color: whitesmoke;
-    // border-radius: 10px;
-    // box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    // width: 100%;
-    // max-width: 500px;
-    // margin: 0 auto;
+.Profile {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	// max-width: 600px;
+	padding: 20px;
+	// max-width: 600px;
+	padding: 20px;
+	// box-shadow: 0 4px 8px rgba(75, 70, 70, 0.1);
+	background-color: $white-bg;
+	color: $main-color;
 
-    .profileImage {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
+	.profileName {
+		color: $dark-color;
+		font-size: $title-font-size;
+		font-weight: $title-font-weight;
+		font-family: $title-font;
+		margin-bottom: 20px;
+		text-align: center;
+	}
 
-    .profileInfo {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
+	.addButtons {
+		display: flex;
+		justify-content: space-evenly;
+		gap: 10px;
+		margin-bottom: 20px;
+		width: 100%;
+		flex-grow: 1;
 
-        .profileInfoItem {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.2rem;
-            font-weight: 500;
-            color: $textColor;
+		Button {
+			padding: 10px 20px;
+			border: none;
+			border-radius: 5px;
+			background-color: $main-bg;
+			color: $main-color;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
 
-            .profileInfoIcon {
-                font-size: 1.5rem;
-                color: $primaryColor;
-            }
-        }
-    }
+		&:hover {
+			background-color: $dark-bg;
+		}
 
-    .profileActions {
-        display: flex;
-        gap: 20px;
-        justify-content: center;
-        align-items: center;
+		&:focus {
+			outline: none;
+			box-shadow: 0 0 0 3px rgba(42, 52, 71, 0.25);
+		}
+		}
+	}
 
-        .profileActionButton {
-            cursor: pointer;
-            background-color: transparent;
-            border: none;
-            transition: transform 0.3s;
+	.changeAvatar {
+		display: flex;
+		flex-direction: column;
+		text-align: center;
+		margin-top: 20px;
+		width: 50%;
+		flex-grow: 1;
 
-            &:hover {
-                transform: scale(1.1);
-            }
-        }
-    }
-}
+		.changeAvatarTitle {
+		font-size: 1.2em;
+		margin-bottom: 10px;
+		color: $dark-color;
+		}
+		.Images {
+			display: flex;
+			justify-content: center;
+			gap: 10px;
+			margin-bottom: 20px;
+			width: 100%;
+			flex-grow: 1;
+		}
+	}
+
+	.friendList {
+		margin-top: 20px;
+
+		.friendListTitle {
+		font-size: 1.5em;
+		margin-bottom: 10px;
+		text-align: center;
+		color: $dark-color;
+		}
+
+		.friendItem {
+		padding: 10px;
+		border-bottom: 1px solid $soft-bg;
+		color: $dark-color;
+
+		&:last-child {
+			border-bottom: none;
+		}	display: grid;
+		width: 100%;
+		max-width: 600px;
+		margin: 0 auto;
+		padding: 20px;
+		display: grid;
+		width: 100%;
+		max-width: 600px;
+		margin: 0 auto;
+		padding: 20px;
+		border: 1px solid $soft-bg;
+		border-radius: 10px;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		background-color: $white-bg;
+		color: $dark-color;
+
+		.itemLink {
+			text-decoration: none;
+			color: $main-bg;
+			font-weight: bold;
+			transition: color 0.3s ease;
+
+			&:hover {
+			color: $dark-bg;
+			}
+		}
+		}
+	}
+  }

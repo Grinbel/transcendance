@@ -4,22 +4,24 @@ import { useNavigate, useLocation,useParams } from "react-router-dom";
 import { useContext } from "react";
 import { userContext } from "../contexts/userContext.jsx";
 import  { axiosInstance } from "../axiosAPI.js";
-import "./Home.css";
+// import "./Home.css";
 import { Button } from "react-bootstrap";
 import { useTranslation } from 'react-i18next';
+
+import './Profile.scss';
 
 
 function Image({changeAvatar }) {
 	const images = ['/badboy.png', '/princess.jpg', '/yoshi.jpg','/players.jpg', '/ponge.jpg', '/beaudibe.jpg',];
 	return (
-	  <div>
+	  <div className="Images">
 		{images.map((image, index) => (
 		  <img
 			key={index}
 			src={image}
 			alt={`Avatar ${index}`}
 			onClick={() => changeAvatar(image)}
-			style={{ cursor: 'pointer', borderRadius: '100px', width: '100px', height:'100px' }} // Seule la largeur est définie ici
+			style={{ cursor: 'pointer', borderRadius: '100px', width: '50px', height:'50px' }} // Seule la largeur est définie ici
 />
 		))}
 	  </div>
@@ -136,7 +138,8 @@ const Profile = () => {
 	return (
 		<div className="Profile">
 			<h1 className="profileName">{username}</h1>
-			<header className="addButtons">
+			<div className="addButtons">
+
 			{friend != undefined && friend === false && <Button onClick={() => { action(username,"addfriend"); setFriend(true); }}>{t('addfriend')}</Button>}
             {friend != undefined && friend === true && <Button onClick={() => { action(username,"unfriend"); setFriend(false);}}>{t('unfriend')}</Button>}
             {block != undefined && block === false && <Button onClick={() => { action(username,"block"); setBlock(true);}}>{t('block')}</Button>}
@@ -147,16 +150,14 @@ const Profile = () => {
 					<Image changeAvatar={changeAvatar} />
 				</div>
 				)}
-			</header>
+			</div>
 			<div className="friendList">
 				<h6 className="friendListTitle">{t('friend_list')}</h6>
 				{Array.isArray(friends.friends) && friends.friends.map((friend, index) => (
 					<div key={index} className="friendItem">
-						
 							<a className="itemLink" href="#" onClick={(e) => {e.preventDefault(); navigate(`/profile/${friend}`);}}> {friend} </a>
 					</div>
 				))}
-				
 			</div>
 		</div>
 	  );
