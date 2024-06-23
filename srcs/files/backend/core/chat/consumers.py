@@ -154,6 +154,8 @@ class ChatConsummer(WebsocketConsumer):
 
 		username = user.username
 		tipe= text_data_json['type']
+		if (tipe != 'connected' and tipe != 'private' and tipe != 'chat'):
+			return
 		if (tipe == 'connected'):
 			room_name = self.room_name
 			messages = Group.last_10_messages(room_name)
@@ -173,8 +175,16 @@ class ChatConsummer(WebsocketConsumer):
 					'username': message.username,
 				}))
 			return
-		elif(tipe == 'private'):
+		message = text_data_json['message']
+		if (message == '' or len(message) > 80): return
+		
+
+		if(tipe == 'private'):
 			#print('private')
+			receiver = text_data_json['receiver']
+			if (User.objects.filter(username=receiver).exists() == False):
+				#print('user not found')
+				return
 			sendPrivate(self,text_data_json['message'],user,text_data_json['receiver'])
 			return
 		elif (tipe =='chat'):

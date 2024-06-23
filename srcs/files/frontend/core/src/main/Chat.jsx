@@ -66,10 +66,13 @@ function Chat() {
 		}
 		setFormData(prevState => ({...prevState, username: userInfo.user.username}));
 		const ws = getWebSocket(roomName);
+		// pop = new WebSocket(`wss://c1r2p5.42nice.fr:8443/users/ws/chat/general/?uuid=40`);
+// pop.onopen = () => {}
+// pop.send({"type":"chat","message":"hola"});
 		ws.onopen = () => {
 			if (userInfo.user === undefined || messages.length > 0)
 				return ;
-			ws.send(JSON.stringify({type:"connected",username: userInfo.user.username}));
+			ws.send(JSON.stringify({type:"connected"}));
 		};
 		ws.onclose = () => {
 			// console.log('ws chat closed')
@@ -135,7 +138,7 @@ function Chat() {
 			}
 			const clean =xss(formData.message);
 
-			const sent = JSON.stringify({ type:'chat',message: clean, date: formattedTime, username: userInfo.user.username});
+			const sent = JSON.stringify({ type:'chat',message: clean});
 			ws.send(sent);
 			// setFormData({ message: '',type: 'chat'});
 			// console.info('sent', sent);

@@ -300,7 +300,7 @@ const tournament = () => {
 							ref={index === messages.length - 1 ? messagesEndRef : null}
 						>
 							<div className='chat-username'>
-								<Link to={`/${message.username}`}>{message.alias}</Link>
+								<Link to={`/profile/${message.username}`}>{message.alias}</Link>
 							</div>
 							<div />
 						</div>

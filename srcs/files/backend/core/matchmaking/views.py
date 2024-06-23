@@ -17,12 +17,32 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from django.core import serializers
 from channels.layers import get_channel_layer
 from django.http import HttpResponse
+from rest_framework_simplejwt.tokens import UntypedToken
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
+from rest_framework import status
 
 
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def choice(request):
 
+	# username = request.data.get('username')
+	# user = request.user
+	if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
+		print("token")
+		token = request.headers.get('Authorization').split(' ')[1]
+		try:
+			untyped_token = UntypedToken(token)
+		except (InvalidToken, TokenError) as e:
+			print("Invalid token CHEH")
+			return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+		id = untyped_token['user_id']
+		print("id:",id)
+		user = User.objects.get(id=id)
+		print("Username:",user.username)
+	else:
+		print("no token")
+		return Response({'Error':'no token'})
 	username = request.data.get('username')
 	join = request.data.get('join')
 	alias = request.data.get('alias')
@@ -30,7 +50,12 @@ def choice(request):
 	speed = request.data.get('speed')
 	isEasy = request.data.get('isEasy')
 	skin = request.data.get('skin')
+	print('username:',username)
+	print('alias:',alias)
+	print('join:',join)
 
+	# print('user:',user)
+	# username = user.username
 	user = User.objects.get(username=username)
 
 	playerCount = request.data.get('playerCount')
@@ -82,12 +107,17 @@ def choice(request):
 def options(request):
 	name = request.data.get('room')
 	tournament =Tournament.objects.filter(name=name).first()
+	if (tournament is None):
+		return Response({'Error':'invalid'})
 	return Response({'texture_ball': tournament.texture_ball,'ball_starting_speed':tournament.ball_starting_speed,'score':tournament.score,'easyMode':tournament.easyMode,'skin':tournament.skin})
 
 @api_view(['POST'])
 def EndOfGame(request):
 	winner = request.data.get('winner')
 	room = request.data.get('room')
+	tournament =Tournament.objects.filter(name=room).first()
+	if (tournament is None):
+		return Response({'Error':'invalid'})
 	channel_layer = get_channel_layer()
 	async_to_sync(channel_layer.group_send)(
 		room,
@@ -167,13 +197,15 @@ class Matchmaking(WebsocketConsumer):
 		text_data_json = json.loads(text_data)
 		tipe = text_data_json['type']
 		name = text_data_json['tournament']
-		username = text_data_json['username']
 		alias = text_data_json['alias']
-		user = User.objects.get(username=username)
-		tournament = Tournament.objects.get(name=name)
+		user = self.scope['user']
+		tournament = Tournament.objects.filter(name=name).first()
+		if (tournament is None or user is None):
+			return
+		username = user.username
+		# tournament = Tournament.objects.get(name=name)
 		tournament.addUser(user)
 		tournament.save()
-		players = tournament.players.all()
 		async_to_sync(self.channel_layer.group_send)(
 			self.tournament_name,
 			{
