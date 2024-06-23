@@ -93,7 +93,7 @@ const tournament = () => {
 			.filter(Boolean);
 		setIsTrue(false);
 		const sortedMessages = [...user].sort((a, b) => a.localeCompare(b));
-		console.log('User id:', userInfo.user.id);
+		// console.log('User id:', userInfo.user.id);
 		if (userInfo.user.username === sortedMessages[0])
 			{
 			setDisplayer(t("Launching"));
@@ -191,7 +191,15 @@ const tournament = () => {
 			navigate('/play');
 			return;
 		}
-		console.log('tournament', userInfo.user.tournament);
+		if (userInfo.user.isHost !== undefined && userInfo.user.isHost === true)
+			{
+				userInfo.setUser({
+					...userInfo.user,
+					isHost: false,
+				})
+				return ;
+			}
+		// console.log('tournament', userInfo.user.tournament);
 		const ws = getWebSocket(userInfo.user.tournament);
 		ws.onopen = () => {
 			ws.send(
