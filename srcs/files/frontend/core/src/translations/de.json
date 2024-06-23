@@ -155,5 +155,7 @@
 	"to_show_rules": "Drücken Sie die ESC-Taste, um die Regeln anzuzeigen",
 	"invite_2" : "Einladen",
 	"Hide Chat" : "Chat ausblenden",
-	"Show Chat" : "Chat anzeigen"
+	"Show Chat" : "Chat anzeigen",
+	"2FA" : "Zwei-Faktor-Authentifizierung",
+	"Settings" : "Einstellungen"
 }
