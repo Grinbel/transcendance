@@ -795,6 +795,12 @@ function Game() {
 						options.usernames[options.usernames.length - 1]
 					);
 				}
+				for (let i = 0; i < options.usernames.length; i++) {
+					if(Hall_of_Fame.length > i && Hall_of_Fame[i] != null)
+						{console.log('I remove Hall of Fame' + i);
+							scene.remove(Hall_of_Fame[i]);
+					Hall_of_Fame[i].dispose();}
+				}
 				navigate('/');
 				return;
 			}
@@ -836,7 +842,6 @@ function Game() {
 		function end_of_game(counter) {
 			renderer.render(scene, camera);
 			if (counter != 0) {
-				options.winner.rotation.y += 0.01;
 				requestAnimationFrame(() => end_of_game(counter - 1));
 			} else {
 				window.removeEventListener('keydown', local_handleKeyDown, false);
@@ -869,8 +874,6 @@ function Game() {
 						options.usernames.length === 15 ||
 						options.usernames.length === 3
 					) {
-						//options.winner = create_text( options.score_p1>options.score_p2?options.name_p1:options.name_p2 + " REMPORTE LE TOURNOI");
-						//setShouldRunEffect(false);
 						for (let i = 0; i < options.usernames.length; i = i + 2) {
 							Hall_of_Fame[i] = create_text(options.usernames[i]);
 							if (i + 1 < options.usernames.length) {
@@ -951,6 +954,32 @@ function Game() {
 			}
 		}
 		function end_of_tournament(counter) {
+			if (starting_location != getCurrentLocation()) {
+				clear_everything();
+				window.removeEventListener('keydown', local_handleKeyDown, false);
+				window.removeEventListener('keyup', local_handleKeyUp, false);
+				window.removeEventListener('mousemove', handleMouseMove);
+				document.body.removeChild(renderer.domElement);
+				//document.body.removeChild(dialogContainer);
+				renderer.dispose();
+				resetOptions();
+				disposeTrail();
+				if (options.is_tournament) {
+					console.log('end of game')
+					message_end_of_game(
+						options.room,
+						options.usernames[options.usernames.length - 1]
+					);
+				}
+				for (let i = 0; i < options.usernames.length; i++) {
+					if(Hall_of_Fame.length > i && Hall_of_Fame[i] != null)
+						{console.log('I remove Hall of Fame' + i);
+							scene.remove(Hall_of_Fame[i]);
+					Hall_of_Fame[i].dispose();}
+				}
+				navigate('/');
+				return;
+			}
 			renderer.render(scene, camera);
 			camera.position.z = 0;
 			camera.position.x = 0;

@@ -62,7 +62,7 @@
 	"full": "Le tournoi est plein",
 	"inside": "Vous etes deja dans un tournoi",
 	"progress": "Le tournoi est en cours",
-	"alias": "L'Alias est deja pris ou vous etes deja incrit a ce tournoi",
+	"alias": "L'Alias est deja pris ou vous etes deja inscrit a ce tournoi",
 	"host": "Vous etes l'hote, partie en cours de lancement",
 	"not_host": "Vous n'etes pas l'hote, veuillez allez a l'ordinateur de ",
 	"not_host2": " pour lancer la partie",

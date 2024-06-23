@@ -19,7 +19,7 @@ function Play() {
 	const [error, setError] = useState(null);
 	const [join, setJoin] = useState(false);
 	const [ballSpeed, setBallSpeed] = useState(50);
-	const [score, setScore] = useState(5);
+	const [score, setScore] = useState(10);
 	const [skin, setSkin]= useState(2);
 	const [alias, setAlias] = useState("");
 	const [formData, setFormData] = useState({ tournamentId: "", playerCount: 2, isEasy: false });
@@ -197,7 +197,7 @@ function Play() {
 				<p />
 				<input
 					type="range"
-					min="1"
+					min="20"
 					max="200"
 					step="1"
 					value={ballSpeed}
@@ -206,8 +206,8 @@ function Play() {
 				<p>{t("ball_speed")}: {ballSpeed}</p>
 				<input
 					type="range"
-					min="1"
-					max="15"
+					min="5"
+					max="25"
 					step="1"
 					value={score}
 					onChange={(e) => setScore(parseFloat(e.target.value))}
