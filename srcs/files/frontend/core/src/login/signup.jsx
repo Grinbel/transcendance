@@ -71,7 +71,7 @@ function Signup() {
 				{
 					// console.log('user registred successfully response.data', response.data);
 					set_Form_Data({ username: '', email: '', pass: '', confimPass: '' });
-					setSuccessMessage('User registered successfully!');
+					setSuccessMessage(t('User registered successfully!'));
 					setErrorMessages({});
 				}
 

@@ -38,6 +38,7 @@ const NavLoggedIn = () => {
 	const changeLanguage = async (lng) => {
 		i18n.changeLanguage(lng);
 		try {
+//			await axiosInstance.post('/setlanguage/', { language: lng, username: userinfo.user.username});
 			await axiosInstance.post('/setlanguage/', { language: lng, username: userinfo.user.username});
 			userinfo.setUser({ ...userinfo.user, language: lng });
 		  } catch (error) {

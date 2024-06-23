@@ -45,6 +45,7 @@ const Home = () => {
 				name_p1: userinfo.user.username,
 				texture_p1 : avatar,
 				real_game : 1,
+				ball_starting_speed: 0.1,
 				player_is_ia : 0,
 				name_p2 : 'Peach',
 				texture_p2 : "princess.jpg"
