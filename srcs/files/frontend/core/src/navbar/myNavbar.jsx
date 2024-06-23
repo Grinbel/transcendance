@@ -101,7 +101,8 @@ const NavLoggedIn = () => {
 				<h5 >{userinfo.user.username}</h5>
 				<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={UserMenu}>
 					<NavDropdown.Item as={Link} to={`/profile/${userinfo.user.username}`}>{t('profile')}</NavDropdown.Item>
-					<Nav.Link className="navCustom playButton me-3" as={Link} to="/play">{t('play')}</Nav.Link>
+					<NavDropdown.Item as={Link} to="/dashboard">{t('Dashboard')}</NavDropdown.Item>
+					<NavDropdown.Item as={Link} to="/play">{t('play')}</NavDropdown.Item>
 					<NavDropdown.Divider />
 					<NavDropdown.Item onClick={handleLogout}>{t('logout')}</NavDropdown.Item>
 				</NavDropdown>
