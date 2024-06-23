@@ -389,7 +389,7 @@ def language(request):
 
 @api_view(['POST'])
 def avatar(request):
-	print('avatar function')
+	# print('avatar function')
 	username = request.data.get('username')
 	avatar = request.data.get('avatar')
 	user = User.objects.get(username=username)
