@@ -347,9 +347,9 @@ function Chat() {
 								</div>}
 								{message.type === 'send_invite' && <div className="invite">
 									{message.message}
-									<a href="#" className="link" onClick={(e) => {e.preventDefault(); goToTournament(message.room);}}>
+									<button className="link" onClick={() => goToTournament(message.room)}>
 										{t('join')}
-									</a>
+									</button>
 								</div>}
 								{message.type === 'next_game_player' && <div className="private">
 									{message.message}
