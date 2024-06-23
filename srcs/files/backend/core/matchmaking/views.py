@@ -21,6 +21,23 @@ from rest_framework_simplejwt.tokens import UntypedToken
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework import status
 
+def checkuser(request):
+	if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
+		print("token")
+		token = request.headers.get('Authorization').split(' ')[1]
+		try:
+			untyped_token = UntypedToken(token)
+		except (InvalidToken, TokenError) as e:
+			print("Invalid token CHEH")
+			return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+		id = untyped_token['user_id']
+		print("id:",id)
+		user = User.objects.get(id=id)
+		print("Username:",user.username)
+		return user
+	else:
+		print("no token")
+		return Response({'Error':'no token'})
 
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
@@ -40,6 +57,7 @@ def choice(request):
 		print("id:",id)
 		user = User.objects.get(id=id)
 		print("Username:",user.username)
+		
 	else:
 		print("no token")
 		return Response({'Error':'no token'})
@@ -54,6 +72,8 @@ def choice(request):
 	print('alias:',alias)
 	print('join:',join)
 
+	
+	
 	# print('user:',user)
 	# username = user.username
 	user = User.objects.get(username=username)
