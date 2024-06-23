@@ -380,9 +380,13 @@ class UserList(APIView):
 	
 @api_view(['POST'])
 def language(request):
+	
+	username = request.data.get('username')
 #	username = request.data.get('username')
 	username = request.user.username
 	language = request.data.get('language')
+	if language not in ['en', 'de', 'fr']:
+		return Response({'detail': 'Invalid language code. Please provide a valid language code.'}, status=status.HTTP_400_BAD_REQUEST)
 	user = User.objects.get(username=username)
 	user.language = language
 	user.save()
