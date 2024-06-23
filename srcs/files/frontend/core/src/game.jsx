@@ -32,6 +32,7 @@ function Game() {
 			})
 			// .then(() => {
 			// 	navigate('/');});
+			console.log("Resonse:",response.data);
 		
 		} catch (error) {
 			// setError(error.message);
