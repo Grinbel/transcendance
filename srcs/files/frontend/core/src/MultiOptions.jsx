@@ -122,8 +122,8 @@ const MultiOptions = () => {
 						value={JSON.stringify({
 							texture_ball: 'basketball.jpg',
 							texture_floor: 'basket.jpg',
-							stage_radius: 4,
-							ball_radius: 0.7,
+							stage_radius: 5,
+							ball_radius: 0.3,
 						})}
 					>
 						{t('basketball')}
@@ -132,8 +132,8 @@ const MultiOptions = () => {
 						value={JSON.stringify({
 							texture_ball: 'billardball.png',
 							texture_floor: 'billardtable.png',
-							stage_radius: 6,
-							ball_radius: 0.3,
+							stage_radius: 5,
+							ball_radius: 0.1,
 						})}
 					>
 						{t('billard')}
@@ -142,7 +142,7 @@ const MultiOptions = () => {
 						value={JSON.stringify({
 							texture_ball: 'tennisball.jpg',
 							texture_floor: 'tennisfield.jpg',
-							stage_radius: 7,
+							stage_radius: 5,
 							ball_radius: 0.2,
 						})}
 					>
