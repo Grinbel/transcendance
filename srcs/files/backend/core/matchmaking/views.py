@@ -23,67 +23,49 @@ from rest_framework import status
 
 def checkuser(request):
 	if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
-		print("token")
 		token = request.headers.get('Authorization').split(' ')[1]
 		try:
 			untyped_token = UntypedToken(token)
 		except (InvalidToken, TokenError) as e:
-			print("Invalid token CHEH")
-			return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+			# print('Invalid Token failed to decode')	
+			return 0
 		id = untyped_token['user_id']
-		print("id:",id)
 		user = User.objects.get(id=id)
-		print("Username:",user.username)
 		return user
 	else:
 		print("no token")
-		return Response({'Error':'no token'})
+		return 0
 
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def choice(request):
 
 	# username = request.data.get('username')
-	# user = request.user
-	if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
-		print("token")
-		token = request.headers.get('Authorization').split(' ')[1]
-		try:
-			untyped_token = UntypedToken(token)
-		except (InvalidToken, TokenError) as e:
-			print("Invalid token CHEH")
-			return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
-		id = untyped_token['user_id']
-		print("id:",id)
-		user = User.objects.get(id=id)
-		print("Username:",user.username)
-		
-	else:
-		print("no token")
-		return Response({'Error':'no token'})
-	username = request.data.get('username')
+	user = checkuser(request)
+	if user == 0:
+		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
+
 	join = request.data.get('join')
 	alias = request.data.get('alias')
 	score = request.data.get('score')
 	speed = request.data.get('speed')
 	isEasy = request.data.get('isEasy')
 	skin = request.data.get('skin')
-	print('username:',username)
-	print('alias:',alias)
-	print('join:',join)
-
-	
-	
-	# print('user:',user)
-	# username = user.username
-	user = User.objects.get(username=username)
-
 	playerCount = request.data.get('playerCount')
 	tournamentId = request.data.get('tournamentId')
 
 
-	# if (Tournament.objects.filter(players=user).exists()):
-	# 	return Response({'Error':'inside'})
+	if ((len(alias) > 10 and len(alias) < 1) or not alias.isalpha()
+	 	or (score < 1 and score > 25)
+		or (speed < 20 and speed > 200)
+		or playerCount not in [2,4,8]
+		or isEasy not in [True,False]
+		or skin not in [1,2,3,4]
+		or join not in [True,False]
+		or len(tournamentId) > 6):
+		print('Invalid parameter')
+		return Response({'detail': 'Invalid parameter'}, status=status.HTTP_401_UNAUTHORIZED)
+		
 	tournaments = Tournament.objects.all()
 	for tournament in tournaments:
 		usernames = tournament.getAllUsername()
@@ -106,7 +88,6 @@ def choice(request):
 		tournament = Tournament.create(name=name,max_capacity=playerCount,ball_starting_speed=speed,score=score,easyMode=isEasy,skin=skin)
 		return Response({'room_name': name})
 	else:
-		#check if tournamendid exist
 		tournament = Tournament.objects.filter(name=tournamentId).first()
 		if (tournament is None):
 			return Response({'Error':'invalid'})
@@ -125,19 +106,32 @@ def choice(request):
 
 @api_view(['POST'])
 def options(request):
+	user = checkuser(request)
+	if (user == 0):
+		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
+	
 	name = request.data.get('room')
 	tournament =Tournament.objects.filter(name=name).first()
 	if (tournament is None):
 		return Response({'Error':'invalid'})
+	if (user.username not in tournament.getAllUsername()):
+		return Response({'Error':'Not in game'}, status=status.HTTP_401_UNAUTHORIZED)
 	return Response({'texture_ball': tournament.texture_ball,'ball_starting_speed':tournament.ball_starting_speed,'score':tournament.score,'easyMode':tournament.easyMode,'skin':tournament.skin})
 
 @api_view(['POST'])
 def EndOfGame(request):
+	user = checkuser(request)
+	if (user == 0):
+		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
 	winner = request.data.get('winner')
 	room = request.data.get('room')
 	tournament =Tournament.objects.filter(name=room).first()
 	if (tournament is None):
 		return Response({'Error':'invalid'})
+	print('tournament creator:',tournament.creator,'user:',user.username)
+	if (user.username != tournament.creator):
+		print('Not creator')
+		return Response({'Error':'Not in game'}, status=status.HTTP_401_UNAUTHORIZED)
 	channel_layer = get_channel_layer()
 	async_to_sync(channel_layer.group_send)(
 		room,
@@ -215,9 +209,14 @@ class Matchmaking(WebsocketConsumer):
 		# Tournament.objects.all().delete()
 		
 		text_data_json = json.loads(text_data)
-		tipe = text_data_json['type']
 		name = text_data_json['tournament']
 		alias = text_data_json['alias']
+
+		if (alias == '' or alias is None):
+			alias = self.scope['user'].username
+		if (len(alias) > 10 or not alias.isalpha()
+	  	or len(name) > 6):
+			return
 		user = self.scope['user']
 		tournament = Tournament.objects.filter(name=name).first()
 		if (tournament is None or user is None):
@@ -239,12 +238,18 @@ class Matchmaking(WebsocketConsumer):
 		)
 		if (tournament.max_capacity == tournament.players.count()):
 			timer = 3
+			players = tournament.getAllUsername()
+			for player in players:
+				tournament.creator = player
+				break
+			print('tournament name of host:',tournament.creator)
 			async_to_sync(self.channel_layer.group_send)(
 				self.tournament_name,
 				{
 					'type':'launch_tournament',
 					'timer': timer,
 					'name': name,
+					'host': tournament.creator,
 				}
 			)
 			tournament.status= 'inprogress'
@@ -271,6 +276,7 @@ class Matchmaking(WebsocketConsumer):
 		self.send(text_data=json.dumps({
 			'type': 'launch_tournament',
 			'timer': event['timer'],
+			'host': event['host'],
 		}))
 	
 	def end_of_game(self,event):

@@ -23,7 +23,7 @@ const tournament = () => {
 	const { setOptions } = useGameContext();
 	const [isTrue, setIsTrue] = useState(false);
 	const [stop,setStop] = useState(false);
-
+	const [host,setHost] = useState('');
 	const nextgameplayer = async (name) => {
 		try {
 			const response = await axiosInstance.post('/nextgameplayer/', {
@@ -94,7 +94,9 @@ const tournament = () => {
 		setIsTrue(false);
 		const sortedMessages = [...user].sort((a, b) => a.localeCompare(b));
 		// console.log('User id:', userInfo.user.id);
-		if (userInfo.user.username === sortedMessages[0])
+		console.log('host:', host);
+		
+		if (userInfo.user.username === host)
 			{
 			setDisplayer(t("Launching"));
 
@@ -173,10 +175,10 @@ const tournament = () => {
 			);
 			
 		} else {
-			setDisplayer(t('not_host') + sortedMessages[0] + t('not_host2'));
+			setDisplayer(t('not_host') + host + t('not_host2'));
 			// delay(5000).then(() => navigate('/'));
 		}
-	}, [messages, isTrue, name]);
+	}, [messages, isTrue, name, host]);
 
 	useEffect(() => {
 		if (userInfo.user === undefined) {
@@ -244,6 +246,8 @@ const tournament = () => {
 				// setDisplayer("Launching in " + message.timer + " seconds");
 				// console.log("set tournamentIsLaunching")
 				// userInfo.setUser({...userInfo.user,tournamentIsLaunching:true});
+				setHost(message.host);
+				console.log("Message",message, message.host);
 				setIsTrue(true);
 			} else if (message.type === 'friends') {
 				setFriend((prevFriend) => [message]);

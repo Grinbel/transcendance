@@ -11,7 +11,7 @@ import './Home.css';
 
 function Play() {
 	const { t } = useTranslation();
-	const navigateTo = useNavigate();
+	const navigate = useNavigate();
 	const userInfo = useContext(userContext);
 	const [showSelect, setShowSelect] = useState(false);
 	const [showTextArea, setShowTextArea] = useState(false);
@@ -89,7 +89,7 @@ function Play() {
 				});
 				const local = userInfo.user;
 				localStorage.setItem('user', JSON.stringify(local));
-				navigateTo('/tournament/');
+				navigate('/tournament/');
 			}
 		} catch (error) {
 			if (error.response) {
