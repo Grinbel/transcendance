@@ -151,7 +151,7 @@ function Play() {
 							maxLength="7"
 
 							/>
-					<Button onClick={handleSubmit}>Submit</Button>
+					<Button onClick={handleSubmit}>{t('submit')}</Button>
 				</div>
 			)}
 			
