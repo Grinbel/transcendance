@@ -6,7 +6,7 @@ from users.helper import listUsers
 from users.models import User
 class GameConsumer(WebsocketConsumer):
 	async def connect(self):
-		print('connected to game consumer')
+		# print('connected to game consumer')
 		#print('connected to game consumer')
 		self.room_name = self.scope['url_route']['kwargs']['room_name']
 		#print('user POOOPA',self.scope['user'], room_name)
@@ -19,7 +19,7 @@ class GameConsumer(WebsocketConsumer):
 		await self.accept()
 
 	async def disconnect(self, close_code):
-		print('deco to game consumer')
+		# print('deco to game consumer')
 
 		await self.channel_layer.group_discard(
 			self.room_group_name,
@@ -27,7 +27,7 @@ class GameConsumer(WebsocketConsumer):
 		)
 
 	async def receive(self, text_data):
-		print('connected to game consumer')
+		# print('connected to game consumer')
 
 		data = json.loads(text_data)
 		message = data['message']

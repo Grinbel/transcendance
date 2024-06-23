@@ -103,7 +103,7 @@ def NextGamePlayer(request):
 			'room':room,
 		}
 	)
-	print('next game player')
+	# print('next game player')
 	return HttpResponse('Player Ready!')
 
 
@@ -111,7 +111,7 @@ def NextGamePlayer(request):
 class ChatConsummer(WebsocketConsumer):
 
 	def connect(self):
-		print('Connected')
+		# print('Connected')
 		room_name = self.scope['url_route']['kwargs']['room_name']
 
 		# #print('user : ',self.scope['user'])
@@ -133,7 +133,7 @@ class ChatConsummer(WebsocketConsumer):
 		#print('Connected')
 	
 	def disconnect(self, close_code):
-		print('Disconnected')
+		# print('Disconnected')
 		user= self.scope['user']
 		#print('user:',user)
 		async_to_sync(self.channel_layer.group_discard)(
