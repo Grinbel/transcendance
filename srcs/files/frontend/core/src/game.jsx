@@ -29,16 +29,14 @@ function Game() {
 			const response = await axiosInstance.post('/endofgame/', {
 				room: name,
 				winner: winner,
-			})
+			});
 			// .then(() => {
 			// 	navigate('/');});
-		
 		} catch (error) {
 			// setError(error.message);
 			// throw (error);
 		}
 		//une fois que j ai recu la reponse, je veux  navigate('/')
-		
 	};
 
 	const nextgameplayer = async (name, p1, p2) => {
@@ -74,19 +72,17 @@ function Game() {
 			options.score_p2 = 0;
 			nextgameplayer(options.room, options.name_p1, options.name_p2);
 		}
-		console.log(options.texture_p1)
-		if (options.texture_p1_ball === 1)
-			{
-				options.texture_p1_ball = options.texture_ball;
-				if(options.texture_p1 === '/yoshi.jpg')
-					options.texture_p1_ball = 'yoshi_egg.jpg'
-			}
-		if (options.texture_p2_ball === 1)
-			{
+		console.log(options.texture_p1);
+		if (options.texture_p1_ball === 1) {
+			options.texture_p1_ball = options.texture_ball;
+			if (options.texture_p1 === '/yoshi.jpg')
+				options.texture_p1_ball = 'yoshi_egg.jpg';
+		}
+		if (options.texture_p2_ball === 1) {
 			options.texture_p2_ball = options.texture_ball;
-				if(options.texture_p2 === '/yoshi.jpg')
-					options.texture_p2_ball = 'yoshi_egg.jpg'
-			}
+			if (options.texture_p2 === '/yoshi.jpg')
+				options.texture_p2_ball = 'yoshi_egg.jpg';
+		}
 		let loader = new THREE.TextureLoader();
 		let texture = loader.load(options.texture_ball);
 		let texture_ball_p1 = loader.load(options.texture_p1_ball);
@@ -789,17 +785,18 @@ function Game() {
 				resetOptions();
 				disposeTrail();
 				if (options.is_tournament) {
-					console.log('end of game')
+					console.log('end of game');
 					message_end_of_game(
 						options.room,
 						options.usernames[options.usernames.length - 1]
 					);
 				}
 				for (let i = 0; i < options.usernames.length; i++) {
-					if(Hall_of_Fame.length > i && Hall_of_Fame[i] != null)
-						{console.log('I remove Hall of Fame' + i);
-							scene.remove(Hall_of_Fame[i]);
-					Hall_of_Fame[i].dispose();}
+					if (Hall_of_Fame.length > i && Hall_of_Fame[i] != null) {
+						console.log('I remove Hall of Fame' + i);
+						scene.remove(Hall_of_Fame[i]);
+						Hall_of_Fame[i].dispose();
+					}
 				}
 				navigate('/');
 				return;
@@ -965,17 +962,18 @@ function Game() {
 				resetOptions();
 				disposeTrail();
 				if (options.is_tournament) {
-					console.log('end of game')
+					console.log('end of game');
 					message_end_of_game(
 						options.room,
 						options.usernames[options.usernames.length - 1]
 					);
 				}
 				for (let i = 0; i < options.usernames.length; i++) {
-					if(Hall_of_Fame.length > i && Hall_of_Fame[i] != null)
-						{console.log('I remove Hall of Fame' + i);
-							scene.remove(Hall_of_Fame[i]);
-					Hall_of_Fame[i].dispose();}
+					if (Hall_of_Fame.length > i && Hall_of_Fame[i] != null) {
+						console.log('I remove Hall of Fame' + i);
+						scene.remove(Hall_of_Fame[i]);
+						Hall_of_Fame[i].dispose();
+					}
 				}
 				navigate('/');
 				return;
