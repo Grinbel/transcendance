@@ -7,4 +7,5 @@ srcs/docker-compose.yml__pycache__/
 __pycache__/
 .env
 *.crt
+*.csr
 *.key

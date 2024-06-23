@@ -43,24 +43,13 @@ function Signup() {
 		// console.log("submitFn event currentTarget: ", event.currentTarget);
 		const form = event.currentTarget;
 		event.preventDefault();
+		setSuccessMessage('');
 		if (form.checkValidity() === false) {
 			// console.log('form.checkValidity() === false');
 			event.stopPropagation();
 			set_validated(true);
 		}
 		else {
-			// console.log('Form data to submit:', form_Data);
-			// signup the user to backend
-			// console.log('UserList before duplicate verification', userList);
-			// console.log('username before duplicate verification', form_Data.username);
-			// if (userList.includes(form_Data.username)) {
-			//     setError('Username already exists, try another one');
-			//     return;
-			// }
-			// if (userList.includes(form_Data.email)) {
-			//     setError('Email associated with existing account');
-			//     return;
-			// }
 			try {
 				const response = await axiosSignup.post('/signup/', {
 					username: form_Data.username,
@@ -96,6 +85,9 @@ function Signup() {
 					updateErrorMessages('Client', "An unexpected error occurred. Please try again.");
 				}
 				// throw (error);
+			} finally {
+				set_validated(false);
+
 			};
 		};
 	};

@@ -380,6 +380,7 @@ class UserList(APIView):
 	
 @api_view(['POST'])
 def language(request):
+	
 	username = request.data.get('username')
 	language = request.data.get('language')
 	user = User.objects.get(username=username)
