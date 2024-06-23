@@ -6,9 +6,11 @@ import { useGameContext } from './contexts/GameContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { axiosInstance } from './axiosAPI.js';
-
+import { useContext } from 'react';
+import { userContext } from './contexts/userContext.jsx';
 function Game() {
 	const { options, resetOptions, setOptions } = useGameContext();
+	const userInfo = useContext(userContext);
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	let Hall_of_Fame = [];
@@ -72,9 +74,13 @@ function Game() {
 			options.player_is_ia = 0;
 			options.score_p1 = 0;
 			options.score_p2 = 0;
+			userInfo.setUser({
+				...userInfo.user,
+				isHost: true,
+			})
 			nextgameplayer(options.room, options.name_p1, options.name_p2);
 		}
-		console.log(options.texture_p1)
+		// console.log(options.texture_p1)
 		if (options.texture_p1_ball === 1)
 			{
 				options.texture_p1_ball = options.texture_ball;
@@ -789,7 +795,7 @@ function Game() {
 				resetOptions();
 				disposeTrail();
 				if (options.is_tournament) {
-					console.log('end of game')
+					// console.log('end of game')
 					message_end_of_game(
 						options.room,
 						options.usernames[options.usernames.length - 1]
