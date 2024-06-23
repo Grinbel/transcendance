@@ -12,8 +12,8 @@ const MultiOptions = () => {
 	const navigate = useNavigate();
 	const [playerCount, setPlayerCount] = useState(2);
 	const [buttonCount, setButtonCount] = useState(1);
-	const [ballSpeed, setBallSpeed] = useState(50);
-	const [score, setScore] = useState(5);
+	const [ballSpeed, setBallSpeed] = useState(40);
+	const [score, setScore] = useState(30);
 	const [skin, setSkin] = useState();
 	const [alias, setAlias] = useState('');
 	const [floor, setFloor] = useState('basket.jpg');
@@ -89,8 +89,8 @@ const MultiOptions = () => {
 			</p>
 			<input
 				type='range'
-				min='1'
-				max='15'
+				min='10'
+				max='100'
 				step='1'
 				value={score}
 				onChange={(e) => setScore(parseFloat(e.target.value))}

@@ -315,6 +315,10 @@ function Game() {
 			controls.update();
 		};
 
+		function handleKeyDown_2(event) {
+			if (event.keyCode === 32) options.ball_pause = -1;
+		}
+
 		window.addEventListener('mousemove', handleMouseMove);
 
 		function clear_components(component) {
@@ -781,33 +785,35 @@ function Game() {
 		scene.add(text_p2);
 		text_p2.position.z += options.ball_radius * 2 + 2;
 		server_ball_reset();
+
+		function closing_game (){
+			clear_everything();
+			window.removeEventListener('keydown', local_handleKeyDown, false);
+			window.removeEventListener('keyup', local_handleKeyUp, false);
+			window.removeEventListener('mousemove', handleMouseMove);
+			window.removeEventListener('keydown', handleKeyDown_2, false);
+			document.body.removeChild(renderer.domElement);
+			//document.body.removeChild(dialogContainer);
+			renderer.dispose();
+			resetOptions();
+			disposeTrail();
+			if (options.is_tournament) {
+				message_end_of_game(
+					options.room,
+					options.usernames[options.usernames.length - 1]
+				);
+			}
+			for (let i = 0; i < options.usernames.length; i++) {
+				if (Hall_of_Fame.length > i && Hall_of_Fame[i] != null) {
+					scene.remove(Hall_of_Fame[i]);
+					Hall_of_Fame[i].dispose();
+				}
+			}
+			navigate('/');
+		}
 		function animate() {
 			if (starting_location != getCurrentLocation()) {
-				clear_everything();
-				window.removeEventListener('keydown', local_handleKeyDown, false);
-				window.removeEventListener('keyup', local_handleKeyUp, false);
-				window.removeEventListener('mousemove', handleMouseMove);
-				document.body.removeChild(renderer.domElement);
-				//document.body.removeChild(dialogContainer);
-				renderer.dispose();
-				resetOptions();
-				disposeTrail();
-				if (options.is_tournament) {
-					// console.log('end of game')
-					message_end_of_game(
-						options.room,
-						options.usernames[options.usernames.length - 1]
-					);
-				}
-				for (let i = 0; i < options.usernames.length; i++) {
-					if (Hall_of_Fame.length > i && Hall_of_Fame[i] != null) {
-						console.log('I remove Hall of Fame' + i);
-						scene.remove(Hall_of_Fame[i]);
-						Hall_of_Fame[i].dispose();
-					}
-				}
-				navigate('/');
-				return;
+				closing_game();
 			}
 			if (
 				((options.score_p1 >= options.score_to_get ||
@@ -824,6 +830,10 @@ function Game() {
 						: options.name_p2;
 
 				options.winner = create_text(t('winner') + options.winner);
+				camera.position.z = 0;
+				camera.position.x = 0;
+				camera.position.y = 0;
+				camera.lookAt(new THREE.Vector3(0, 0, 0));
 				scene.add(options.winner);
 				options.winner.position.x = -3;
 				disposeTrail();
@@ -939,6 +949,8 @@ function Game() {
 							options.room,
 							options.usernames[options.usernames.length - 1]
 						);
+						options.ball_pause = 0;
+						window.addEventListener('keydown', handleKeyDown_2, false);
 						return end_of_tournament(-1);
 					}
 					renderer.dispose();
@@ -959,7 +971,7 @@ function Game() {
 			}
 		}
 		function end_of_tournament(counter) {
-			if (starting_location != getCurrentLocation()) {
+			if (starting_location != getCurrentLocation() || options.ball_pause === -1) {
 				clear_everything();
 				window.removeEventListener('keydown', local_handleKeyDown, false);
 				window.removeEventListener('keyup', local_handleKeyUp, false);
@@ -1008,7 +1020,7 @@ function Game() {
 					}
 					document.body.removeChild(renderer.domElement);
 					renderer.dispose();
-
+					window.removeEventListener('keydown', handleKeyDown_2, false);
 					resetOptions();
 					navigate('/');
 				}
