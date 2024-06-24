@@ -7,7 +7,7 @@ import "./dropdown.css";
 // import "./Home.css";
 import { useContext } from "react";
 import { userContext } from "../contexts/userContext.jsx";
-import  { axiosInstance } from "../axiosAPI.js";
+import  { axiosInstance} from "../axiosAPI.js";
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
@@ -97,12 +97,14 @@ function Chat() {
 				localStorage.removeItem('refresh_token');
 				localStorage.removeItem('user');
 				axiosInstance.defaults.headers['Authorization'] = null;
+				axiosInstance.defaults.headers['Authorization'] = null;
+
 				userInfo.setUser();
 				// console.log('NavLoggedIn: logout successful frontend');
 			}
 			else
 				setMessages(prevMessages => [...prevMessages, message]);
-			// console.log('ws chat message', message, message.username);
+			console.log('ws chat message', message, message.username);
 		};
 
 		setWs(ws);

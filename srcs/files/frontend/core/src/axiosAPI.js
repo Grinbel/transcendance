@@ -25,6 +25,19 @@ export const axiosInstance = axios.create({
     // withCredentials: true, 
 });
 
+// export const choiceInstance = axios.create({
+	 
+//     baseURL: `https://${import.meta.env.VITE_API_SERVER_ADDRESS}:8443/users/`,
+//     // baseURL: `https://localhost:8443/users/`,
+//     timeout: 10000,
+//     headers: {
+//         'Authorization': "Baerer " + localStorage.getItem('access_token'),
+//         'Content-Type': 'application/json',
+//         'accept': 'application/json'
+//     },
+//     // withCredentials: true, 
+// });
+
 export const refreshInstance = axios.create({
   baseURL: `https://${import.meta.env.VITE_API_SERVER_ADDRESS}:8443/users/`,
   // baseURL: `https://localhost:8443/users/`,
@@ -65,7 +78,9 @@ export const interceptor_response = axiosInstance.interceptors.response.use(
   (error) => {
     const status = error.response ? error.response.status : null;
     const originalRequest = error.config;
-    // console.log('interceptor_response: error status and retry', status, originalRequest._retry);
+    console.log('interceptor_response: error status and retry', status, originalRequest._retry);
+    console.log('interceptor_response: error status and retry', status, originalRequest);
+
     if (status === 401 && !originalRequest._retry) {
     //   console.log('interceptor_response: 401 and not retried yet. refreshing ?', refreshing);
       if (!refreshing) {

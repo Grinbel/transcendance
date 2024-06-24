@@ -77,32 +77,30 @@ def sendInvite(request):
 		print('Invalid Token')
 		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
 	receiver = request.data.get('receiver')
-	username = request.data.get('self')
+	username = user.username
 	room = request.data.get('room')
 	receiver = User.objects.filter(username=receiver).first()
-	user = User.objects.filter(username=username).first()
+	# user = User.objects.filter(username=username).first()
 	tournament = Tournament.objects.filter(name=room).first()
 	if (receiver is None or user is None or tournament is None):
-		print('User not found')
-		return HttpResponse('User not found')
+		# print('User not found')
+		return Response({'Error':'User not found'}, status=status.HTTP_400_BAD_REQUEST)
 	if (username not in tournament.getAllUsername()):
-		print('Not in game',username,tournament.getAllUsername())
-
-		return HttpResponse('Not in game')
+		return Response({'Error':'Not in game'}, status=status.HTTP_400_BAD_REQUEST)
 	channel_layer = get_channel_layer()
 	if (receiver is None or receiver.blacklist.all().filter(username=username).exists()):
-		return HttpResponse("You're blocked")
-	print('send invite')
+		return Response({'Error':'Invalid you re blocked'}, status=status.HTTP_400_BAD_REQUEST)
+	# print('send invite',username,receiver.username,room)
 	async_to_sync(channel_layer.group_send)(
 		'general',
 		{
 			'type': 'send_invite',
 			'room':room,
 			'self':username,
-			'receiver':receiver,
+			'receiver':receiver.username,
 		}
 	)
-	return HttpResponse('Invite sent!')
+	return Response({'Invite sent'}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def NextGamePlayer(request):
@@ -116,10 +114,10 @@ def NextGamePlayer(request):
 	tournament = Tournament.objects.filter(name=room).first()
 	if (tournament is None):
 		print('Invalid room')
-		return HttpResponse('Invalid room')
+		return Response({'Error':'Invalid Room'}, status=status.HTTP_400_BAD_REQUEST)
 	if (user != None and user.username != tournament.creator):
 		print('Not creator')
-		return HttpResponse('Not host')
+		return Response({'Error':'Not host'}, status=status.HTTP_400_BAD_REQUEST)
 	channel_layer = get_channel_layer()
 	print('next game player')
 	async_to_sync(channel_layer.group_send)(
@@ -132,7 +130,7 @@ def NextGamePlayer(request):
 		}
 	)
 	# print('next game player')
-	return HttpResponse('Player Ready!')
+	return Response({'Next game player sent'}, status=status.HTTP_200_OK)
 
 
 
@@ -274,8 +272,11 @@ class ChatConsummer(WebsocketConsumer):
 	
 	def send_invite(self,event):
 		other =event['receiver']
+		# print('send invite!!!!',other,self.scope['user'].username)
 		if (other != self.scope['user'].username):
 			return
+		# print('send invite to someone')
+		
 		message = event['self'] + " vous a invite a un tournoi "
 		self.send(text_data=json.dumps({
 			'type': 'send_invite',

@@ -5,7 +5,7 @@ import { Text } from 'troika-three-text';
 import { useGameContext } from './contexts/GameContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { axiosInstance } from './axiosAPI.js';
+import { axiosInstance} from './axiosAPI.js';
 import { useContext } from 'react';
 import { userContext } from './contexts/userContext.jsx';
 function Game() {
