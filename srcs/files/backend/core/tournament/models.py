@@ -13,6 +13,7 @@ class Tournament(models.Model):
 		('cancelled', 'Cancelled'),
 	]
 	name = models.CharField(max_length=6, unique=True, blank=True)
+	creator = models.CharField(max_length=20, blank=True)
 	status = models.CharField(max_length=255, choices=STATUS_CHOICES, default='pending')
 	creation_date = models.DateTimeField(auto_now_add=True)
 	players = models.ManyToManyField('users.User', related_name='participant')

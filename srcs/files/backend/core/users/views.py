@@ -27,6 +27,7 @@ from tournament.models import Tournament
 from .models import User
 from rest_framework_simplejwt.tokens import UntypedToken
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
+from matchmaking.views import checkuser
 from .helper import authenticate
 import random
 import os
@@ -147,11 +148,19 @@ def set2FA(request):
 
 @api_view(['POST'])
 def userlist(request):
+	user = checkuser(request)
+	if user == None:
+		print('Invalid Token')
+		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
+	if (user is None):
+		self = request.data.get('self')
+		user = User.objects.filter(username=self).first()
+	if (not user):
+		return Response({'Error':'username'})
 	otheruser = request.data.get('other')
-	self = request.data.get('self')
 	action = request.data.get('action')
-	user = User.objects.get(username=self)
-	other = User.objects.get(username=otheruser)
+
+	other = User.objects.filter(username=otheruser).first()
 	if (other is None):
 		return Response({'detail': 'Invalid user'})
 	if (action == 'addfriend'):
@@ -162,14 +171,23 @@ def userlist(request):
 		user.addBlacklist(otheruser)
 	elif (action == 'unblock'):
 		user.removeBlacklist(otheruser)
+	else:
+		return Response({'detail': 'Invalid action'})
 	# #print('user black list : ',user.blacklist.all())
 	return Response({'detail': 'Done'})
 
 
 @api_view(['POST'])
 def userFriendList(request):
-	username = request.data.get('username')
-	user = User.objects.get(username=username)
+	user = checkuser(request)
+	if user == None:
+		print('Invalid Token')
+		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
+	if (user is None):
+		username = request.data.get('username')
+		user = User.objects.filter(username=username).first()
+	if (not user):
+		return Response({'Error':'username'})
 	friends = user.friends.all()
 	usernames = [friend.username for friend in friends]
 	return Response({'friends': usernames})
@@ -178,6 +196,10 @@ def userFriendList(request):
 
 @api_view(['POST'])
 def userExist(request):
+	user = checkuser(request)
+	if user == None:
+		print('Invalid Token')
+		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
 	username = request.data.get('username')
 	if User.objects.filter(username=username).exists():
 		return Response({'detail': 'User exists'})
@@ -185,17 +207,22 @@ def userExist(request):
 
 @api_view(['POST'])
 def userFriendBlock(request):
+	user = checkuser(request)
+	if user == None:
+		print('Invalid Token')
+		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
 	friend = request.data.get('friend')
-	self = request.data.get('self')
+	if (user is None):
+		self = request.data.get('self')
+		user = User.objects.filter(username=self).first()
 
 	# return Response({'detail': 'Invalid user'})
-	user = User.objects.get(username=self)
-	other = User.objects.get(username=friend)
-
+	other = User.objects.filter(username=friend).first()
 	if (other is None or user is None):
 		return Response({'detail': 'Invalid user','friend': 0, 'block': 0})
 	elif (user == other):
 		return Response({'detail': 'You cannot block yourself','friend': 0, 'block': 0})
+	print('user', user)
 	isFriend = user.friends.filter(username=friend).exists()
 	isBlacklisted = user.blacklist.filter(username=friend).exists()
 	return Response({'friend': isFriend, 'block': isBlacklisted})
@@ -270,8 +297,7 @@ def verify(request):
 	#print('received_otp', received_otp)
 	#print('user_profile.otp_expiry_time', user_profile.otp_expiry_time)
 	#print('timezone.now()', timezone.now())
-	if (user_profile.status != 'away'):
-			return Response({'detail': 'User is not available'}, status=status.HTTP_401_UNAUTHORIZED)
+
 		# Check if the verification code is valid and not expired
 	if (
 		user_profile is not None and
@@ -395,9 +421,22 @@ def language(request):
 @api_view(['POST'])
 def avatar(request):
 	# print('avatar function')
+	user = checkuser(request)
+	if (user == None):
+		print('Invalid Token')
+		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
+	if (user is None):
+		username = request.data.get('username')
+		user = User.objects.filter(username=username).first()
+	if (not user):
+		return Response({'Error':'username'})
+	image = ['/badboy.png', '/princess.jpg', '/yoshi.jpg','/players.jpg', '/ponge.jpg', '/beaudibe.jpg']
 	username = request.data.get('username')
 	avatar = request.data.get('avatar')
-	user = User.objects.get(username=username)
+	print('avatar', avatar)
+	if (avatar not in image):
+		print('Invalid avatar')
+		return Response({'detail': 'Invalid avatar'}, status=status.HTTP_400_BAD_REQUEST)
 	user.avatar = avatar
 	user.save()
 	return Response({'detail': 'Avatar updated successfully.'}, status=status.HTTP_200_OK)
