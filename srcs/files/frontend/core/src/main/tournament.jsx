@@ -24,6 +24,7 @@ const tournament = () => {
 	const [isTrue, setIsTrue] = useState(false);
 	const [stop,setStop] = useState(false);
 	const [host,setHost] = useState('');
+	const [error, setError] = useState(null);
 	const nextgameplayer = async (name) => {
 		try {
 			const response = await axiosInstance.post('/nextgameplayer/', {
