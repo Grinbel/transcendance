@@ -12,7 +12,9 @@ from datetime import datetime, timedelta
 from django.http import HttpResponse
 from rest_framework.decorators import api_view
 from tournament.models import Tournament
-
+from matchmaking.views import checkuser
+from rest_framework.response import Response
+from rest_framework import status
 
 def checkCommand(self, message, user):
 	if (message[0] == '/'):
@@ -70,19 +72,33 @@ def sendPrivate(self, message, user,receiver):
 
 @api_view(['POST'])
 def sendInvite(request):
+	user = checkuser(request)
+	if user == None:
+		print('Invalid Token')
+		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
 	receiver = request.data.get('receiver')
-	self = request.data.get('self')
+	username = request.data.get('self')
 	room = request.data.get('room')
+	receiver = User.objects.filter(username=receiver).first()
+	user = User.objects.filter(username=username).first()
+	tournament = Tournament.objects.filter(name=room).first()
+	if (receiver is None or user is None or tournament is None):
+		print('User not found')
+		return HttpResponse('User not found')
+	if (username not in tournament.getAllUsername()):
+		print('Not in game',username,tournament.getAllUsername())
+
+		return HttpResponse('Not in game')
 	channel_layer = get_channel_layer()
-	other = User.objects.get(username=receiver)
-	if (other is None or other.blacklist.all().filter(username=self).exists()):
+	if (receiver is None or receiver.blacklist.all().filter(username=username).exists()):
 		return HttpResponse("You're blocked")
+	print('send invite')
 	async_to_sync(channel_layer.group_send)(
 		'general',
 		{
 			'type': 'send_invite',
 			'room':room,
-			'self':self,
+			'self':username,
 			'receiver':receiver,
 		}
 	)
@@ -90,10 +106,22 @@ def sendInvite(request):
 
 @api_view(['POST'])
 def NextGamePlayer(request):
+	user = checkuser(request)
+	if user == None:
+		print('Invalid Token')
+		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
 	p1 = request.data.get('p1')
 	p2 = request.data.get('p2')
 	room = request.data.get('room')
+	tournament = Tournament.objects.filter(name=room).first()
+	if (tournament is None):
+		print('Invalid room')
+		return HttpResponse('Invalid room')
+	if (user != None and user.username != tournament.creator):
+		print('Not creator')
+		return HttpResponse('Not host')
 	channel_layer = get_channel_layer()
+	print('next game player')
 	async_to_sync(channel_layer.group_send)(
 		'general',
 		{

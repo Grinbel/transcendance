@@ -28,23 +28,26 @@ def checkuser(request):
 			untyped_token = UntypedToken(token)
 		except (InvalidToken, TokenError) as e:
 			# print('Invalid Token failed to decode')	
-			return 0
+			return None
 		id = untyped_token['user_id']
 		user = User.objects.get(id=id)
 		return user
 	else:
 		print("no token")
-		return 0
+		return None
 
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def choice(request):
-
-	# username = request.data.get('username')
 	user = checkuser(request)
-	if user == 0:
+	if user == None:
+		print('Invalid Token')
 		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
-
+	print('user:',user)
+	username = request.data.get('username')
+	user = User.objects.filter(username=username).first()
+	if (not user):
+		return Response({'Error':'username'})
 	join = request.data.get('join')
 	alias = request.data.get('alias')
 	score = request.data.get('score')
@@ -55,19 +58,39 @@ def choice(request):
 	tournamentId = request.data.get('tournamentId')
 
 
-	if ((len(alias) > 10 and len(alias) < 1) or not alias.isalpha()
-	 	or (score < 1 and score > 25)
-		or (speed < 20 and speed > 200)
-		or playerCount not in [2,4,8]
+	# print('alias:',alias)
+	# print('score:',score)
+	# print('speed:',speed)
+	# print('isEasy:',isEasy)
+	# print('skin:',skin)
+	# print('playerCount:',playerCount)
+	# print('tournamentId:',tournamentId)
+	# print('join:',join)
+	# print('\n\nJoin:',join not in [True,False])
+	# print('alias.isalphat',not alias.isalnum(),'len(alias):',len(alias) > 10 or len(alias) < 1)
+	# print('score:',score < 1 or score > 25)
+	# print('speed:',speed < 20 or speed > 200)
+	# print('playerCount:',playerCount not in ['2','4','8']and playerCount not in [2,4,8])
+
+	# print('isEasy:',isEasy not in [True,False])
+	# print('skin:',skin not in ['1','2','3','4']and skin not in [1,2,3,4])
+	# print('join:',join not in [True,False])
+	# print('len(tournamentId):',len(tournamentId) > 6)
+	if ((len(alias) > 10 or len(alias) < 1) or not alias.isalnum()
+	 	or (score < 1 or score > 25)
+		or (speed < 20 or speed > 200)
+		or (playerCount not in ['2','4','8'] and playerCount not in [2,4,8])
 		or isEasy not in [True,False]
-		or skin not in [1,2,3,4]
+		or (skin not in ['1','2','3','4'] and skin not in [1,2,3,4])
 		or join not in [True,False]
 		or len(tournamentId) > 6):
 		print('Invalid parameter')
 		return Response({'detail': 'Invalid parameter'}, status=status.HTTP_401_UNAUTHORIZED)
-		
+	
+	# Tournament.objects.all().delete()
 	tournaments = Tournament.objects.all()
 	for tournament in tournaments:
+		print('tournament:',tournament.name)
 		usernames = tournament.getAllUsername()
 		if (usernames == []):
 			tournament.delete()
@@ -75,7 +98,7 @@ def choice(request):
 	if (join and tournamentId == ''):
 		name = Tournament.getNextTournament(alias=alias,name=user.username)
 		tournament = Tournament.objects.filter(name=name).first()
-		if (tournament is not None):
+		if (tournament != None ):
 			players = tournament.players.all()
 			if (alias in [player.alias for player in players]):
 				return Response({'Error':'alias'})
@@ -107,29 +130,30 @@ def choice(request):
 @api_view(['POST'])
 def options(request):
 	user = checkuser(request)
-	if (user == 0):
+	if (user == None):
+		print('Invalid Token')
 		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
 	
 	name = request.data.get('room')
 	tournament =Tournament.objects.filter(name=name).first()
 	if (tournament is None):
 		return Response({'Error':'invalid'})
-	if (user.username not in tournament.getAllUsername()):
+	if (user != None and user.username not in tournament.getAllUsername()):
 		return Response({'Error':'Not in game'}, status=status.HTTP_401_UNAUTHORIZED)
 	return Response({'texture_ball': tournament.texture_ball,'ball_starting_speed':tournament.ball_starting_speed,'score':tournament.score,'easyMode':tournament.easyMode,'skin':tournament.skin})
 
 @api_view(['POST'])
 def EndOfGame(request):
 	user = checkuser(request)
-	if (user == 0):
+	if (user == None):
+		print('Invalid Token')
 		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
 	winner = request.data.get('winner')
 	room = request.data.get('room')
 	tournament =Tournament.objects.filter(name=room).first()
 	if (tournament is None):
 		return Response({'Error':'invalid'})
-	print('tournament creator:',tournament.creator,'user:',user.username)
-	if (user.username != tournament.creator):
+	if (user != None and user.username != tournament.creator):
 		print('Not creator')
 		return Response({'Error':'Not in game'}, status=status.HTTP_401_UNAUTHORIZED)
 	channel_layer = get_channel_layer()
