@@ -99,7 +99,7 @@ function Play() {
 				// console.log('error OBSCURE', error.request);
 			}
 			// setError(error.message);
-			throw error;
+			//throw error;
 		}
 		setIsLoading(false);
 	};

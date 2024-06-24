@@ -144,7 +144,7 @@ function Chat() {
 			// console.info('sent', sent);
 		} catch (error) {
 			setError(error.message);
-			throw (error);
+			//throw (error);
 		}
 	}
 
@@ -167,7 +167,7 @@ function Chat() {
 			ws.send(sent);
 		} catch (error) {
 			setError(error.message);
-			throw (error);
+			//throw (error);
 		}
 
 	}
@@ -183,7 +183,7 @@ function Chat() {
 			});
 		} catch (error) {
 			setError(error.message);
-			throw (error);
+			//throw (error);
 		}
 	}
 
@@ -203,7 +203,7 @@ function Chat() {
 			setBlock(response.data.block);
 		} catch (error) {
 			setError(error.message);
-			throw (error);
+			//throw (error);
 		}
 	}
 
@@ -291,7 +291,7 @@ function Chat() {
 				// console.log('error OBSCURE', error.request);
 			// }
 			setError(error.message);
-			throw (error);
+			//throw (error);
 		}
 	}
 	const sendInvite = async(username)=>
@@ -305,7 +305,7 @@ function Chat() {
 				});
 			} catch (error) {
 				setError(error.message);
-				throw (error);
+				//throw (error);
 			}
 		}
 	if (userInfo.user === undefined || location.pathname === '/game' || location.pathname === '/multigame'){
