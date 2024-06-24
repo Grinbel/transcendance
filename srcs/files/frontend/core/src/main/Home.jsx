@@ -14,7 +14,7 @@ import { useContext, useState ,useEffect} from "react";
 import { userContext } from "../contexts/userContext.jsx";
 import { useGameContext } from "../contexts/GameContext.jsx";
 import { useMultiGameContext } from "../contexts/MultiGameContext.jsx";
-import './Home.css';
+import './Home.scss';
 
 const Home = () => {
 	const [displayer, setDisplayer] = useState("");
@@ -98,37 +98,41 @@ const Home = () => {
 			navigate('/game');
 	};
 	return (
-		<div>
+		<div className="gridContainer">
 			{userinfo.user ? (
-				<Container fluid className="homeContainer" style={{height: '92vh'}}>
-					<Row className="mb-3">
-						<Col className="columnStyle">
-							<Button variant="primary" as={Link} to="/play" className="homeButtons">{t('1V1')}</Button>
-						</Col>
-						<Col className="columnStyle">
-							<Button variant="primary" onClick={handle2P} className="homeButtons">{t('Local 2 Players')}</Button>
-						</Col>
-						<Col className="columnStyle">
-							<Button variant="primary" onClick={handleIA_Custom} className="homeButtons">{t('Local Vs better Ia')}</Button>
-						</Col>
-						<Col className="columnStyle">
-							<Button variant="primary" onClick={tournoitest} className="homeButtons"> {t('Test Tournoi')}</Button>
-						</Col>
-						<Col className="columnStyle ">
-							<Button variant="primary" as={Link} to="/multi-options" className="homeButtons">{t('Multi')}</Button>
-						</Col>
-						{/* <Col className="columnStyle ">
-							
-						<Button variant="primary" onClick={handleVsVacheClick} className="homeButtons">{t('Tac vs Vache')}</Button>
-						</Col> */}
-						{/* <Col className="columnStyle ">
-							<Button variant="primary" as={Link} to="/play" className="homeButtons">{t('TOURNAMENT')}</Button>
-						</Col> */}
-				<div className="displayer-errors">
-					{displayer}
+				// <Container fluid className="homeContainer" style={{height: '92vh'}}>
+				// 	<Row className="mb-3">
+				// 		<Col className="columnStyle">
+				// 			<Button variant="primary" as={Link} to="/play" className="homeButtons">{t('1V1')}</Button>
+				// 		</Col>
+				// 		<Col className="columnStyle">
+				// 			<Button variant="primary" onClick={handle2P} className="homeButtons">{t('Local 2 Players')}</Button>
+				// 		</Col>
+				// 		<Col className="columnStyle">
+				// 			<Button variant="primary" onClick={handleIA_Custom} className="homeButtons">{t('Local Vs better Ia')}</Button>
+				// 		</Col>
+				// 		<Col className="columnStyle ">
+				// 			<Button variant="primary" as={Link} to="/multi-options" className="homeButtons">{t('Multi')}</Button>
+				// 		</Col>
+				// 	</Row>
+				// </Container>
+				<div className="buttonsContainer">
+					<div class="grid-item">
+						<Button as={Link} to="/play" class="btn">{t('1V1')}</Button>
+					</div>
+					<div class="grid-item">
+						<Button onClick={handle2P} class="btn">{t('Local 2 Players')}</Button>
+					</div>
+					<div class="grid-item">
+						<Button   onClick={handleIA_Custom} class="btn">{t('Local Vs better Ia')}</Button>
+					</div>
+					<div class="grid-item">
+						<Button as={Link} to="/multi-options" class="btn">{t('Multi')}</Button>
+					</div>
+					<div className="errorContainer">
+						{displayer}
+					</div>
 				</div>
-					</Row>
-				</Container>
 			) : (
 				<Navigate to='/login'/>
 			)};

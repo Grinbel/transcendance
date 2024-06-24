@@ -7,7 +7,7 @@ import { userContext } from "../contexts/userContext.jsx";
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Button from 'react-bootstrap/Button';
-import "./Home.css";
+// import "./Home.css";
 
 function Play() {
 	const { t } = useTranslation();
@@ -39,7 +39,7 @@ function Play() {
 		setBallSpeed(event.target.value);
 		// console.log((event.target.value))
 	};
-	const handleSubmit = async (event) => {
+	const handleSubmit = async (event) => {https://c1r2p2.42nice.fr:5173
 		
 		// if (join  && formData.tournamentId === ""){
 		// 	return;

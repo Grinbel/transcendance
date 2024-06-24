@@ -101,21 +101,21 @@ function Signup() {
 		});
 	};
 
-	useEffect(() => {
-		// console.log('////////////// USEEFFECT FUNCTION /////////////');
-		const fetchUsersList = async () => {
-			try {
-				const response = await axiosSignup.get('/list/');
-				// console.log('fetch list response.data', response.data);
-				setUserList (response.data);
-			} catch (error) {
-				// console.log('Error fetching users list: ', error.message);
-			}
-		};
+	// useEffect(() => {
+	// 	// console.log('////////////// USEEFFECT FUNCTION /////////////');
+	// 	const fetchUsersList = async () => {
+	// 		try {
+	// 			const response = await axiosSignup.get('/list/');
+	// 			// console.log('fetch list response.data', response.data);
+	// 			setUserList (response.data);
+	// 		} catch (error) {
+	// 			// console.log('Error fetching users list: ', error.message);
+	// 		}
+	// 	};
 
-		fetchUsersList();
-		// console.log('UserList: ', userList);
-	}, []);
+	// 	fetchUsersList();
+	// 	// console.log('UserList: ', userList);
+	// }, []);
 
 	return (
 		<Container className="mt-5">
