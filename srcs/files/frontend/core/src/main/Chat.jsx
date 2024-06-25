@@ -146,7 +146,7 @@ function Chat() {
 			// console.info('sent', sent);
 		} catch (error) {
 			setError(error.message);
-			throw (error);
+			//throw (error);
 		}
 	}
 
@@ -169,7 +169,7 @@ function Chat() {
 			ws.send(sent);
 		} catch (error) {
 			setError(error.message);
-			throw (error);
+			//throw (error);
 		}
 
 	}
@@ -185,7 +185,7 @@ function Chat() {
 			});
 		} catch (error) {
 			setError(error.message);
-			throw (error);
+			//throw (error);
 		}
 	}
 
@@ -205,7 +205,7 @@ function Chat() {
 			setBlock(response.data.block);
 		} catch (error) {
 			setError(error.message);
-			throw (error);
+			//throw (error);
 		}
 	}
 
@@ -255,15 +255,14 @@ function Chat() {
 			setdisplayer('');
 			const response = await axiosInstance.post('/choice/', {
 				tournamentId: room,
-				playerCount: "",
-				isLocal: "",
+				playerCount: "2",
 				username: userInfo.user.username,
 				alias: userInfo.user.username,
 				join:true ,
-				isEasy: "",
-				speed:"",
-				score:"",
-				skin:"",
+				isEasy: false,
+				speed:20,
+				score:10,
+				skin:2,
 			});
 			// console.log('response', response.data);
 			// console.log('Room name', response.data.room_name);
@@ -293,7 +292,7 @@ function Chat() {
 				// console.log('error OBSCURE', error.request);
 			// }
 			setError(error.message);
-			throw (error);
+			//throw (error);
 		}
 	}
 	const sendInvite = async(username)=>
@@ -307,7 +306,7 @@ function Chat() {
 				});
 			} catch (error) {
 				setError(error.message);
-				throw (error);
+				//throw (error);
 			}
 		}
 	if (userInfo.user === undefined || location.pathname === '/game' || location.pathname === '/multigame'){

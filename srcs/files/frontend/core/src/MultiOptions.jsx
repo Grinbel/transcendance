@@ -12,8 +12,8 @@ const MultiOptions = () => {
 	const navigate = useNavigate();
 	const [playerCount, setPlayerCount] = useState(2);
 	const [buttonCount, setButtonCount] = useState(1);
-	const [ballSpeed, setBallSpeed] = useState(50);
-	const [score, setScore] = useState(5);
+	const [ballSpeed, setBallSpeed] = useState(40);
+	const [score, setScore] = useState(30);
 	const [skin, setSkin] = useState();
 	const [alias, setAlias] = useState('');
 	const [floor, setFloor] = useState('basket.jpg');
@@ -89,8 +89,8 @@ const MultiOptions = () => {
 			</p>
 			<input
 				type='range'
-				min='1'
-				max='15'
+				min='10'
+				max='100'
 				step='1'
 				value={score}
 				onChange={(e) => setScore(parseFloat(e.target.value))}
@@ -122,8 +122,8 @@ const MultiOptions = () => {
 						value={JSON.stringify({
 							texture_ball: 'basketball.jpg',
 							texture_floor: 'basket.jpg',
-							stage_radius: 4,
-							ball_radius: 0.7,
+							stage_radius: 5,
+							ball_radius: 0.3,
 						})}
 					>
 						{t('basketball')}
@@ -132,8 +132,8 @@ const MultiOptions = () => {
 						value={JSON.stringify({
 							texture_ball: 'billardball.png',
 							texture_floor: 'billardtable.png',
-							stage_radius: 6,
-							ball_radius: 0.3,
+							stage_radius: 5,
+							ball_radius: 0.1,
 						})}
 					>
 						{t('billard')}
@@ -142,7 +142,7 @@ const MultiOptions = () => {
 						value={JSON.stringify({
 							texture_ball: 'tennisball.jpg',
 							texture_floor: 'tennisfield.jpg',
-							stage_radius: 7,
+							stage_radius: 5,
 							ball_radius: 0.2,
 						})}
 					>

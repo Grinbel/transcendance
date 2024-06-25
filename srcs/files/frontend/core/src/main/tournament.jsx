@@ -35,7 +35,7 @@ const tournament = () => {
 			});
 		} catch (error) {
 			setError(error.message);
-			throw error;
+			//throw error;
 		}
 	};
 
@@ -49,7 +49,7 @@ const tournament = () => {
 			return data
 		} catch (error) {
 			setError(error.message);
-			throw error;
+			//throw error;
 		}
 	};
 
@@ -61,7 +61,7 @@ const tournament = () => {
 			});
 		} catch (error) {
 			// setError(error.message);
-			throw error;
+			//throw error;
 		}
 	};
 
@@ -337,7 +337,7 @@ const tournament = () => {
 			});
 		} catch (error) {
 			setError(error.message);
-			throw error;
+			//throw error;
 		}
 	};
 	if (userInfo.user === undefined) return <div />;

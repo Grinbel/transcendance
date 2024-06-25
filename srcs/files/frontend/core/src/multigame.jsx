@@ -26,6 +26,7 @@ function MultiGame() {
 		let scores = [options.nb_players];
 		let players_text = [options.nb_players];
 		let player_depth = options.ball_radius * 2;
+		player_depth < 1? player_depth = 1 : player_depth;
 		let directions = [options.nb_players];
 		for (let i = 0; i < options.nb_players; i++) {
 			directions[i] = 0;
@@ -107,7 +108,7 @@ function MultiGame() {
 				scene.add(this.mesh);
 				this.mesh.rotation.z = ((Math.PI * 2) / options.nb_players) * x;
 				this.last_hit = 0;
-				this.mesh.position.z = options.ball_radius * 2;
+				this.mesh.position.z = player_depth	;
 			}
 			setPosition(x, y, z) {
 				this.mesh.position.set(x, y, z);
@@ -471,7 +472,7 @@ function MultiGame() {
 			}
 		}
 		function handleResize() {
-			fontSize = (window.innerWidth + window.innerHeight) * 0.005;
+			fontSize = (window.innerWidth + window.innerHeight) * 0.015;
 			message.style.fontSize = fontSize + 'px';
 		}
 		window.addEventListener('resize', handleResize);
@@ -487,10 +488,10 @@ function MultiGame() {
 				} else {
 					renderer.domElement.style.filter = 'blur(5px)';
 					dialogContainer.style.zIndex = 1001;
-					dialogContainer.style.top = '35%';
-					dialogContainer.style.left = '35%';
-					dialogContainer.style.width = '30%';
-					dialogContainer.style.height = '30%';
+					dialogContainer.style.top = '25%';
+					dialogContainer.style.left = '25%';
+					dialogContainer.style.width = '50%';
+					dialogContainer.style.height = '50%';
 					message.innerHTML = player_buttons();
 					message.innerHTML += t('to_show_rules') + '<br>';
 					message.innerHTML += t('resume_button');
@@ -501,10 +502,10 @@ function MultiGame() {
 			if (event.keyCode === 27) {
 				renderer.domElement.style.filter = 'blur(5px)';
 				dialogContainer.style.zIndex = 1001;
-				dialogContainer.style.top = '35%';
-				dialogContainer.style.left = '35%';
-				dialogContainer.style.width = '30%';
-				dialogContainer.style.height = '30%';
+				dialogContainer.style.top = '20%';
+				dialogContainer.style.left = '20%';
+				dialogContainer.style.width = '60%';
+				dialogContainer.style.height = '60%';
 				message.innerHTML = show_rules();
 				message.innerHTML += t('resume_button');
 				options.ball_pause = -1;

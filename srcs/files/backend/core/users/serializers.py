@@ -5,6 +5,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import User
 from django.core.cache import cache
 from uuid import uuid4
+import re
 
 
 def getUuid(id):
@@ -36,10 +37,25 @@ class UserSerializer(ModelSerializer):
 		extra_kwargs = {"password": {"write_only": True}}
 
 	def validate_email(self, value):
-		#print('value in validate_email', value)
 		user_id = self.instance.id if self.instance else None
 		if User.objects.filter(email=value).exclude(pk=user_id).exists():
 			raise ValidationError("Email is already in use.")
+		return value
+
+	def validate_username(self, value):
+		print('self in validate_username', self)
+		print('value in validate_username', value)
+		if not re.match("^[a-zA-Z0-9]*$", value):
+			raise ValidationError("Username can only contain alphanumeric characters.")
+		if len(value) < 4 or len(value) > 10:
+			raise ValidationError("Username must be between 4 and 10 characters long.")
+		return value
+
+	def validate_password(self, value):
+		print('self in validate_username', self)
+		print('value in validate_username', value)
+		if len(value) < 6 or len(value) > 12:
+			raise ValidationError("Password must be between 6 and 50 characters long.")
 		return value
 
 	def create(self, validated_data):
@@ -56,25 +72,25 @@ class UserSerializer(ModelSerializer):
 		user.save()
 		return user
 	
-	def update(self, instance, validated_data):
-		#print('instance in update', instance)
-		# Ensure the email is validated and unique
-		email = validated_data.get('email', instance.email)
-		if User.objects.filter(email=email).exclude(pk=instance.pk).exists():
-			raise ValidationError("Email is already in use.")
-		instance.email = email
+	# def update(self, instance, validated_data):
+	# 	#print('instance in update', instance)
+	# 	# Ensure the email is validated and unique
+	# 	email = validated_data.get('email', instance.email)
+	# 	if User.objects.filter(email=email).exclude(pk=instance.pk).exists():
+	# 		raise ValidationError("Email is already in use.")
+	# 	instance.email = email
 
-		# Handle password update if present
-		password = validated_data.pop('password', None)
-		if password:
-			instance.set_password(password)
+	# 	# Handle password update if present
+	# 	password = validated_data.pop('password', None)
+	# 	if password:
+	# 		instance.set_password(password)
 
-		# Update other fields
-		for attr, value in validated_data.items():
-			setattr(instance, attr, value)
+	# 	# Update other fields
+	# 	for attr, value in validated_data.items():
+	# 		setattr(instance, attr, value)
 
-		instance.save()
-		return instance
+	# 	instance.save()
+	# 	return instance
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 	@classmethod

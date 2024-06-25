@@ -55,7 +55,7 @@ const Profile = () => {
 			});
 		} catch (error) {
 			setError(error.message);
-			throw (error);
+			//throw (error);
 		}
 		
 	}
@@ -75,7 +75,7 @@ const Profile = () => {
 			setBlock(response.data.block);
 		} catch (error) {
 			setError(error.message);
-			throw (error);
+			//throw (error);
 		}
 	}
 
@@ -106,7 +106,7 @@ const Profile = () => {
 			return true;
 		} catch (error) {
 			setError(error.message);
-			throw (error);
+			//throw (error);
 		}
 	}
 
@@ -118,7 +118,7 @@ const Profile = () => {
 			setFriends(response.data);
 		} catch (error) {
 			setError(error.message);
-			throw (error);
+			//throw (error);
 		}
 	}
 	const changeAvatar = async (avatar) => {
@@ -130,7 +130,7 @@ const Profile = () => {
 			userInfo.setUser({ ...userInfo.user, avatar: avatar });
 		} catch (error) {
 			setError(error.message);
-			throw (error);
+			//throw (error);
 		}
 	}
 

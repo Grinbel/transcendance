@@ -1,10 +1,11 @@
 import "./sidebar.scss"
 import { Link } from "react-router-dom";
-
+import { useTranslation } from 'react-i18next';
 import { sidebar } from "../../data.jsx";
 
 
 const Sidebar = () => {
+	const { t } = useTranslation();
 	return (
 		<div className="sidebar">
 			{/* //map over elements in sidebar array */}
@@ -16,7 +17,7 @@ const Sidebar = () => {
 							<Link to={listItem.url} className="linker">
 								{/* <listItem.icon className="icon" /> */}
 								<span><listItem.icon/></span>
-								<span className="text">{listItem.title}</span>
+								<span className="text">{t(listItem.title)}</span>
 							</Link>
 						</div>
 					))}

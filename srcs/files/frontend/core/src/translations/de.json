@@ -155,5 +155,10 @@
 	"to_show_rules": "Drücken Sie die ESC-Taste, um die Regeln anzuzeigen",
 	"invite_2" : "Einladen",
 	"Hide Chat" : "Chat ausblenden",
-	"Show Chat" : "Chat anzeigen"
+	"Show Chat" : "Chat anzeigen",
+	"2FA" : "Zwei-Faktor-Authentifizierung",
+	"Settings" : "Einstellungen",
+	"Username can only contain alphanumeric characters." :"Der Benutzername darf nur alphanumerische Zeichen enthalten.",
+	"Username must be between 4 and 10 characters long." :"Der Benutzername muss zwischen 4 und 10 Zeichen lang sein.",
+	"Password must be between 6 and 50 characters long." : "Password must be between 6 and 50 characters long."
 }

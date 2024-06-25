@@ -406,8 +406,17 @@ class UserList(APIView):
 	
 @api_view(['POST'])
 def language(request):
-	username = request.data.get('username')
+	
+#	username = request.data.get('username')
+#	username = request.data.get('username')
+#	username = request.user.username
+	user = checkuser(request)
+	if user == None:
+		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
 	language = request.data.get('language')
+	if language not in ['en', 'de', 'fr']:
+		return Response({'detail': 'Invalid language code. Please provide a valid language code.'}, status=status.HTTP_400_BAD_REQUEST)
+	username = user.username
 	user = User.objects.get(username=username)
 	user.language = language
 	user.save()

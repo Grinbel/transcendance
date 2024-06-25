@@ -155,5 +155,10 @@
 	"to_show_rules" : "To display the rules, press the ESC key",
 	"invite_2" : "Invite",
 	"Hide Chat" : "Hide Chat",
-	"Show Chat" : "Show Chat"
+	"Show Chat" : "Show Chat",
+	"2FA" : "Two Factor Authentication",
+	"Settings" : "Settings",
+	"Username can only contain alphanumeric characters." :"Username can only contain alphanumeric characters.",
+	"Username must be between 4 and 10 characters long." :"Username must be between 4 and 10 characters long." ,
+	"Password must be between 6 and 50 characters long." : "Password must be between 6 and 50 characters long."
 }
