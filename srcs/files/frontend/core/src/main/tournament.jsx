@@ -293,7 +293,14 @@ const tournament = () => {
 				// await sleep(5000);
 				setIsTrue(true);
 			} else if (message.type === 'friends') {
-				setFriend((prevFriend) => [message]);
+				setFriend((prevFriend) => {
+					const friendExists = prevFriend.find((m) => m.friend === message.friend);
+					if (!friendExists) {
+						return [...prevFriend, message];
+					}
+					return prevFriend;
+				})
+				console.log('friends', message);
 			} else if (message.type === 'end') {
 				
 				setDisplayer(t('over'));

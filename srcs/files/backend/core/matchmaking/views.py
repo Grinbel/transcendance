@@ -24,7 +24,7 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from datetime import timedelta
 from django.utils import timezone
-
+from  django.contrib.auth.models import AnonymousUser
 
 def checkuser(request):
 	if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
@@ -35,7 +35,11 @@ def checkuser(request):
 			# print('Invalid Token failed to decode')	
 			return None
 		id = untyped_token['user_id']
-		user = User.objects.get(id=id)
+
+		user = User.objects.filter(id=id).first()
+		if user is None:
+			# print('User not found')
+			return AnonymousUser()
 		return user
 	else:
 		print("no token")
@@ -100,8 +104,15 @@ def choice(request):
 		usernames = tournament.getAllUsername()
 		if (usernames == []):
 			tournament.delete()
+		if (tournament.status == 'completed'):
+			print('delete tournament completed:',tournament.name)
+			players = tournament.players.all()
+			for player in players:
+				tournament.removeUser(player)
+			tournament.delete()
+			continue
 		elif (tournament.checkExpiration() == True):
-			print('delete tournament:',tournament.name)
+			print('delete tournament check expiration:',tournament.name)
 			continue
 		else:
 			print('usernames:',usernames)
@@ -119,6 +130,8 @@ def choice(request):
 		return Response({'room_name': name}, status=status.HTTP_200_OK)
 	elif (join is False):
 		name = Tournament.createRoomName()
+		user.alias = alias
+		user.save()
 		tournament = Tournament.create(name=name,max_capacity=playerCount,ball_starting_speed=speed,score=score,easyMode=isEasy,skin=skin)
 		return Response({'room_name': name}, status=status.HTTP_200_OK)
 	else:
@@ -164,9 +177,13 @@ def EndOfGame(request):
 	tournament =Tournament.objects.filter(name=room).first()
 	if (tournament is None):
 		return Response({'Error':'invalid'}, status=status.HTTP_400_BAD_REQUEST)
+	print("User:",user, "tournament.creator:",tournament.creator)
 	if (user != None and user.username != tournament.creator):
 		return Response({'Error':'Not in game'}, status=status.HTTP_400_BAD_REQUEST)
 	channel_layer = get_channel_layer()
+	tournament.status = 'completed'
+	tournament.save()
+	print('tournament status end:',tournament.status, 'room:',tournament.name)
 	async_to_sync(channel_layer.group_send)(
 		room,
 		{
@@ -175,7 +192,9 @@ def EndOfGame(request):
 			'room':room,
 		}
 	)
-	tournament.players.clear()
+	players = tournament.players.all()
+	for player in players:
+		tournament.removeUser(player)
 	tournament.delete()
 	tournament.save()
 	return Response({'End of game'}, status=status.HTTP_200_OK)
@@ -238,6 +257,7 @@ class Matchmaking(WebsocketConsumer):
 			tournament.save()
 		# usernames = tournament.getAllUsername()
 		for player in players:
+			print('player alias:',player.alias)
 			self.send(text_data=json.dumps({
 				'type': 'username',
 				'username': player.username,
@@ -256,22 +276,25 @@ class Matchmaking(WebsocketConsumer):
 		
 	
 	def disconnect(self, close_code):
-		# self.scope['user'].tournament_name = ''
-		# self.scope['user'].save()
 		async_to_sync(self.channel_layer.group_discard)(
 			self.room_name,
 			self.channel_name
 		)
-		
+		print("disconnect",self.scope['user'])
 		tournament = Tournament.objects.filter(name=self.room_name).first()
 		if (not tournament):
 			return
 		tournament.removeUser(self.scope['user'])
 		tournament.save()
 		if (tournament.players.count() <= 0):
+			print('delete tournament disconnect:',tournament.name)
+			players = tournament.players.all()
+			for player in players:
+				tournament.removeUser(player)
 			tournament.players.clear()
 			tournament.delete()
 		else:
+			print('just remove user')
 			async_to_sync(self.channel_layer.group_send)(
 				self.tournament_name,
 				{
@@ -314,12 +337,15 @@ class Matchmaking(WebsocketConsumer):
 		)
 		if (tournament.max_capacity == tournament.players.count()):
 			timer = 3
+			tournament.status = 'inprogress'
+			tournament.save()
+			print('tournament status end:',tournament.status, 'room:',tournament.name)
 			players = tournament.getAllUsername()
 			for player in players:
 				tournament.creator = player
+				tournament.save()
 				break
 			
-			print('tournament name of host:',tournament.creator)
 			async_to_sync(self.channel_layer.group_send)(
 				self.tournament_name,
 				{
@@ -329,8 +355,6 @@ class Matchmaking(WebsocketConsumer):
 					'host': tournament.creator,
 				}
 			)
-			tournament.status= 'inprogress'
-			tournament.save()
 
 
 	def tournament(self, event):

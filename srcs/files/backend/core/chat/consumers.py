@@ -49,6 +49,11 @@ def checkCommand(self, message, user):
 
 def sendPrivate(self, message, user,receiver):
 	#print("whisper")
+	user = User.objects.filter(username=user.username).first()
+	receiver = User.objects.filter(username=receiver).first()
+	if (receiver is None or user is None):
+		#print('User not found')
+		return
 	if (User.objects.filter(username=receiver).exists() == False):
 		#print('user not found')
 		return
@@ -288,7 +293,10 @@ class ChatConsummer(WebsocketConsumer):
 		
 	def send_next_game_player(self,event):
 		room =event['room']
-		usernames = Tournament.objects.get(name=room).players.all()
+		tournament = Tournament.objects.filter(name=room).first()
+		if (tournament is None):
+			return
+		usernames = tournament.players.all()
 		usernames = [user.username for user in usernames]
 		username = self.scope['user'].username
 		if ( username not in usernames):

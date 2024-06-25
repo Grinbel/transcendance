@@ -23,7 +23,9 @@ class User(AbstractUser):
 
 	def log(self, name):
 		#print("username ", name)
-		user = User.objects.get(username=name)
+		user = User.objects.filter(username=name).first()
+		if (user is None):
+			return
 		user.name = name
 		user.save()
 		#print("user ", user.name)
@@ -32,33 +34,41 @@ class User(AbstractUser):
 		#print("set username to", self.name)
 
 	def addBlacklist(self, name):
-		other = User.objects.get(username=name)
-		myself = User.objects.get(username=self.username)
+		other = User.objects.filter(username=name).first()
+		myself = User.objects.filter(username=self.username).first()
+		if (other is None or myself is None):
+			return
 		if (other):
 			myself.blacklist.add(other)
 			#print("added")
 		myself.save()
 	
 	def removeBlacklist(self, name):
-		other = User.objects.get(username=name)
-		myself = User.objects.get(username=self.username)
+		other = User.objects.filter(username=name).first()
+		myself = User.objects.filter(username=self.username).first()
+		if (other is None or myself is None):
+			return
 		if (other and other in myself.blacklist.all()):
 			myself.blacklist.remove(other)
 			#print("removed")
 		myself.save()
 		
 	def addFriend(self, name):
-		user = User.objects.get(username=name)
-		myself = User.objects.get(username=self.username)
+		other = User.objects.filter(username=name).first()
+		myself = User.objects.filter(username=self.username).first()
+		if (other is None or myself is None):
+			return
 
-		if (user):
-			myself.friends.add(user)
+		if (other):
+			myself.friends.add(other)
 		
 	def removeFriend(self, name):
-		user = User.objects.get(username=name)
-		myself = User.objects.get(username=self.username)
-		if (user and user in myself.friends.all()):
-			myself.friends.remove(user)
+		other = User.objects.filter(username=name).first()
+		myself = User.objects.filter(username=self.username).first()
+		if (other is None or myself is None):
+			return
+		if (other and other in myself.friends.all()):
+			myself.friends.remove(other)
 	
 	def changeUsername(self, name):
 		if (User.objects.filter(username=name).exists()):
@@ -68,4 +78,4 @@ class User(AbstractUser):
 		return True
 
 	def __str__(self):
-		return f"username = {self.username} \n email = {self.email}"
+		return f"username = {self.username} \n tournament_name = {self.tournament_name} \n status = {self.status} \n"

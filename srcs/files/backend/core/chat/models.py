@@ -15,7 +15,10 @@ class Group(models.Model):
 
 	def last_10_messages(name):
 		try:
-			group = Group.objects.get(groupName=name)
+
+			group = Group.objects.filter(groupName=name).first()
+			if group is None:
+				return None
 			return list(group.messages.order_by("date"))[-5:]
 		except Group.DoesNotExist:
 			return None

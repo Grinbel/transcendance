@@ -101,18 +101,23 @@ class Tournament(models.Model):
 		name = ''
 		if tournaments.count() == 0:
 			return Tournament.createRoomName()
+		# print("Get next tournament:",tournaments)
 		for tournament in tournaments:
+			print("tournament name in getnextTournament:",tournament.name)
 			aliass = tournament.getAllAlias()
 			j = tournament.max_capacity - tournament.players.count()
 			if j < buff and not ((aliass is not None and alias in aliass )):
 				buff = j
 				name = tournament.name
+		print("choice1",name)
+
 		if name == '':
 			return Tournament.createRoomName()
+		print("choice2",name)
 		return name
 
 	def checkExpiration(self):
-		result = self.creation_date + timedelta(seconds=20) < timezone.now()
+		result = self.creation_date + timedelta(minutes=20) < timezone.now()
 		if (result == True):
 			self.status = 'cancelled'
 			async_to_sync(get_channel_layer().group_send)(
@@ -120,7 +125,10 @@ class Tournament(models.Model):
 				{
 					'type':'quit_game',
 				})
-			self.players.clear()
+			# self.players.clear()
+			players = self.players.all()
+			for player in players:
+				self.removeUser(player)
 			self.delete()
 			self.save()
 			return True
