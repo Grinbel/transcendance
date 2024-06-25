@@ -103,17 +103,17 @@ class Tournament(models.Model):
 			return Tournament.createRoomName()
 		# print("Get next tournament:",tournaments)
 		for tournament in tournaments:
-			print("tournament name in getnextTournament:",tournament.name)
+			# print("tournament name in getnextTournament:",tournament.name)
 			aliass = tournament.getAllAlias()
 			j = tournament.max_capacity - tournament.players.count()
 			if j < buff and not ((aliass is not None and alias in aliass )):
 				buff = j
 				name = tournament.name
-		print("choice1",name)
+		# print("choice1",name)
 
 		if name == '':
 			return Tournament.createRoomName()
-		print("choice2",name)
+		# print("choice2",name)
 		return name
 
 	def checkExpiration(self):

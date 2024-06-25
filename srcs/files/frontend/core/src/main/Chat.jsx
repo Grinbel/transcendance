@@ -104,7 +104,7 @@ function Chat() {
 			}
 			else
 				setMessages(prevMessages => [...prevMessages, message]);
-			console.log('ws chat message', message, message.username);
+			// console.log('ws chat message', message, message.username);
 		};
 
 		setWs(ws);

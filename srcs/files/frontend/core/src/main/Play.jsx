@@ -60,8 +60,8 @@ function Play() {
 		if (alias === '') {
 			setAlias(userInfo.user.username);
 		}
-		console.log('alias', alias);
-		console.log('username', userInfo.user.username, userInfo.user);
+		// console.log('alias', alias);
+		// console.log('username', userInfo.user.username, userInfo.user);
 
 		try {
 			const response = await axiosInstance.post('/choice/', {

@@ -54,10 +54,7 @@ def sendPrivate(self, message, user,receiver):
 	if (receiver is None or user is None):
 		#print('User not found')
 		return
-	if (User.objects.filter(username=receiver).exists() == False):
-		#print('user not found')
-		return
-	receiver= User.objects.get(username=receiver)
+
 	if (receiver.blacklist.all().filter(username=user.username).exists() == True):
 		#print('blocked')
 		return

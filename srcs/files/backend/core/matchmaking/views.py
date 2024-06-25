@@ -53,7 +53,7 @@ def choice(request):
 	if user == None:
 		print('Invalid Token')
 		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
-	print('user:',user)
+	# print('user:',user)
 	username = request.data.get('username')
 	user = User.objects.filter(username=username).first()
 	if (not user):
@@ -100,22 +100,20 @@ def choice(request):
 	# Tournament.objects.all().delete()
 	tournaments = Tournament.objects.all()
 	for tournament in tournaments:
-		print('tournament:',tournament.name)
+		# print('tournament:',tournament.name)
 		usernames = tournament.getAllUsername()
 		if (usernames == []):
 			tournament.delete()
 		if (tournament.status == 'completed'):
-			print('delete tournament completed:',tournament.name)
+			# print('delete tournament completed:',tournament.name)
 			players = tournament.players.all()
 			for player in players:
 				tournament.removeUser(player)
 			tournament.delete()
 			continue
 		elif (tournament.checkExpiration() == True):
-			print('delete tournament check expiration:',tournament.name)
+			# print('delete tournament check expiration:',tournament.name)
 			continue
-		else:
-			print('usernames:',usernames)
 
 	if (join and tournamentId == ''):
 		name = Tournament.getNextTournament(alias=alias,name=user.username)
@@ -177,13 +175,13 @@ def EndOfGame(request):
 	tournament =Tournament.objects.filter(name=room).first()
 	if (tournament is None):
 		return Response({'Error':'invalid'}, status=status.HTTP_400_BAD_REQUEST)
-	print("User:",user, "tournament.creator:",tournament.creator)
+	# print("User:",user, "tournament.creator:",tournament.creator)
 	if (user != None and user.username != tournament.creator):
 		return Response({'Error':'Not in game'}, status=status.HTTP_400_BAD_REQUEST)
 	channel_layer = get_channel_layer()
 	tournament.status = 'completed'
 	tournament.save()
-	print('tournament status end:',tournament.status, 'room:',tournament.name)
+	# print('tournament status end:',tournament.status, 'room:',tournament.name)
 	async_to_sync(channel_layer.group_send)(
 		room,
 		{
@@ -207,8 +205,8 @@ def numberPlayer(request):
 		print('Invalid Token')
 		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
 	room = request.data.get('room')
-	print('room:',room)
-	print('All games name:', [game.name for game in Tournament.objects.all()])
+	# print('room:',room)
+	# print('All games name:', [game.name for game in Tournament.objects.all()])
 	tournament =Tournament.objects.filter(name=room).first()
 	if (tournament is None):
 		return Response({'retour':False},status=status.HTTP_200_OK)
@@ -257,7 +255,7 @@ class Matchmaking(WebsocketConsumer):
 			tournament.save()
 		# usernames = tournament.getAllUsername()
 		for player in players:
-			print('player alias:',player.alias)
+			# print('player alias:',player.alias)
 			self.send(text_data=json.dumps({
 				'type': 'username',
 				'username': player.username,
@@ -280,21 +278,21 @@ class Matchmaking(WebsocketConsumer):
 			self.room_name,
 			self.channel_name
 		)
-		print("disconnect",self.scope['user'])
+		# print("disconnect",self.scope['user'])
 		tournament = Tournament.objects.filter(name=self.room_name).first()
 		if (not tournament):
 			return
 		tournament.removeUser(self.scope['user'])
 		tournament.save()
 		if (tournament.players.count() <= 0):
-			print('delete tournament disconnect:',tournament.name)
+			# print('delete tournament disconnect:',tournament.name)
 			players = tournament.players.all()
 			for player in players:
 				tournament.removeUser(player)
 			tournament.players.clear()
 			tournament.delete()
 		else:
-			print('just remove user')
+			# print('just remove user')
 			async_to_sync(self.channel_layer.group_send)(
 				self.tournament_name,
 				{
@@ -339,7 +337,7 @@ class Matchmaking(WebsocketConsumer):
 			timer = 3
 			tournament.status = 'inprogress'
 			tournament.save()
-			print('tournament status end:',tournament.status, 'room:',tournament.name)
+			# print('tournament status end:',tournament.status, 'room:',tournament.name)
 			players = tournament.getAllUsername()
 			for player in players:
 				tournament.creator = player

@@ -96,7 +96,7 @@ const tournament = () => {
 		setIsTrue(false);
 		const sortedMessages = [...user].sort((a, b) => a.localeCompare(b));
 		// console.log('User id:', userInfo.user.id);
-		console.log('host:', host);
+		// console.log('host:', host);
 		
 		if (userInfo.user.username === host)
 			{
@@ -181,42 +181,12 @@ const tournament = () => {
 			// delay(5000).then(() => navigate('/'));
 		}
 	}, [messages, isTrue, name, host]);
-	const checkNumberPlayer = async(name)=>
-		{
-			// console.log("INVITE ",username)
-			if (wait === true)
-				return;
-			try {
-				const response = await axiosInstance.post('/numberplayer/', {
-					room: name,
-				});
-				console.log("RESPONSE",response.data)
-				if (response.data.retour == false){
-					setWait(true);
-					return;
-				}
-				else if (response.data.retour == true)
-				{
-					console.log("in true");
 
-					if (response.data.number === response.data.max_capacity)
-					{
-						
-						console.log("Game full");
-						navigate('/');
-					}
-				}
-				setWait(true);
-			} catch (error) {
-				setError(error.message);
-				throw error;
-			}
-		};
 	function sleep(ms) {
 		return new Promise(resolve => setTimeout(resolve, ms));
 		}
 	useEffect(() => {
-		console.log('username', userInfo.user);
+		// console.log('username', userInfo.user);
 		if (userInfo.user === undefined) {
 			navigate('/login');
 			return;
@@ -300,7 +270,7 @@ const tournament = () => {
 					}
 					return prevFriend;
 				})
-				console.log('friends', message);
+				// console.log('friends', message);
 			} else if (message.type === 'end') {
 				
 				setDisplayer(t('over'));
@@ -312,7 +282,7 @@ const tournament = () => {
 				console.log("Game full");
 				navigate('/');
 			}
-			console.info('received tournament', message);
+			// console.info('received tournament', message);
 		};
 
 		setWs(ws);
