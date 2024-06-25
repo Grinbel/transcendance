@@ -792,7 +792,9 @@ function Game() {
 			window.removeEventListener('keyup', local_handleKeyUp, false);
 			window.removeEventListener('mousemove', handleMouseMove);
 			window.removeEventListener('keydown', handleKeyDown_2, false);
-			document.body.removeChild(renderer.domElement);
+			if(renderer.domElement.parentNode)
+				renderer.domElement.parentNode.removeChild(renderer.domElement);
+			//document.body.removeChild(renderer.domElement);
 			//document.body.removeChild(dialogContainer);
 			renderer.dispose();
 			resetOptions();
