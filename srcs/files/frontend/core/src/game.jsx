@@ -281,6 +281,11 @@ function Game() {
 			clear_components(p1_weapon_mesh);
 			clear_components(p2_weapon_mesh);
 			clear_components(ball_render);
+			if(texture) texture.dispose();
+			if(texture_ball_p1) texture_ball_p1.dispose();
+			if(texture_ball_p2) texture_ball_p2.dispose();
+			if(texturep1) texturep1.dispose();
+			if(texturep2) texturep2.dispose();
 			clear_components(ia_eye);
 			//*                    clear_components(ia_spotlight);
 			clear_components(target_mesh);
