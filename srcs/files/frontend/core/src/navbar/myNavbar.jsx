@@ -4,7 +4,7 @@ import { Link,  useNavigate} from 'react-router-dom';
 
 import './myNavbar.css';
 
-import  { axiosInstance } from "../axiosAPI.js";
+import  { axiosInstance} from "../axiosAPI.js";
 import Login from '../login/login.jsx';
 
 import Container from 'react-bootstrap/Container';
@@ -82,6 +82,8 @@ const NavLoggedIn = () => {
 		localStorage.removeItem('refresh_token');
 		localStorage.removeItem('user');
 		axiosInstance.defaults.headers['Authorization'] = null;
+		axiosInstance.defaults.headers['Authorization'] = null;
+
 		userinfo.setUser();
 		// console.log('NavLoggedIn: logout successful frontend');
 		navigate('/login');

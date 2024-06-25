@@ -4,7 +4,7 @@ import { userContext } from '../contexts/userContext.jsx';
 import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { axiosInstance } from '../axiosAPI.js';
+import { axiosInstance} from '../axiosAPI.js';
 import { useGameContext } from '../contexts/GameContext.jsx';
 import { useTranslation } from 'react-i18next';
 
@@ -25,6 +25,7 @@ const tournament = () => {
 	const [stop,setStop] = useState(false);
 	const [host,setHost] = useState('');
 	const [error, setError] = useState(null);
+	const [wait, setWait] = useState(false);
 	const nextgameplayer = async (name) => {
 		try {
 			const response = await axiosInstance.post('/nextgameplayer/', {
@@ -180,8 +181,39 @@ const tournament = () => {
 			// delay(5000).then(() => navigate('/'));
 		}
 	}, [messages, isTrue, name, host]);
+	const checkNumberPlayer = async(name)=>
+		{
+			// console.log("INVITE ",username)
+			if (wait === true)
+				return;
+			try {
+				const response = await axiosInstance.post('/numberplayer/', {
+					room: name,
+				});
+				console.log("RESPONSE",response.data)
+				if (response.data.retour == false){
+					setWait(true);
+					return;
+				}
+				else if (response.data.retour == true)
+				{
+					console.log("in true");
 
+					if (response.data.number === response.data.max_capacity)
+					{
+						
+						console.log("Game full");
+						navigate('/');
+					}
+				}
+				setWait(true);
+			} catch (error) {
+				setError(error.message);
+				throw error;
+			}
+		};
 	useEffect(() => {
+		console.log('username', userInfo.user);
 		if (userInfo.user === undefined) {
 			navigate('/login');
 			return;
@@ -195,13 +227,16 @@ const tournament = () => {
 			return;
 		}
 		if (userInfo.user.isHost !== undefined && userInfo.user.isHost === true)
-			{
-				userInfo.setUser({
-					...userInfo.user,
-					isHost: false,
-				})
-				return ;
-			}
+		{
+			userInfo.setUser({
+				...userInfo.user,
+				isHost: false,
+			})
+			return ;
+		}
+		checkNumberPlayer(userInfo.user.tournament);
+		if (wait === false)
+			return;
 		// console.log('tournament', userInfo.user.tournament);
 		const ws = getWebSocket(userInfo.user.tournament);
 		ws.onopen = () => {
@@ -239,7 +274,13 @@ const tournament = () => {
 				// console.log("username!!!!!!!!!");
 				if (message && message.username )
 				{
-					setMessages(prevMessages => [...prevMessages, message]);
+					setMessages(prevMessages => {
+						const aliasExists = prevMessages.find(m => m.alias === message.alias);
+						if (!aliasExists) {
+						  return [...prevMessages, message];
+						}
+						return prevMessages;
+					  });
 					setName(message.name);
 					setMaxCapacity(message.max_capacity);
 				}
@@ -248,7 +289,7 @@ const tournament = () => {
 				// console.log("set tournamentIsLaunching")
 				// userInfo.setUser({...userInfo.user,tournamentIsLaunching:true});
 				setHost(message.host);
-				console.log("Message",message, message.host);
+				// console.log("Message",message, message.host);
 				setIsTrue(true);
 			} else if (message.type === 'friends') {
 				setFriend((prevFriend) => [message]);
@@ -271,7 +312,7 @@ const tournament = () => {
 				// WebSocket is open
 			}
 		};
-	}, [userInfo.user,stop]);
+	}, [userInfo.user,stop,wait]);
 
 	const sendInvite = async(username)=>
 	{
@@ -297,7 +338,7 @@ const tournament = () => {
 
 				<h3>Max player: {maxCapacity}</h3>
 				<div id='chatContent' className='chat-content'>
-					<h4>{t('player')}</h4>
+					<h4>{t('player')}:</h4>
 					{messages.map((message, index) => (
 						<div
 							key={index}

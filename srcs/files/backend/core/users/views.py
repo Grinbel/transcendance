@@ -156,13 +156,13 @@ def userlist(request):
 		self = request.data.get('self')
 		user = User.objects.filter(username=self).first()
 	if (not user):
-		return Response({'Error':'username'})
+		return Response({'Error':'username'}, status=status.HTTP_400_BAD_REQUEST)
 	otheruser = request.data.get('other')
 	action = request.data.get('action')
 
 	other = User.objects.filter(username=otheruser).first()
 	if (other is None):
-		return Response({'detail': 'Invalid user'})
+		return Response({'detail': 'Invalid user'}, status=status.HTTP_400_BAD_REQUEST)
 	if (action == 'addfriend'):
 		user.addFriend(otheruser)
 	elif (action == 'unfriend'):
@@ -172,9 +172,9 @@ def userlist(request):
 	elif (action == 'unblock'):
 		user.removeBlacklist(otheruser)
 	else:
-		return Response({'detail': 'Invalid action'})
+		return Response({'detail': 'Invalid action'}, status=status.HTTP_400_BAD_REQUEST)
 	# #print('user black list : ',user.blacklist.all())
-	return Response({'detail': 'Done'})
+	return Response({'detail': 'Done'}, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -187,10 +187,10 @@ def userFriendList(request):
 		username = request.data.get('username')
 		user = User.objects.filter(username=username).first()
 	if (not user):
-		return Response({'Error':'username'})
+		return Response({'Error':'username'}, status=status.HTTP_400_BAD_REQUEST)
 	friends = user.friends.all()
 	usernames = [friend.username for friend in friends]
-	return Response({'friends': usernames})
+	return Response({'friends': usernames}, status=status.HTTP_200_OK)
 
 
 
@@ -202,8 +202,8 @@ def userExist(request):
 		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
 	username = request.data.get('username')
 	if User.objects.filter(username=username).exists():
-		return Response({'detail': 'User exists'})
-	return Response({'detail': 'User does not exist'})
+		return Response({'detail': 'User exists'}, status=status.HTTP_200_OK)
+	return Response({'detail': 'User does not exist'}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def userFriendBlock(request):
@@ -219,13 +219,13 @@ def userFriendBlock(request):
 	# return Response({'detail': 'Invalid user'})
 	other = User.objects.filter(username=friend).first()
 	if (other is None or user is None):
-		return Response({'detail': 'Invalid user','friend': 0, 'block': 0})
+		return Response({'detail': 'Invalid user','friend': 0, 'block': 0}, status=status.HTTP_400_BAD_REQUEST)
 	elif (user == other):
-		return Response({'detail': 'You cannot block yourself','friend': 0, 'block': 0})
+		return Response({'detail': 'You cannot block yourself','friend': 0, 'block': 0}, status=status.HTTP_200_OK)
 	print('user', user)
 	isFriend = user.friends.filter(username=friend).exists()
 	isBlacklisted = user.blacklist.filter(username=friend).exists()
-	return Response({'friend': isFriend, 'block': isBlacklisted})
+	return Response({'friend': isFriend, 'block': isBlacklisted}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 # @permission_classes([IsAuthenticated])

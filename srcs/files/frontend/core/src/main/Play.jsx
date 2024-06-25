@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, redirect } from 'react-router-dom';
 import Loading from './loading';
-import { axiosInstance } from '../axiosAPI.js';
+import { axiosInstance} from '../axiosAPI.js';
 import { useContext } from 'react';
 import { userContext } from '../contexts/userContext.jsx';
 import { useNavigate } from 'react-router-dom';
@@ -60,6 +60,8 @@ function Play() {
 		if (alias === '') {
 			setAlias(userInfo.user.username);
 		}
+		console.log('alias', alias);
+		console.log('username', userInfo.user.username, userInfo.user);
 
 		try {
 			const response = await axiosInstance.post('/choice/', {
