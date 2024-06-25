@@ -89,7 +89,7 @@ def sendInvite(request):
 		return Response({'Error':'Not in game'}, status=status.HTTP_400_BAD_REQUEST)
 	channel_layer = get_channel_layer()
 	if (receiver is None or receiver.blacklist.all().filter(username=username).exists()):
-		return Response({'Error':'Invalid you re blocked'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'Error':'Invalid you re blocked'}, status=status.HTTP_200_OK)
 	# print('send invite',username,receiver.username,room)
 	async_to_sync(channel_layer.group_send)(
 		'general',
