@@ -4,6 +4,10 @@ from users.models import User
 import random
 import string
 import time
+from datetime import timedelta
+from django.utils import timezone
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 # Create your models here.
 class Tournament(models.Model):
 	STATUS_CHOICES = [
@@ -107,5 +111,20 @@ class Tournament(models.Model):
 			return Tournament.createRoomName()
 		return name
 
+	def checkExpiration(self):
+		result = self.creation_date + timedelta(seconds=20) < timezone.now()
+		if (result == True):
+			self.status = 'cancelled'
+			async_to_sync(get_channel_layer().group_send)(
+				self.name,
+				{
+					'type':'quit_game',
+				})
+			self.players.clear()
+			self.delete()
+			self.save()
+			return True
+		else:
+			return False
 	def __str__(self):
 		return ', '.join(f'{key}: {value}' for key, value in self.__dict__.items())

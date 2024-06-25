@@ -20,6 +20,11 @@ from django.http import HttpResponse
 from rest_framework_simplejwt.tokens import UntypedToken
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework import status
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from datetime import timedelta
+from django.utils import timezone
+
 
 def checkuser(request):
 	if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
@@ -48,7 +53,7 @@ def choice(request):
 	username = request.data.get('username')
 	user = User.objects.filter(username=username).first()
 	if (not user):
-		return Response({'Error':'username'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'Error':'username'}, status=status.HTTP_200_OK)
 	join = request.data.get('join')
 	alias = request.data.get('alias')
 	score = request.data.get('score')
@@ -95,6 +100,11 @@ def choice(request):
 		usernames = tournament.getAllUsername()
 		if (usernames == []):
 			tournament.delete()
+		elif (tournament.checkExpiration() == True):
+			print('delete tournament:',tournament.name)
+			continue
+		else:
+			print('usernames:',usernames)
 
 	if (join and tournamentId == ''):
 		name = Tournament.getNextTournament(alias=alias,name=user.username)
@@ -102,7 +112,7 @@ def choice(request):
 		if (tournament != None ):
 			players = tournament.players.all()
 			if (alias in [player.alias for player in players]):
-				return Response({'Error':'alias'}, status=status.HTTP_400_BAD_REQUEST)
+				return Response({'Error':'alias'})
 		user.alias = alias
 		user.save()
 
@@ -114,16 +124,16 @@ def choice(request):
 	else:
 		tournament = Tournament.objects.filter(name=tournamentId).first()
 		if (tournament is None):
-			return Response({'Error':'invalid'}, status=status.HTTP_400_BAD_REQUEST)
+			return Response({'Error':'invalid'}, status=status.HTTP_200_OK)
 		players = tournament.players.all()
 		if ((alias in [player.alias for player in players])):
-			return Response({'Error':'alias'}, status=status.HTTP_400_BAD_REQUEST)
+			return Response({'Error':'alias'}, status=status.HTTP_200_OK)
 		user.alias = alias
 		user.save()
 		if tournament.checkAddUser(user) is False:
-			return Response({'Error':'full'}, status=status.HTTP_400_BAD_REQUEST)
+			return Response({'Error':'full'}, status=status.HTTP_200_OK)
 		elif (tournament.status == 'inprogress'):
-			return Response({'Error':'progress'}, status=status.HTTP_400_BAD_REQUEST)
+			return Response({'Error':'progress'}, status=status.HTTP_200_OK)
 		else:
 			return Response({'room_name': tournament.name})
 
@@ -139,7 +149,7 @@ def options(request):
 	tournament =Tournament.objects.filter(name=name).first()
 	if (tournament is None):
 		return Response({'Error':'invalid'}, status=status.HTTP_400_BAD_REQUEST)
-	if (user != None and user.username not in tournament.getAllUsername()):
+	if (user != None and user.username not in tournament.getAllUsername() and user.username != tournament.creator):
 		return Response({'Error':'Not in game'}, status=status.HTTP_400_BAD_REQUEST)
 	return Response({'texture_ball': tournament.texture_ball,'ball_starting_speed':tournament.ball_starting_speed,'score':tournament.score,'easyMode':tournament.easyMode,'skin':tournament.skin}, status=status.HTTP_200_OK)
 
@@ -148,14 +158,13 @@ def EndOfGame(request):
 	user = checkuser(request)
 	if (user == None):
 		print('Invalid Token')
-		return Response({'Error':'Invalid Token'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'Error':'Invalid Token'}, status=status.HTTP_200_OK)
 	winner = request.data.get('winner')
 	room = request.data.get('room')
 	tournament =Tournament.objects.filter(name=room).first()
 	if (tournament is None):
-		return Response({'Error':'invalid'})
+		return Response({'Error':'invalid'}, status=status.HTTP_400_BAD_REQUEST)
 	if (user != None and user.username != tournament.creator):
-		print('Not creator')
 		return Response({'Error':'Not in game'}, status=status.HTTP_400_BAD_REQUEST)
 	channel_layer = get_channel_layer()
 	async_to_sync(channel_layer.group_send)(
@@ -166,6 +175,9 @@ def EndOfGame(request):
 			'room':room,
 		}
 	)
+	tournament.players.clear()
+	tournament.delete()
+	tournament.save()
 	return Response({'End of game'}, status=status.HTTP_200_OK)
 
 
@@ -183,6 +195,20 @@ def numberPlayer(request):
 		return Response({'retour':False},status=status.HTTP_200_OK)
 	return Response({'retour':True,'number':tournament.players.count(), 'max_capacity':tournament.max_capacity},status=status.HTTP_200_OK)
 
+# @receiver(pre_save, sender=Tournament)
+# def check_expiration(sender, instance, **kwargs):
+# 	# if instance.creation_date + timedelta(minutes=1) < timezone.now():
+
+# 	if instance.creation_date + timedelta(seconds=10) < timezone.now():
+# 		async_to_sync(get_channel_layer().group_send)(
+# 			instance.name,
+# 			{
+# 				'type':'quit_game',
+# 			})
+# 		instance.players.clear()
+# 		instance.delete()
+# 		instance.save()
+
 class Matchmaking(WebsocketConsumer):
 	def connect(self):
 		room_name = self.scope['url_route']['kwargs']['room_name']
@@ -196,11 +222,20 @@ class Matchmaking(WebsocketConsumer):
 			self.channel_name
 		)
 		self.accept()
+		if (tournament.checkExpiration() == True):
+			return
 		self.scope['user'].tournament_name = room_name
 		self.scope['user'].save()
 		user = self.scope['user']
 		players = tournament.players.all()
-
+		if (tournament.checkAddUser(user) is False):
+			self.send(text_data=json.dumps({
+				'type':'full',
+			}))
+			return
+		else:
+			tournament.addUser(user)
+			tournament.save()
 		# usernames = tournament.getAllUsername()
 		for player in players:
 			self.send(text_data=json.dumps({
@@ -218,7 +253,7 @@ class Matchmaking(WebsocketConsumer):
 				'type':'friends',
 				'friend': friend,
 			}))
-			
+		
 	
 	def disconnect(self, close_code):
 		# self.scope['user'].tournament_name = ''
@@ -247,11 +282,11 @@ class Matchmaking(WebsocketConsumer):
 
 	def receive(self, text_data):
 		# Tournament.objects.all().delete()
-		
 		text_data_json = json.loads(text_data)
+		# tipe = text_data_json['type']
+
 		name = text_data_json['tournament']
 		alias = text_data_json['alias']
-		print('alias:',alias)
 		if (alias == '' or alias is None):
 			alias = self.scope['user'].username
 		if (len(alias) > 10 and len(alias) < 1 or not alias.isalnum()
@@ -262,10 +297,10 @@ class Matchmaking(WebsocketConsumer):
 		tournament = Tournament.objects.filter(name=name).first()
 		if (tournament is None or user is None):
 			return
+		if (tournament.checkExpiration() == True):
+			return
 		username = user.username
 		# tournament = Tournament.objects.get(name=name)
-		tournament.addUser(user)
-		tournament.save()
 		async_to_sync(self.channel_layer.group_send)(
 			self.tournament_name,
 			{
@@ -283,6 +318,7 @@ class Matchmaking(WebsocketConsumer):
 			for player in players:
 				tournament.creator = player
 				break
+			
 			print('tournament name of host:',tournament.creator)
 			async_to_sync(self.channel_layer.group_send)(
 				self.tournament_name,
@@ -326,4 +362,9 @@ class Matchmaking(WebsocketConsumer):
 			'type':'end',
 			'winner': event['winner'],
 			'room': event['room'],
+		}))
+	
+	def quit_game(self,event):
+		self.send(text_data=json.dumps({
+			'type':'quit_game',
 		}))

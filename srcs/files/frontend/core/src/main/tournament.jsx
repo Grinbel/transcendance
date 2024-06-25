@@ -212,6 +212,9 @@ const tournament = () => {
 				throw error;
 			}
 		};
+	function sleep(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+		}
 	useEffect(() => {
 		console.log('username', userInfo.user);
 		if (userInfo.user === undefined) {
@@ -234,9 +237,9 @@ const tournament = () => {
 			})
 			return ;
 		}
-		checkNumberPlayer(userInfo.user.tournament);
-		if (wait === false)
-			return;
+		// checkNumberPlayer(userInfo.user.tournament);
+		// if (wait === false)
+		// 	return;
 		// console.log('tournament', userInfo.user.tournament);
 		const ws = getWebSocket(userInfo.user.tournament);
 		ws.onopen = () => {
@@ -253,10 +256,11 @@ const tournament = () => {
 		ws.onerror = (e) => {
 			// console.log('ws tournament error', e);
 		}
-		ws.onmessage = (e) => {
+		ws.onmessage = async (e) => {
 			const message = JSON.parse(e.data);
-			if (message.type === 'connected') {
-				return;
+			if (message.type === 'quit_game') {
+				console.log('quit_game');
+				navigate('/');
 			} else if (message.type === 'disconnected') {
 				// console.log('disconnected!!!!!!!!!!!!!!!!');
 				setMessages((prevMessages) => []);
@@ -285,11 +289,8 @@ const tournament = () => {
 					setMaxCapacity(message.max_capacity);
 				}
 			} else if (message.type === 'launch_tournament') {
-				// setDisplayer("Launching in " + message.timer + " seconds");
-				// console.log("set tournamentIsLaunching")
-				// userInfo.setUser({...userInfo.user,tournamentIsLaunching:true});
 				setHost(message.host);
-				// console.log("Message",message, message.host);
+				// await sleep(5000);
 				setIsTrue(true);
 			} else if (message.type === 'friends') {
 				setFriend((prevFriend) => [message]);
@@ -300,7 +301,11 @@ const tournament = () => {
 				// delay(5000).then(() => navigate('/'));
 				// ws.close();
 			}
-			// console.info('received', message);
+			else if (message.type === 'full') {
+				console.log("Game full");
+				navigate('/');
+			}
+			console.info('received tournament', message);
 		};
 
 		setWs(ws);
