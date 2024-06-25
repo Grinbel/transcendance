@@ -179,13 +179,12 @@ def userlist(request):
 
 @api_view(['POST'])
 def userFriendList(request):
-	user = checkuser(request)
-	if user == None:
-		print('Invalid Token')
-		return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
-	if (user is None):
-		username = request.data.get('username')
-		user = User.objects.filter(username=username).first()
+	# user = checkuser(request)
+	# if user == None:
+	# 	print('Invalid Token')
+	# 	return Response({'Error':'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
+	username = request.data.get('username')
+	user = User.objects.filter(username=username).first()
 	if (not user):
 		return Response({'Error':'username'}, status=status.HTTP_400_BAD_REQUEST)
 	friends = user.friends.all()
