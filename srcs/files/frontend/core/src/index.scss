@@ -1,0 +1,29 @@
+@import "./dashboard/pages/variables";
+
+html, body {
+    height: 100%;
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+}
+
+#root {
+    height: 100%; /* Ensure root div takes full height */
+}
+
+.app {
+    font-family: $text-font;
+    background-color: $white-bg;
+    min-height: 100vh; /* Ensure app takes at least full height */
+    display: flex;
+    flex-direction: column; /* Helps with layout */
+    justify-items: center; /* Center children horizontally */
+
+    .appContent {
+        flex-grow: 1; /* Grow to fill remaining space */
+        display: flex;
+        flex-direction: row; /* Helps with layout */
+        justify-content: center; /* Center children horizontally */
+        align-items: center; /* Center children vertically */
+    }
+
+}

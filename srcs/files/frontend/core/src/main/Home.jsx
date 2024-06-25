@@ -15,6 +15,7 @@ import { userContext } from "../contexts/userContext.jsx";
 import { useGameContext } from "../contexts/GameContext.jsx";
 import { useMultiGameContext } from "../contexts/MultiGameContext.jsx";
 import './Home.scss';
+import { ClassNames } from "@emotion/react";
 
 const Home = () => {
 	const [displayer, setDisplayer] = useState("");
@@ -98,7 +99,7 @@ const Home = () => {
 			navigate('/game');
 	};
 	return (
-		<div className="gridContainer">
+		<div className="Home">
 			{userinfo.user ? (
 				// <Container fluid className="homeContainer" style={{height: '92vh'}}>
 				// 	<Row className="mb-3">
@@ -117,25 +118,21 @@ const Home = () => {
 				// 	</Row>
 				// </Container>
 				<div className="buttonsContainer">
-					<div class="grid-item">
-						<Button as={Link} to="/play" class="btn">{t('1V1')}</Button>
-					</div>
-					<div class="grid-item">
-						<Button onClick={handle2P} class="btn">{t('Local 2 Players')}</Button>
-					</div>
-					<div class="grid-item">
-						<Button   onClick={handleIA_Custom} class="btn">{t('Local Vs better Ia')}</Button>
-					</div>
-					<div class="grid-item">
-						<Button as={Link} to="/multi-options" class="btn">{t('Multi')}</Button>
-					</div>
+					<Button as={Link} to="/play" className="btn">{t('1V1')}</Button>
+					
+					<Button onClick={handle2P} className="btn">{t('Local 2 Players')}</Button>
+					
+					<Button onClick={handleIA_Custom} className="btn">{t('Local Vs better Ia')}</Button>
+					
+					<Button as={Link} to="/multi-options" className="btn">{t('Multi')}</Button>
+					
 					<div className="errorContainer">
 						{displayer}
 					</div>
 				</div>
 			) : (
 				<Navigate to='/login'/>
-			)};
+			)}
 		</div>
 	)
 }

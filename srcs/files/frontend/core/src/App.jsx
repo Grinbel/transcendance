@@ -138,31 +138,33 @@ async function getProfile(user, setUser, error, setError){
 	return (
 		<userContext.Provider value={{user, setUser}}>
 			<div className="app">
+
 				<MyNavbar/>
+				<div className="appContent">
+					{loading ? (
+						<div>Loading...</div> // You can add a spinner or any loading indicator here
+					) : (
+						<Routes>
+							<Route path="/dashboard" element={<Dashboard />}>
+								<Route index element={<Settings />} />
+							</Route>
+							<Route path="/multi-options" element={<MultiOptions />} />
+							<Route path="/play" element={<Play />} />
+							<Route path="/login" element={<Login />} /> 
+							<Route path="/signup" element={<Signup />} />
+							<Route path="/tournament" element={<Tournament />} />
+							<Route path="/about" element={<About />} />
+							<Route path="/Game/" element={<Game />} />
+							<Route path="/profile" element={<Profile />} />
 
-				{loading ? (
-          			<div>Loading...</div> // You can add a spinner or any loading indicator here
-        		) : (
-					<Routes>
-						<Route path="/dashboard" element={<Dashboard />}>
-							<Route index element={<Settings />} />
-						</Route>
-						<Route path="/multi-options" element={<MultiOptions />} />
-						<Route path="/play" element={<Play />} />
-						<Route path="/login" element={<Login />} /> 
-						<Route path="/signup" element={<Signup />} />
-						<Route path="/tournament" element={<Tournament />} />
-						<Route path="/about" element={<About />} />
-						<Route path="/Game/" element={<Game />} />
-						<Route path="/profile" element={<Profile />} />
-
-						<Route path="/profile/:username" element={<Profile />} />
-						<Route path="/MultiGame/" element={<MultiGame />} />
-						<Route exact path="/" element={<Home />} />
-						<Route path="/*" element={<Error404 />} />
-					</Routes>
-				// {/* <Chat /> */}
-				)}
+							<Route path="/profile/:username" element={<Profile />} />
+							<Route path="/MultiGame/" element={<MultiGame />} />
+							<Route exact path="/" element={<Home />} />
+							<Route path="/*" element={<Error404 />} />
+						</Routes>
+					// {/* <Chat /> */}
+					)}
+				</div>
 			</div>
 		</userContext.Provider>
 	);

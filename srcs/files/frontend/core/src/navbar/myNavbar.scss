@@ -1,0 +1,229 @@
+@import "../dashboard/pages/variables.scss";
+
+.navbar-custom {
+	background-color: $dark-bg; /* Dark background color */
+  }
+  
+  .navbar-custom .navbar-brand {
+	color: #fff; /* White text color */
+	font-family: $text-font;
+	font-weight: $font-weight;
+  }
+  
+  .navbar-custom .navbar-brand:hover {
+	color: #ddd; /* Lighter text color on hover */
+
+  }
+  
+  .navbar-custom .nav-link {
+	display: inline-flex; /* Light gray text color */
+	gap: 10px;
+	justify-content: center;
+	align-items: center;
+	color: $soft-color; /* Light gray text color */
+	width: 200px;
+
+	background-color: transparent;
+	
+  }
+
+  // stylize the ::after pseudo-element
+  .navbar-custom .nav-link::after {
+	content: "";
+	text-align: center;
+	display: block;
+	width: 10px;
+	height: 10px;
+  }
+  
+
+  .navbar-custom .nav-link .userItem {
+	display: inline-flex; /* Light gray text color */
+	width: 100px;
+	gap: 10px;
+	justify-content: end;
+	align-items: center;
+	
+  }
+  
+  .navbar-custom .nav-link:hover {
+	color: #fff; /* White text color on hover */
+  }
+  
+  .navbar-custom .nav-item .nav-link.active {
+	color: #ffcc00; /* Yellow color for active link */
+  }
+  
+  .navbar-custom .nav-dropdown {
+	background-color: transparent; /* Darker background for dropdown */
+  }
+  
+  .navbar-custom .nav-dropdown .dropdown-item {
+	color: #ccc; /* Light gray text color */
+  }
+  
+  .navbar-custom .nav-dropdown .dropdown-item:hover {
+	background-color: #555; /* Darker background on hover */
+	color: #fff; /* White text color on hover */
+  }
+  
+  /* Optional: Customize the toggle button (hamburger icon) */
+  .navbar-custom .navbar-toggler {
+	border-color: #888; /* Light gray border color */
+  }
+  
+  .navbar-custom .navbar-toggler-icon {
+	background-image: url("data:image/svg+xml,..."); /* Customize icon if needed */
+  }
+
+// .userItem{
+// 	display: flex;
+// 	justify-content: center;
+// 	align-items: center;
+// 	gap: 10px;
+// }
+
+// .navCustom {
+// 	display: flex;
+// 	justify-content: center;
+// 	transition-duration: 0.4s;
+// 	background-color: transparent;
+// 	align-items: center;
+// 	color : $dark-color;
+// 	font-size: 16px; /* Adjust as needed */
+// 	font-weight: 500;
+// 	font-family: Roobert,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+// 	font-weight: regular;
+// 	min-height: 60px;
+// 	min-width:  40px;
+// 	border-radius: 0.375rem;
+// 	width: 120px;
+// 	padding: 16px 10px;
+
+// 	text-decoration: none;
+// 	text-align: center;
+// 	transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+// 	user-select: none;
+// 	-webkit-user-select: none;
+// 	touch-action: manipulation;
+// 	will-change: transform;
+// 	/* border: 2px solid #1A1A1A;
+// 	border-radius: 3px; */
+//   }
+  
+//   .navCustom:hover {
+// 	color: #fff;
+// 	background-color: #1A1A1A;
+// 	box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+// 	transform: translateY(-2px);
+//   }
+
+  
+//   .navCustom:disabled {
+// 	pointer-events: none;
+//   }
+  
+//   .navCustom:active {
+// 	box-shadow: none;
+// 	transform: translateY(0);
+//   }
+
+//   .logoName {
+// 	color: $dark-color;
+// 	font-weight: bold;
+// 	outline: none;
+// 	font-size: 30px;
+//   }
+
+//   .logoName:hover {
+// 	font-weight: bold;
+// 	text-shadow: none;
+// 	font-size: 30px;
+//   }
+
+//   @media (max-width: 990px) {
+// 	.navCustom {
+// 	  width: auto;
+// 	}
+//   }
+
+//   .playButton:hover {
+// 	color: #fff;
+// 	background-color: #e95511;
+// 	font-size: 20px;
+// 	font-weight: bold;
+//   }
+
+//   .logoutCustom{
+// 	border:none;
+// 	color: #b3a7a7;
+// 	background-color: transparent;
+// 	font-size: 20px;
+// 	font-weight: regulat;
+//   }
+
+//   .logoutCustom:hover {
+// 	all : unset;
+// 	border:none;
+// 	color: #fff;
+// 	background-color: #d01410;
+// 	font-size: 20px;
+// 	font-weight: bold;
+//   }
+
+//   .dropCustom {
+// 	display: flex;
+// 	justify-content: center;
+// 	transition-duration: 0.4s;
+// 	background-color: transparent;
+// 	align-items: center;
+// 	color : $dark-color;
+// 	width: 100px;
+//   }
+
+// .dropCustom .dropdown-menu {
+	
+// 	/* flex-direction: column; */
+// 	background-color: #f8f9fa;
+// 	/* justify-content: center; */
+// 	text-align: center;
+// 	align-items: center;
+// 	/* margin-top: 50px; */
+// 	border: none;
+// 	/* margin-right: 300px; */
+// 	max-width: 50px;
+// 	min-height: 100px;
+// 	border-radius: 0.5rem;
+// 	margin: 0;
+// }
+
+// .dropCustom .dropdown-menu a {
+// 	color: #1b191c;
+// 	background-color: transparent;
+// 	font-size: 16px;
+// 	font-weight: 500;
+// 	font-family: Roobert,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+// 	font-weight: regular;
+// 	min-height: 60px;
+// 	min-width:  40px;
+// 	border-radius: 0.2rem;
+// 	width: 140px;
+// 	padding: 16px 10px;
+// 	margin-inline: 10px;
+// 	text-decoration: none;
+// 	/* text-align: center; */
+// 	transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+// 	user-select: none;
+// 	-webkit-user-select: none;
+// 	touch-action: manipulation;
+// 	will-change: transform;
+// }
+
+// .dropCustom .dropdown-menu a:hover {
+// 	color: #fff;
+// 	background-color: #1A1A1A;
+// 	box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+// 	transform: translateY(-2px);
+// 	font-weight: 800;
+// }
+

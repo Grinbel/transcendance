@@ -2,7 +2,7 @@ import React, { useState, useContext, forwardRef, useEffect } from 'react';
 
 import { Link,  useNavigate} from 'react-router-dom';
 
-import './myNavbar.css';
+import './myNavbar.scss';
 
 import  { axiosInstance } from "../axiosAPI.js";
 import Login from '../login/login.jsx';
@@ -52,13 +52,15 @@ const NavLoggedIn = () => {
 	// console.log('avatar', avatar);
 
 	const UserMenu = (
-		<Image
-		  src={avatar}
-		  alt={t('User avatar')}
-		  roundedCircle
-		  style={{ width: '40px' }}
-		/>
-		
+		<div className='userItem'>
+			<span>{userinfo.user.username}</span>
+			<Image
+			src={avatar}
+			alt={t('User avatar')}
+			roundedCircle
+			style={{ width: '40px' }}
+			/>
+		</div>
 		
 	)
 
@@ -89,28 +91,60 @@ const NavLoggedIn = () => {
 
 	
 	return (
-		<Navbar  collapseOnSelect expand="sm" className="bg-body-tertiary">
-		  <Container >
+		// <Navbar  collapseOnSelect expand="sm" className="bg-body-tertiary">
+		//   <Container >
 
-			<Navbar.Brand as={Link} to='/' className='logoName'>
-				Pong
-			</Navbar.Brand> 
+		// 	<Navbar.Brand as={Link} to='/' className='logoName'>
+		// 		Pong
+		// 	</Navbar.Brand> 
 			
-			{/* <h3 className="text-right" >{userinfo.user.username}</h3> */}
-			<Nav  className="ms-auto">
-				<h5 >{userinfo.user.username}</h5>
-				<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={UserMenu}>
-					<NavDropdown.Item as={Link} to={`/profile/${userinfo.user.username}`}>{t('profile')}</NavDropdown.Item>
-					<NavDropdown.Item as={Link} to="/dashboard">{t('Dashboard')}</NavDropdown.Item>
-					<NavDropdown.Item as={Link} to="/play">{t('play')}</NavDropdown.Item>
-					<NavDropdown.Divider />
-					<NavDropdown.Item onClick={handleLogout}>{t('logout')}</NavDropdown.Item>
-				</NavDropdown>
+		// 	{/* <h3 className="text-right" >{userinfo.user.username}</h3> */}
+		// 	<Nav  className="ms-auto">
+		// 		<NavDropdown className='dropCustom' id="nav-dropdown-dark" title={UserMenu}>
+		// 			<NavDropdown.Item as={Link} to={`/profile/${userinfo.user.username}`}>{t('profile')}</NavDropdown.Item>
+		// 			<NavDropdown.Item as={Link} to="/dashboard">{t('Dashboard')}</NavDropdown.Item>
+		// 			<NavDropdown.Item as={Link} to="/play">{t('play')}</NavDropdown.Item>
+		// 			<NavDropdown.Divider />
+		// 			<NavDropdown.Item onClick={handleLogout}>{t('logout')}</NavDropdown.Item>
+		// 		</NavDropdown>
 
-				<Language t={t} changeLanguage={changeLanguage} />
-			</Nav>
-		  </Container>
-		</Navbar>
+		// 	</Nav>
+		// 		<Language t={t} changeLanguage={changeLanguage} />
+		//   </Container>
+		// </Navbar>
+
+		<Navbar collapseOnSelect expand="sm" className="navbar-custom">
+      <Container>
+        <Navbar.Brand as={Link} to="/" className="logoName">
+          Pong
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="ms-auto">
+            <NavDropdown title={UserMenu} id="collasible-nav-dropdown" className="nav-dropdown">
+              <NavDropdown.Item as={Link} to={`/profile/${userinfo.user.username}`}>
+                {t('profile')}
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/dashboard">
+                {t('Dashboard')}
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/play">
+                {t('play')}
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item onClick={handleLogout}>
+                {t('logout')}
+              </NavDropdown.Item>
+            </NavDropdown>
+          </Nav>
+          <Nav className="ms-auto">
+            <Nav.Item>
+              <Language t={t} changeLanguage={changeLanguage} />
+            </Nav.Item>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
 	  );
   };
   

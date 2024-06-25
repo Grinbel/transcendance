@@ -1,45 +1,75 @@
+@import "../dashboard/pages/variables.scss";
 
-body {
-    background-color: #121212;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
 
-.buttonsContainer {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 10px;
-    width: 300px;
-    height: 300px;
-	
-	.grid-item {
+.Home{
+	display:flex;
+	justify-content: center;
+	height: 100%;
+	width: 100%;
+
+	.buttonsContainer {
+		// display: grid;
+		// grid-template-columns: repeat(2, 1fr);
+		// grid-template-rows: repeat(2, 1fr);
+		// gap: 10px;
+		// width: 50%;
+		// height: 50%px;
 		display: flex;
+		gap: 10px;
+		flex-wrap: wrap; /* Allows buttons to wrap to the next line */
 		justify-content: center;
-		align-items: center;
-		border: 2px solid #00ff00; // Fluorescent green border
 		
+
 		.btn {
-			padding: 10px 20px;
+			all: unset;
+			text-decoration: none; 
+			text-align: center;
+			text-wrap: nowrap;
+			cursor: pointer;
+			padding: 10px 20px 10px 20px;
 			font-size: 16px;
-			color: #fff;
-			background-color: #333;
-			border: 2px solid #00ff00; // Fluorescent green border
+			color: $dark-bg;
+			background-color: $white-bg;
+			border: 2px solid $dark-bg; // Fluorescent green border
 			cursor: pointer;
 			transition: background-color 0.3s ease;
-		
+			height: 40px;
+			width: 150px;
+			// min-width: 100px;
+			
 			&:hover {
-				background-color: #555;
+				background-color: $dark-bg;
+				color: $white-bg;
 			}
+		}
+
+
+		a.btn {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		
+		@media (max-width: 600px) {
+			.btn {
+				flex: 1 1 100%; /* Make buttons take full width on small screens */
+				margin: 5px 0;
+
+			}
+
+		}
+
+
+		.errorContainer{
+			color: red;
 		}
 	}
 
-	.errorContainer{
-		color: red;
-	}
 }
 
 
+
+a.btn {
+	all: unset;
+	display: inline-flex; /* Ensure it behaves like a flex container */
+  }
