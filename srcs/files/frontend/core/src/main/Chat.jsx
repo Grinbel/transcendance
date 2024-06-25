@@ -255,15 +255,14 @@ function Chat() {
 			setdisplayer('');
 			const response = await axiosInstance.post('/choice/', {
 				tournamentId: room,
-				playerCount: "",
-				isLocal: "",
+				playerCount: "2",
 				username: userInfo.user.username,
 				alias: userInfo.user.username,
 				join:true ,
-				isEasy: "",
-				speed:"",
-				score:"",
-				skin:"",
+				isEasy: false,
+				speed:20,
+				score:10,
+				skin:2,
 			});
 			// console.log('response', response.data);
 			// console.log('Room name', response.data.room_name);
