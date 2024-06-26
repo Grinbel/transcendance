@@ -999,7 +999,7 @@ function Game() {
 				requestAnimationFrame(() => end_of_tournament(counter));
 			} else {
 				counter++;
-				if (counter < options.usernames.length * 60 + 1800)
+				if (counter < options.usernames.length * 60 + 250)
 					requestAnimationFrame(() => end_of_tournament(counter));
 				else {
 					for (let i = 0; i < options.usernames.length; i++) {

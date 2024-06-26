@@ -243,7 +243,7 @@ function Chat() {
 				value={privateMessage.message}
 				onChange={(e) =>setPrivate({message:e.target.value, receiver:username})}
 				onKeyDown={handleKeyPressprivate}
-				maxLength={90}
+				maxLength={80}
 
 			/> 
 		</div>
@@ -372,7 +372,7 @@ function Chat() {
 							value={formData.message}
 							onChange={(e) =>setFormData({ message: e.target.value })}
 							onKeyDown={handleKeyPress}
-							maxLength={90}
+							maxLength={80}
 						/>
 					</div>
 					{/* <div className="room_chat">
