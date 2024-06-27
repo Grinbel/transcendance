@@ -29,7 +29,7 @@ AUTH_USER_MODEL = "users.User"
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-+f$6n=$1s3ol8jgaenlmo9cu=-byy2*x=5)!evng!+0iu-e9vj'
+SECRET_KEY = os.environ.get('SECRETRANDOMKEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 ASGI_APPLICATION = 'project.asgi.application'
